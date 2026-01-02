@@ -77,6 +77,9 @@ export class GAME {
     // Setup URLs
     this.setupURLs();
 
+    // Setup event listeners before init so we catch errors
+    this.setupEventListeners();
+
     // Initialize global settings
     await GLOBAL.init();
 
@@ -85,9 +88,6 @@ export class GAME {
       this.showInitError(GLOBAL.initError);
       return;
     }
-
-    // Setup event listeners
-    this.setupEventListeners();
 
     // Update loading progress
     this.updateLoadingProgress(30);
