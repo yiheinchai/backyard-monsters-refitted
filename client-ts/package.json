@@ -1,0 +1,25 @@
+{
+  "name": "backyard-monsters-client-ts",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Backyard Monsters Refitted - TypeScript Client",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": ["backyard-monsters", "game", "pixijs", "typescript"],
+  "author": "Backyard Monsters Refitted Team",
+  "license": "GPL-3.0-only",
+  "dependencies": {
+    "howler": "^2.2.4",
+    "pixi.js": "^8.2.6"
+  },
+  "devDependencies": {
+    "@types/howler": "^2.2.12",
+    "typescript": "^5.5.4",
+    "vite": "^7.3.0"
+  }
+}
