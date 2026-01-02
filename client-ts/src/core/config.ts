@@ -166,6 +166,10 @@ export const GAME_EVENTS = {
   MAP_ROOM_OPENED: 'mapRoomOpened',
   MAP_ROOM_CLOSED: 'mapRoomClosed',
   
+  // World Map events
+  WORLDMAP_OPENED: 'worldmapOpened',
+  WORLDMAP_CLOSED: 'worldmapClosed',
+  
   // Language events
   LANGUAGE_LOADED: 'languageLoaded',
   LANGUAGES_LOADED: 'languagesLoaded',

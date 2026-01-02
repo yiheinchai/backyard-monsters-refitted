@@ -340,6 +340,50 @@ export class NetworkManager {
       template: JSON.stringify(templateData),
     });
   }
+
+  /**
+   * Get world map data
+   */
+  async getWorldMap(x: number, y: number, width: number, height: number): Promise<{
+    cells: Array<{
+      x: number;
+      y: number;
+      uid?: number;
+      username?: string;
+      level?: number;
+      baseValue?: number;
+      protected?: boolean;
+      terrainType: number;
+    }>;
+    playerX?: number;
+    playerY?: number;
+  }> {
+    try {
+      const response = await this.request(`${this.baseUrl}worldmapv2/getarea`, {
+        x,
+        y,
+        width,
+        height,
+      });
+      return response as {
+        cells: Array<{
+          x: number;
+          y: number;
+          uid?: number;
+          username?: string;
+          level?: number;
+          baseValue?: number;
+          protected?: boolean;
+          terrainType: number;
+        }>;
+        playerX?: number;
+        playerY?: number;
+      };
+    } catch {
+      // Return empty response on error
+      return { cells: [] };
+    }
+  }
 }
 
 // Export singleton instance
