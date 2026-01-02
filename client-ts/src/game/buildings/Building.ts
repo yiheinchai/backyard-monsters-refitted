@@ -77,6 +77,10 @@ export class Building {
   public isUpgrading: boolean = false;
   public buildTime: SecNum = new SecNum(0);
   
+  // Defense properties (for towers)
+  public isDefense: boolean = false;
+  public attackCooldown: number = 0;
+  
   // Display
   private container?: Container;
   private baseSprite?: Sprite | Graphics;
@@ -106,8 +110,24 @@ export class Building {
       this.buildTime.Set(data.bu);
     }
     
+    // Check if this is a defense building
+    this.isDefense = this.isDefenseBuilding();
+    
     // Load building properties
     this.loadProperties();
+  }
+  
+  /**
+   * Check if this building type is a defense tower
+   */
+  private isDefenseBuilding(): boolean {
+    return this.type === BUILDING_TYPES.SNIPER_TOWER ||
+           this.type === BUILDING_TYPES.CANNON_TOWER ||
+           this.type === BUILDING_TYPES.TESLA_TOWER ||
+           this.type === BUILDING_TYPES.LASER_TOWER ||
+           this.type === BUILDING_TYPES.QUAKE_TOWER ||
+           this.type === BUILDING_TYPES.ADT ||
+           this.type === BUILDING_TYPES.RAILGUN;
   }
   
   /**
@@ -671,6 +691,64 @@ export class Building {
     
     globalEvents.emit(GAME_EVENTS.BUILDING_UPGRADED, this);
     return true;
+  }
+  
+  // === Defense tower methods ===
+  
+  /**
+   * Get tower damage
+   */
+  getDamage(): number {
+    if (!this.isDefense) return 0;
+    
+    const level = this.level.Get();
+    switch (this.type) {
+      case BUILDING_TYPES.SNIPER_TOWER:
+        return 50 + 25 * level;
+      case BUILDING_TYPES.CANNON_TOWER:
+        return 80 + 40 * level;
+      case BUILDING_TYPES.TESLA_TOWER:
+        return 40 + 20 * level;
+      default:
+        return 50 + 25 * level;
+    }
+  }
+  
+  /**
+   * Get tower attack range
+   */
+  getRange(): number {
+    if (!this.isDefense) return 0;
+    
+    const level = this.level.Get();
+    switch (this.type) {
+      case BUILDING_TYPES.SNIPER_TOWER:
+        return 200 + 20 * level;
+      case BUILDING_TYPES.CANNON_TOWER:
+        return 150 + 10 * level;
+      case BUILDING_TYPES.TESLA_TOWER:
+        return 100 + 15 * level;
+      default:
+        return 150 + 15 * level;
+    }
+  }
+  
+  /**
+   * Get tower attack speed (seconds between attacks)
+   */
+  getAttackSpeed(): number {
+    if (!this.isDefense) return 0;
+    
+    switch (this.type) {
+      case BUILDING_TYPES.SNIPER_TOWER:
+        return 1.5;
+      case BUILDING_TYPES.CANNON_TOWER:
+        return 2.0;
+      case BUILDING_TYPES.TESLA_TOWER:
+        return 0.8;
+      default:
+        return 1.5;
+    }
   }
   
   // === Color utilities ===
