@@ -1,0 +1,26 @@
+{
+  "name": "backyard-monsters-client",
+  "version": "1.0.0",
+  "description": "Backyard Monsters TypeScript Client",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext ts,tsx",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "pixi.js": "^7.4.0",
+    "howler": "^2.2.4",
+    "eventemitter3": "^5.0.1",
+    "spark-md5": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/howler": "^2.2.11",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.12",
+    "vitest": "^1.2.2"
+  }
+}
