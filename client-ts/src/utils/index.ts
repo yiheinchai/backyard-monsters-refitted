@@ -294,3 +294,6 @@ export const Storage = {
     }
   }
 };
+
+// Re-export LOGGER
+export { LOGGER } from './Logger';

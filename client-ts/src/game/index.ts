@@ -8,3 +8,5 @@ export { CREATURES, Creature, MonsterTypes, MONSTER_PROPS } from './Creatures';
 export { HOUSING } from './Housing';
 export { HATCHERY, HATCHERYCC } from './Hatchery';
 export { ATTACK } from './Attack';
+export { TUTORIAL } from './Tutorial';
+export { QUESTS, QUEST_DEFS } from './Quests';
