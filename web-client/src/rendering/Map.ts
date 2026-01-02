@@ -121,8 +121,8 @@ class MapManager extends EventEmitter {
     // Setup input handlers
     this.setupInputHandlers();
 
-    // Center map
-    this.focus(0, 0);
+    // Center map on the middle of the playable area (50, 50)
+    this.focus(50, 50);
 
     this._inited = true;
     console.log('[MAP] Initialized');
@@ -402,6 +402,11 @@ class MapManager extends EventEmitter {
   get BUILDINGTOPS(): Container | null { return this._BUILDINGTOPS; }
   get EFFECTS(): Container | null { return this._EFFECTS; }
   get PROJECTILES(): Container | null { return this._PROJECTILES; }
+
+  // Method versions (for backwards compatibility)
+  getCreepsLayer(): Container | null { return this._CREEPS; }
+  getEffectsLayer(): Container | null { return this._EFFECTS; }
+  getProjectilesLayer(): Container | null { return this._PROJECTILES; }
 
   get tx(): number { return this._tx; }
   get ty(): number { return this._ty; }

@@ -11,10 +11,12 @@ import { BASE } from './Base';
 import { gameRenderer } from '../rendering/GameRenderer';
 import { MAP } from '../rendering/Map';
 import { BuildingManager } from '../game/BuildingManager';
+import { MonsterManager } from '../game/monsters/MonsterManager';
 import { EventEmitter } from './EventEmitter';
 import { BaseMode } from '../types/game';
 import { hud } from '../ui/HUD';
 import { buildMenu } from '../ui/BuildMenu';
+import { buildingInfoPopup } from '../ui/BuildingInfoPopup';
 
 class GameManager extends EventEmitter {
   private static _instance: GameManager;
@@ -235,6 +237,9 @@ class GameManager extends EventEmitter {
     // Initialize building manager
     await BuildingManager.init();
 
+    // Initialize monster manager
+    await MonsterManager.init();
+
     // Setup GLOBAL
     GLOBAL.setup(BaseMode.BUILD);
 
@@ -282,11 +287,39 @@ class GameManager extends EventEmitter {
       this.startBuildingPlacement(data.id, data.size);
     });
 
+    // Initialize Building Info Popup
+    uiLayer.addChild(buildingInfoPopup.getContainer());
+    buildingInfoPopup.on('upgrade', (...args: unknown[]) => {
+      const building = args[0] as import('../game/Building').Building;
+      console.log('[GAME] Upgrade requested for building:', building.id);
+      // TODO: Implement upgrade
+    });
+    buildingInfoPopup.on('move', (...args: unknown[]) => {
+      const building = args[0] as import('../game/Building').Building;
+      console.log('[GAME] Move requested for building:', building.id);
+      // TODO: Implement move mode
+    });
+    buildingInfoPopup.on('sell', (...args: unknown[]) => {
+      const building = args[0] as import('../game/Building').Building;
+      console.log('[GAME] Sell requested for building:', building.id);
+      BuildingManager.removeBuilding(building.id);
+      buildingInfoPopup.hide();
+    });
+
+    // Listen for building selection (when a building is clicked)
+    BuildingManager.on('buildingSelected', (...args: unknown[]) => {
+      const building = args[0] as import('../game/Building').Building;
+      buildingInfoPopup.show(building);
+    });
+
     // Listen for window resize to update UI
     window.addEventListener('resize', () => {
       hud.resize();
       if (buildMenu.isVisible()) {
         buildMenu.centerOnScreen();
+      }
+      if (buildingInfoPopup.isVisible()) {
+        buildingInfoPopup.centerOnScreen();
       }
     });
 

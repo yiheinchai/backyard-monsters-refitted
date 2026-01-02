@@ -420,6 +420,7 @@ export class Building extends EventEmitter {
   }
 
   // Getters
+  get id(): number { return this._data.id; }
   get data(): BuildingData { return this._data; }
   get container(): Container { return this._container; }
   get gridX(): number { return this._gridX; }
