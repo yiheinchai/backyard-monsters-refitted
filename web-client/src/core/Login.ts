@@ -48,11 +48,11 @@ class LoginManager extends EventEmitter {
     }
   }
 
-  async loginWithCredentials(username: string, password: string): Promise<void> {
+  async loginWithCredentials(email: string, password: string): Promise<void> {
     this.emit('showLoading', 'Logging in...');
 
     try {
-      const loginResponse = await apiClient.login(username, password, GLOBAL._version.Get());
+      const loginResponse = await apiClient.login(email, password, GLOBAL._version.Get());
       
       if (loginResponse.error && loginResponse.error !== 0) {
         this.emit('loginError', loginResponse.error);
@@ -129,11 +129,18 @@ class LoginManager extends EventEmitter {
       formData.append(key, value);
     });
 
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    };
+
+    // Add token to Authorization header if we have one
+    if (this.token) {
+      headers['Authorization'] = `Bearer ${this.token}`;
+    }
+
     const response = await fetch(`/api/${GLOBAL.apiVersionSuffix}/player/getinfo`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
+      headers,
       body: formData.toString(),
     });
 
@@ -154,6 +161,12 @@ class LoginManager extends EventEmitter {
   }
 
   private handleUserLogin(serverData: LoginResponse): void {
+    // Store the new token if provided (important for auto-login flow)
+    if (serverData.token) {
+      this.token = serverData.token;
+      apiClient.setToken(serverData.token);
+    }
+
     // Create player data
     const player: PlayerData = {
       id: serverData.userid,

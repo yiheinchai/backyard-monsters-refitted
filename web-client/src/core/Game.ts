@@ -5,11 +5,12 @@
  * Handles game initialization, game loop, and coordination between systems
  */
 
-import { Application } from 'pixi.js';
 import { GLOBAL } from './Global';
 import { LOGIN } from './Login';
 import { BASE } from './Base';
 import { gameRenderer } from '../rendering/GameRenderer';
+import { MAP } from '../rendering/Map';
+import { BuildingManager } from '../game/BuildingManager';
 import { EventEmitter } from './EventEmitter';
 import { BaseMode } from '../types/game';
 
@@ -153,39 +154,40 @@ class GameManager extends EventEmitter {
   private setupLoginForm(): void {
     const loginBtn = document.getElementById('login-btn');
     const registerBtn = document.getElementById('register-btn');
-    const usernameInput = document.getElementById('username') as HTMLInputElement;
+    const emailInput = document.getElementById('email') as HTMLInputElement;
     const passwordInput = document.getElementById('password') as HTMLInputElement;
 
     if (loginBtn) {
       loginBtn.addEventListener('click', () => {
-        const username = usernameInput?.value || '';
+        const email = emailInput?.value || '';
         const password = passwordInput?.value || '';
         
-        if (!username || !password) {
-          this.showError('Please enter username and password');
+        if (!email || !password) {
+          this.showError('Please enter email and password');
           return;
         }
 
         this.hideError();
         this.showLoadingScreen();
-        LOGIN.loginWithCredentials(username, password);
+        LOGIN.loginWithCredentials(email, password);
       });
     }
 
     if (registerBtn) {
       registerBtn.addEventListener('click', () => {
-        const username = usernameInput?.value || '';
+        const email = emailInput?.value || '';
         const password = passwordInput?.value || '';
         
-        if (!username || !password) {
-          this.showError('Please enter username and password');
+        if (!email || !password) {
+          this.showError('Please enter email and password');
           return;
         }
 
-        // For registration, use username as email (simplified)
+        // For registration, extract username from email
+        const username = email.split('@')[0].substring(0, 12);
         this.hideError();
         this.showLoadingScreen();
-        LOGIN.register(username, `${username}@example.com`, password);
+        LOGIN.register(username, email, password);
       });
     }
 
@@ -224,6 +226,12 @@ class GameManager extends EventEmitter {
     }
 
     await gameRenderer.init(container);
+
+    // Initialize map
+    await MAP.init('grass');
+
+    // Initialize building manager
+    await BuildingManager.init();
 
     // Setup GLOBAL
     GLOBAL.setup(BaseMode.BUILD);
@@ -278,6 +286,9 @@ class GameManager extends EventEmitter {
 
     GLOBAL.t++;
     GLOBAL._timePlayed++;
+
+    // Update buildings
+    BuildingManager.tick(1);
 
     // Check network connection periodically
     GLOBAL.connectionCounter++;

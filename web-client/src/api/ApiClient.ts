@@ -42,7 +42,7 @@ export class ApiClient {
     endpoint: string, 
     method: string = 'GET', 
     data?: Record<string, unknown>,
-    includeToken: boolean = false
+    includeToken: boolean = true  // Default to including token for protected routes
   ): Promise<T> {
     const url = `${this.serverUrl}${endpoint}`;
     
@@ -50,17 +50,17 @@ export class ApiClient {
       'Content-Type': 'application/x-www-form-urlencoded',
     };
 
+    // Add Authorization header if we have a token
+    if (includeToken && this.token) {
+      headers['Authorization'] = `Bearer ${this.token}`;
+    }
+
     // Build form data
     const formData = new URLSearchParams();
     if (data) {
       Object.entries(data).forEach(([key, value]) => {
         formData.append(key, String(value));
       });
-    }
-
-    // Add token if needed
-    if (includeToken && this.token) {
-      formData.append('token', this.token);
     }
 
     const options: RequestInit = {
@@ -82,7 +82,7 @@ export class ApiClient {
    * Initialize connection to server
    */
   async init(apiVersion: string = 'v1.4.3-beta'): Promise<ServerInitResponse> {
-    return this.request<ServerInitResponse>('/init', 'POST', { apiVersion });
+    return this.request<ServerInitResponse>('/init', 'POST', { apiVersion }, false);
   }
 
   /**
@@ -101,23 +101,22 @@ export class ApiClient {
    * Get new map room data
    */
   async getNewMap(): Promise<{ newmap: boolean; mapheaderurl: string }> {
-    return this.request(`/api/${this.apiVersionSuffix}/bm/getnewmap`, 'POST', {
-      token: this.token || '',
-    });
+    return this.request(`/api/${this.apiVersionSuffix}/bm/getnewmap`, 'POST', {}, true);
   }
 
   /**
    * Login to the game
    */
-  async login(username: string, password: string, version: number = 128): Promise<LoginResponse> {
+  async login(email: string, password: string, version: number = 128): Promise<LoginResponse> {
     return this.request<LoginResponse>(
       `/api/${this.apiVersionSuffix}/player/getinfo`,
       'POST',
       {
-        username,
+        email,
         password,
         version,
-      }
+      },
+      false  // Don't include token for login
     );
   }
 
@@ -132,7 +131,8 @@ export class ApiClient {
         username,
         email,
         password,
-      }
+      },
+      false  // Don't include token for registration
     );
   }
 
