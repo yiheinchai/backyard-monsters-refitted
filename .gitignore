@@ -12,3 +12,12 @@ android/bymr.keystore
 android/apk/BYMRefitted.apk
 CLAUDE.md
 .DS_Store
+# Client TypeScript build output
+client-ts/dist/
+client-ts/node_modules/
+# Server build artifacts
+server/dist/
+server/node_modules/
+# Don't commit server assets to public (built from client-ts)
+server/public/assets/*.js
+server/public/assets/*.map
