@@ -9,6 +9,12 @@ import { Container, Graphics, Text, TextStyle } from 'pixi.js';
 import { EventEmitter } from '../../core/EventEmitter';
 import { gridToScreen, TILE_WIDTH, TILE_HEIGHT } from '../../rendering/IsometricUtils';
 
+// Movement constants
+/** Scale factor to convert delta time to grid movement units */
+const MOVEMENT_DELTA_SCALE = 0.01;
+/** Minimum distance to target before snapping to exact position */
+const MOVEMENT_SNAP_THRESHOLD = 0.1;
+
 // Monster type IDs (from original game)
 export const MONSTER_TYPES = {
   POKEY: 1,
@@ -282,7 +288,7 @@ export class Monster extends EventEmitter {
     const dy = this._targetY - this._gridY;
     const distance = Math.sqrt(dx * dx + dy * dy);
     
-    if (distance < 0.1) {
+    if (distance < MOVEMENT_SNAP_THRESHOLD) {
       this._gridX = this._targetX;
       this._gridY = this._targetY;
       this._moving = false;
@@ -290,8 +296,8 @@ export class Monster extends EventEmitter {
       return;
     }
     
-    const moveX = (dx / distance) * this._speed * delta * 0.01;
-    const moveY = (dy / distance) * this._speed * delta * 0.01;
+    const moveX = (dx / distance) * this._speed * delta * MOVEMENT_DELTA_SCALE;
+    const moveY = (dy / distance) * this._speed * delta * MOVEMENT_DELTA_SCALE;
     
     this._gridX += moveX;
     this._gridY += moveY;

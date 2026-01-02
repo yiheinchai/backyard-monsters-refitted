@@ -179,10 +179,18 @@ export class BuildingInfoPopup extends EventEmitter {
     button.eventMode = 'static';
     button.cursor = 'pointer';
 
+    // Helper to lighten color safely
+    const lightenColor = (color: number, amount: number): number => {
+      const r = Math.min(255, ((color >> 16) & 0xFF) + amount);
+      const g = Math.min(255, ((color >> 8) & 0xFF) + amount);
+      const b = Math.min(255, (color & 0xFF) + amount);
+      return (r << 16) | (g << 8) | b;
+    };
+
     button.on('pointerover', () => {
       bg.clear();
       bg.roundRect(0, 0, 80, 35, 5);
-      bg.fill({ color: bgColor + 0x111111 });
+      bg.fill({ color: lightenColor(bgColor, 0x11) });
       bg.stroke({ color: 0x6dd5ed, width: 2 });
     });
 

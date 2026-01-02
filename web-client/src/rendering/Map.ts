@@ -403,9 +403,15 @@ class MapManager extends EventEmitter {
   get EFFECTS(): Container | null { return this._EFFECTS; }
   get PROJECTILES(): Container | null { return this._PROJECTILES; }
 
-  // Method versions (for backwards compatibility)
+  /**
+   * Method versions of layer getters for backwards compatibility with ActionScript patterns.
+   * These methods provide the same functionality as the corresponding getter properties.
+   */
+  /** @returns The creeps/monsters layer container */
   getCreepsLayer(): Container | null { return this._CREEPS; }
+  /** @returns The effects layer container */
   getEffectsLayer(): Container | null { return this._EFFECTS; }
+  /** @returns The projectiles layer container */
   getProjectilesLayer(): Container | null { return this._PROJECTILES; }
 
   get tx(): number { return this._tx; }

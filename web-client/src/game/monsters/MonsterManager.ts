@@ -28,9 +28,13 @@ class MonsterManagerClass extends EventEmitter {
 
     // Listen for base events
     BASE.on('loadComplete', (...args: unknown[]) => {
-      const data = args[0] as { monsters?: MonsterData[] };
-      if (data.monsters) {
-        this.loadMonsters(data.monsters);
+      const data = args[0];
+      // Validate data structure before processing
+      if (data && typeof data === 'object' && 'monsters' in data) {
+        const monstersData = (data as { monsters?: MonsterData[] }).monsters;
+        if (Array.isArray(monstersData)) {
+          this.loadMonsters(monstersData);
+        }
       }
     });
 
