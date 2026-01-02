@@ -30,11 +30,13 @@ const emailSchema = z.string().trim().email(emailError).toLowerCase();
 /**
  * Schema to validate user login data.
  * - Email is optional.
+ * - Username is optional.
  * - Password is optional.
  * - Token is optional.
  */
 export const UserLoginSchema = z.object({
   email: emailSchema.optional(),
+  username: z.string().optional(),
   password: passwordSchema.optional(),
   token: z.string().optional(),
 });

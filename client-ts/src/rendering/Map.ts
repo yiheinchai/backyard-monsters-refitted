@@ -5,7 +5,8 @@
 
 // import { GLOBAL } from '@/core/Global';
 // import { GAME } from '@/core/Game';
-import { Point } from '@/types';
+import { BASE } from "@/game/Base";
+import { Point } from "@/types";
 
 interface MapLayer {
   name: string;
@@ -64,8 +65,8 @@ export class MAP {
    * Create the container element
    */
   private static createContainer(): void {
-    MAP.container = document.createElement('div');
-    MAP.container.id = 'map-container';
+    MAP.container = document.createElement("div");
+    MAP.container.id = "map-container";
     MAP.container.style.cssText = `
       position: absolute;
       top: 0;
@@ -75,7 +76,7 @@ export class MAP {
       overflow: hidden;
     `;
 
-    const gameContainer = document.getElementById('game-container');
+    const gameContainer = document.getElementById("game-container");
     if (gameContainer) {
       gameContainer.appendChild(MAP.container);
     }
@@ -86,26 +87,26 @@ export class MAP {
    */
   private static createLayers(): void {
     // Ground layer
-    MAP._GROUND = MAP.createLayer('ground', 0);
-    
+    MAP._GROUND = MAP.createLayer("ground", 0);
+
     // Building base layer
-    MAP._BUILDINGBASE = MAP.createLayer('buildingBase', 10);
-    
+    MAP._BUILDINGBASE = MAP.createLayer("buildingBase", 10);
+
     // Building tops layer
-    MAP._BUILDINGTOPS = MAP.createLayer('buildingTops', 20);
-    
+    MAP._BUILDINGTOPS = MAP.createLayer("buildingTops", 20);
+
     // Effects layer
-    MAP.createLayer('effects', 30);
-    
+    MAP.createLayer("effects", 30);
+
     // UI overlay layer
-    MAP.createLayer('overlay', 40);
+    MAP.createLayer("overlay", 40);
   }
 
   /**
    * Create a single layer
    */
   private static createLayer(name: string, zIndex: number): MapLayer {
-    const canvas = document.createElement('canvas');
+    const canvas = document.createElement("canvas");
     canvas.id = `layer-${name}`;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -116,18 +117,18 @@ export class MAP {
       z-index: ${zIndex};
     `;
 
-    const ctx = canvas.getContext('2d')!;
-    
+    const ctx = canvas.getContext("2d")!;
+
     const layer: MapLayer = {
       name,
       canvas,
       ctx,
       visible: true,
-      zIndex
+      zIndex,
     };
 
     MAP.layers.set(name, layer);
-    
+
     if (MAP.container) {
       MAP.container.appendChild(canvas);
     }
@@ -146,15 +147,15 @@ export class MAP {
     let lastY = 0;
 
     // Mouse down
-    MAP.container.addEventListener('mousedown', (e) => {
+    MAP.container.addEventListener("mousedown", (e) => {
       isDragging = true;
       lastX = e.clientX;
       lastY = e.clientY;
-      MAP.container!.style.cursor = 'grabbing';
+      MAP.container!.style.cursor = "grabbing";
     });
 
     // Mouse move
-    MAP.container.addEventListener('mousemove', (e) => {
+    MAP.container.addEventListener("mousemove", (e) => {
       if (!isDragging) return;
 
       const dx = e.clientX - lastX;
@@ -170,20 +171,20 @@ export class MAP {
     });
 
     // Mouse up
-    window.addEventListener('mouseup', () => {
+    window.addEventListener("mouseup", () => {
       isDragging = false;
       if (MAP.container) {
-        MAP.container.style.cursor = 'grab';
+        MAP.container.style.cursor = "grab";
       }
     });
 
     // Mouse wheel for zoom
-    MAP.container.addEventListener('wheel', (e) => {
+    MAP.container.addEventListener("wheel", (e) => {
       e.preventDefault();
-      
+
       const delta = e.deltaY > 0 ? -0.1 : 0.1;
       const newZoom = Math.max(0.5, Math.min(2, MAP._zoom + delta));
-      
+
       if (newZoom !== MAP._zoom) {
         MAP._zoom = newZoom;
         MAP.render();
@@ -191,11 +192,11 @@ export class MAP {
     });
 
     // Window resize
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       MAP.resizeViewRect();
     });
 
-    MAP.container.style.cursor = 'grab';
+    MAP.container.style.cursor = "grab";
   }
 
   /**
@@ -214,7 +215,7 @@ export class MAP {
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    MAP.layers.forEach(layer => {
+    MAP.layers.forEach((layer) => {
       layer.canvas.width = width;
       layer.canvas.height = height;
     });
@@ -235,7 +236,7 @@ export class MAP {
    * Clear all layers
    */
   private static clearLayers(): void {
-    MAP.layers.forEach(layer => {
+    MAP.layers.forEach((layer) => {
       layer.ctx.clearRect(0, 0, layer.canvas.width, layer.canvas.height);
     });
   }
@@ -255,7 +256,7 @@ export class MAP {
     const tileH = MAP._tileHeight * zoom;
 
     // Draw isometric grid
-    ctx.strokeStyle = 'rgba(50, 50, 50, 0.3)';
+    ctx.strokeStyle = "rgba(50, 50, 50, 0.3)";
     ctx.lineWidth = 1;
 
     const gridSize = 20;
@@ -279,7 +280,9 @@ export class MAP {
         ctx.closePath();
 
         // Fill with grass color
-        ctx.fillStyle = `hsl(${120 + Math.random() * 10}, 40%, ${30 + Math.random() * 5}%)`;
+        ctx.fillStyle = `hsl(${120 + Math.random() * 10}, 40%, ${
+          30 + Math.random() * 5
+        }%)`;
         ctx.fill();
         ctx.stroke();
       }
@@ -287,10 +290,59 @@ export class MAP {
   }
 
   /**
-   * Render buildings (placeholder)
+   * Render buildings
    */
   private static renderBuildings(): void {
-    // Buildings will be rendered here when building system is implemented
+    if (!MAP._BUILDINGBASE || !BASE._baseData) return;
+
+    const ctx = MAP._BUILDINGBASE.ctx;
+    const zoom = MAP._zoom;
+    const offsetX = MAP._offsetX;
+    const offsetY = MAP._offsetY;
+
+    BASE._baseData.forEach((building: any) => {
+      // Assume building has x, y, type
+      const x = building.x || 0;
+      const y = building.y || 0;
+      const type = building.type || "unknown";
+
+      // Convert to isometric
+      const isoPos = MAP.cartToIso(x, y);
+      const screenX = isoPos.x * zoom + offsetX;
+      const screenY = isoPos.y * zoom + offsetY;
+
+      // Draw building as a colored rectangle
+      ctx.fillStyle = MAP.getBuildingColor(type);
+      ctx.fillRect(screenX - 20, screenY - 20, 40, 40);
+
+      // Draw border
+      ctx.strokeStyle = "#FFFFFF";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(screenX - 20, screenY - 20, 40, 40);
+
+      // Draw type text
+      ctx.fillStyle = "#FFFFFF";
+      ctx.font = "12px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText(type, screenX, screenY + 5);
+    });
+  }
+
+  /**
+   * Get building color based on type
+   */
+  private static getBuildingColor(type: string): string {
+    const colors: Record<string, string> = {
+      hq: "#8B4513",
+      barracks: "#696969",
+      goldmine: "#FFD700",
+      sawmill: "#228B22",
+      farm: "#32CD32",
+      tower: "#DC143C",
+      trap: "#FF6347",
+      decoration: "#9370DB",
+    };
+    return colors[type] || "#4CAF50";
   }
 
   /**
@@ -298,8 +350,8 @@ export class MAP {
    */
   static cartToIso(x: number, y: number): Point {
     return {
-      x: (x - y),
-      y: (x + y) / 2
+      x: x - y,
+      y: (x + y) / 2,
     };
   }
 
@@ -308,8 +360,8 @@ export class MAP {
    */
   static isoToCart(isoX: number, isoY: number): Point {
     return {
-      x: (isoX / 2 + isoY),
-      y: (isoY - isoX / 2)
+      x: isoX / 2 + isoY,
+      y: isoY - isoX / 2,
     };
   }
 
@@ -319,12 +371,12 @@ export class MAP {
   static screenToTile(screenX: number, screenY: number): Point {
     const localX = (screenX - MAP._offsetX) / MAP._zoom;
     const localY = (screenY - MAP._offsetY) / MAP._zoom;
-    
+
     const cart = MAP.isoToCart(localX, localY);
-    
+
     return {
       x: Math.floor(cart.x / MAP._tileWidth),
-      y: Math.floor(cart.y / MAP._tileWidth)
+      y: Math.floor(cart.y / MAP._tileWidth),
     };
   }
 
@@ -334,12 +386,12 @@ export class MAP {
   static tileToScreen(tileX: number, tileY: number): Point {
     const cartX = tileX * MAP._tileWidth;
     const cartY = tileY * MAP._tileWidth;
-    
+
     const isoPos = MAP.cartToIso(cartX, cartY);
-    
+
     return {
       x: isoPos.x * MAP._zoom + MAP._offsetX,
-      y: isoPos.y * MAP._zoom + MAP._offsetY
+      y: isoPos.y * MAP._zoom + MAP._offsetY,
     };
   }
 
@@ -368,7 +420,7 @@ export class MAP {
     const animate = (currentTime: number) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / (duration * 1000), 1);
-      
+
       // Ease out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
 
@@ -406,7 +458,7 @@ export class MAP {
     const layer = MAP.layers.get(name);
     if (layer) {
       layer.visible = visible;
-      layer.canvas.style.display = visible ? 'block' : 'none';
+      layer.canvas.style.display = visible ? "block" : "none";
     }
   }
 }

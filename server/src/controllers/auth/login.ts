@@ -51,13 +51,18 @@ const authenticateWithToken = async (token: string) => {
  * @throws {Error} - Throws an error if authentication fails or if the request body is invalid.
  */
 export const login: KoaController = async (ctx) => {
-  let { email, password, token } = UserLoginSchema.parse(ctx.request.body);
+  let { email, username, password, token } = UserLoginSchema.parse(
+    ctx.request.body
+  );
   let user: User | null = null;
 
   if (token) user = await authenticateWithToken(token);
 
   if (!user) {
-    user = await postgres.em.findOne(User, { email });
+    // Find user by email or username
+    user = await postgres.em.findOne(User, {
+      $or: [{ email }, { username }],
+    });
     if (!user) throw emailPasswordErr();
 
     const isMatch = await bcrypt.compare(password, user.password);

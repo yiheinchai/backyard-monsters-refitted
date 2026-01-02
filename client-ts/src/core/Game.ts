@@ -3,10 +3,11 @@
  * This is the TypeScript equivalent of GAME.as
  */
 
-import { GLOBAL } from '@/core/Global';
-import { LOGIN } from '@/core/Login';
-import { KEYS } from '@/core/Keys';
-import { Storage } from '@/utils';
+import { GLOBAL } from "@/core/Global";
+import { LOGIN } from "@/core/Login";
+import { KEYS } from "@/core/Keys";
+import { BASE } from "@/game/Base";
+import { Storage } from "@/utils";
 
 /**
  * GAME class - the main entry point and controller for the game
@@ -26,14 +27,14 @@ export class GAME {
       language?: string;
     };
   } = {
-    data: {}
+    data: {},
   };
 
   // Token from launcher
-  static token: string = '';
+  static token: string = "";
 
   // Language setting
-  static language: string = '';
+  static language: string = "";
 
   // Canvas element
   private canvas: HTMLCanvasElement | null = null;
@@ -66,7 +67,7 @@ export class GAME {
    * Initialize the game
    */
   async init(): Promise<void> {
-    console.log('[GAME] Initializing...');
+    console.log("[GAME] Initializing...");
 
     // Load saved data from localStorage
     this.loadSharedData();
@@ -100,10 +101,11 @@ export class GAME {
    * Load shared data from localStorage
    */
   private loadSharedData(): void {
-    GAME.sharedObj.data.token = Storage.get<string>('bymr_token') || '';
-    GAME.sharedObj.data.language = Storage.get<string>('bymr_language') || 'english';
-    GAME.token = GAME.sharedObj.data.token || '';
-    GAME.language = GAME.sharedObj.data.language || 'english';
+    GAME.sharedObj.data.token = Storage.get<string>("bymr_token") || "";
+    GAME.sharedObj.data.language =
+      Storage.get<string>("bymr_language") || "english";
+    GAME.token = GAME.sharedObj.data.token || "";
+    GAME.language = GAME.sharedObj.data.language || "english";
   }
 
   /**
@@ -114,16 +116,16 @@ export class GAME {
       if (params?.language) {
         GAME.language = params.language;
         GAME.sharedObj.data.language = params.language;
-        Storage.set('bymr_language', params.language);
+        Storage.set("bymr_language", params.language);
       }
 
       if (params?.token) {
         GAME.token = params.token;
         GAME.sharedObj.data.token = params.token;
-        Storage.set('bymr_token', params.token);
+        Storage.set("bymr_token", params.token);
       }
     } catch (e) {
-      console.error('[GAME] Error setting launcher vars:', e);
+      console.error("[GAME] Error setting launcher vars:", e);
     }
   }
 
@@ -131,15 +133,15 @@ export class GAME {
    * Setup game canvas
    */
   private setupCanvas(): void {
-    this.canvas = document.getElementById('game-canvas') as HTMLCanvasElement;
-    
+    this.canvas = document.getElementById("game-canvas") as HTMLCanvasElement;
+
     if (this.canvas) {
       // Set canvas size
       this.canvas.width = window.innerWidth;
       this.canvas.height = window.innerHeight;
-      
+
       // Handle resize
-      window.addEventListener('resize', () => {
+      window.addEventListener("resize", () => {
         if (this.canvas) {
           this.canvas.width = window.innerWidth;
           this.canvas.height = window.innerHeight;
@@ -154,20 +156,20 @@ export class GAME {
    */
   private setupURLs(): void {
     const serverUrl = GLOBAL.serverUrl;
-    const apiVersionSuffix = GLOBAL.apiVersionSuffix + '/';
+    const apiVersionSuffix = GLOBAL.apiVersionSuffix + "/";
     const cdnUrl = GLOBAL.cdnUrl;
 
-    GLOBAL._baseURL = serverUrl + 'base/';
-    GLOBAL._apiURL = serverUrl + 'api/' + apiVersionSuffix;
-    GLOBAL._infBaseURL = GLOBAL._apiURL + 'bm/base/';
-    GLOBAL._statsURL = serverUrl + 'recordstats.php';
-    GLOBAL._mapURL = serverUrl + 'worldmapv2/';
-    GLOBAL._allianceURL = serverUrl + 'alliance/';
-    GLOBAL.languageUrl = cdnUrl + 'gamestage/assets/';
-    GLOBAL._storageURL = cdnUrl + 'assets/';
-    GLOBAL._soundPathURL = cdnUrl + 'assets/sounds/';
+    GLOBAL._baseURL = serverUrl + "base/";
+    GLOBAL._apiURL = serverUrl + "api/" + apiVersionSuffix;
+    GLOBAL._infBaseURL = GLOBAL._apiURL + "bm/base/";
+    GLOBAL._statsURL = serverUrl + "recordstats.php";
+    GLOBAL._mapURL = serverUrl + "worldmapv2/";
+    GLOBAL._allianceURL = serverUrl + "alliance/";
+    GLOBAL.languageUrl = cdnUrl + "gamestage/assets/";
+    GLOBAL._storageURL = cdnUrl + "assets/";
+    GLOBAL._soundPathURL = cdnUrl + "assets/sounds/";
     GLOBAL._gameURL = serverUrl;
-    GLOBAL._countryCode = 'us';
+    GLOBAL._countryCode = "us";
   }
 
   /**
@@ -175,22 +177,22 @@ export class GAME {
    */
   private setupEventListeners(): void {
     // Handle window focus for mouse wheel
-    window.addEventListener('mouseenter', () => this.disableWindowScroll());
-    window.addEventListener('mouseleave', () => this.enableWindowScroll());
+    window.addEventListener("mouseenter", () => this.disableWindowScroll());
+    window.addEventListener("mouseleave", () => this.enableWindowScroll());
 
     // Handle uncaught errors
-    window.addEventListener('error', (event) => {
-      console.error('[GAME] Uncaught error:', event.error);
+    window.addEventListener("error", (event) => {
+      console.error("[GAME] Uncaught error:", event.error);
       this.handleUncaughtError(event.error);
     });
 
     // Handle unhandled promise rejections
-    window.addEventListener('unhandledrejection', (event) => {
-      console.error('[GAME] Unhandled rejection:', event.reason);
+    window.addEventListener("unhandledrejection", (event) => {
+      console.error("[GAME] Unhandled rejection:", event.reason);
     });
 
     // Listen for init errors
-    GLOBAL.eventDispatcher.addEventListener('initError', () => {
+    GLOBAL.eventDispatcher.addEventListener("initError", () => {
       this.showInitError(GLOBAL.initError);
     });
 
@@ -204,29 +206,29 @@ export class GAME {
    * Disable window scroll (when mouse is over game)
    */
   private disableWindowScroll(): void {
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
   }
 
   /**
    * Enable window scroll
    */
   private enableWindowScroll(): void {
-    document.body.style.overflow = '';
+    document.body.style.overflow = "";
   }
 
   /**
    * Handle uncaught errors
    */
   private handleUncaughtError(error: Error): void {
-    const message = error?.message || 'Unknown error';
-    console.error('[GAME] UncaughtError:', message, error?.stack);
+    const message = error?.message || "Unknown error";
+    console.error("[GAME] UncaughtError:", message, error?.stack);
   }
 
   /**
    * Update loading progress bar
    */
   updateLoadingProgress(percent: number): void {
-    const loadingBar = document.getElementById('loading-bar');
+    const loadingBar = document.getElementById("loading-bar");
     if (loadingBar) {
       loadingBar.style.width = `${percent}%`;
     }
@@ -236,9 +238,9 @@ export class GAME {
    * Hide loading screen
    */
   hideLoadingScreen(): void {
-    const loadingScreen = document.getElementById('loading-screen');
+    const loadingScreen = document.getElementById("loading-screen");
     if (loadingScreen) {
-      loadingScreen.classList.add('hidden');
+      loadingScreen.classList.add("hidden");
     }
     GAME._firstLoadComplete = true;
   }
@@ -247,13 +249,17 @@ export class GAME {
    * Show init error
    */
   private showInitError(message: string): void {
-    const loadingScreen = document.getElementById('loading-screen');
+    const loadingScreen = document.getElementById("loading-screen");
     if (loadingScreen) {
       loadingScreen.innerHTML = `
         <div class="error-container" style="text-align: center; color: white; font-family: Arial, sans-serif;">
           <h2 style="color: #ff5252;">Error</h2>
           <p style="margin: 20px 0;">${message}</p>
-          ${GLOBAL.versionMismatch ? '<p>Please refresh the page to get the latest version.</p>' : ''}
+          ${
+            GLOBAL.versionMismatch
+              ? "<p>Please refresh the page to get the latest version.</p>"
+              : ""
+          }
           <button onclick="window.location.reload()" style="
             padding: 10px 20px;
             background-color: #4CAF50;
@@ -272,7 +278,7 @@ export class GAME {
    * Start the game loop
    */
   startGameLoop(): void {
-    console.log('[GAME] Starting game loop');
+    console.log("[GAME] Starting game loop");
     this.lastTickTime = performance.now();
     this.gameLoop(this.lastTickTime);
   }
@@ -288,7 +294,7 @@ export class GAME {
     if (deltaTime >= this.tickInterval) {
       this.lastTickTime = timestamp;
       GLOBAL.t++;
-      
+
       // Call tick function
       this.tick();
     }
@@ -324,7 +330,7 @@ export class GAME {
 
     // Update FPS counter
     GLOBAL._FPSframecount++;
-    
+
     // Calculate FPS every 40 frames
     if (GLOBAL._FPSframecount % 40 === 0) {
       const now = performance.now();
@@ -333,6 +339,12 @@ export class GAME {
       }
       GLOBAL._FPStimestamp = now;
     }
+
+    // Render the map
+    // Import MAP here to avoid circular dependency
+    import("@/rendering/Map").then(({ MAP }) => {
+      MAP.render();
+    });
   }
 
   /**
@@ -349,7 +361,7 @@ export class GAME {
    * Get canvas context
    */
   getContext(): CanvasRenderingContext2D | null {
-    return this.canvas?.getContext('2d') || null;
+    return this.canvas?.getContext("2d") || null;
   }
 
   /**

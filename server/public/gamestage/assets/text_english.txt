@@ -1,0 +1,27 @@
+# Basic English language file for Backyard Monsters
+# This is a placeholder file with some example keys
+
+LOADING=Loading...
+WELCOME=Welcome to Backyard Monsters
+LOGIN=Login
+USERNAME=Username
+PASSWORD=Password
+REGISTER=Register
+EMAIL=Email
+PLAY=Play
+SETTINGS=Settings
+LOGOUT=Logout
+BASE=Base
+ATTACK=Attack
+DEFEND=Defend
+BUILD=Build
+UPGRADE=Upgrade
+TRAIN=Train
+RESEARCH=Research
+STORE=Store
+LEADERBOARD=Leaderboard
+FRIENDS=Friends
+MAIL=Mail
+OPTIONS=Options
+HELP=Help
+EXIT=Exit

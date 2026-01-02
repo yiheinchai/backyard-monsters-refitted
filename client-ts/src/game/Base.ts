@@ -3,20 +3,21 @@
  * This is the TypeScript equivalent of BASE.as
  */
 
-import { GLOBAL } from '@/core/Global';
-import { LOGIN } from '@/core/Login';
+import { GLOBAL } from "@/core/Global";
+import { LOGIN } from "@/core/Login";
 // import { KEYS } from '@/core/Keys';
-import { API } from '@/network/API';
-import { SecNum } from '@/utils';
-import { GAME } from '@/core/Game';
-import { 
-  BaseLoadResponse, 
-  BaseSaveResponse, 
-  Building, 
+import { API } from "@/network/API";
+import { SecNum } from "@/utils";
+import { GAME } from "@/core/Game";
+import { MAP } from "@/rendering/Map";
+import {
+  BaseLoadResponse,
+  BaseSaveResponse,
+  Building,
   BuildingData,
   MonsterData,
-  YardType 
-} from '@/types';
+  YardType,
+} from "@/types";
 
 /**
  * BASE class - handles base loading, saving, and state management
@@ -89,7 +90,7 @@ export class BASE {
   static _rawMonsters: MonsterData = {};
 
   // Base info
-  static _baseName: string = '';
+  static _baseName: string = "";
   static _baseSeed: number = 0;
   static _loadedBaseID: number = 0;
   static _loadedFriendlyBaseID: number = 0;
@@ -132,7 +133,7 @@ export class BASE {
     BASE._blockSave = false;
     BASE._saveErrors = 0;
     BASE._pageErrors = 0;
-    
+
     BASE._buildingData = {};
     BASE._buildingsAll = {};
     BASE._buildingsWalls = {};
@@ -143,43 +144,48 @@ export class BASE {
     BASE._buildingsMushrooms = {};
     BASE._buildingsGifts = {};
     BASE._buildingsStored = {};
-    
+
     BASE._deltaResources = {};
     BASE._hpDeltaResources = {};
     BASE._savedDeltaResources = {};
-    
+
     for (let i = 1; i < 5; i++) {
-      BASE._deltaResources['r' + i] = new SecNum(0);
-      BASE._savedDeltaResources['r' + i] = new SecNum(0);
-      BASE._hpDeltaResources['r' + i] = 0;
+      BASE._deltaResources["r" + i] = new SecNum(0);
+      BASE._savedDeltaResources["r" + i] = new SecNum(0);
+      BASE._hpDeltaResources["r" + i] = 0;
     }
   }
 
   /**
    * Load the player's base
    */
-  static async Load(url?: string, userId?: number, baseId?: number): Promise<void> {
+  static async Load(
+    url?: string,
+    userId?: number,
+    baseId?: number
+  ): Promise<void> {
     if (BASE._loading) {
-      console.log('[BASE] Already loading, ignoring request');
+      console.log("[BASE] Already loading, ignoring request");
       return;
     }
 
     BASE._loading = true;
-    GLOBAL.WaitShow('Loading base...');
+    GLOBAL.WaitShow("Loading base...");
     GAME.instance.updateLoadingProgress(60);
 
     try {
-      const baseUrl = url || GLOBAL._baseURL + 'load';
-      
+      const baseUrl = url || GLOBAL._baseURL + "load";
+
       const params: Array<[string, string | number]> = [
-        ['baseid', baseId || 0],
-        ['userid', userId || LOGIN._playerID]
+        ["baseid", baseId || 0],
+        ["userid", userId || LOGIN._playerID],
+        ["type", "build"],
       ];
 
       const response = await API.load<BaseLoadResponse>(baseUrl, params);
 
       if (!response) {
-        throw new Error('Failed to load base data');
+        throw new Error("Failed to load base data");
       }
 
       if (response.error && response.error !== 0) {
@@ -188,10 +194,9 @@ export class BASE {
 
       // Process loaded data
       BASE.ProcessLoadData(response);
-
     } catch (error) {
-      console.error('[BASE] Load error:', error);
-      GLOBAL.errorMessage('Failed to load base: ' + (error as Error).message);
+      console.error("[BASE] Load error:", error);
+      GLOBAL.errorMessage("Failed to load base: " + (error as Error).message);
     } finally {
       BASE._loading = false;
       GLOBAL.WaitHide();
@@ -210,7 +215,7 @@ export class BASE {
     yardType: YardType = YardType.MAIN_YARD
   ): Promise<void> {
     BASE.yardType = yardType;
-    
+
     if (mode) {
       GLOBAL._loadmode = mode;
       if (GLOBAL.isValidMode(mode)) {
@@ -226,18 +231,18 @@ export class BASE {
    */
   static async LoadNext(): Promise<void> {
     // TODO: Implement outpost navigation
-    console.log('[BASE] LoadNext - not yet implemented');
+    console.log("[BASE] LoadNext - not yet implemented");
   }
 
   /**
    * Process loaded base data
    */
   static ProcessLoadData(data: BaseLoadResponse): void {
-    console.log('[BASE] Processing load data:', data);
+    console.log("[BASE] Processing load data:", data);
 
     // Set base info
     BASE._baseID = data.baseid || 0;
-    BASE._baseName = data.basename || '';
+    BASE._baseName = data.basename || "";
     BASE._baseSeed = data.baseseed || 0;
     BASE._baseValue = data.basevalue || 0;
     BASE._basePoints = data.basepoints || 0;
@@ -246,7 +251,9 @@ export class BASE {
     // Set resources
     if (data.resources) {
       for (const key in data.resources) {
-        const value = (data.resources as unknown as Record<string, number>)[key];
+        const value = (data.resources as unknown as Record<string, number>)[
+          key
+        ];
         GLOBAL._resources[key] = new SecNum(value || 0);
         GLOBAL._hpResources[key] = value || 0;
       }
@@ -263,7 +270,7 @@ export class BASE {
     if (data.buildings) {
       BASE._baseData = data.buildings;
       BASE._buildingCount = data.buildings.length;
-      
+
       // Process buildings into categories
       for (const building of data.buildings) {
         const id = building.id.toString();
@@ -303,14 +310,15 @@ export class BASE {
     // Mark as loaded
     BASE._loadTime = Date.now();
     GAME.instance.updateLoadingProgress(100);
-    
+
     // Hide loading screen and start game
     setTimeout(() => {
       GAME.instance.hideLoadingScreen();
+      MAP.Setup(); // Initialize map rendering
       GAME.instance.startGameLoop();
     }, 500);
 
-    console.log('[BASE] Base loaded successfully');
+    console.log("[BASE] Base loaded successfully");
   }
 
   /**
@@ -318,18 +326,18 @@ export class BASE {
    */
   static async Save(force: boolean = false): Promise<void> {
     if (BASE._blockSave && !force) {
-      console.log('[BASE] Save blocked');
+      console.log("[BASE] Save blocked");
       return;
     }
 
     if (BASE._saving) {
-      console.log('[BASE] Already saving');
+      console.log("[BASE] Already saving");
       BASE._saveCounterA++;
       return;
     }
 
     if (!GLOBAL._save) {
-      console.log('[BASE] Saving disabled');
+      console.log("[BASE] Saving disabled");
       return;
     }
 
@@ -338,12 +346,12 @@ export class BASE {
 
     try {
       const saveData = BASE.BuildSaveData();
-      
+
       const response = await API.load<BaseSaveResponse>(
-        GLOBAL._baseURL + 'save',
+        GLOBAL._baseURL + "save",
         [
-          ['baseid', BASE._baseID],
-          ['data', JSON.stringify(saveData)]
+          ["baseid", BASE._baseID],
+          ["data", JSON.stringify(saveData)],
         ]
       );
 
@@ -356,15 +364,15 @@ export class BASE {
         BASE._lastSaved = Date.now();
         BASE._saveCounterB = BASE._saveCounterA;
         BASE._saveErrors = 0;
-        
-        console.log('[BASE] Save successful:', response.saveid);
+
+        console.log("[BASE] Save successful:", response.saveid);
       }
     } catch (error) {
-      console.error('[BASE] Save error:', error);
+      console.error("[BASE] Save error:", error);
       BASE._saveErrors++;
-      
+
       if (BASE._saveErrors >= 3) {
-        GLOBAL.errorMessage('Failed to save. Please check your connection.');
+        GLOBAL.errorMessage("Failed to save. Please check your connection.");
       }
     } finally {
       BASE._saving = false;
@@ -382,12 +390,12 @@ export class BASE {
         r1: GLOBAL._resources.r1?.Get() || 0,
         r2: GLOBAL._resources.r2?.Get() || 0,
         r3: GLOBAL._resources.r3?.Get() || 0,
-        r4: GLOBAL._resources.r4?.Get() || 0
+        r4: GLOBAL._resources.r4?.Get() || 0,
       },
       credits: BASE._credits.Get(),
       monsters: BASE._rawMonsters,
       upgrades: BASE._upgradeData,
-      timestamp: Math.floor(Date.now() / 1000)
+      timestamp: Math.floor(Date.now() / 1000),
     };
   }
 
@@ -399,7 +407,11 @@ export class BASE {
     BASE._timer++;
 
     // Auto-save every 60 seconds
-    if (BASE._timer % 60 === 0 && !BASE._saving && BASE._saveCounterA > BASE._saveCounterB) {
+    if (
+      BASE._timer % 60 === 0 &&
+      !BASE._saving &&
+      BASE._saveCounterA > BASE._saveCounterB
+    ) {
       BASE.Save();
     }
   }
