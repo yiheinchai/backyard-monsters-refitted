@@ -143,14 +143,12 @@ export class ApiClient {
     baseId?: number,
     userId?: number,
     mode: string = 'build',
-    yardType: number = 0
+    _yardType: number = 0
   ): Promise<BaseLoadResponse> {
     return this.request<BaseLoadResponse>('/base/load', 'POST', {
-      token: this.token || '',
       baseid: baseId || 0,
       userid: userId || 0,
-      mode,
-      type: yardType,
+      type: mode,  // Server expects 'type' to be the mode string (build, attack, etc.)
     });
   }
 

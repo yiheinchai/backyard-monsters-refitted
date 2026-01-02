@@ -13,6 +13,8 @@ import { MAP } from '../rendering/Map';
 import { BuildingManager } from '../game/BuildingManager';
 import { EventEmitter } from './EventEmitter';
 import { BaseMode } from '../types/game';
+import { hud } from '../ui/HUD';
+import { buildMenu } from '../ui/BuildMenu';
 
 class GameManager extends EventEmitter {
   private static _instance: GameManager;
@@ -240,8 +242,76 @@ class GameManager extends EventEmitter {
     BASE.setup();
     await BASE.load();
 
+    // Initialize UI
+    this.initUI();
+
     // Start game loop
     this.startGameLoop();
+  }
+
+  /**
+   * Initialize UI components
+   */
+  private initUI(): void {
+    // Get UI layer from renderer
+    const uiLayer = gameRenderer.getLayer('ui');
+    if (!uiLayer) {
+      console.error('UI layer not found');
+      return;
+    }
+
+    // Initialize HUD
+    hud.init(uiLayer);
+    hud.on('buildMenuOpen', () => {
+      buildMenu.toggle();
+    });
+    hud.on('mapOpen', () => {
+      console.log('[GAME] Map room requested');
+      // TODO: Open map room
+    });
+    hud.on('settingsOpen', () => {
+      console.log('[GAME] Settings requested');
+      // TODO: Open settings
+    });
+
+    // Initialize Build Menu
+    uiLayer.addChild(buildMenu.getContainer());
+    buildMenu.on('buildingSelected', (...args: unknown[]) => {
+      const data = args[0] as { id: number; name: string; size: number };
+      console.log('[GAME] Building selected:', data.name);
+      this.startBuildingPlacement(data.id, data.size);
+    });
+
+    // Listen for window resize to update UI
+    window.addEventListener('resize', () => {
+      hud.resize();
+      if (buildMenu.isVisible()) {
+        buildMenu.centerOnScreen();
+      }
+    });
+
+    console.log('[GAME] UI initialized');
+  }
+
+  /**
+   * Start building placement mode
+   */
+  private startBuildingPlacement(buildingId: number, size: number): void {
+    console.log(`[GAME] Starting placement for building ${buildingId} (size: ${size}x${size})`);
+    // TODO: Implement building placement mode
+    // For now, just create a building at center
+    BuildingManager.createBuilding({
+      id: Date.now(),
+      type: buildingId,
+      x: 45 + Math.floor(Math.random() * 10),
+      y: 45 + Math.floor(Math.random() * 10),
+      level: 1,
+      health: 100,
+      status: 0, // 0 = normal/built
+      stored: 0,
+      buildTime: 0,
+      upgradeTime: 0,
+    });
   }
 
   private startGameLoop(): void {
