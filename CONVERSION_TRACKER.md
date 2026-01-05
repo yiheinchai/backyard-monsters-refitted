@@ -61,16 +61,16 @@
 | [x] | BUILDING9.as | |
 | [x] | BUILDINGBUTTON.as | |
 | [x] | BUILDINGBUTTONSOON.as | |
-| [ ] | BUILDINGBUTTON_CLIP.as | |
+| [x] | BUILDINGBUTTON_CLIP.as | |
 | [x] | BUILDINGINFO.as | |
 | [x] | BUILDINGOPTIONS.as | |
 | [ ] | BUILDINGOPTIONSPOPUP.as | |
-| [ ] | BUILDINGOPTIONSPOPUP_CLIP.as | |
+| [x] | BUILDINGOPTIONSPOPUP_CLIP.as | |
 | [x] | BUILDINGS.as | |
 | [x] | BUILDINGSARROW.as | |
 | [ ] | BUILDINGSPOPUP.as | |
 | [ ] | BUILDINGSPOPUPINFO_CLIP.as | |
-| [ ] | BUILDINGSPOPUP_CLIP.as | |
+| [x] | BUILDINGSPOPUP_CLIP.as | |
 | [x] | BUY.as | |
 | [x] | BWALL.as | |
 | [ ] | BasePlannerPopup_BottomLayout.as | |
@@ -98,7 +98,7 @@
 | [x] | Button.as | |
 | [ ] | ButtonBrown.as | |
 | [ ] | ButtonBrown_CLIP.as | |
-| [ ] | Button_CLIP.as | |
+| [x] | Button_CLIP.as | |
 | [ ] | CATAPULTITEM.as | |
 | [ ] | CATAPULTITEM_view.as | |
 | [ ] | CATAPULTPOPUP.as | |
@@ -112,10 +112,10 @@
 | [ ] | CHAMPIONSELECTPOPUP.as | |
 | [x] | CHECKER.as | |
 | [ ] | CREATUREBUTTON.as | |
-| [ ] | CREATUREBUTTON_CLIP.as | |
+| [x] | CREATUREBUTTON_CLIP.as | |
 | [ ] | CREATURELOCKER.as | |
 | [ ] | CREATURELOCKERPOPUP.as | |
-| [ ] | CREATURELOCKERPOPUP_CLIP.as | |
+| [x] | CREATURELOCKERPOPUP_CLIP.as | |
 | [x] | CREATURES.as | |
 | [x] | CREEPS.as | |
 | [x] | CUSTOMATTACKS.as | |
@@ -124,7 +124,7 @@
 | [ ] | ChatBox_CLIP.as | |
 | [ ] | ChatBox_msg_CLIP.as | |
 | [ ] | ChatBox_msg_name_CLIP.as | |
-| [ ] | CheckBox_CLIP.as | |
+| [x] | CheckBox_CLIP.as | |
 | [ ] | CheckBox_disabledIcon.as | |
 | [ ] | CheckBox_downIcon.as | |
 | [ ] | CheckBox_overIcon.as | |
@@ -136,14 +136,14 @@
 | [x] | Checkbox.as | |
 | [ ] | CreatureLockerItem.as | |
 | [ ] | DEFENSEEVENTPOPUP.as | |
-| [ ] | DEFENSEEVENTPOPUP_CLIP.as | |
+| [x] | DEFENSEEVENTPOPUP_CLIP.as | |
 | [ ] | DEFENSEEVENTPOPUP_WM1.as | |
 | [x] | DROPZONE.as | |
-| [ ] | DROPZONE_CLIP.as | |
+| [x] | DROPZONE_CLIP.as | |
 | [x] | Dynamic.as | |
 | [x] | EFFECTS.as | |
 | [x] | ERRORMESSAGE.as | |
-| [ ] | ERRORMESSAGE_CLIP.as | |
+| [x] | ERRORMESSAGE_CLIP.as | |
 | [ ] | EventRewardRibbon.as | |
 | [ ] | EventStoreDisplayItem.as | |
 | [ ] | EventStoreItemSelectedPopupMC.as | |
@@ -153,18 +153,18 @@
 | [ ] | FBPROMO_711_CLIP.as | |
 | [x] | FIREBALL.as | |
 | [x] | FIREBALLS.as | |
-| [ ] | FIREBALL_CLIP.as | |
+| [x] | FIREBALL_CLIP.as | |
 | [ ] | ForeignBaseInferno_CLIP.as | |
 | [ ] | FriendPickerItem_CLIP.as | |
 | [ ] | FriendPicker_CLIP.as | |
 | [x] | GAME.as | |
 | [x] | GIBLET.as | |
 | [x] | GIBLETS.as | |
-| [ ] | GIBLET_CLIP.as | |
+| [x] | GIBLET_CLIP.as | |
 | [x] | GIFTS.as | |
 | [ ] | GLOBAL.as | |
 | [x] | GRID.as | |
-| [ ] | GUARDIANBUTTON_CLIP.as | |
+| [x] | GUARDIANBUTTON_CLIP.as | |
 | [ ] | GUARDIANCAGEPOPUP_CLIP.as | |
 | [ ] | GUARDIANCHAMBERPOPUP_CLIP.as | |
 | [ ] | GUARDIANNAMEPOPUP_CLIP.as | |
@@ -176,14 +176,14 @@
 | [ ] | HATCHERYCCPOPUP.as | |
 | [ ] | HATCHERYCCPOPUP_CLIP.as | |
 | [ ] | HATCHERYPOPUP.as | |
-| [ ] | HATCHERYPOPUP_CLIP.as | |
+| [x] | HATCHERYPOPUP_CLIP.as | |
 | [x] | HOUSING.as | |
 | [ ] | HOUSINGBUNKER.as | |
 | [ ] | HOUSINGPOPUP.as | |
-| [ ] | HOUSINGPOPUP_CLIP.as | |
+| [x] | HOUSINGPOPUP_CLIP.as | |
 | [ ] | HatcheryBase.as | |
 | [ ] | HatcheryCCMonsterIcon_CLIP.as | |
-| [ ] | HatcheryMonsterIcon_CLIP.as | |
+| [x] | HatcheryMonsterIcon_CLIP.as | |
 | [ ] | HellRaisersBattleSummary_CLIP.as | |
 | [ ] | HousingPersistentMonsterBar.as | |
 | [ ] | HousingPersistentMonsterBar_CLIP.as | |
@@ -219,18 +219,18 @@
 | [ ] | MAPROOM_INFERNO.as | |
 | [ ] | MARKETING.as | |
 | [x] | MESSAGE.as | |
-| [ ] | MESSAGE_CLIP.as | |
+| [x] | MESSAGE_CLIP.as | |
 | [ ] | MISSIONS_INFO_CLIP.as | |
 | [x] | MONSTERBAITER.as | |
 | [ ] | MONSTERBAITERPOPUP.as | |
-| [ ] | MONSTERBAITERPOPUP_CLIP.as | |
+| [x] | MONSTERBAITERPOPUP_CLIP.as | |
 | [x] | MONSTERBUNKER.as | |
 | [ ] | MONSTERBUNKERPOPUP.as | |
-| [ ] | MONSTERBUNKERPOPUP_CLIP.as | |
+| [x] | MONSTERBUNKERPOPUP_CLIP.as | |
 | [ ] | MONSTERLAB.as | |
 | [ ] | MONSTERLABITEM_CLIP.as | |
 | [ ] | MONSTERLABPOPUP.as | |
-| [ ] | MONSTERLABPOPUP_CLIP.as | |
+| [x] | MONSTERLABPOPUP_CLIP.as | |
 | [ ] | MR3EventHUD_CLIP.as | |
 | [x] | MUSHROOMS.as | |
 | [ ] | MapRoom3BookmarkDisplay.as | |
@@ -241,10 +241,10 @@
 | [ ] | MapRoom3RelocateMainYardPopupFriendItemDisplay.as | |
 | [ ] | MapRoom3ResourcesDisplay.as | |
 | [ ] | MapRoomBookmark.as | |
-| [ ] | MapRoomCell_CLIP.as | |
+| [x] | MapRoomCell_CLIP.as | |
 | [ ] | MapRoomPopupInfoMonster_CLIP.as | |
 | [ ] | MapRoomPopupJump.as | |
-| [ ] | MapRoomPopup_CLIP.as | |
+| [x] | MapRoomPopup_CLIP.as | |
 | [ ] | MapRoomPopup_InfernoDescent.as | |
 | [ ] | MapRoomPopup_LostMainBase_CLIP.as | |
 | [ ] | MapRoomPopup_Migrate_CLIP.as | |
@@ -276,8 +276,8 @@
 | [ ] | POWERUPS.as | |
 | [x] | PROJECTILE.as | |
 | [x] | PROJECTILES.as | |
-| [ ] | PROJECTILE_CLIP.as | |
-| [ ] | PROTIP_CLIP.as | |
+| [x] | PROJECTILE_CLIP.as | |
+| [x] | PROTIP_CLIP.as | |
 | [ ] | ParticleDamageItem_CLIP.as | |
 | [ ] | ParticleLoot.as | |
 | [ ] | ParticleScorch1.as | |
@@ -333,7 +333,7 @@
 | [ ] | STOREPOPUP_CLIP.as | |
 | [ ] | STREAMLINESPEEDUP_CLIP.as | |
 | [ ] | ScrollSetH_CLIP.as | |
-| [ ] | ScrollSet_CLIP.as | |
+| [x] | ScrollSet_CLIP.as | |
 | [ ] | SiegeBuildingPopup_ListItem_CLIP.as | |
 | [ ] | SmallButton.as | |
 | [ ] | SpecialInfo_CLIP.as | |
@@ -397,7 +397,7 @@
 | [ ] | bubblepopup4.as | |
 | [ ] | bubblepopup4_CLIP.as | |
 | [ ] | bubblepopup5.as | |
-| [ ] | bubblepopup6_CLIP.as | |
+| [x] | bubblepopup6_CLIP.as | |
 | [ ] | bubblepopupBuff.as | |
 | [ ] | bubblepopupDownBuff.as | |
 | [ ] | bubblepopupDownBuff_CLIP.as | |
@@ -499,8 +499,8 @@
 | [ ] | buildingflowershit.as | |
 | [ ] | buildinggnomehit.as | |
 | [ ] | buildingheadhit.as | |
-| [ ] | buttonClose.as | |
-| [ ] | buttonClose_CLIP.as | |
+| [x] | buttonClose.as | |
+| [x] | buttonClose_CLIP.as | |
 | [ ] | buttonDefenseEvent_CLIP.as | |
 | [ ] | buttonFullscreen.as | |
 | [ ] | buttonFullscreenFrame_CLIP.as | |
@@ -531,7 +531,7 @@
 | [ ] | doodad_mushroom_shadow.as | |
 | [ ] | emptyMc.as | |
 | [ ] | flingerLevel.as | |
-| [ ] | frame.as | |
+| [x] | frame.as | |
 | [ ] | frame1.as | |
 | [ ] | frame1_CLIP.as | |
 | [ ] | frame1_bottom_left.as | |
@@ -570,7 +570,7 @@
 | [ ] | frame3_filler_top.as | |
 | [ ] | frame3_top_left.as | |
 | [ ] | frame3_top_right.as | |
-| [ ] | frame_CLIP.as | |
+| [x] | frame_CLIP.as | |
 | [ ] | frame_button_close.as | |
 | [ ] | frame_button_help.as | |
 | [ ] | frontpage_featuredItem_CLIP.as | |
@@ -634,8 +634,8 @@
 | [ ] | popup_attackedme.as | |
 | [ ] | popup_attackend_CLIP.as | |
 | [ ] | popup_attacksettings.as | |
-| [ ] | popup_bg.as | |
-| [ ] | popup_bg2.as | |
+| [x] | popup_bg.as | |
+| [x] | popup_bg2.as | |
 | [ ] | popup_biggulp.as | |
 | [ ] | popup_building.as | |
 | [ ] | popup_catapult_mc.as | |
@@ -644,9 +644,9 @@
 | [ ] | popup_damagedbase_onvisit.as | |
 | [ ] | popup_defense.as | |
 | [ ] | popup_dialogue.as | |
-| [ ] | popup_error.as | |
+| [x] | popup_error.as | |
 | [ ] | popup_frontpage_CLIP.as | |
-| [ ] | popup_generic.as | |
+| [x] | popup_generic.as | |
 | [ ] | popup_gift.as | |
 | [ ] | popup_helped.as | |
 | [ ] | popup_helpme.as | |
@@ -662,7 +662,7 @@
 | [ ] | popup_juice_all.as | |
 | [ ] | popup_levelup.as | |
 | [ ] | popup_loot.as | |
-| [ ] | popup_monster.as | |
+| [x] | popup_monster.as | |
 | [ ] | popup_mr2tutorial.as | |
 | [ ] | popup_mushroomshiny.as | |
 | [ ] | popup_new_map_confirm.as | |
@@ -673,10 +673,10 @@
 | [ ] | popup_pleaserate.as | |
 | [ ] | popup_prefab.as | |
 | [ ] | popup_prefab_CLIP.as | |
-| [ ] | popup_prefab_enlarge.as | |
-| [ ] | popup_prefab_enlarge_CLIP.as | |
-| [ ] | popup_prefab_help.as | |
-| [ ] | popup_prefab_help_CLIP.as | |
+| [x] | popup_prefab_enlarge.as | |
+| [x] | popup_prefab_enlarge_CLIP.as | |
+| [x] | popup_prefab_help.as | |
+| [x] | popup_prefab_help_CLIP.as | |
 | [ ] | popup_protected.as | |
 | [ ] | popup_purchase.as | |
 | [ ] | popup_quest.as | |
