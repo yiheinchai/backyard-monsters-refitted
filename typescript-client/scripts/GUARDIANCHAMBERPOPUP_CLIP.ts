@@ -3,11 +3,6 @@ import TextField from 'openfl/text/TextField';
 import { creatureBar } from './creatureBar';
 import { frame_CLIP } from './frame_CLIP';
 
-/**
- * GUARDIANCHAMBERPOPUP_CLIP - Base UI clip class for Guardian Chamber Popup
- * Contains all UI element declarations for guardian chamber popup
- * Converted from ActionScript to TypeScript
- */
 export class GUARDIANCHAMBERPOPUP_CLIP extends MovieClip {
     public buff_txt!: TextField;
     public bSpeed!: creatureBar;
@@ -32,10 +27,10 @@ export class GUARDIANCHAMBERPOPUP_CLIP extends MovieClip {
 
     constructor() {
         super();
-        this.addFrameScript(0, this.frame1.bind(this));
+        this.addFrameScript(0, this.frame1);
     }
 
-    protected frame1(): void {
+    public frame1(): void {
         this.stop();
     }
 }

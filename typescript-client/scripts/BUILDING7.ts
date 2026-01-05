@@ -1,10 +1,6 @@
-import Rectangle from 'openfl/geom/Rectangle';
 import { BMUSHROOM } from './BMUSHROOM';
+import Rectangle from 'openfl/geom/Rectangle';
 
-/**
- * BUILDING7 - Mushroom (Pickable Resource)
- * Extends BMUSHROOM for shiny mushroom pickups
- */
 export class BUILDING7 extends BMUSHROOM {
     constructor() {
         super();

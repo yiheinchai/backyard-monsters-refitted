@@ -6,8 +6,9 @@ import TextFormatAlign from 'openfl/text/TextFormatAlign';
 import { KEYS } from './KEYS';
 
 /**
- * Button - Standard Interactive Button
- * Base class for clickable buttons with highlight and selection states
+ * Button - Standard UI button
+ * Handles states (up, over, down, disabled) and labeling
+ * Converted from ActionScript to TypeScript
  */
 export class Button extends MovieClip {
     public _highlight: boolean = false;
@@ -16,7 +17,7 @@ export class Button extends MovieClip {
     public _counter: number = 0;
     public _txt: TextField;
     public _format: TextFormat;
-    public _startY: number = 0;
+    public _startY: number;
     public _tab: boolean = false;
     public label: string = "";
     public labelKey: string = "";
@@ -28,13 +29,11 @@ export class Button extends MovieClip {
         this.addEventListener(MouseEvent.MOUSE_OUT, this.Out.bind(this));
         this.mouseChildren = false;
         this.buttonMode = true;
-        
         this._format = new TextFormat();
         this._format.font = "Verdana";
         this._format.size = 9;
         this._format.align = TextFormatAlign.CENTER;
         this._format.color = 0x333333;
-        
         this._txt = new TextField();
         this._txt.selectable = false;
         this._txt.defaultTextFormat = this._format;
@@ -44,24 +43,30 @@ export class Button extends MovieClip {
         this.addChild(this._txt);
         this._txt.y = Math.floor(this.height / 2 - this._txt.height / 2 + 2);
         this._txt.x = 1;
-        this.cacheAsBitmap = true;
+        // this.cacheAsBitmap = true; 
     }
 
-    public Setup(label: string = "", isTab: boolean = false, width: number = 0, height: number = 0): void {
-        this._tab = isTab;
-        if (width > 0) this.width = width;
-        if (height > 0) this.height = height;
-        if (label) {
-            this._txt.htmlText = '<b><font color="#333333">' + label + '</font></b>';
-            this.label = label;
+    public Setup(param1: string = "", param2: boolean = false, param3: number = 0, param4: number = 0): void {
+        this._tab = param2;
+        if (param3 > 0) {
+            this.width = param3;
         }
-        if (this._tab) this._txt.y = 2;
+        if (param4 > 0) {
+            this.height = param4;
+        }
+        if (param1) {
+            this._txt.htmlText = "<b><font color=\"#333333\">" + param1 + "</font></b>";
+            this.label = param1;
+        }
+        if (this._tab) {
+            this._txt.y = 2;
+        }
         this.Update();
     }
 
-    public SetupKey(key: string = "", isTab: boolean = false, width: number = 0, height: number = 0): void {
-        this.labelKey = key;
-        this.Setup(KEYS.Get(this.labelKey), isTab, width, height);
+    public SetupKey(param1: string = "", param2: boolean = false, param3: number = 0, param4: number = 0): void {
+        this.labelKey = param1;
+        this.Setup(KEYS.Get(this.labelKey), param2, param3, param4);
     }
 
     public Update(): void {
@@ -78,7 +83,7 @@ export class Button extends MovieClip {
         }
     }
 
-    public Over(event: MouseEvent): void {
+    public Over(param1: MouseEvent): void {
         if (this._highlight) {
             this.gotoAndStop(5);
         } else if (this._enabled) {
@@ -86,7 +91,7 @@ export class Button extends MovieClip {
         }
     }
 
-    public Out(event: MouseEvent): void {
+    public Out(param1: MouseEvent): void {
         if (this._highlight) {
             this.gotoAndStop(4);
         } else if (this._enabled) {
@@ -102,10 +107,10 @@ export class Button extends MovieClip {
         return this._enabled;
     }
 
-    public set Enabled(value: boolean) {
-        if (this._enabled !== value) {
-            this._enabled = value;
-            if (value) {
+    public set Enabled(param1: boolean) {
+        if (this._enabled != param1) {
+            this._enabled = param1;
+            if (param1) {
                 this._txt.alpha = 1;
                 this.buttonMode = true;
             } else {
@@ -120,9 +125,9 @@ export class Button extends MovieClip {
         return this._highlight;
     }
 
-    public set Highlight(value: boolean) {
-        if (this._highlight !== value) {
-            this._highlight = value;
+    public set Highlight(param1: boolean) {
+        if (this._highlight != param1) {
+            this._highlight = param1;
             this.Update();
         }
     }
@@ -131,9 +136,9 @@ export class Button extends MovieClip {
         return this._selected;
     }
 
-    public set Selected(value: boolean) {
-        if (this._selected !== value) {
-            this._selected = value;
+    public set Selected(param1: boolean) {
+        if (this._selected != param1) {
+            this._selected = param1;
             this.Update();
         }
     }
@@ -142,9 +147,9 @@ export class Button extends MovieClip {
         return this._counter;
     }
 
-    public set Counter(value: number) {
-        if (this._counter !== value) {
-            this._counter = value;
+    public set Counter(param1: number) {
+        if (this._counter != param1) {
+            this._counter = param1;
             this.Update();
         }
     }

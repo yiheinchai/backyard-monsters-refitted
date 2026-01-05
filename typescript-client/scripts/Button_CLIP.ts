@@ -1,7 +1,7 @@
 import { Button } from './Button';
 
 /**
- * Button_CLIP - Embedded Button clip
+ * Button_CLIP - Embedded button clip
  * Extends Button for asset embedding
  * Converted from ActionScript to TypeScript
  */
