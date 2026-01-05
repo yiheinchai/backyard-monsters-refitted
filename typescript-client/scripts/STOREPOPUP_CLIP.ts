@@ -1,0 +1,26 @@
+import MovieClip from 'openfl/display/MovieClip';
+import TextField from 'openfl/text/TextField';
+import { Button_CLIP } from './Button_CLIP';
+import { ButtonBrown_CLIP } from './ButtonBrown_CLIP';
+import { frame_CLIP } from './frame_CLIP';
+
+/**
+ * STOREPOPUP_CLIP - Base UI clip class for Store Popup
+ * Contains all UI element declarations for store popup
+ * Converted from ActionScript to TypeScript
+ */
+export class STOREPOPUP_CLIP extends MovieClip {
+    public b1!: ButtonBrown_CLIP;
+    public tShinyBalance!: TextField;
+    public b2!: ButtonBrown_CLIP;
+    public b3!: ButtonBrown_CLIP;
+    public b4!: ButtonBrown_CLIP;
+    public bAdd!: Button_CLIP;
+    public b5!: ButtonBrown_CLIP;
+    public mcFrame!: frame_CLIP;
+    public window!: MovieClip;
+
+    constructor() {
+        super();
+    }
+}

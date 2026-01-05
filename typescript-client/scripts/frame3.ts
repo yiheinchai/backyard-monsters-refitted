@@ -1,0 +1,200 @@
+import Bitmap from 'openfl/display/Bitmap';
+import DisplayObject from 'openfl/display/DisplayObject';
+import MovieClip from 'openfl/display/MovieClip';
+import MouseEvent from 'openfl/events/MouseEvent';
+import { frame3_bottom_left } from './frame3_bottom_left';
+import { frame3_bottom_right } from './frame3_bottom_right';
+import { frame3_top_left } from './frame3_top_left';
+import { frame3_top_right } from './frame3_top_right';
+import { frame3_filler_top } from './frame3_filler_top';
+import { frame3_filler_left } from './frame3_filler_left';
+import { frame3_filler_right } from './frame3_filler_right';
+import { frame3_filler_bottom } from './frame3_filler_bottom';
+import { frame3_background } from './frame3_background';
+import { frame_button_close } from './frame_button_close';
+import { frame_button_help } from './frame_button_help';
+import { POPUPS } from './POPUPS';
+import { GLOBAL } from './GLOBAL';
+
+/**
+ * frame3 - Popup window frame style 3
+ * Handles scalable frame rendering with corners and fillers (different style)
+ * Converted from ActionScript to TypeScript
+ */
+export class frame3 extends MovieClip {
+    private _bottomLeft!: Bitmap;
+    private _bottomRight!: Bitmap;
+    private _topLeft!: Bitmap;
+    private _topRight!: Bitmap;
+    private _fillerLeft!: Bitmap;
+    private _fillerRight!: Bitmap;
+    private _fillerTop!: Bitmap;
+    private _fillerBottom!: Bitmap;
+    private _buttonClose!: Bitmap;
+    private _buttonHelp!: Bitmap;
+    private _background!: Bitmap;
+    private _frameMC!: MovieClip;
+    private _frameDO!: DisplayObject;
+    private _backgroundMC!: MovieClip;
+    private _backgroundDO!: DisplayObject;
+    private _customCloseFunction: Function | null = null;
+
+    constructor() {
+        super();
+        this.Setup();
+    }
+
+    public Setup(param1: boolean = true, param2: Function | null = null): void {
+        var _loc3_: boolean = false;
+        var _loc4_: MovieClip | null = null;
+        this.Clear();
+        this._customCloseFunction = param2;
+        _loc3_ = (this.parent && "Help" in this.parent);
+        this._bottomLeft = new Bitmap(new frame3_bottom_left(0, 0));
+        this._bottomRight = new Bitmap(new frame3_bottom_right(0, 0));
+        this._topLeft = new Bitmap(new frame3_top_left(0, 0));
+        this._topRight = new Bitmap(new frame3_top_right(0, 0));
+        this._fillerTop = new Bitmap(new frame3_filler_top(0, 0));
+        this._fillerLeft = new Bitmap(new frame3_filler_left(0, 0));
+        this._fillerRight = new Bitmap(new frame3_filler_right(0, 0));
+        this._fillerBottom = new Bitmap(new frame3_filler_bottom(0, 0));
+        this._background = new Bitmap(new frame3_background(0, 0));
+        this._buttonClose = new Bitmap(new frame_button_close(0, 0));
+        if (_loc3_) {
+            this._buttonHelp = new Bitmap(new frame_button_help(0, 0));
+        }
+        this._topLeft.x = this.x - 31;
+        this._topLeft.y = this.y - 18;
+        this._topRight.x = this.x + this.width - 80;
+        this._topRight.y = this.y - 18;
+        this._bottomLeft.x = this.x - 31;
+        this._bottomLeft.y = this.y + this.height - 69 + 20;
+        this._bottomRight.x = this.x + this.width - 80;
+        this._bottomRight.y = this.y + this.height - 66 + 17;
+        this._background.x = this.x + 10;
+        this._background.y = this.y + 10;
+        this._background.width = this.width - 20;
+        this._background.height = this.height - 20;
+        this._buttonClose.x = this.x + this.width - 32;
+        this._buttonClose.y = this.y - 5;
+        if (_loc3_) {
+            this._buttonHelp.x = this.x + this.width - 55;
+            this._buttonHelp.y = this.y - 5;
+        }
+        this._fillerTop.x = this.x + 56;
+        this._fillerTop.y = this.y - 7;
+        this._fillerTop.width = this.width - 105;
+        this._fillerLeft.x = this.x - 8;
+        this._fillerLeft.y = this.y + 50;
+        this._fillerLeft.height = this.height - 80;
+        this._fillerRight.x = this.x + this.width - 16;
+        this._fillerRight.y = this.y + 50;
+        this._fillerRight.height = this.height - 95;
+        this._fillerBottom.x = this.x + 40;
+        this._fillerBottom.y = this.y + this.height - 11;
+        this._fillerBottom.width = this.width - 90;
+        this._frameMC = new MovieClip();
+        this._frameMC.mouseEnabled = false;
+        this._frameMC.addChild(this._background);
+        this._frameMC.addChild(this._fillerTop);
+        if (this.height > 100) {
+            this._frameMC.addChild(this._fillerLeft);
+        }
+        if (this.height > 95) {
+            this._frameMC.addChild(this._fillerRight);
+        }
+        this._frameMC.addChild(this._fillerBottom);
+        this._frameMC.addChild(this._bottomLeft);
+        this._frameMC.addChild(this._bottomRight);
+        this._frameMC.addChild(this._topLeft);
+        this._frameMC.addChild(this._topRight);
+        if (param1) {
+            _loc4_ = new MovieClip();
+            _loc4_.addChild(this._buttonClose);
+            _loc4_.addEventListener(MouseEvent.CLICK, this.BtnClose.bind(this));
+            _loc4_.buttonMode = true;
+            this._frameMC.addChild(_loc4_);
+        }
+        if (param1 && _loc3_) {
+            _loc4_ = new MovieClip();
+            _loc4_.addChild(this._buttonHelp);
+            _loc4_.addEventListener(MouseEvent.CLICK, this.BtnHelp.bind(this));
+            _loc4_.buttonMode = true;
+            this._frameMC.addChild(_loc4_);
+        }
+        if (this.parent) {
+            this._frameDO = this.parent.addChild(this._frameMC);
+            var _loc5_: number = this.parent.getChildIndex(this);
+            this.parent.setChildIndex(this._frameDO, _loc5_);
+        }
+        this.visible = false;
+    }
+
+    public Clear(): void {
+        if (this._bottomLeft && this._bottomLeft.bitmapData) {
+            this._bottomLeft.bitmapData.dispose();
+        }
+        if (this._bottomRight && this._bottomRight.bitmapData) {
+            this._bottomRight.bitmapData.dispose();
+        }
+        if (this._topLeft && this._topLeft.bitmapData) {
+            this._topLeft.bitmapData.dispose();
+        }
+        if (this._topRight && this._topRight.bitmapData) {
+            this._topRight.bitmapData.dispose();
+        }
+        if (this._fillerTop && this._fillerTop.bitmapData) {
+            this._fillerTop.bitmapData.dispose();
+        }
+        if (this._fillerLeft && this._fillerLeft.bitmapData) {
+            this._fillerLeft.bitmapData.dispose();
+        }
+        if (this._fillerRight && this._fillerRight.bitmapData) {
+            this._fillerRight.bitmapData.dispose();
+        }
+        if (this._fillerBottom && this._fillerBottom.bitmapData) {
+            this._fillerBottom.bitmapData.dispose();
+        }
+        if (this._background && this._background.bitmapData) {
+            this._background.bitmapData.dispose();
+        }
+        if (this._buttonClose && this._buttonClose.bitmapData) {
+            this._buttonClose.bitmapData.dispose();
+        }
+        if (this._buttonHelp && this._buttonHelp.bitmapData) {
+            this._buttonHelp.bitmapData.dispose();
+        }
+        try {
+            if (this._frameDO && this._frameDO.parent) {
+                this._frameDO.parent.removeChild(this._frameDO);
+            }
+            if (this._backgroundDO && this._backgroundDO.parent) {
+                this._backgroundDO.parent.removeChild(this._backgroundDO);
+            }
+        } catch (e: any) {
+        }
+    }
+
+    private BtnClose(param1: MouseEvent | null = null): void {
+        if (this.parent && "Hide" in this.parent) {
+            (this.parent as any).Hide();
+        } else if (this._customCloseFunction) {
+            this._customCloseFunction();
+        } else {
+            POPUPS.Next();
+        }
+    }
+
+    private BtnHelp(param1: MouseEvent | null = null): void {
+        if (this.parent && "Help" in this.parent) {
+            (this.parent as any).Help();
+        }
+    }
+
+    private BtnFullScreen(param1: MouseEvent | null = null): void {
+        GLOBAL.goFullScreen();
+        if (this.parent && "FullScreen" in this.parent) {
+            (this.parent as any).FullScreen();
+        }
+    }
+}
