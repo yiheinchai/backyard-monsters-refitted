@@ -61,48 +61,48 @@
 | [x] | BUILDING9.as | |
 | [x] | BUILDINGBUTTON.as | |
 | [x] | BUILDINGBUTTONSOON.as | |
-| [ ] | BUILDINGBUTTON_CLIP.as | |
+| [x] | BUILDINGBUTTON_CLIP.as | |
 | [x] | BUILDINGINFO.as | |
 | [x] | BUILDINGOPTIONS.as | |
-| [ ] | BUILDINGOPTIONSPOPUP.as | |
-| [ ] | BUILDINGOPTIONSPOPUP_CLIP.as | |
+| [x] | BUILDINGOPTIONSPOPUP.as | |
+| [x] | BUILDINGOPTIONSPOPUP_CLIP.as | |
 | [x] | BUILDINGS.as | |
 | [x] | BUILDINGSARROW.as | |
-| [ ] | BUILDINGSPOPUP.as | |
-| [ ] | BUILDINGSPOPUPINFO_CLIP.as | |
-| [ ] | BUILDINGSPOPUP_CLIP.as | |
+| [x] | BUILDINGSPOPUP.as | |
+| [x] | BUILDINGSPOPUPINFO_CLIP.as | |
+| [x] | BUILDINGSPOPUP_CLIP.as | |
 | [x] | BUY.as | |
 | [x] | BWALL.as | |
-| [ ] | BasePlannerPopup_BottomLayout.as | |
-| [ ] | BasePlannerPopup_CLIP.as | |
-| [ ] | BasePlannerPopup_DisplayItem_Building.as | |
-| [ ] | BasePlannerPopup_DisplayViewContainer.as | |
-| [ ] | BasePlannerPopup_ExplorerCanvas.as | |
-| [ ] | BasePlannerPopup_ExplorerContainer.as | |
-| [ ] | BasePlannerPopup_ExplorerFrame.as | |
-| [ ] | BasePlannerPopup_ExplorerHeader.as | |
-| [ ] | BasePlannerPopup_ExplorerItem_Category.as | |
-| [ ] | BasePlannerPopup_ExplorerItem_Type.as | |
-| [ ] | BasePlannerPopup_ToolTip.as | |
-| [ ] | BasePlannerPopup_ToolsButton_Move.as | |
-| [ ] | BasePlannerPopup_ToolsButton_Store.as | |
-| [ ] | BasePlannerPopup_ToolsLayout.as | |
-| [ ] | BasePlannerPopup_ZoomLayout.as | |
-| [ ] | BasePlannerPopup_xSpot.as | |
-| [ ] | BasePlannerTransferConfirmation_CLIP.as | |
-| [ ] | BasePlannerTransferRow_CLIP.as | |
-| [ ] | BasePlannerTransfer_CLIP.as | |
-| [ ] | BasePlanner_FrameMask.as | |
-| [ ] | BlackSpurtzCannon.as | |
+| [x] | BasePlannerPopup_BottomLayout.as | |
+| [x] | BasePlannerPopup_CLIP.as | |
+| [x] | BasePlannerPopup_DisplayItem_Building.as | |
+| [x] | BasePlannerPopup_DisplayViewContainer.as | |
+| [x] | BasePlannerPopup_ExplorerCanvas.as | |
+| [x] | BasePlannerPopup_ExplorerContainer.as | |
+| [x] | BasePlannerPopup_ExplorerFrame.as | |
+| [x] | BasePlannerPopup_ExplorerHeader.as | |
+| [x] | BasePlannerPopup_ExplorerItem_Category.as | |
+| [x] | BasePlannerPopup_ExplorerItem_Type.as | |
+| [x] | BasePlannerPopup_ToolTip.as | |
+| [x] | BasePlannerPopup_ToolsButton_Move.as | |
+| [x] | BasePlannerPopup_ToolsButton_Store.as | |
+| [x] | BasePlannerPopup_ToolsLayout.as | |
+| [x] | BasePlannerPopup_ZoomLayout.as | |
+| [x] | BasePlannerPopup_xSpot.as | |
+| [x] | BasePlannerTransferConfirmation_CLIP.as | |
+| [x] | BasePlannerTransferRow_CLIP.as | |
+| [x] | BasePlannerTransfer_CLIP.as | |
+| [x] | BasePlanner_FrameMask.as | |
+| [x] | BlackSpurtzCannon.as | |
 | [x] | Bunker.as | |
 | [x] | Button.as | |
-| [ ] | ButtonBrown.as | |
-| [ ] | ButtonBrown_CLIP.as | |
-| [ ] | Button_CLIP.as | |
-| [ ] | CATAPULTITEM.as | |
-| [ ] | CATAPULTITEM_view.as | |
-| [ ] | CATAPULTPOPUP.as | |
-| [ ] | CATAPULTPOPUP_view.as | |
+| [x] | ButtonBrown.as | |
+| [x] | ButtonBrown_CLIP.as | |
+| [x] | Button_CLIP.as | |
+| [x] | CATAPULTITEM.as | |
+| [x] | CATAPULTITEM_view.as | |
+| [x] | CATAPULTPOPUP.as | |
+| [x] | CATAPULTPOPUP_view.as | |
 | [ ] | CHAMPIONBUTTON.as | |
 | [ ] | CHAMPIONCAGE.as | |
 | [ ] | CHAMPIONCAGEPOPUP.as | |
