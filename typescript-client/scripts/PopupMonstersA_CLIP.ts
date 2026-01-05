@@ -1,0 +1,26 @@
+import MovieClip from 'openfl/display/MovieClip';
+import TextField from 'openfl/text/TextField';
+import { Button_CLIP } from './Button_CLIP';
+
+/**
+ * PopupMonstersA_CLIP - CLIP class for monsters popup variant A
+ * Converted from ActionScript to TypeScript
+ */
+export class PopupMonstersA_CLIP extends MovieClip {
+    public mMonstersMask: MovieClip;
+    public mMonsters: MovieClip;
+    public bCancel: Button_CLIP;
+    public tDesc: TextField;
+    public scroll: MovieClip;
+    public bTransfer: Button_CLIP;
+
+    constructor() {
+        super();
+        this.mMonstersMask = new MovieClip();
+        this.mMonsters = new MovieClip();
+        this.bCancel = new Button_CLIP();
+        this.tDesc = new TextField();
+        this.scroll = new MovieClip();
+        this.bTransfer = new Button_CLIP();
+    }
+}
