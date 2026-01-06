@@ -1,0 +1,15 @@
+import MovieClip from 'openfl/display/MovieClip';
+import TextField from 'openfl/text/TextField';
+
+/**
+ * buttonDefenseEvent_CLIP - CLIP class for defense event button
+ * Converted from ActionScript to TypeScript
+ */
+export class buttonDefenseEvent_CLIP extends MovieClip {
+    public tCountdown: TextField;
+
+    constructor() {
+        super();
+        this.tCountdown = new TextField();
+    }
+}

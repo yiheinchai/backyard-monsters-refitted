@@ -336,7 +336,7 @@
 | [x] | ScrollSet_CLIP.as | |
 | [x] | SiegeBuildingPopup_ListItem_CLIP.as | |
 | [ ] | SmallButton.as | |
-| [ ] | SpecialInfo_CLIP.as | |
+| [x] | SpecialInfo_CLIP.as | |
 | [ ] | SpecialRewardInfo.as | |
 | [ ] | SpurtzCannon.as | |
 | [ ] | SpurtzCannonHit.as | |
@@ -344,43 +344,43 @@
 | [ ] | StoneButton.as | |
 | [ ] | TUTORIAL.as | |
 | [ ] | TUTORIALARROWMC.as | |
-| [ ] | TUTORIALARROWMC_CLIP.as | |
+| [x] | TUTORIALARROWMC_CLIP.as | |
 | [ ] | TUTORIALPOPUPMC.as | |
-| [ ] | TUTORIALPOPUPMC_CLIP.as | |
+| [x] | TUTORIALPOPUPMC_CLIP.as | |
 | [x] | Targeting.as | |
-| [ ] | ThreadMember_CLIP.as | |
-| [ ] | Thread_CLIP.as | |
+| [x] | ThreadMember_CLIP.as | |
+| [x] | Thread_CLIP.as | |
 | [ ] | UI2.as | |
 | [ ] | UI_BAITERSCAREAWAY.as | |
-| [ ] | UI_BAITERSCAREAWAY_CLIP.as | |
+| [x] | UI_BAITERSCAREAWAY_CLIP.as | |
 | [ ] | UI_MENU.as | |
-| [ ] | UI_MISSIONMENU_CLIP.as | |
-| [ ] | UI_MISSIONS_ITEM_CLIP.as | |
+| [x] | UI_MISSIONMENU_CLIP.as | |
+| [x] | UI_MISSIONS_ITEM_CLIP.as | |
 | [ ] | UI_NEXTWAVE.as | |
 | [ ] | UI_NEXTWAVE_WM1.as | |
 | [ ] | UI_TOP.as | |
-| [ ] | UI_TOP_CLIP.as | |
+| [x] | UI_TOP_CLIP.as | |
 | [ ] | UI_VISITOR.as | |
-| [ ] | UI_VISITOR_CLIP.as | |
+| [x] | UI_VISITOR_CLIP.as | |
 | [ ] | UI_WARNING.as | |
-| [ ] | UI_WARNING_CLIP.as | |
+| [x] | UI_WARNING_CLIP.as | |
 | [ ] | UI_WILDMONSTERBAR.as | |
-| [ ] | UI_WILDMONSTERBAR_CLIP.as | |
+| [x] | UI_WILDMONSTERBAR_CLIP.as | |
 | [ ] | UI_WORKERS.as | |
 | [ ] | UPDATES.as | |
 | [ ] | URLLoaderApi.as | |
 | [ ] | Void.as | |
 | [ ] | WMATTACK.as | |
 | [ ] | WMIEXTENSIONPOPUP.as | |
-| [ ] | WMIEXTENSIONPOPUP_CLIP.as | |
+| [x] | WMIEXTENSIONPOPUP_CLIP.as | |
 | [ ] | WMIEXTENSIONPOPUP_WM1.as | |
 | [ ] | WMIROUNDCOMPLETE.as | |
 | [ ] | WMIROUNDCOMPLETE_WM1.as | |
-| [ ] | WMListViewItemInferno_CLIP.as | |
+| [x] | WMListViewItemInferno_CLIP.as | |
 | [ ] | WORKER.as | |
 | [x] | WORKERS.as | |
-| [ ] | WORKER_CLIP.as | |
-| [ ] | WildMonsterBaseInferno_CLIP.as | |
+| [x] | WORKER_CLIP.as | |
+| [x] | WildMonsterBaseInferno_CLIP.as | |
 | [ ] | YARD_PROPS.as | |
 | [ ] | attackCostPopup.as | |
 | [ ] | bmd_burns.as | |
@@ -393,9 +393,9 @@
 | [ ] | bubble_selecttarget.as | |
 | [ ] | bubblepopup.as | |
 | [ ] | bubblepopup3.as | |
-| [ ] | bubblepopup3_CLIP.as | |
+| [x] | bubblepopup3_CLIP.as | |
 | [ ] | bubblepopup4.as | |
-| [ ] | bubblepopup4_CLIP.as | |
+| [x] | bubblepopup4_CLIP.as | |
 | [ ] | bubblepopup5.as | |
 | [x] | bubblepopup6_CLIP.as | |
 | [ ] | bubblepopupBuff.as | |
@@ -501,21 +501,21 @@
 | [ ] | buildingheadhit.as | |
 | [x] | buttonClose.as | |
 | [x] | buttonClose_CLIP.as | |
-| [ ] | buttonDefenseEvent_CLIP.as | |
+| [x] | buttonDefenseEvent_CLIP.as | |
 | [ ] | buttonFullscreen.as | |
-| [ ] | buttonFullscreenFrame_CLIP.as | |
-| [ ] | buttonFullscreen_CLIP.as | |
+| [x] | buttonFullscreenFrame_CLIP.as | |
+| [x] | buttonFullscreen_CLIP.as | |
 | [ ] | buttonMusic.as | |
-| [ ] | buttonMusic_CLIP.as | |
+| [x] | buttonMusic_CLIP.as | |
 | [ ] | buttonProtection.as | |
-| [ ] | buttonProtection_CLIP.as | |
-| [ ] | buttonReinforcement_CLIP.as | |
+| [x] | buttonProtection_CLIP.as | |
+| [x] | buttonReinforcement_CLIP.as | |
 | [ ] | buttonSaving.as | |
-| [ ] | buttonSaving_CLIP.as | |
+| [x] | buttonSaving_CLIP.as | |
 | [ ] | buttonSound.as | |
-| [ ] | buttonSound_CLIP.as | |
+| [x] | buttonSound_CLIP.as | |
 | [ ] | buttonZoom.as | |
-| [ ] | buttonZoom_CLIP.as | |
+| [x] | buttonZoom_CLIP.as | |
 | [ ] | button_alert.as | |
 | [ ] | button_buildings.as | |
 | [ ] | button_spinner.as | |
@@ -526,7 +526,7 @@
 | [ ] | creatureBarAdv.as | |
 | [ ] | creatureBarGuardian.as | |
 | [ ] | daveClubBar.as | |
-| [ ] | descentDebuff_info_CLIP.as | |
+| [x] | descentDebuff_info_CLIP.as | |
 | [ ] | doodad_mushroom_mc.as | |
 | [ ] | doodad_mushroom_shadow.as | |
 | [ ] | emptyMc.as | |
@@ -549,44 +549,44 @@
 | [ ] | frame1_top_middle_2.as | |
 | [ ] | frame1_top_right.as | |
 | [ ] | frame2.as | |
-| [ ] | frame2_CLIP.as | |
-| [ ] | frame2_background.as | |
-| [ ] | frame2_bottom_left.as | |
-| [ ] | frame2_bottom_right.as | |
-| [ ] | frame2_filler_bottom.as | |
-| [ ] | frame2_filler_left.as | |
-| [ ] | frame2_filler_right.as | |
-| [ ] | frame2_filler_top.as | |
-| [ ] | frame2_top_left.as | |
-| [ ] | frame2_top_right.as | |
+| [x] | frame2_CLIP.as | |
+| [x] | frame2_background.as | |
+| [x] | frame2_bottom_left.as | |
+| [x] | frame2_bottom_right.as | |
+| [x] | frame2_filler_bottom.as | |
+| [x] | frame2_filler_left.as | |
+| [x] | frame2_filler_right.as | |
+| [x] | frame2_filler_top.as | |
+| [x] | frame2_top_left.as | |
+| [x] | frame2_top_right.as | |
 | [ ] | frame3.as | |
-| [ ] | frame3_CLIP.as | |
-| [ ] | frame3_background.as | |
-| [ ] | frame3_bottom_left.as | |
-| [ ] | frame3_bottom_right.as | |
-| [ ] | frame3_filler_bottom.as | |
-| [ ] | frame3_filler_left.as | |
-| [ ] | frame3_filler_right.as | |
-| [ ] | frame3_filler_top.as | |
-| [ ] | frame3_top_left.as | |
-| [ ] | frame3_top_right.as | |
+| [x] | frame3_CLIP.as | |
+| [x] | frame3_background.as | |
+| [x] | frame3_bottom_left.as | |
+| [x] | frame3_bottom_right.as | |
+| [x] | frame3_filler_bottom.as | |
+| [x] | frame3_filler_left.as | |
+| [x] | frame3_filler_right.as | |
+| [x] | frame3_filler_top.as | |
+| [x] | frame3_top_left.as | |
+| [x] | frame3_top_right.as | |
 | [x] | frame_CLIP.as | |
 | [ ] | frame_button_close.as | |
 | [ ] | frame_button_help.as | |
-| [ ] | frontpage_featuredItem_CLIP.as | |
+| [x] | frontpage_featuredItem_CLIP.as | |
 | [ ] | frontpage_stonebtn.as | |
 | [ ] | guardTowerHit.as | |
-| [ ] | guardianselect_selectportrait_CLIP.as | |
+| [x] | guardianselect_selectportrait_CLIP.as | |
 | [ ] | hatcheryHit.as | |
 | [ ] | housingBunkerHit.as | |
-| [ ] | icon_costs.as | |
-| [ ] | icon_costs_short.as | |
-| [ ] | icon_gifts.as | |
-| [ ] | icon_invite.as | |
-| [ ] | icon_mail.as | |
-| [ ] | icon_popups.as | |
-| [ ] | icon_worker.as | |
-| [ ] | icon_worker_inferno.as | |
+| [x] | icon_costs.as | |
+| [x] | icon_costs_short.as | |
+| [x] | icon_gifts.as | |
+| [x] | icon_invite.as | |
+| [x] | icon_mail.as | |
+| [x] | icon_popups.as | |
+| [x] | icon_worker.as | |
+| [x] | icon_worker_inferno.as | |
 | [ ] | infernoAcademyHit.as | |
 | [ ] | infernoPortalHit.as | |
 | [ ] | inferno_lava1.as | |
@@ -615,8 +615,8 @@
 | [ ] | map_descent_bg.as | |
 | [ ] | mc_buildingalerticon.as | |
 | [ ] | md5.as | |
-| [ ] | meterBar_rounded_blue_CLIP.as | |
-| [ ] | meterBar_rounded_red_CLIP.as | |
+| [x] | meterBar_rounded_blue_CLIP.as | |
+| [x] | meterBar_rounded_red_CLIP.as | |
 | [ ] | monsterLockerHit.as | |
 | [ ] | old_maproom.as | |
 | [ ] | outpostDefenderHit.as | |
@@ -624,7 +624,7 @@
 | [ ] | pin_shadow.as | |
 | [ ] | plannerBuilding.as | |
 | [ ] | plannerBuildingSquare.as | |
-| [ ] | plannerBuilding_CLIP.as | |
+| [x] | plannerBuilding_CLIP.as | |
 | [ ] | plannerRange.as | |
 | [ ] | points_txt.as | |
 | [ ] | popup_afk_gift.as | |
@@ -632,7 +632,7 @@
 | [ ] | popup_aibase_success.as | |
 | [ ] | popup_attack_log.as | |
 | [ ] | popup_attackedme.as | |
-| [ ] | popup_attackend_CLIP.as | |
+| [x] | popup_attackend_CLIP.as | |
 | [ ] | popup_attacksettings.as | |
 | [x] | popup_bg.as | |
 | [x] | popup_bg2.as | |
@@ -645,7 +645,7 @@
 | [ ] | popup_defense.as | |
 | [ ] | popup_dialogue.as | |
 | [x] | popup_error.as | |
-| [ ] | popup_frontpage_CLIP.as | |
+| [x] | popup_frontpage_CLIP.as | |
 | [x] | popup_generic.as | |
 | [ ] | popup_gift.as | |
 | [ ] | popup_helped.as | |
@@ -657,7 +657,7 @@
 | [ ] | popup_infernoemerge_dialog.as | |
 | [ ] | popup_infernoemerge_roundover.as | |
 | [ ] | popup_infernoemerge_upgrade.as | |
-| [ ] | popup_infernoentice_CLIP.as | |
+| [x] | popup_infernoentice_CLIP.as | |
 | [ ] | popup_invite_friends.as | |
 | [ ] | popup_juice_all.as | |
 | [ ] | popup_levelup.as | |
@@ -672,7 +672,7 @@
 | [ ] | popup_pleasebuy.as | |
 | [ ] | popup_pleaserate.as | |
 | [ ] | popup_prefab.as | |
-| [ ] | popup_prefab_CLIP.as | |
+| [x] | popup_prefab_CLIP.as | |
 | [x] | popup_prefab_enlarge.as | |
 | [x] | popup_prefab_enlarge_CLIP.as | |
 | [x] | popup_prefab_help.as | |
@@ -697,14 +697,14 @@
 | [ ] | screenshot_border1.as | |
 | [ ] | screenshot_border2.as | |
 | [ ] | screenshot_border3.as | |
-| [ ] | screenshot_ui_CLIP.as | |
+| [x] | screenshot_ui_CLIP.as | |
 | [ ] | siegeFactoryHit.as | |
 | [ ] | siegeLabHit.as | |
 | [ ] | siloHit.as | |
 | [ ] | smoke1.as | |
 | [ ] | sniperTowerHit.as | |
 | [ ] | sound_click1.as | |
-| [ ] | store_icon_CLIP.as | |
+| [x] | store_icon_CLIP.as | |
 | [ ] | subscriptions_cancelconfirm_popup.as | |
 | [ ] | subscriptions_controlPanel_popup.as | |
 | [ ] | subscriptions_membership_popup.as | |
@@ -712,6 +712,6 @@
 | [ ] | sulpherProducerHit.as | |
 | [ ] | system_message.as | |
 | [ ] | townHallHit.as | |
-| [ ] | ui_buffIcon_CLIP.as | |
+| [x] | ui_buffIcon_CLIP.as | |
 | [ ] | wallHit.as | |
 | [ ] | workerMessage.as | |
