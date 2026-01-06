@@ -1,0 +1,11 @@
+import BitmapData from 'openfl/display/BitmapData';
+
+/**
+ * frame1_top_right - BitmapData asset for frame1 top right corner
+ * Converted from ActionScript to TypeScript
+ */
+export class frame1_top_right extends BitmapData {
+    constructor(param1: number = 123, param2: number = 58) {
+        super(param1, param2);
+    }
+}

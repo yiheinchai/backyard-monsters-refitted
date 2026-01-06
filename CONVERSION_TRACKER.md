@@ -73,27 +73,27 @@
 | [x] | BUILDINGSPOPUP_CLIP.as | |
 | [x] | BUY.as | |
 | [x] | BWALL.as | |
-| [ ] | BasePlannerPopup_BottomLayout.as | |
-| [ ] | BasePlannerPopup_CLIP.as | |
-| [ ] | BasePlannerPopup_DisplayItem_Building.as | |
-| [ ] | BasePlannerPopup_DisplayViewContainer.as | |
-| [ ] | BasePlannerPopup_ExplorerCanvas.as | |
-| [ ] | BasePlannerPopup_ExplorerContainer.as | |
-| [ ] | BasePlannerPopup_ExplorerFrame.as | |
-| [ ] | BasePlannerPopup_ExplorerHeader.as | |
-| [ ] | BasePlannerPopup_ExplorerItem_Category.as | |
-| [ ] | BasePlannerPopup_ExplorerItem_Type.as | |
-| [ ] | BasePlannerPopup_ToolTip.as | |
-| [ ] | BasePlannerPopup_ToolsButton_Move.as | |
-| [ ] | BasePlannerPopup_ToolsButton_Store.as | |
-| [ ] | BasePlannerPopup_ToolsLayout.as | |
-| [ ] | BasePlannerPopup_ZoomLayout.as | |
-| [ ] | BasePlannerPopup_xSpot.as | |
-| [ ] | BasePlannerTransferConfirmation_CLIP.as | |
-| [ ] | BasePlannerTransferRow_CLIP.as | |
-| [ ] | BasePlannerTransfer_CLIP.as | |
-| [ ] | BasePlanner_FrameMask.as | |
-| [ ] | BlackSpurtzCannon.as | |
+| [x] | BasePlannerPopup_BottomLayout.as | |
+| [x] | BasePlannerPopup_CLIP.as | |
+| [x] | BasePlannerPopup_DisplayItem_Building.as | |
+| [x] | BasePlannerPopup_DisplayViewContainer.as | |
+| [x] | BasePlannerPopup_ExplorerCanvas.as | |
+| [x] | BasePlannerPopup_ExplorerContainer.as | |
+| [x] | BasePlannerPopup_ExplorerFrame.as | |
+| [x] | BasePlannerPopup_ExplorerHeader.as | |
+| [x] | BasePlannerPopup_ExplorerItem_Category.as | |
+| [x] | BasePlannerPopup_ExplorerItem_Type.as | |
+| [x] | BasePlannerPopup_ToolTip.as | |
+| [x] | BasePlannerPopup_ToolsButton_Move.as | |
+| [x] | BasePlannerPopup_ToolsButton_Store.as | |
+| [x] | BasePlannerPopup_ToolsLayout.as | |
+| [x] | BasePlannerPopup_ZoomLayout.as | |
+| [x] | BasePlannerPopup_xSpot.as | |
+| [x] | BasePlannerTransferConfirmation_CLIP.as | |
+| [x] | BasePlannerTransferRow_CLIP.as | |
+| [x] | BasePlannerTransfer_CLIP.as | |
+| [x] | BasePlanner_FrameMask.as | |
+| [x] | BlackSpurtzCannon.as | |
 | [x] | Bunker.as | |
 | [x] | Button.as | |
 | [x] | ButtonBrown.as | |
@@ -119,25 +119,25 @@
 | [x] | CREATURES.as | |
 | [x] | CREEPS.as | |
 | [x] | CUSTOMATTACKS.as | |
-| [ ] | CarouselCategoryButton2.as | |
-| [ ] | ChampionChamberFrozen.as | |
-| [ ] | ChatBox_CLIP.as | |
-| [ ] | ChatBox_msg_CLIP.as | |
-| [ ] | ChatBox_msg_name_CLIP.as | |
+| [x] | CarouselCategoryButton2.as | |
+| [x] | ChampionChamberFrozen.as | |
+| [x] | ChatBox_CLIP.as | |
+| [x] | ChatBox_msg_CLIP.as | |
+| [x] | ChatBox_msg_name_CLIP.as | |
 | [x] | CheckBox_CLIP.as | |
-| [ ] | CheckBox_disabledIcon.as | |
-| [ ] | CheckBox_downIcon.as | |
-| [ ] | CheckBox_overIcon.as | |
-| [ ] | CheckBox_selectedDisabledIcon.as | |
-| [ ] | CheckBox_selectedDownIcon.as | |
-| [ ] | CheckBox_selectedOverIcon.as | |
-| [ ] | CheckBox_selectedUpIcon.as | |
-| [ ] | CheckBox_upIcon.as | |
+| [x] | CheckBox_disabledIcon.as | |
+| [x] | CheckBox_downIcon.as | |
+| [x] | CheckBox_overIcon.as | |
+| [x] | CheckBox_selectedDisabledIcon.as | |
+| [x] | CheckBox_selectedDownIcon.as | |
+| [x] | CheckBox_selectedOverIcon.as | |
+| [x] | CheckBox_selectedUpIcon.as | |
+| [x] | CheckBox_upIcon.as | |
 | [x] | Checkbox.as | |
 | [x] | CreatureLockerItem.as | |
 | [x] | DEFENSEEVENTPOPUP.as | |
 | [x] | DEFENSEEVENTPOPUP_CLIP.as | |
-| [ ] | DEFENSEEVENTPOPUP_WM1.as | |
+| [x] | DEFENSEEVENTPOPUP_WM1.as | |
 | [x] | DROPZONE.as | |
 | [x] | DROPZONE_CLIP.as | |
 | [x] | Dynamic.as | |
@@ -525,30 +525,30 @@
 | [ ] | creatureBar.as | |
 | [ ] | creatureBarAdv.as | |
 | [ ] | creatureBarGuardian.as | |
-| [ ] | daveClubBar.as | |
+| [x] | daveClubBar.as | |
 | [x] | descentDebuff_info_CLIP.as | |
-| [ ] | doodad_mushroom_mc.as | |
-| [ ] | doodad_mushroom_shadow.as | |
-| [ ] | emptyMc.as | |
-| [ ] | flingerLevel.as | |
+| [x] | doodad_mushroom_mc.as | |
+| [x] | doodad_mushroom_shadow.as | |
+| [x] | emptyMc.as | |
+| [x] | flingerLevel.as | |
 | [x] | frame.as | |
-| [ ] | frame1.as | |
+| [x] | frame1.as | |
 | [ ] | frame1_CLIP.as | |
-| [ ] | frame1_bottom_left.as | |
-| [ ] | frame1_bottom_middle.as | |
-| [ ] | frame1_bottom_right.as | |
-| [ ] | frame1_button_close.as | |
-| [ ] | frame1_button_fullscreen.as | |
-| [ ] | frame1_button_help.as | |
-| [ ] | frame1_filler_bottom.as | |
-| [ ] | frame1_filler_left.as | |
-| [ ] | frame1_filler_right.as | |
-| [ ] | frame1_filler_top.as | |
-| [ ] | frame1_top_left.as | |
-| [ ] | frame1_top_middle.as | |
-| [ ] | frame1_top_middle_2.as | |
-| [ ] | frame1_top_right.as | |
-| [ ] | frame2.as | |
+| [x] | frame1_bottom_left.as | |
+| [x] | frame1_bottom_middle.as | |
+| [x] | frame1_bottom_right.as | |
+| [x] | frame1_button_close.as | |
+| [x] | frame1_button_fullscreen.as | |
+| [x] | frame1_button_help.as | |
+| [x] | frame1_filler_bottom.as | |
+| [x] | frame1_filler_left.as | |
+| [x] | frame1_filler_right.as | |
+| [x] | frame1_filler_top.as | |
+| [x] | frame1_top_left.as | |
+| [x] | frame1_top_middle.as | |
+| [x] | frame1_top_middle_2.as | |
+| [x] | frame1_top_right.as | |
+| [x] | frame2.as | |
 | [x] | frame2_CLIP.as | |
 | [x] | frame2_background.as | |
 | [x] | frame2_bottom_left.as | |
@@ -559,7 +559,7 @@
 | [x] | frame2_filler_top.as | |
 | [x] | frame2_top_left.as | |
 | [x] | frame2_top_right.as | |
-| [ ] | frame3.as | |
+| [x] | frame3.as | |
 | [x] | frame3_CLIP.as | |
 | [x] | frame3_background.as | |
 | [x] | frame3_bottom_left.as | |
@@ -571,14 +571,14 @@
 | [x] | frame3_top_left.as | |
 | [x] | frame3_top_right.as | |
 | [x] | frame_CLIP.as | |
-| [ ] | frame_button_close.as | |
-| [ ] | frame_button_help.as | |
+| [x] | frame_button_close.as | |
+| [x] | frame_button_help.as | |
 | [x] | frontpage_featuredItem_CLIP.as | |
-| [ ] | frontpage_stonebtn.as | |
-| [ ] | guardTowerHit.as | |
+| [x] | frontpage_stonebtn.as | |
+| [x] | guardTowerHit.as | |
 | [x] | guardianselect_selectportrait_CLIP.as | |
-| [ ] | hatcheryHit.as | |
-| [ ] | housingBunkerHit.as | |
+| [x] | hatcheryHit.as | |
+| [x] | housingBunkerHit.as | |
 | [x] | icon_costs.as | |
 | [x] | icon_costs_short.as | |
 | [x] | icon_gifts.as | |
