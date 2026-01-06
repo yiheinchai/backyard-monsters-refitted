@@ -227,9 +227,9 @@
 | [x] | MONSTERBUNKER.as | |
 | [x] | MONSTERBUNKERPOPUP.as | |
 | [x] | MONSTERBUNKERPOPUP_CLIP.as | |
-| [ ] | MONSTERLAB.as | |
+| [x] | MONSTERLAB.as | |
 | [x] | MONSTERLABITEM_CLIP.as | |
-| [ ] | MONSTERLABPOPUP.as | |
+| [x] | MONSTERLABPOPUP.as | |
 | [x] | MONSTERLABPOPUP_CLIP.as | |
 | [x] | MR3EventHUD_CLIP.as | |
 | [x] | MUSHROOMS.as | |
@@ -316,11 +316,11 @@
 | [x] | ResourcePackages.as | |
 | [x] | RewardLayerMask.as | |
 | [x] | RewardRibbon.as | |
-| [ ] | SALESPECIALSPOPUP.as | |
+| [x] | SALESPECIALSPOPUP.as | |
 | [x] | SALESPECIALSPOPUP_CLIP.as | |
 | [x] | SIEGEBUILDINGPOPUP_CLIP.as | |
-| [ ] | SIEGEWEAPONPOPUP.as | |
-| [ ] | SIEGEWEAPONPOPUP_view.as | |
+| [x] | SIEGEWEAPONPOPUP.as | |
+| [x] | SIEGEWEAPONPOPUP_view.as | |
 | [x] | SIGNPOPUP.as | |
 | [x] | SIGNS.as | |
 | [x] | SOUNDS.as | |
@@ -328,9 +328,9 @@
 | [ ] | SPECIALEVENT_WM1.as | |
 | [x] | SPRITES.as | |
 | [ ] | STORE.as | |
-| [ ] | STOREITEM.as | |
+| [x] | STOREITEM.as | |
 | [ ] | STOREPOPUP.as | |
-| [ ] | STOREPOPUP_CLIP.as | |
+| [x] | STOREPOPUP_CLIP.as | |
 | [x] | STREAMLINESPEEDUP_CLIP.as | |
 | [x] | ScrollSetH_CLIP.as | |
 | [x] | ScrollSet_CLIP.as | |

@@ -1,6 +1,6 @@
 import { MovieClip } from "openfl/display/MovieClip";
 
-// Embedded asset: building20hit
+// [Embed(source="/_assets/assets.swf", symbol="building20hit")]
 export class building20hit extends MovieClip {
     constructor() {
         super();

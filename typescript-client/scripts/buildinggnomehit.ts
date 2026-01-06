@@ -1,6 +1,6 @@
 import { MovieClip } from "openfl/display/MovieClip";
 
-// Embedded asset: buildinggnomehit
+// [Embed(source="/_assets/assets.swf", symbol="buildinggnomehit")]
 export class buildinggnomehit extends MovieClip {
     constructor() {
         super();
