@@ -190,18 +190,18 @@
 | [x] | HousingPersistentPopup.as | |
 | [x] | HousingPersistentPopup_CLIP.as | |
 | [x] | HousingPopupMonster_CLIP.as | |
-| [ ] | INFERNOAPI.as | |
+| [x] | INFERNOAPI.as | |
 | [x] | INFERNOPORTAL.as | |
-| [ ] | INFERNOQUAKETOWER.as | |
+| [x] | INFERNOQUAKETOWER.as | |
 | [ ] | INFERNOYARDPROPS.as | |
-| [ ] | INFERNO_ASCENSION_POPUP.as | |
-| [ ] | INFERNO_CANNON_TOWER.as | |
-| [ ] | INFERNO_DESCENT_POPUPS.as | |
-| [ ] | INFERNO_EMERGENCE_EVENT.as | |
-| [ ] | INFERNO_EMERGENCE_POPUPS.as | |
-| [ ] | INFERNO_MAGMA_TOWER.as | |
-| [ ] | INFERNO_PORTAL_ATTACK.as | |
-| [ ] | INFERNO_QUESTS.as | |
+| [x] | INFERNO_ASCENSION_POPUP.as | |
+| [x] | INFERNO_CANNON_TOWER.as | |
+| [x] | INFERNO_DESCENT_POPUPS.as | |
+| [x] | INFERNO_EMERGENCE_EVENT.as | |
+| [x] | INFERNO_EMERGENCE_POPUPS.as | |
+| [x] | INFERNO_MAGMA_TOWER.as | |
+| [x] | INFERNO_PORTAL_ATTACK.as | |
+| [x] | INFERNO_QUESTS.as | |
 | [x] | InboxMessage_CLIP.as | |
 | [x] | Inbox_CLIP.as | |
 | [x] | InfernoTransferMonster_CLIP.as | |
@@ -215,8 +215,8 @@
 | [x] | MAP.as | |
 | [x] | MAPBG.as | |
 | [x] | MAPROOM.as | |
-| [ ] | MAPROOM_DESCENT.as | |
-| [ ] | MAPROOM_INFERNO.as | |
+| [x] | MAPROOM_DESCENT.as | |
+| [x] | MAPROOM_INFERNO.as | |
 | [x] | MARKETING.as | |
 | [x] | MESSAGE.as | |
 | [x] | MESSAGE_CLIP.as | |
@@ -225,7 +225,7 @@
 | [x] | MONSTERBAITERPOPUP.as | |
 | [x] | MONSTERBAITERPOPUP_CLIP.as | |
 | [x] | MONSTERBUNKER.as | |
-| [ ] | MONSTERBUNKERPOPUP.as | |
+| [x] | MONSTERBUNKERPOPUP.as | |
 | [x] | MONSTERBUNKERPOPUP_CLIP.as | |
 | [ ] | MONSTERLAB.as | |
 | [x] | MONSTERLABITEM_CLIP.as | |
