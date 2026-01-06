@@ -1,0 +1,14 @@
+import { MovieClip } from 'openfl/display/MovieClip';
+import { TextField } from 'openfl/text/TextField';
+
+// [Embed(source="/_assets/assets.swf", symbol="MONSTERLABITEM_CLIP")]
+export class MONSTERLABITEM_CLIP extends MovieClip {
+    public mcBG: MovieClip;
+    public tLabel: TextField;
+    public mcIcon: MovieClip;
+    public mcLevel: MovieClip;
+
+    constructor() {
+        super();
+    }
+}

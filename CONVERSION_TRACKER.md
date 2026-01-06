@@ -99,21 +99,21 @@
 | [x] | ButtonBrown.as | |
 | [x] | ButtonBrown_CLIP.as | |
 | [x] | Button_CLIP.as | |
-| [ ] | CATAPULTITEM.as | |
-| [ ] | CATAPULTITEM_view.as | |
-| [ ] | CATAPULTPOPUP.as | |
-| [ ] | CATAPULTPOPUP_view.as | |
-| [ ] | CHAMPIONBUTTON.as | |
-| [ ] | CHAMPIONCAGE.as | |
-| [ ] | CHAMPIONCAGEPOPUP.as | |
-| [ ] | CHAMPIONCHAMBER.as | |
-| [ ] | CHAMPIONCHAMBERPOPUP.as | |
-| [ ] | CHAMPIONNAMEPOPUP.as | |
-| [ ] | CHAMPIONSELECTPOPUP.as | |
+| [x] | CATAPULTITEM.as | |
+| [x] | CATAPULTITEM_view.as | |
+| [x] | CATAPULTPOPUP.as | |
+| [x] | CATAPULTPOPUP_view.as | |
+| [x] | CHAMPIONBUTTON.as | |
+| [x] | CHAMPIONCAGE.as | |
+| [x] | CHAMPIONCAGEPOPUP.as | |
+| [x] | CHAMPIONCHAMBER.as | |
+| [x] | CHAMPIONCHAMBERPOPUP.as | |
+| [x] | CHAMPIONNAMEPOPUP.as | |
+| [x] | CHAMPIONSELECTPOPUP.as | |
 | [x] | CHECKER.as | |
 | [x] | CREATUREBUTTON.as | |
 | [x] | CREATUREBUTTON_CLIP.as | |
-| [ ] | CREATURELOCKER.as | |
+| [x] | CREATURELOCKER.as | |
 | [ ] | CREATURELOCKERPOPUP.as | |
 | [x] | CREATURELOCKERPOPUP_CLIP.as | |
 | [x] | CREATURES.as | |
@@ -144,19 +144,19 @@
 | [x] | EFFECTS.as | |
 | [x] | ERRORMESSAGE.as | |
 | [x] | ERRORMESSAGE_CLIP.as | |
-| [ ] | EventRewardRibbon.as | |
-| [ ] | EventStoreDisplayItem.as | |
-| [ ] | EventStoreItemSelectedPopupMC.as | |
-| [ ] | EventStorePopupMC.as | |
-| [ ] | EventsBar_CLIP.as | |
-| [ ] | FACEBOOK_NCP_CLIP.as | |
-| [ ] | FBPROMO_711_CLIP.as | |
+| [x] | EventRewardRibbon.as | |
+| [x] | EventStoreDisplayItem.as | |
+| [x] | EventStoreItemSelectedPopupMC.as | |
+| [x] | EventStorePopupMC.as | |
+| [x] | EventsBar_CLIP.as | |
+| [x] | FACEBOOK_NCP_CLIP.as | |
+| [x] | FBPROMO_711_CLIP.as | |
 | [x] | FIREBALL.as | |
 | [x] | FIREBALLS.as | |
 | [x] | FIREBALL_CLIP.as | |
-| [ ] | ForeignBaseInferno_CLIP.as | |
-| [ ] | FriendPickerItem_CLIP.as | |
-| [ ] | FriendPicker_CLIP.as | |
+| [x] | ForeignBaseInferno_CLIP.as | |
+| [x] | FriendPickerItem_CLIP.as | |
+| [x] | FriendPicker_CLIP.as | |
 | [x] | GAME.as | |
 | [x] | GIBLET.as | |
 | [x] | GIBLETS.as | |
@@ -165,12 +165,12 @@
 | [ ] | GLOBAL.as | |
 | [x] | GRID.as | |
 | [x] | GUARDIANBUTTON_CLIP.as | |
-| [ ] | GUARDIANCAGEPOPUP_CLIP.as | |
-| [ ] | GUARDIANCHAMBERPOPUP_CLIP.as | |
-| [ ] | GUARDIANNAMEPOPUP_CLIP.as | |
-| [ ] | GUARDIANSELECTPOPUP_CLIP.as | |
-| [ ] | GuardTower.as | |
-| [ ] | GuardianCage_DNABar.as | |
+| [x] | GUARDIANCAGEPOPUP_CLIP.as | |
+| [x] | GUARDIANCHAMBERPOPUP_CLIP.as | |
+| [x] | GUARDIANNAMEPOPUP_CLIP.as | |
+| [x] | GUARDIANSELECTPOPUP_CLIP.as | |
+| [x] | GuardTower.as | |
+| [x] | GuardianCage_DNABar.as | |
 | [x] | HATCHERY.as | |
 | [x] | HATCHERYCC.as | |
 | [ ] | HATCHERYCCPOPUP.as | |
@@ -184,11 +184,11 @@
 | [x] | HatcheryBase.as | |
 | [x] | HatcheryCCMonsterIcon_CLIP.as | |
 | [x] | HatcheryMonsterIcon_CLIP.as | |
-| [ ] | HellRaisersBattleSummary_CLIP.as | |
+| [x] | HellRaisersBattleSummary_CLIP.as | |
 | [ ] | HousingPersistentMonsterBar.as | |
-| [ ] | HousingPersistentMonsterBar_CLIP.as | |
+| [x] | HousingPersistentMonsterBar_CLIP.as | |
 | [ ] | HousingPersistentPopup.as | |
-| [ ] | HousingPersistentPopup_CLIP.as | |
+| [x] | HousingPersistentPopup_CLIP.as | |
 | [x] | HousingPopupMonster_CLIP.as | |
 | [ ] | INFERNOAPI.as | |
 | [x] | INFERNOPORTAL.as | |
@@ -202,13 +202,13 @@
 | [ ] | INFERNO_MAGMA_TOWER.as | |
 | [ ] | INFERNO_PORTAL_ATTACK.as | |
 | [ ] | INFERNO_QUESTS.as | |
-| [ ] | InboxMessage_CLIP.as | |
-| [ ] | Inbox_CLIP.as | |
-| [ ] | InfernoTransferMonster_CLIP.as | |
-| [ ] | InfernoTransferPopup_CLIP.as | |
+| [x] | InboxMessage_CLIP.as | |
+| [x] | Inbox_CLIP.as | |
+| [x] | InfernoTransferMonster_CLIP.as | |
+| [x] | InfernoTransferPopup_CLIP.as | |
 | [ ] | JSON.as | |
 | [x] | KEYS.as | |
-| [ ] | KrallenHUD_CLIP.as | |
+| [x] | KrallenHUD_CLIP.as | |
 | [x] | LOGGER.as | |
 | [x] | LOGIN.as | |
 | [x] | MAILBOX.as | |
@@ -220,7 +220,7 @@
 | [ ] | MARKETING.as | |
 | [x] | MESSAGE.as | |
 | [x] | MESSAGE_CLIP.as | |
-| [ ] | MISSIONS_INFO_CLIP.as | |
+| [x] | MISSIONS_INFO_CLIP.as | |
 | [x] | MONSTERBAITER.as | |
 | [x] | MONSTERBAITERPOPUP.as | |
 | [x] | MONSTERBAITERPOPUP_CLIP.as | |
@@ -228,28 +228,28 @@
 | [ ] | MONSTERBUNKERPOPUP.as | |
 | [x] | MONSTERBUNKERPOPUP_CLIP.as | |
 | [ ] | MONSTERLAB.as | |
-| [ ] | MONSTERLABITEM_CLIP.as | |
+| [x] | MONSTERLABITEM_CLIP.as | |
 | [ ] | MONSTERLABPOPUP.as | |
 | [x] | MONSTERLABPOPUP_CLIP.as | |
-| [ ] | MR3EventHUD_CLIP.as | |
+| [x] | MR3EventHUD_CLIP.as | |
 | [x] | MUSHROOMS.as | |
-| [ ] | MapRoom3BookmarkDisplay.as | |
+| [x] | MapRoom3BookmarkDisplay.as | |
 | [ ] | MapRoom3BookmarksPopup.as | |
-| [ ] | MapRoom3BookmarksPopupItemDisplay.as | |
-| [ ] | MapRoom3ExpandableFrame.as | |
+| [x] | MapRoom3BookmarksPopupItemDisplay.as | |
+| [x] | MapRoom3ExpandableFrame.as | |
 | [ ] | MapRoom3RelocateMainYardPopup.as | |
 | [ ] | MapRoom3RelocateMainYardPopupFriendItemDisplay.as | |
 | [ ] | MapRoom3ResourcesDisplay.as | |
 | [ ] | MapRoomBookmark.as | |
 | [x] | MapRoomCell_CLIP.as | |
-| [ ] | MapRoomPopupInfoMonster_CLIP.as | |
+| [x] | MapRoomPopupInfoMonster_CLIP.as | |
 | [ ] | MapRoomPopupJump.as | |
 | [x] | MapRoomPopup_CLIP.as | |
 | [ ] | MapRoomPopup_InfernoDescent.as | |
-| [ ] | MapRoomPopup_LostMainBase_CLIP.as | |
-| [ ] | MapRoomPopup_Migrate_CLIP.as | |
-| [ ] | MapRoomPopup_takeover_CLIP.as | |
-| [ ] | MapViewDescent_Fog_Shroud.as | |
+| [x] | MapRoomPopup_LostMainBase_CLIP.as | |
+| [x] | MapRoomPopup_Migrate_CLIP.as | |
+| [x] | MapRoomPopup_takeover_CLIP.as | |
+| [x] | MapViewDescent_Fog_Shroud.as | |
 | [x] | Message_CLIPB.as | |
 | [x] | MonsterBaiterItem.as | |
 | [x] | MonsterBaiterItem_CLIP.as | |
@@ -260,17 +260,17 @@
 | [x] | MonsterBunkerPopup_TransferBtnB_CLIP_Persistant.as | |
 | [x] | MonsterMadnessBar_CLIP.as | |
 | [x] | MonsterMadnessPopup_CLIP.as | |
-| [ ] | MonsterTransferBar.as | |
-| [ ] | MultiRewardEventsBar.as | |
+| [x] | MonsterTransferBar.as | |
+| [x] | MultiRewardEventsBar.as | |
 | [x] | NEXTWAVEBAR_CLIP.as | |
 | [ ] | NewPopupSystem.as | |
 | [ ] | OUTPOST_YARD_PROPS.as | |
 | [ ] | OutpostDefender.as | |
 | [x] | PLANNER.as | |
 | [ ] | PLANNERPOPUP.as | |
-| [ ] | PLANNERPOPUP_CLIP.as | |
+| [x] | PLANNERPOPUP_CLIP.as | |
 | [x] | PLEASEWAIT.as | |
-| [ ] | PLEASEWAITMC.as | |
+| [x] | PLEASEWAITMC.as | |
 | [x] | POPUPS.as | |
 | [x] | POPUPSETTINGS.as | |
 | [ ] | POWERUPS.as | |
@@ -300,11 +300,11 @@
 | [ ] | QUESTITEM.as | |
 | [ ] | QUESTS.as | |
 | [ ] | QUESTSPOPUP.as | |
-| [ ] | QUESTSPOPUP_CLIP.as | |
+| [x] | QUESTSPOPUP_CLIP.as | |
 | [x] | QUEUE.as | |
-| [ ] | RADIOSETTINGSPOPUP_CLIP.as | |
-| [ ] | RAILGUNPROJECTILE_CLIP.as | |
-| [ ] | ROUNDCOMPLETEPOPUP_CLIP.as | |
+| [x] | RADIOSETTINGSPOPUP_CLIP.as | |
+| [x] | RAILGUNPROJECTILE_CLIP.as | |
+| [x] | ROUNDCOMPLETEPOPUP_CLIP.as | |
 | [ ] | ReferencedExposedStructures.as | |
 | [ ] | ResourceBar1.as | |
 | [ ] | ResourceBar2.as | |
@@ -335,17 +335,17 @@
 | [x] | ScrollSetH_CLIP.as | |
 | [x] | ScrollSet_CLIP.as | |
 | [x] | SiegeBuildingPopup_ListItem_CLIP.as | |
-| [ ] | SmallButton.as | |
+| [x] | SmallButton.as | |
 | [x] | SpecialInfo_CLIP.as | |
 | [ ] | SpecialRewardInfo.as | |
 | [ ] | SpurtzCannon.as | |
 | [ ] | SpurtzCannonHit.as | |
 | [ ] | Std.as | |
-| [ ] | StoneButton.as | |
+| [x] | StoneButton.as | |
 | [ ] | TUTORIAL.as | |
-| [ ] | TUTORIALARROWMC.as | |
+| [x] | TUTORIALARROWMC.as | |
 | [x] | TUTORIALARROWMC_CLIP.as | |
-| [ ] | TUTORIALPOPUPMC.as | |
+| [x] | TUTORIALPOPUPMC.as | |
 | [x] | TUTORIALPOPUPMC_CLIP.as | |
 | [x] | Targeting.as | |
 | [x] | ThreadMember_CLIP.as | |
