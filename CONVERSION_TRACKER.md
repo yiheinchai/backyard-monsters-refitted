@@ -114,7 +114,7 @@
 | [x] | CREATUREBUTTON.as | |
 | [x] | CREATUREBUTTON_CLIP.as | |
 | [x] | CREATURELOCKER.as | |
-| [ ] | CREATURELOCKERPOPUP.as | |
+| [x] | CREATURELOCKERPOPUP.as | |
 | [x] | CREATURELOCKERPOPUP_CLIP.as | |
 | [x] | CREATURES.as | |
 | [x] | CREEPS.as | |
@@ -185,9 +185,9 @@
 | [x] | HatcheryCCMonsterIcon_CLIP.as | |
 | [x] | HatcheryMonsterIcon_CLIP.as | |
 | [x] | HellRaisersBattleSummary_CLIP.as | |
-| [ ] | HousingPersistentMonsterBar.as | |
+| [x] | HousingPersistentMonsterBar.as | |
 | [x] | HousingPersistentMonsterBar_CLIP.as | |
-| [ ] | HousingPersistentPopup.as | |
+| [x] | HousingPersistentPopup.as | |
 | [x] | HousingPersistentPopup_CLIP.as | |
 | [x] | HousingPopupMonster_CLIP.as | |
 | [ ] | INFERNOAPI.as | |
@@ -206,7 +206,7 @@
 | [x] | Inbox_CLIP.as | |
 | [x] | InfernoTransferMonster_CLIP.as | |
 | [x] | InfernoTransferPopup_CLIP.as | |
-| [ ] | JSON.as | |
+| [x] | JSON.as | |
 | [x] | KEYS.as | |
 | [x] | KrallenHUD_CLIP.as | |
 | [x] | LOGGER.as | |
@@ -217,7 +217,7 @@
 | [x] | MAPROOM.as | |
 | [ ] | MAPROOM_DESCENT.as | |
 | [ ] | MAPROOM_INFERNO.as | |
-| [ ] | MARKETING.as | |
+| [x] | MARKETING.as | |
 | [x] | MESSAGE.as | |
 | [x] | MESSAGE_CLIP.as | |
 | [x] | MISSIONS_INFO_CLIP.as | |
@@ -234,18 +234,18 @@
 | [x] | MR3EventHUD_CLIP.as | |
 | [x] | MUSHROOMS.as | |
 | [x] | MapRoom3BookmarkDisplay.as | |
-| [ ] | MapRoom3BookmarksPopup.as | |
+| [x] | MapRoom3BookmarksPopup.as | |
 | [x] | MapRoom3BookmarksPopupItemDisplay.as | |
 | [x] | MapRoom3ExpandableFrame.as | |
-| [ ] | MapRoom3RelocateMainYardPopup.as | |
-| [ ] | MapRoom3RelocateMainYardPopupFriendItemDisplay.as | |
-| [ ] | MapRoom3ResourcesDisplay.as | |
-| [ ] | MapRoomBookmark.as | |
+| [x] | MapRoom3RelocateMainYardPopup.as | |
+| [x] | MapRoom3RelocateMainYardPopupFriendItemDisplay.as | |
+| [x] | MapRoom3ResourcesDisplay.as | |
+| [x] | MapRoomBookmark.as | |
 | [x] | MapRoomCell_CLIP.as | |
 | [x] | MapRoomPopupInfoMonster_CLIP.as | |
-| [ ] | MapRoomPopupJump.as | |
+| [x] | MapRoomPopupJump.as | |
 | [x] | MapRoomPopup_CLIP.as | |
-| [ ] | MapRoomPopup_InfernoDescent.as | |
+| [x] | MapRoomPopup_InfernoDescent.as | |
 | [x] | MapRoomPopup_LostMainBase_CLIP.as | |
 | [x] | MapRoomPopup_Migrate_CLIP.as | |
 | [x] | MapRoomPopup_takeover_CLIP.as | |
@@ -263,17 +263,17 @@
 | [x] | MonsterTransferBar.as | |
 | [x] | MultiRewardEventsBar.as | |
 | [x] | NEXTWAVEBAR_CLIP.as | |
-| [ ] | NewPopupSystem.as | |
+| [x] | NewPopupSystem.as | |
 | [ ] | OUTPOST_YARD_PROPS.as | |
-| [ ] | OutpostDefender.as | |
+| [x] | OutpostDefender.as | |
 | [x] | PLANNER.as | |
-| [ ] | PLANNERPOPUP.as | |
+| [x] | PLANNERPOPUP.as | |
 | [x] | PLANNERPOPUP_CLIP.as | |
 | [x] | PLEASEWAIT.as | |
 | [x] | PLEASEWAITMC.as | |
 | [x] | POPUPS.as | |
 | [x] | POPUPSETTINGS.as | |
-| [ ] | POWERUPS.as | |
+| [x] | POWERUPS.as | |
 | [x] | PROJECTILE.as | |
 | [x] | PROJECTILES.as | |
 | [x] | PROJECTILE_CLIP.as | |
@@ -284,7 +284,7 @@
 | [x] | ParticleSplat.as | |
 | [x] | ParticleVacuumLoot.as | |
 | [x] | ParticlesObject_CLIP.as | |
-| [ ] | PersistentMonsterBunker.as | |
+| [x] | PersistentMonsterBunker.as | |
 | [x] | PlayerBaseInferno_CLIP.as | |
 | [x] | PopupAttackA_CLIP.as | |
 | [x] | PopupInfoEnemy_CLIP.as | |
@@ -292,25 +292,25 @@
 | [x] | PopupInfoViewOnly_CLIP.as | |
 | [x] | PopupMonstersA_CLIP.as | |
 | [x] | PopupMonstersB_CLIP.as | |
-| [ ] | PopupNewBookmark.as | |
+| [x] | PopupNewBookmark.as | |
 | [x] | PopupRelocateMe_CLIP.as | |
-| [ ] | ProjectileBase.as | |
-| [ ] | QUESTGROUP.as | |
-| [ ] | QUESTINFO.as | |
-| [ ] | QUESTITEM.as | |
+| [x] | ProjectileBase.as | |
+| [x] | QUESTGROUP.as | |
+| [x] | QUESTINFO.as | |
+| [x] | QUESTITEM.as | |
 | [ ] | QUESTS.as | |
-| [ ] | QUESTSPOPUP.as | |
+| [x] | QUESTSPOPUP.as | |
 | [x] | QUESTSPOPUP_CLIP.as | |
 | [x] | QUEUE.as | |
 | [x] | RADIOSETTINGSPOPUP_CLIP.as | |
 | [x] | RAILGUNPROJECTILE_CLIP.as | |
 | [x] | ROUNDCOMPLETEPOPUP_CLIP.as | |
-| [ ] | ReferencedExposedStructures.as | |
-| [ ] | ResourceBar1.as | |
-| [ ] | ResourceBar2.as | |
-| [ ] | ResourceBar3.as | |
-| [ ] | ResourceBar4.as | |
-| [ ] | ResourceOutpost.as | |
+| [x] | ReferencedExposedStructures.as | |
+| [x] | ResourceBar1.as | |
+| [x] | ResourceBar2.as | |
+| [x] | ResourceBar3.as | |
+| [x] | ResourceBar4.as | |
+| [x] | ResourceOutpost.as | |
 | [x] | ResourcePackage.as | |
 | [x] | ResourcePackage_CLIP.as | |
 | [x] | ResourcePackages.as | |
@@ -321,7 +321,7 @@
 | [x] | SIEGEBUILDINGPOPUP_CLIP.as | |
 | [ ] | SIEGEWEAPONPOPUP.as | |
 | [ ] | SIEGEWEAPONPOPUP_view.as | |
-| [ ] | SIGNPOPUP.as | |
+| [x] | SIGNPOPUP.as | |
 | [x] | SIGNS.as | |
 | [x] | SOUNDS.as | |
 | [ ] | SPECIALEVENT.as | |
@@ -337,10 +337,10 @@
 | [x] | SiegeBuildingPopup_ListItem_CLIP.as | |
 | [x] | SmallButton.as | |
 | [x] | SpecialInfo_CLIP.as | |
-| [ ] | SpecialRewardInfo.as | |
-| [ ] | SpurtzCannon.as | |
-| [ ] | SpurtzCannonHit.as | |
-| [ ] | Std.as | |
+| [x] | SpecialRewardInfo.as | |
+| [x] | SpurtzCannon.as | |
+| [x] | SpurtzCannonHit.as | |
+| [x] | Std.as | |
 | [x] | StoneButton.as | |
 | [ ] | TUTORIAL.as | |
 | [x] | TUTORIALARROWMC.as | |
@@ -351,61 +351,61 @@
 | [x] | ThreadMember_CLIP.as | |
 | [x] | Thread_CLIP.as | |
 | [ ] | UI2.as | |
-| [ ] | UI_BAITERSCAREAWAY.as | |
+| [x] | UI_BAITERSCAREAWAY.as | |
 | [x] | UI_BAITERSCAREAWAY_CLIP.as | |
-| [ ] | UI_MENU.as | |
+| [x] | UI_MENU.as | |
 | [x] | UI_MISSIONMENU_CLIP.as | |
 | [x] | UI_MISSIONS_ITEM_CLIP.as | |
-| [ ] | UI_NEXTWAVE.as | |
-| [ ] | UI_NEXTWAVE_WM1.as | |
+| [x] | UI_NEXTWAVE.as | |
+| [x] | UI_NEXTWAVE_WM1.as | |
 | [ ] | UI_TOP.as | |
 | [x] | UI_TOP_CLIP.as | |
-| [ ] | UI_VISITOR.as | |
+| [x] | UI_VISITOR.as | |
 | [x] | UI_VISITOR_CLIP.as | |
-| [ ] | UI_WARNING.as | |
+| [x] | UI_WARNING.as | |
 | [x] | UI_WARNING_CLIP.as | |
-| [ ] | UI_WILDMONSTERBAR.as | |
+| [x] | UI_WILDMONSTERBAR.as | |
 | [x] | UI_WILDMONSTERBAR_CLIP.as | |
-| [ ] | UI_WORKERS.as | |
-| [ ] | UPDATES.as | |
-| [ ] | URLLoaderApi.as | |
-| [ ] | Void.as | |
+| [x] | UI_WORKERS.as | |
+| [x] | UPDATES.as | |
+| [x] | URLLoaderApi.as | |
+| [x] | Void.as | |
 | [ ] | WMATTACK.as | |
-| [ ] | WMIEXTENSIONPOPUP.as | |
+| [x] | WMIEXTENSIONPOPUP.as | |
 | [x] | WMIEXTENSIONPOPUP_CLIP.as | |
-| [ ] | WMIEXTENSIONPOPUP_WM1.as | |
-| [ ] | WMIROUNDCOMPLETE.as | |
-| [ ] | WMIROUNDCOMPLETE_WM1.as | |
+| [x] | WMIEXTENSIONPOPUP_WM1.as | |
+| [x] | WMIROUNDCOMPLETE.as | |
+| [x] | WMIROUNDCOMPLETE_WM1.as | |
 | [x] | WMListViewItemInferno_CLIP.as | |
-| [ ] | WORKER.as | |
+| [x] | WORKER.as | |
 | [x] | WORKERS.as | |
 | [x] | WORKER_CLIP.as | |
 | [x] | WildMonsterBaseInferno_CLIP.as | |
 | [ ] | YARD_PROPS.as | |
-| [ ] | attackCostPopup.as | |
-| [ ] | bmd_burns.as | |
-| [ ] | bmp_healthbarlarge.as | |
-| [ ] | bmp_healthbarsmall.as | |
-| [ ] | bmp_overlaytext.as | |
-| [ ] | bmp_progressbarlarge.as | |
-| [ ] | boneCrusherHit.as | |
-| [ ] | bubble_acceptInvite.as | |
-| [ ] | bubble_selecttarget.as | |
-| [ ] | bubblepopup.as | |
-| [ ] | bubblepopup3.as | |
+| [x] | attackCostPopup.as | |
+| [x] | bmd_burns.as | |
+| [x] | bmp_healthbarlarge.as | |
+| [x] | bmp_healthbarsmall.as | |
+| [x] | bmp_overlaytext.as | |
+| [x] | bmp_progressbarlarge.as | |
+| [x] | boneCrusherHit.as | |
+| [x] | bubble_acceptInvite.as | |
+| [x] | bubble_selecttarget.as | |
+| [x] | bubblepopup.as | |
+| [x] | bubblepopup3.as | |
 | [x] | bubblepopup3_CLIP.as | |
-| [ ] | bubblepopup4.as | |
+| [x] | bubblepopup4.as | |
 | [x] | bubblepopup4_CLIP.as | |
-| [ ] | bubblepopup5.as | |
+| [x] | bubblepopup5.as | |
 | [x] | bubblepopup6_CLIP.as | |
-| [ ] | bubblepopupBuff.as | |
-| [ ] | bubblepopupDownBuff.as | |
-| [ ] | bubblepopupDownBuff_CLIP.as | |
-| [ ] | bubblepopupRight.as | |
-| [ ] | bubblepopupRight_CLIP.as | |
-| [ ] | bubblepopupUpBuff_CLIP.as | |
-| [ ] | bubblepopupUpSiegeWeapon_CLIP.as | |
-| [ ] | bubblepopup_CLIP.as | |
+| [x] | bubblepopupBuff.as | |
+| [x] | bubblepopupDownBuff.as | |
+| [x] | bubblepopupDownBuff_CLIP.as | |
+| [x] | bubblepopupRight.as | |
+| [x] | bubblepopupRight_CLIP.as | |
+| [x] | bubblepopupUpBuff_CLIP.as | |
+| [x] | bubblepopupUpSiegeWeapon_CLIP.as | |
+| [x] | bubblepopup_CLIP.as | |
 | [ ] | building100hit.as | |
 | [ ] | building101hit.as | |
 | [ ] | building102hit.as | |

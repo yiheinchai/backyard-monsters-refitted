@@ -1,0 +1,13 @@
+import { MovieClip } from 'openfl/display/MovieClip';
+import { TextField } from 'openfl/text/TextField';
+
+// [Embed(source="/_assets/assets.swf", symbol="bubblepopup_CLIP")]
+export class bubblepopup_CLIP extends MovieClip {
+    public mcArrow: MovieClip;
+    public mcBG: MovieClip;
+    public mcText: TextField;
+
+    constructor() {
+        super();
+    }
+}
