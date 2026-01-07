@@ -173,7 +173,7 @@
 | [x] | GuardianCage_DNABar.as | |
 | [x] | HATCHERY.as | |
 | [x] | HATCHERYCC.as | |
-| [ ] | HATCHERYCCPOPUP.as | |
+| [x] | HATCHERYCCPOPUP.as | |
 | [x] | HATCHERYCCPOPUP_CLIP.as | |
 | [x] | HATCHERYPOPUP.as | |
 | [x] | HATCHERYPOPUP_CLIP.as | |
@@ -324,12 +324,12 @@
 | [x] | SIGNPOPUP.as | |
 | [x] | SIGNS.as | |
 | [x] | SOUNDS.as | |
-| [ ] | SPECIALEVENT.as | |
-| [ ] | SPECIALEVENT_WM1.as | |
+| [x] | SPECIALEVENT.as | |
+| [x] | SPECIALEVENT_WM1.as | |
 | [x] | SPRITES.as | |
 | [ ] | STORE.as | |
 | [x] | STOREITEM.as | |
-| [ ] | STOREPOPUP.as | |
+| [x] | STOREPOPUP.as | |
 | [x] | STOREPOPUP_CLIP.as | |
 | [x] | STREAMLINESPEEDUP_CLIP.as | |
 | [x] | ScrollSetH_CLIP.as | |

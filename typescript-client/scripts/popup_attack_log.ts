@@ -1,0 +1,19 @@
+import { MovieClip } from "openfl/display/MovieClip";
+import { TextField } from "openfl/text/TextField";
+
+import { Button_CLIP } from "./Button_CLIP";
+import { frame_CLIP } from "./frame_CLIP";
+
+// [Embed(source="/_assets/assets.swf", symbol="popup_attack_log")]
+export class popup_attack_log extends MovieClip {
+    public maskMC: MovieClip;
+    public title_txt: TextField;
+    public shell: MovieClip;
+    public b2: Button_CLIP;
+    public mcFrame: frame_CLIP;
+    public bAction: Button_CLIP;
+
+    constructor() {
+        super();
+    }
+}
