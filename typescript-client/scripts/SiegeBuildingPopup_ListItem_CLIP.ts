@@ -1,12 +1,14 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { creatureBar } from './creatureBar';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="SiegeBuildingPopup_ListItem_CLIP")]
 
 /**
  * SiegeBuildingPopup_ListItem_CLIP - CLIP class for siege building list item
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "SiegeBuildingPopup_ListItem_CLIP" })
 export class SiegeBuildingPopup_ListItem_CLIP extends MovieClip {
     public star1: MovieClip;
     public tTime: TextField;

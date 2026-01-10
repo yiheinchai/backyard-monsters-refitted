@@ -2,6 +2,7 @@ import MovieClip from 'openfl/display/MovieClip';
 import { BUILDINGSARROW } from './BUILDINGSARROW';
 import { buttonClose_CLIP } from './buttonClose_CLIP';
 import { Button_CLIP } from './Button_CLIP';
+import { Embed } from "./core/Embed";
 
 /**
  * BUILDINGSPOPUP_CLIP - Buildings popup CLIP
@@ -9,6 +10,7 @@ import { Button_CLIP } from './Button_CLIP';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="BUILDINGSPOPUP_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "BUILDINGSPOPUP_CLIP" })
 export class BUILDINGSPOPUP_CLIP extends MovieClip {
     public bNext: BUILDINGSARROW;
     public bClose: buttonClose_CLIP;

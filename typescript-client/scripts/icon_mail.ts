@@ -1,10 +1,12 @@
 import MovieClip from 'openfl/display/MovieClip';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="icon_mail")]
 
 /**
  * icon_mail - Icon component for mail display with counter
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "icon_mail" })
 export class icon_mail extends MovieClip {
     public mcHit: MovieClip;
     public mcSpinner: MovieClip;

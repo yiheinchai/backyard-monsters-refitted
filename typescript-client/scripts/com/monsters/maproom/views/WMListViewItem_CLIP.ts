@@ -2,12 +2,14 @@ import { MovieClip } from "openfl/display/MovieClip";
 import { TextField } from "openfl/text/TextField";
 
 import { Button_CLIP } from "../../../Button_CLIP";
+import { Embed } from "../../../../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="com.monsters.maproom.views.WMListViewItem_CLIP")]
 
 /**
  * Wild monster list view item clip - display for wild monster list item.
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "com.monsters.maproom.views.WMListViewItem_CLIP" })
 export class WMListViewItem_CLIP extends MovieClip {
     public icon_mc: MovieClip | null = null;
     public name_txt: TextField | null = null;

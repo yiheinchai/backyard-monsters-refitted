@@ -1,11 +1,13 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="icon_worker")]
 
 /**
  * icon_worker - Icon component for worker display
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "icon_worker" })
 export class icon_worker extends MovieClip {
     public label_txt: TextField;
     public mcIcon: MovieClip;

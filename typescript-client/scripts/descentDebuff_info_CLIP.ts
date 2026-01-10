@@ -1,11 +1,13 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="descentDebuff_info_CLIP")]
 
 /**
  * descentDebuff_info_CLIP - CLIP class for descent debuff info display
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "descentDebuff_info_CLIP" })
 export class descentDebuff_info_CLIP extends MovieClip {
     public depthBar: MovieClip;
     public tDepth: TextField;

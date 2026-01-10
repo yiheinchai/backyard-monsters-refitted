@@ -1,6 +1,8 @@
 import { MovieClip } from "openfl/display/MovieClip";
+import { Embed } from "../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="SWC_ALL_fla.scroller_H_621")]
+@Embed({ source: "/_assets/assets.swf", symbol: "SWC_ALL_fla.scroller_H_621" })
 export class scroller_H_621 extends MovieClip {
     constructor() {
         super();

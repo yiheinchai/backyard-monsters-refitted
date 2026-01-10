@@ -6,6 +6,7 @@ import { ColorTransform } from "openfl/geom/ColorTransform";
 import { Matrix } from "openfl/geom/Matrix";
 import { Point } from "openfl/geom/Point";
 import { ColorMatrix } from "../../gskinner/geom/ColorMatrix";
+import { Embed } from "../../../core/Embed";
 
 declare var GLOBAL: any;
 declare var POPUPS: any;
@@ -20,6 +21,7 @@ declare class screenshot_border3 extends BitmapData { constructor(w: number, h: 
 /**
  * screenshot - Screenshot capture and processing utility.
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "screenshot_border1" })
 export class screenshot {
     public static _rawImage: BitmapData;
     public static _processedImage: BitmapData;

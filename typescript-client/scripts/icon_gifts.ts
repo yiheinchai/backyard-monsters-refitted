@@ -1,10 +1,12 @@
 import MovieClip from 'openfl/display/MovieClip';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="icon_gifts")]
 
 /**
  * icon_gifts - Icon component for displaying gifts with counter
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "icon_gifts" })
 export class icon_gifts extends MovieClip {
     public mcHit: MovieClip;
     public mcSpinner: MovieClip;

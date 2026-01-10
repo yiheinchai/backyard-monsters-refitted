@@ -3,8 +3,10 @@ import { TextField } from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
 import { frame_CLIP } from './frame_CLIP';
 import { icon_costs_short } from './icon_costs_short';
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="MISSIONS_INFO_CLIP")]
+@Embed({ source: "/_assets/assets.swf", symbol: "MISSIONS_INFO_CLIP" })
 export class MISSIONS_INFO_CLIP extends MovieClip {
     public mcArrow: MovieClip;
     public R1: icon_costs_short;

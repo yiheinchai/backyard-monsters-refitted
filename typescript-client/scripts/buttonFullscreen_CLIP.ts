@@ -1,10 +1,12 @@
 import { buttonFullscreen } from './buttonFullscreen';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="buttonFullscreen_CLIP")]
 
 /**
  * buttonFullscreen_CLIP - CLIP class for fullscreen button
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "buttonFullscreen_CLIP" })
 export class buttonFullscreen_CLIP extends buttonFullscreen {
     constructor() {
         super();

@@ -2,6 +2,7 @@ import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
 import { frame_CLIP } from './frame_CLIP';
+import { Embed } from "./core/Embed";
 
 /**
  * HOUSINGPOPUP_CLIP - Housing popup CLIP
@@ -9,6 +10,7 @@ import { frame_CLIP } from './frame_CLIP';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="HOUSINGPOPUP_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "HOUSINGPOPUP_CLIP" })
 export class HOUSINGPOPUP_CLIP extends MovieClip {
     public juicefooter_desc_txt: TextField;
     public footer_desc_txt: TextField;

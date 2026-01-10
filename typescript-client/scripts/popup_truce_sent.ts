@@ -3,8 +3,10 @@ import { TextField } from "openfl/text/TextField";
 
 import { Button_CLIP } from "./Button_CLIP";
 import { frame_CLIP } from "./frame_CLIP";
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="popup_truce_sent")]
+@Embed({ source: "/_assets/assets.swf", symbol: "popup_truce_sent" })
 export class popup_truce_sent extends MovieClip {
     public mcIcon1: MovieClip;
     public mcIcon2: MovieClip;

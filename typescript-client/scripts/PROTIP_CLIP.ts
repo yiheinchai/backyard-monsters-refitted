@@ -1,6 +1,7 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { frame_CLIP } from './frame_CLIP';
+import { Embed } from "./core/Embed";
 
 /**
  * PROTIP_CLIP - Pro tip display CLIP
@@ -8,6 +9,7 @@ import { frame_CLIP } from './frame_CLIP';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="PROTIP_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "PROTIP_CLIP" })
 export class PROTIP_CLIP extends MovieClip {
     public tTitle: TextField;
     public tDesc: TextField;

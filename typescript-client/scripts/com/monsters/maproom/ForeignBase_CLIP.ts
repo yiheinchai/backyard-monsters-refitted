@@ -1,12 +1,14 @@
 import { MovieClip } from "openfl/display/MovieClip";
 import { SimpleButton } from "openfl/display/SimpleButton";
 import { TextField } from "openfl/text/TextField";
+import { Embed } from "../../../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="com.monsters.maproom.ForeignBase_CLIP")]
 
 /**
  * Foreign base clip - display for foreign player base on map.
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "com.monsters.maproom.ForeignBase_CLIP" })
 export class ForeignBase_CLIP extends MovieClip {
     public mediumhit: SimpleButton | null = null;
     public photoFrame_mc: MovieClip | null = null;

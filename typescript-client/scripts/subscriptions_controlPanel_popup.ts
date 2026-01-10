@@ -2,8 +2,10 @@ import { MovieClip } from "openfl/display/MovieClip";
 import { TextField } from "openfl/text/TextField";
 
 import { Button_CLIP } from "./Button_CLIP";
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="subscriptions_controlPanel_popup")]
+@Embed({ source: "/_assets/assets.swf", symbol: "subscriptions_controlPanel_popup" })
 export class subscriptions_controlPanel_popup extends MovieClip {
     public bMembership: Button_CLIP;
     public bPlaceDave: Button_CLIP;

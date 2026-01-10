@@ -6,11 +6,13 @@ import { BasePlannerNodeEvent } from "../events/BasePlannerNodeEvent";
 import { PlannerItem } from "./PlannerItem";
 
 import { PLANNER } from "../../../../PLANNER";
+import { Embed } from "../../../../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="BasePlannerPopup_ExplorerItem_Type")]
 /**
  * Planner explorer button - building type button in base planner explorer.
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "BasePlannerPopup_ExplorerItem_Type" })
 export class PlannerExplorerButton extends PlannerItem {
     private _nodeList: Array<PlannerNode>;
     private _clicked: boolean;

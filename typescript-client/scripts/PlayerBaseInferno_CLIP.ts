@@ -1,11 +1,13 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="PlayerBaseInferno_CLIP")]
 
 /**
  * PlayerBaseInferno_CLIP - CLIP class for Inferno player base display
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "PlayerBaseInferno_CLIP" })
 export class PlayerBaseInferno_CLIP extends MovieClip {
     public photoFrame_mc: MovieClip;
     public nail: MovieClip;

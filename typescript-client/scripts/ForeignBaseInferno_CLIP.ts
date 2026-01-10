@@ -1,8 +1,10 @@
 import { MovieClip } from 'openfl/display/MovieClip';
 import { SimpleButton } from 'openfl/display/SimpleButton';
 import { TextField } from 'openfl/text/TextField';
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="ForeignBaseInferno_CLIP")]
+@Embed({ source: "/_assets/assets.swf", symbol: "ForeignBaseInferno_CLIP" })
 export class ForeignBaseInferno_CLIP extends MovieClip {
     public mediumhit: SimpleButton;
     public photoFrame_mc: MovieClip;

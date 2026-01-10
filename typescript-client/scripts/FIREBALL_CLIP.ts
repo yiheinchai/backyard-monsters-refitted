@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+import { Embed } from "./core/Embed";
 
 /**
  * FIREBALL_CLIP - Fireball effect CLIP
@@ -6,6 +7,7 @@ import MovieClip from 'openfl/display/MovieClip';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="FIREBALL_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "FIREBALL_CLIP" })
 export class FIREBALL_CLIP extends MovieClip {
     constructor() {
         super();

@@ -2,8 +2,10 @@ import { MovieClip } from "openfl/display/MovieClip";
 import { TextField } from "openfl/text/TextField";
 import { Button_CLIP } from "./Button_CLIP";
 import { changeCatapultBtn } from "./changeCatapultBtn";
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="SIEGEWEAPONPOPUP_view")]
+@Embed({ source: "/_assets/assets.swf", symbol: "SIEGEWEAPONPOPUP_view" })
 export class SIEGEWEAPONPOPUP_view extends MovieClip {
     public _bFire: Button_CLIP;
     public timeLeftMC: MovieClip;

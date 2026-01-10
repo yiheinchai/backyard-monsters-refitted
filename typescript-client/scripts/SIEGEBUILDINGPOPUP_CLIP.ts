@@ -4,12 +4,14 @@ import { Button_CLIP } from './Button_CLIP';
 import { ButtonBrown_CLIP } from './ButtonBrown_CLIP';
 import { creatureBarAdv } from './creatureBarAdv';
 import { frame3_CLIP } from './frame3_CLIP';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="SIEGEBUILDINGPOPUP_CLIP")]
 
 /**
  * SIEGEBUILDINGPOPUP_CLIP - CLIP class for siege building popup
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "SIEGEBUILDINGPOPUP_CLIP" })
 export class SIEGEBUILDINGPOPUP_CLIP extends MovieClip {
     public title_siegelab: TextField;
     public weaponContainer_frame: MovieClip;

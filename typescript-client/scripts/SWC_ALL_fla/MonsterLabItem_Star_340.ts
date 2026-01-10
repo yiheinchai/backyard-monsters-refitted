@@ -1,6 +1,8 @@
 import { MovieClip } from "openfl/display/MovieClip";
+import { Embed } from "../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="SWC_ALL_fla.MonsterLabItem_Star_340")]
+@Embed({ source: "/_assets/assets.swf", symbol: "SWC_ALL_fla.MonsterLabItem_Star_340" })
 export class MonsterLabItem_Star_340 extends MovieClip {
     constructor() {
         super();

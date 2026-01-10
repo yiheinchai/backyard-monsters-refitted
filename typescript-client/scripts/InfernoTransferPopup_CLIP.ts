@@ -2,8 +2,10 @@ import { MovieClip } from 'openfl/display/MovieClip';
 import { TextField } from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
 import { InfernoTransferMonster_CLIP } from './InfernoTransferMonster_CLIP';
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="InfernoTransferPopup_CLIP")]
+@Embed({ source: "/_assets/assets.swf", symbol: "InfernoTransferPopup_CLIP" })
 export class InfernoTransferPopup_CLIP extends MovieClip {
     public m8: InfernoTransferMonster_CLIP;
     public m9: InfernoTransferMonster_CLIP;

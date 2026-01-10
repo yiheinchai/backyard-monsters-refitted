@@ -1,7 +1,9 @@
 import { MovieClip } from "openfl/display/MovieClip";
 import { Event } from "openfl/events/Event";
+import { Embed } from "../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="SWC_ALL_fla.loading_52")]
+@Embed({ source: "/_assets/assets.swf", symbol: "SWC_ALL_fla.loading_52" })
 export class loading_52 extends MovieClip {
     constructor() {
         super();

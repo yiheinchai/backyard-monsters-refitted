@@ -2,6 +2,7 @@ import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
 import { frame_CLIP } from './frame_CLIP';
+import { Embed } from "./core/Embed";
 
 /**
  * DEFENSEEVENTPOPUP_CLIP - Defense event popup CLIP
@@ -9,6 +10,7 @@ import { frame_CLIP } from './frame_CLIP';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="DEFENSEEVENTPOPUP_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "DEFENSEEVENTPOPUP_CLIP" })
 export class DEFENSEEVENTPOPUP_CLIP extends MovieClip {
     public mcBanner: MovieClip;
     public mcText: TextField;

@@ -3,6 +3,7 @@ import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
 import { frame_CLIP } from './frame_CLIP';
 import { creatureBar } from './creatureBar';
+import { Embed } from "./core/Embed";
 
 /**
  * CREATURELOCKERPOPUP_CLIP - Creature locker popup CLIP
@@ -10,6 +11,7 @@ import { creatureBar } from './creatureBar';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="CREATURELOCKERPOPUP_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "CREATURELOCKERPOPUP_CLIP" })
 export class CREATURELOCKERPOPUP_CLIP extends MovieClip {
     public bNext: Button_CLIP;
     public tTime: TextField;

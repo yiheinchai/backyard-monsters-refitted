@@ -1,8 +1,10 @@
 import { MovieClip } from 'openfl/display/MovieClip';
 import { TextField } from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="HousingPersistentPopup_CLIP")]
+@Embed({ source: "/_assets/assets.swf", symbol: "HousingPersistentPopup_CLIP" })
 export class HousingPersistentPopup_CLIP extends MovieClip {
     public tTitleBunkers: TextField;
     public title_txt: TextField;

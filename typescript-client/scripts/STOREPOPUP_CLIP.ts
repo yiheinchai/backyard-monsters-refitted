@@ -3,8 +3,10 @@ import { TextField } from "openfl/text/TextField";
 import { Button_CLIP } from "./Button_CLIP";
 import { ButtonBrown_CLIP } from "./ButtonBrown_CLIP";
 import { frame_CLIP } from "./frame_CLIP";
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="STOREPOPUP_CLIP")]
+@Embed({ source: "/_assets/assets.swf", symbol: "STOREPOPUP_CLIP" })
 export class STOREPOPUP_CLIP extends MovieClip {
     public b1: ButtonBrown_CLIP;
     public tShinyBalance: TextField;

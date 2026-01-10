@@ -1,8 +1,10 @@
 import { MovieClip } from 'openfl/display/MovieClip';
 import { TextField } from 'openfl/text/TextField';
 import { EventRewardRibbon } from './EventRewardRibbon';
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="MultiRewardEventsBar")]
+@Embed({ source: "/_assets/assets.swf", symbol: "MultiRewardEventsBar" })
 export class MultiRewardEventsBar extends MovieClip {
     public mcBackground: MovieClip;
     public progressBarOverlay: MovieClip;

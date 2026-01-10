@@ -2,8 +2,10 @@ import { MovieClip } from 'openfl/display/MovieClip';
 import { TextField } from 'openfl/text/TextField';
 import { creatureBar } from './creatureBar';
 import { frame_CLIP } from './frame_CLIP';
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="GUARDIANCHAMBERPOPUP_CLIP")]
+@Embed({ source: "/_assets/assets.swf", symbol: "GUARDIANCHAMBERPOPUP_CLIP" })
 export class GUARDIANCHAMBERPOPUP_CLIP extends MovieClip {
     public buff_txt: TextField;
     public bSpeed: creatureBar;

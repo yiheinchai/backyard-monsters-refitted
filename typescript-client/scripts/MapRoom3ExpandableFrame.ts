@@ -1,7 +1,9 @@
 import { MovieClip } from 'openfl/display/MovieClip';
 import { TextField } from 'openfl/text/TextField';
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="MapRoom3ExpandableFrame")]
+@Embed({ source: "/_assets/assets.swf", symbol: "MapRoom3ExpandableFrame" })
 export class MapRoom3ExpandableFrame extends MovieClip {
     public background: MovieClip;
     public contentsContainer: MovieClip;

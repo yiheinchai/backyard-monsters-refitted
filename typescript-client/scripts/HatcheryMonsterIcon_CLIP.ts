@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+import { Embed } from "./core/Embed";
 
 /**
  * HatcheryMonsterIcon_CLIP - Hatchery monster icon CLIP
@@ -7,6 +8,7 @@ import TextField from 'openfl/text/TextField';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="HatcheryMonsterIcon_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "HatcheryMonsterIcon_CLIP" })
 export class HatcheryMonsterIcon_CLIP extends MovieClip {
     public tLabel: TextField;
     public mcImage: MovieClip;

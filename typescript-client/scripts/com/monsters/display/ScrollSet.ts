@@ -6,6 +6,7 @@ import { Rectangle } from "openfl/geom/Rectangle";
 
 import { TweenLite } from "gsap/TweenLite";
 import { GLOBAL } from "../../../GLOBAL";
+import { Embed } from "../../../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="ScrollSet_CLIP")]
 declare class ScrollSet_CLIP extends MovieClip {
@@ -16,6 +17,7 @@ declare class ScrollSet_CLIP extends MovieClip {
 /**
  * Scrollable container with scroll bar UI.
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "ScrollSet_CLIP" })
 export class ScrollSet extends ScrollSet_CLIP {
     public static readonly BROWN: number = 0;
     public static readonly GREY: number = 1;

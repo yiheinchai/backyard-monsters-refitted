@@ -1,4 +1,5 @@
 import { frame } from './frame';
+import { Embed } from "./core/Embed";
 
 /**
  * frame_CLIP - CLIP class for frame
@@ -6,6 +7,7 @@ import { frame } from './frame';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="frame_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "frame_CLIP" })
 export class frame_CLIP extends frame {
     constructor() {
         super();

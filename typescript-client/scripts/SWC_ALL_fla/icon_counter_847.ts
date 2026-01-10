@@ -1,6 +1,8 @@
 import { MovieClip } from "openfl/display/MovieClip";
+import { Embed } from "../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="SWC_ALL_fla.icon_counter_847")]
+@Embed({ source: "/_assets/assets.swf", symbol: "SWC_ALL_fla.icon_counter_847" })
 export class icon_counter_847 extends MovieClip {
     constructor() {
         super();

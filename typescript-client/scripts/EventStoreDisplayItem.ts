@@ -1,7 +1,9 @@
 import { MovieClip } from 'openfl/display/MovieClip';
 import { TextField } from 'openfl/text/TextField';
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="EventStoreDisplayItem")]
+@Embed({ source: "/_assets/assets.swf", symbol: "EventStoreDisplayItem" })
 export class EventStoreDisplayItem extends MovieClip {
     public xpText: TextField;
     public xpBarYellow: MovieClip;

@@ -1,6 +1,7 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
+import { Embed } from "./core/Embed";
 
 /**
  * MONSTERBAITERPOPUP_CLIP - Monster baiter popup CLIP
@@ -8,6 +9,7 @@ import { Button_CLIP } from './Button_CLIP';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="MONSTERBAITERPOPUP_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "MONSTERBAITERPOPUP_CLIP" })
 export class MONSTERBAITERPOPUP_CLIP extends MovieClip {
     public m8: MovieClip;
     public b_mc: MovieClip;

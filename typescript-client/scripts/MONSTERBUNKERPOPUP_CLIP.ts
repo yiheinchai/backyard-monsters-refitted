@@ -1,6 +1,7 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
+import { Embed } from "./core/Embed";
 
 /**
  * MONSTERBUNKERPOPUP_CLIP - Monster bunker popup CLIP
@@ -8,6 +9,7 @@ import { Button_CLIP } from './Button_CLIP';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="MONSTERBUNKERPOPUP_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "MONSTERBUNKERPOPUP_CLIP" })
 export class MONSTERBUNKERPOPUP_CLIP extends MovieClip {
     public transferCanvasBmask: MovieClip;
     public transferCanvasA: MovieClip;

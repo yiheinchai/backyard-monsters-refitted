@@ -1,6 +1,8 @@
 import { MovieClip } from "openfl/display/MovieClip";
+import { Embed } from "../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="SWC_ALL_fla.tutorialhand3_804")]
+@Embed({ source: "/_assets/assets.swf", symbol: "SWC_ALL_fla.tutorialhand3_804" })
 export class tutorialhand3_804 extends MovieClip {
     constructor() {
         super();

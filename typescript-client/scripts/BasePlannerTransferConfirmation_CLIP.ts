@@ -2,12 +2,14 @@ import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
 import { frame_CLIP } from './frame_CLIP';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="BasePlannerTransferConfirmation_CLIP")]
 
 /**
  * BasePlannerTransferConfirmation_CLIP - Transfer confirmation CLIP for base planner
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "BasePlannerTransferConfirmation_CLIP" })
 export class BasePlannerTransferConfirmation_CLIP extends MovieClip {
     public bConfirm: Button_CLIP;
     public tBody: TextField;

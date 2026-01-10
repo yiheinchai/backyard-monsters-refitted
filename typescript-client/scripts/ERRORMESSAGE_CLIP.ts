@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+import { Embed } from "./core/Embed";
 
 /**
  * ERRORMESSAGE_CLIP - Error message UI element CLIP
@@ -7,6 +8,7 @@ import TextField from 'openfl/text/TextField';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="ERRORMESSAGE_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "ERRORMESSAGE_CLIP" })
 export class ERRORMESSAGE_CLIP extends MovieClip {
     public bg: MovieClip;
     public tMessage: TextField;

@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+import { Embed } from "./core/Embed";
 
 /**
  * creatureBarGuardian - Guardian creature stat bar CLIP
@@ -6,6 +7,7 @@ import MovieClip from 'openfl/display/MovieClip';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="creatureBarGuardian")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "creatureBarGuardian" })
 export class creatureBarGuardian extends MovieClip {
     public mcBuff1: MovieClip;
     public mcBuff2: MovieClip;

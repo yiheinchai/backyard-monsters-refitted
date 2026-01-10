@@ -3,6 +3,7 @@ import TextField from 'openfl/text/TextField';
 import { popup_bg } from './popup_bg';
 import { frame_CLIP } from './frame_CLIP';
 import { Button_CLIP } from './Button_CLIP';
+import { Embed } from "./core/Embed";
 
 /**
  * popup_error - Error popup display class
@@ -10,6 +11,7 @@ import { Button_CLIP } from './Button_CLIP';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="popup_error")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "popup_error" })
 export class popup_error extends MovieClip {
     public blocker: popup_bg;
     public tA: TextField;

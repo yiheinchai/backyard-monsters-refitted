@@ -2,6 +2,7 @@ import MovieClip from 'openfl/display/MovieClip';
 import { Button_CLIP } from './Button_CLIP';
 import { frame_CLIP } from './frame_CLIP';
 import { frame1_CLIP } from './frame1_CLIP';
+import { Embed } from "./core/Embed";
 
 /**
  * MapRoomPopup_CLIP - Map room popup CLIP
@@ -9,6 +10,7 @@ import { frame1_CLIP } from './frame1_CLIP';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="MapRoomPopup_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "MapRoomPopup_CLIP" })
 export class MapRoomPopup_CLIP extends MovieClip {
     public mcR1: MovieClip;
     public mcFrame2: frame_CLIP;

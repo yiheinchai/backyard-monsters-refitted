@@ -3,6 +3,7 @@ import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
 import { frame_CLIP } from './frame_CLIP';
 import { creatureBarAdv } from './creatureBarAdv';
+import { Embed } from "./core/Embed";
 
 /**
  * MONSTERLABPOPUP_CLIP - Monster lab popup CLIP
@@ -10,6 +11,7 @@ import { creatureBarAdv } from './creatureBarAdv';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="MONSTERLABPOPUP_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "MONSTERLABPOPUP_CLIP" })
 export class MONSTERLABPOPUP_CLIP extends MovieClip {
     public tStatusDesc: TextField;
     public tStatusTitle: TextField;

@@ -15,6 +15,7 @@ import { BFOUNDATION } from "../../../BFOUNDATION";
 import { GLOBAL } from "../../../GLOBAL";
 import { KEYS } from "../../../KEYS";
 import { MAP } from "../../../MAP";
+import { Embed } from "../../../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="bmp_healthbarlarge")]
 declare class bmp_healthbarlarge extends BitmapData {}
@@ -38,6 +39,7 @@ interface BuildingOverlayData {
 /**
  * Displays building health bars, progress bars, and status text overlays.
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "bmp_healthbarlarge" })
 export class BuildingOverlay {
     private static readonly k_SHOW_DEBUG_HEALTH: boolean = false;
     

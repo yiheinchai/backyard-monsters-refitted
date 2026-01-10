@@ -2,12 +2,14 @@ import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
 import { frame3_CLIP } from './frame3_CLIP';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="popup_infernoentice_CLIP")]
 
 /**
  * popup_infernoentice_CLIP - CLIP class for inferno entice popup
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "popup_infernoentice_CLIP" })
 export class popup_infernoentice_CLIP extends MovieClip {
     public tDesc: TextField;
     public tButton: TextField;

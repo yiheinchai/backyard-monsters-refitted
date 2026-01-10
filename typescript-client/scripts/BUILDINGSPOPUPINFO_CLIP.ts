@@ -3,6 +3,7 @@ import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
 import { BUILDINGBUTTON_CLIP } from './BUILDINGBUTTON_CLIP';
 import { frame_CLIP } from './frame_CLIP';
+import { Embed } from "./core/Embed";
 
 /**
  * BUILDINGSPOPUPINFO_CLIP - Buildings popup info CLIP
@@ -10,6 +11,7 @@ import { frame_CLIP } from './frame_CLIP';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="BUILDINGSPOPUPINFO_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "BUILDINGSPOPUPINFO_CLIP" })
 export class BUILDINGSPOPUPINFO_CLIP extends MovieClip {
     public mcBG: frame_CLIP;
     public bBuild: Button_CLIP;

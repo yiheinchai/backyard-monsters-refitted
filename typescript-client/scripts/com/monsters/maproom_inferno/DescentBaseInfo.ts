@@ -1,11 +1,13 @@
 import { MovieClip } from "openfl/display/MovieClip";
 import { TextField } from "openfl/text/TextField";
+import { Embed } from "../../../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="com.monsters.maproom_inferno.DescentBaseInfo")]
 
 /**
  * Descent base info - info display for inferno descent.
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "com.monsters.maproom_inferno.DescentBaseInfo" })
 export class DescentBaseInfo extends MovieClip {
     public info_txt: TextField | null = null;
     public mcArrow: MovieClip | null = null;

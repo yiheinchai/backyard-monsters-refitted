@@ -1,8 +1,10 @@
 import { MovieClip } from 'openfl/display/MovieClip';
 import { TextField } from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="EventStoreItemSelectedPopupMC")]
+@Embed({ source: "/_assets/assets.swf", symbol: "EventStoreItemSelectedPopupMC" })
 export class EventStoreItemSelectedPopupMC extends MovieClip {
     public previewImageHolder: MovieClip;
     public xpCostText: TextField;

@@ -2,12 +2,14 @@ import { MovieClip } from "openfl/display/MovieClip";
 import { TextField } from "openfl/text/TextField";
 
 import { Button_CLIP } from "../../../Button_CLIP";
+import { Embed } from "../../../../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="com.monsters.maproom.views.MapBasePopup_CLIP")]
 
 /**
  * Map base popup clip - popup display for map base actions.
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "com.monsters.maproom.views.MapBasePopup_CLIP" })
 export class MapBasePopup_CLIP extends MovieClip {
     public title_txt: TextField | null = null;
     public attackBtn: Button_CLIP | null = null;

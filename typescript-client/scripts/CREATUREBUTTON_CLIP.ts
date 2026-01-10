@@ -1,6 +1,7 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
+import { Embed } from "./core/Embed";
 
 /**
  * CREATUREBUTTON_CLIP - Creature button UI element CLIP
@@ -8,6 +9,7 @@ import { Button_CLIP } from './Button_CLIP';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="CREATUREBUTTON_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "CREATUREBUTTON_CLIP" })
 export class CREATUREBUTTON_CLIP extends MovieClip {
     public _creatureImage: MovieClip;
     public txtNumber: TextField;

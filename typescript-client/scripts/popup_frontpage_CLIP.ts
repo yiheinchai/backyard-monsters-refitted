@@ -1,11 +1,13 @@
 import MovieClip from 'openfl/display/MovieClip';
 import { frame_CLIP } from './frame_CLIP';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="popup_frontpage_CLIP")]
 
 /**
  * popup_frontpage_CLIP - CLIP class for frontpage popup
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "popup_frontpage_CLIP" })
 export class popup_frontpage_CLIP extends MovieClip {
     public bNext: MovieClip;
     public bPrev: MovieClip;

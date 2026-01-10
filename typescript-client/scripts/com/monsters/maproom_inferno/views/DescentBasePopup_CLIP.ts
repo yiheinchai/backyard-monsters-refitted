@@ -2,12 +2,14 @@ import { MovieClip } from "openfl/display/MovieClip";
 import { TextField } from "openfl/text/TextField";
 
 import { Button_CLIP } from "../../../Button_CLIP";
+import { Embed } from "../../../../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="com.monsters.maproom_inferno.views.DescentBasePopup_CLIP")]
 
 /**
  * Descent base popup clip - popup display for descent base actions.
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "com.monsters.maproom_inferno.views.DescentBasePopup_CLIP" })
 export class DescentBasePopup_CLIP extends MovieClip {
     public depthBar: MovieClip | null = null;
     public tDepth: TextField | null = null;

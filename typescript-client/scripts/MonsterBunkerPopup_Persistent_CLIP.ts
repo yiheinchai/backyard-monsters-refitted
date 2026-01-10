@@ -1,12 +1,14 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="MonsterBunkerPopup_Persistent_CLIP")]
 
 /**
  * MonsterBunkerPopup_Persistent_CLIP - CLIP class for persistent monster bunker popup
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "MonsterBunkerPopup_Persistent_CLIP" })
 export class MonsterBunkerPopup_Persistent_CLIP extends MovieClip {
     public mcHousing: MovieClip;
     public transferCanvasBmask: MovieClip;

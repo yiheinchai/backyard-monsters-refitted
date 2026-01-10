@@ -2,8 +2,10 @@ import { MovieClip } from "openfl/display/MovieClip";
 import { TextField } from "openfl/text/TextField";
 
 import { CATAPULTITEM_view } from "./CATAPULTITEM_view";
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="popup_catapult_mc")]
+@Embed({ source: "/_assets/assets.swf", symbol: "popup_catapult_mc" })
 export class popup_catapult_mc extends MovieClip {
     public pb2: CATAPULTITEM_view;
     public pb3: CATAPULTITEM_view;

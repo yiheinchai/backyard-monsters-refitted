@@ -1,11 +1,13 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="NEXTWAVEBAR_CLIP")]
 
 /**
  * NEXTWAVEBAR_CLIP - CLIP class for next wave bar in defense events
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "NEXTWAVEBAR_CLIP" })
 export class NEXTWAVEBAR_CLIP extends MovieClip {
     public bNext: MovieClip;
     public mcHit: MovieClip;

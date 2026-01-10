@@ -1,12 +1,14 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="WMListViewItemInferno_CLIP")]
 
 /**
  * WMListViewItemInferno_CLIP - CLIP class for inferno wild monster list item
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "WMListViewItemInferno_CLIP" })
 export class WMListViewItemInferno_CLIP extends MovieClip {
     public name_txt: TextField;
     public placeholder: MovieClip;

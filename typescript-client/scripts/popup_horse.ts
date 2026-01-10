@@ -3,8 +3,10 @@ import { TextField } from "openfl/text/TextField";
 
 import { Button_CLIP } from "./Button_CLIP";
 import { frame_CLIP } from "./frame_CLIP";
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="popup_horse")]
+@Embed({ source: "/_assets/assets.swf", symbol: "popup_horse" })
 export class popup_horse extends MovieClip {
     public bA: Button_CLIP;
     public bB: Button_CLIP;

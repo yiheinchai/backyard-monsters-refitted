@@ -9,8 +9,10 @@ import { MapRoomPopupInfoMonster_CLIP } from './MapRoomPopupInfoMonster_CLIP';
 import { meterBar_rounded_red_CLIP } from './meterBar_rounded_red_CLIP';
 import { meterBar_rounded_blue_CLIP } from './meterBar_rounded_blue_CLIP';
 import { koth_looted_marker } from './koth_looted_marker';
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="GUARDIANCAGEPOPUP_CLIP")]
+@Embed({ source: "/_assets/assets.swf", symbol: "GUARDIANCAGEPOPUP_CLIP" })
 export class GUARDIANCAGEPOPUP_CLIP extends MovieClip {
     public buff_txt: TextField;
     public p3_abilities_txt: TextField;

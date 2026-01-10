@@ -4,8 +4,10 @@ import { TextField } from "openfl/text/TextField";
 import { Button_CLIP } from "./Button_CLIP";
 import { HousingPopupMonster_CLIP } from "./HousingPopupMonster_CLIP";
 import { frame3_CLIP } from "./frame3_CLIP";
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="popup_infernoemerge_aiattack")]
+@Embed({ source: "/_assets/assets.swf", symbol: "popup_infernoemerge_aiattack" })
 export class popup_infernoemerge_aiattack extends MovieClip {
     public tName: TextField;
     public c1: HousingPopupMonster_CLIP;

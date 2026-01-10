@@ -1,6 +1,8 @@
 import { MovieClip } from "openfl/display/MovieClip";
+import { Embed } from "../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="SWC_ALL_fla.descentBase_images_355")]
+@Embed({ source: "/_assets/assets.swf", symbol: "SWC_ALL_fla.descentBase_images_355" })
 export class descentBase_images_355 extends MovieClip {
     constructor() {
         super();

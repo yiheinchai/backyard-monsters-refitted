@@ -2,12 +2,14 @@ import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
 import { frame_CLIP } from './frame_CLIP';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="Thread_CLIP")]
 
 /**
  * Thread_CLIP - CLIP class for thread/message display
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "Thread_CLIP" })
 export class Thread_CLIP extends MovieClip {
     public outline_mc: MovieClip;
     public msg_txt: TextField;

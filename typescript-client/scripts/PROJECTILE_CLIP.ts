@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+import { Embed } from "./core/Embed";
 
 /**
  * PROJECTILE_CLIP - Projectile display CLIP
@@ -6,6 +7,7 @@ import MovieClip from 'openfl/display/MovieClip';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="PROJECTILE_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "PROJECTILE_CLIP" })
 export class PROJECTILE_CLIP extends MovieClip {
     public mcProjectile: MovieClip;
     public mcShadow: MovieClip;

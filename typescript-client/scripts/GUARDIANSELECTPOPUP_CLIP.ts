@@ -1,8 +1,10 @@
 import { MovieClip } from 'openfl/display/MovieClip';
 import { TextField } from 'openfl/text/TextField';
 import { frame_CLIP } from './frame_CLIP';
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="GUARDIANSELECTPOPUP_CLIP")]
+@Embed({ source: "/_assets/assets.swf", symbol: "GUARDIANSELECTPOPUP_CLIP" })
 export class GUARDIANSELECTPOPUP_CLIP extends MovieClip {
     public mcMask: MovieClip;
     public tTitle: TextField;

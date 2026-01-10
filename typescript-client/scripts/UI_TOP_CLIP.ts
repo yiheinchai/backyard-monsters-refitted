@@ -6,12 +6,14 @@ import { buttonReinforcement_CLIP } from './buttonReinforcement_CLIP';
 import { buttonSaving_CLIP } from './buttonSaving_CLIP';
 import { buttonSound_CLIP } from './buttonSound_CLIP';
 import { buttonZoom_CLIP } from './buttonZoom_CLIP';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="UI_TOP_CLIP")]
 
 /**
  * UI_TOP_CLIP - CLIP class for top UI bar
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "UI_TOP_CLIP" })
 export class UI_TOP_CLIP extends MovieClip {
     public mcZoom: buttonZoom_CLIP;
     public mcProtected: MovieClip;

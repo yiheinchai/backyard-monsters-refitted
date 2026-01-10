@@ -1,12 +1,14 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="frontpage_featuredItem_CLIP")]
 
 /**
  * frontpage_featuredItem_CLIP - CLIP class for featured item on frontpage
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "frontpage_featuredItem_CLIP" })
 export class frontpage_featuredItem_CLIP extends MovieClip {
     public tBody: TextField;
     public tTitle: TextField;

@@ -1,6 +1,8 @@
 import { MovieClip } from "openfl/display/MovieClip";
+import { Embed } from "../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="ChatUI_fla.chat_window_box_10")]
+@Embed({ source: "/_assets/assets.swf", symbol: "ChatUI_fla.chat_window_box_10" })
 export class chat_window_box_10 extends MovieClip {
     constructor() {
         super();

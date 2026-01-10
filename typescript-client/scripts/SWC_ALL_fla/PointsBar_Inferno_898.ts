@@ -1,6 +1,8 @@
 import { MovieClip } from "openfl/display/MovieClip";
+import { Embed } from "../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="SWC_ALL_fla.PointsBar_Inferno_898")]
+@Embed({ source: "/_assets/assets.swf", symbol: "SWC_ALL_fla.PointsBar_Inferno_898" })
 export class PointsBar_Inferno_898 extends MovieClip {
     constructor() {
         super();

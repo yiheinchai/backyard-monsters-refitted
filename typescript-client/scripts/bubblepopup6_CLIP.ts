@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+import { Embed } from "./core/Embed";
 
 /**
  * bubblepopup6_CLIP - Bubble popup variant 6 CLIP
@@ -7,6 +8,7 @@ import TextField from 'openfl/text/TextField';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="bubblepopup6_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "bubblepopup6_CLIP" })
 export class bubblepopup6_CLIP extends MovieClip {
     public mcArrow: MovieClip;
     public mcText: TextField;

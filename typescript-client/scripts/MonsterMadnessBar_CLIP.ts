@@ -1,12 +1,14 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { creatureBar } from './creatureBar';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="MonsterMadnessBar_CLIP")]
 
 /**
  * MonsterMadnessBar_CLIP - CLIP class for monster madness event bar
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "MonsterMadnessBar_CLIP" })
 export class MonsterMadnessBar_CLIP extends MovieClip {
     public mcHit: MovieClip;
     public mcBG: MovieClip;

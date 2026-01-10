@@ -2,12 +2,14 @@ import { MovieClip } from "openfl/display/MovieClip";
 import { TextField } from "openfl/text/TextField";
 
 import { Button_CLIP } from "../../../Button_CLIP";
+import { Embed } from "../../../../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="com.monsters.maproom.views.ListViewItem_CLIP")]
 
 /**
  * List view item clip - display for player list item in map room.
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "com.monsters.maproom.views.ListViewItem_CLIP" })
 export class ListViewItem_CLIP extends MovieClip {
     public online_txt: TextField | null = null;
     public name_txt: TextField | null = null;

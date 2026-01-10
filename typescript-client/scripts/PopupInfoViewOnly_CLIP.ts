@@ -2,12 +2,14 @@ import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
 import { frame_CLIP } from './frame_CLIP';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="PopupInfoViewOnly_CLIP")]
 
 /**
  * PopupInfoViewOnly_CLIP - CLIP class for view-only info popup
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "PopupInfoViewOnly_CLIP" })
 export class PopupInfoViewOnly_CLIP extends MovieClip {
     public mcArrow: MovieClip;
     public tName: TextField;

@@ -1,12 +1,14 @@
 import MovieClip from 'openfl/display/MovieClip';
 import SimpleButton from 'openfl/display/SimpleButton';
 import TextField from 'openfl/text/TextField';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="WildMonsterBaseInferno_CLIP")]
 
 /**
  * WildMonsterBaseInferno_CLIP - CLIP class for Inferno wild monster base
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "WildMonsterBaseInferno_CLIP" })
 export class WildMonsterBaseInferno_CLIP extends MovieClip {
     public mediumhit: SimpleButton;
     public photoFrame_mc: MovieClip;

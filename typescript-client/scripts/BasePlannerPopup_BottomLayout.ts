@@ -1,11 +1,13 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="BasePlannerPopup_BottomLayout")]
 
 /**
  * BasePlannerPopup_BottomLayout - Bottom layout for base planner popup
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "BasePlannerPopup_BottomLayout" })
 export class BasePlannerPopup_BottomLayout extends MovieClip {
     public btnClear: MovieClip;
     public btnLoad: MovieClip;

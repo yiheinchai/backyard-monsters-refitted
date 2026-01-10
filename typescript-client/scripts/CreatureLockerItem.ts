@@ -1,11 +1,13 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="CreatureLockerItem")]
 
 /**
  * CreatureLockerItem - CLIP class for creature locker item
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "CreatureLockerItem" })
 export class CreatureLockerItem extends MovieClip {
     public mcTick: MovieClip;
     public tLabel: TextField;

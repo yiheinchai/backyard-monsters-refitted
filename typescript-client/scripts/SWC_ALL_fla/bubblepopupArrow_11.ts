@@ -1,6 +1,8 @@
 import { MovieClip } from "openfl/display/MovieClip";
+import { Embed } from "../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="SWC_ALL_fla.bubblepopupArrow_11")]
+@Embed({ source: "/_assets/assets.swf", symbol: "SWC_ALL_fla.bubblepopupArrow_11" })
 export class bubblepopupArrow_11 extends MovieClip {
     constructor() {
         super();

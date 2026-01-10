@@ -6,6 +6,7 @@ import { creatureBar } from './creatureBar';
 import { frame_CLIP } from './frame_CLIP';
 import { HatcheryMonsterIcon_CLIP } from './HatcheryMonsterIcon_CLIP';
 import { ScrollSet_CLIP } from './ScrollSet_CLIP';
+import { Embed } from "./core/Embed";
 
 /**
  * HATCHERYPOPUP_CLIP - Hatchery popup CLIP
@@ -13,6 +14,7 @@ import { ScrollSet_CLIP } from './ScrollSet_CLIP';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="HATCHERYPOPUP_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "HATCHERYPOPUP_CLIP" })
 export class HATCHERYPOPUP_CLIP extends MovieClip {
     public mcCount4: MovieClip;
     public monsterCanvas: MovieClip;

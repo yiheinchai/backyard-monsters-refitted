@@ -1,11 +1,13 @@
 import MovieClip from 'openfl/display/MovieClip';
 import Event from 'openfl/events/Event';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="BUILDINGSARROW")]
 
 /**
  * BUILDINGSARROW - Animated Arrow Indicator
  * Displays an animated arrow for highlighting UI elements
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "BUILDINGSARROW" })
 export class BUILDINGSARROW extends MovieClip {
     public mcArrow: MovieClip | null = null;
     public offsetX: number = 0;

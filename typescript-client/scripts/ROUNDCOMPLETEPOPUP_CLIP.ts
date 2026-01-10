@@ -2,8 +2,10 @@ import { MovieClip } from 'openfl/display/MovieClip';
 import { TextField } from 'openfl/text/TextField';
 import { frame_CLIP } from './frame_CLIP';
 import { Button_CLIP } from './Button_CLIP';
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="ROUNDCOMPLETEPOPUP_CLIP")]
+@Embed({ source: "/_assets/assets.swf", symbol: "ROUNDCOMPLETEPOPUP_CLIP" })
 export class ROUNDCOMPLETEPOPUP_CLIP extends MovieClip {
     public mcTitle: TextField;
     public mcBanner: MovieClip;

@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+import { Embed } from "./core/Embed";
 
 /**
  * BUILDINGBUTTON_CLIP - Building button UI element CLIP
@@ -7,6 +8,7 @@ import TextField from 'openfl/text/TextField';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="BUILDINGBUTTON_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "BUILDINGBUTTON_CLIP" })
 export class BUILDINGBUTTON_CLIP extends MovieClip {
     public tName: TextField;
     public mcBG: MovieClip;

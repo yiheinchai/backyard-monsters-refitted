@@ -2,6 +2,7 @@ import { BUILDINGSARROW } from './BUILDINGSARROW';
 import { creatureBar } from './creatureBar';
 import { Button_CLIP } from './Button_CLIP';
 import { frame_CLIP } from './frame_CLIP';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="ACADEMYPOPUP_CLIP")]
 
 /**
@@ -9,6 +10,7 @@ import { frame_CLIP } from './frame_CLIP';
  * Contains all UI element declarations
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "ACADEMYPOPUP_CLIP" })
 export class ACADEMYPOPUP_CLIP {
     public bNext!: BUILDINGSARROW;
     public tResourceA: any; // TextField

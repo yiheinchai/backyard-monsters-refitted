@@ -1,11 +1,13 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="BasePlannerPopup_ExplorerItem_Category")]
 
 /**
  * BasePlannerPopup_ExplorerItem_Category - Explorer category item for base planner
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "BasePlannerPopup_ExplorerItem_Category" })
 export class BasePlannerPopup_ExplorerItem_Category extends MovieClip {
     public mcBG: MovieClip;
     public tLabel: TextField;

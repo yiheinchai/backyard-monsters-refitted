@@ -2,12 +2,14 @@ import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
 import { frame_CLIP } from './frame_CLIP';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="PopupAttackA_CLIP")]
 
 /**
  * PopupAttackA_CLIP - CLIP class for attack popup variant A
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "PopupAttackA_CLIP" })
 export class PopupAttackA_CLIP extends MovieClip {
     public mMonstersMask: MovieClip;
     public mMonsters: MovieClip;

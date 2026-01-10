@@ -3,6 +3,7 @@ import { MovieClip } from "openfl/display/MovieClip";
 import { Event } from "openfl/events/Event";
 import { MouseEvent } from "openfl/events/MouseEvent";
 import { Rectangle } from "openfl/geom/Rectangle";
+import { Embed } from "../../../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="ScrollSetH_CLIP")]
 declare class ScrollSetH_CLIP extends MovieClip {
@@ -13,6 +14,7 @@ declare class ScrollSetH_CLIP extends MovieClip {
 /**
  * Horizontal scroll bar control.
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "ScrollSetH_CLIP" })
 export class ScrollSetH extends ScrollSetH_CLIP {
     private _defaultScrollWidth: number;
     private _content: DisplayObject;

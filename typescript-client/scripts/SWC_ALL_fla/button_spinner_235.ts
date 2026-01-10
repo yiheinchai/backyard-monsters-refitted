@@ -1,6 +1,8 @@
 import { MovieClip } from "openfl/display/MovieClip";
+import { Embed } from "../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="SWC_ALL_fla.button_spinner_235")]
+@Embed({ source: "/_assets/assets.swf", symbol: "SWC_ALL_fla.button_spinner_235" })
 export class button_spinner_235 extends MovieClip {
     constructor() {
         super();

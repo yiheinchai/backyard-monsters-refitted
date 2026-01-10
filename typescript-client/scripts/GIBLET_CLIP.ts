@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+import { Embed } from "./core/Embed";
 
 /**
  * GIBLET_CLIP - Giblet effect CLIP
@@ -6,6 +7,7 @@ import MovieClip from 'openfl/display/MovieClip';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="GIBLET_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "GIBLET_CLIP" })
 export class GIBLET_CLIP extends MovieClip {
     public mcDot: MovieClip;
 

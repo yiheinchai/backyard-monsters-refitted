@@ -1,6 +1,8 @@
 import { MovieClip } from "openfl/display/MovieClip";
+import { Embed } from "../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="SWC_ALL_fla.creatureBarBar_21")]
+@Embed({ source: "/_assets/assets.swf", symbol: "SWC_ALL_fla.creatureBarBar_21" })
 export class creatureBarBar_21 extends MovieClip {
     constructor() {
         super();

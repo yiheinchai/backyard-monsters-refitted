@@ -2,12 +2,14 @@ import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
 import { frame_CLIP } from './frame_CLIP';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="PopupInfoEnemy_CLIP")]
 
 /**
  * PopupInfoEnemy_CLIP - CLIP class for enemy info popup
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "PopupInfoEnemy_CLIP" })
 export class PopupInfoEnemy_CLIP extends MovieClip {
     public tNameLabel: TextField;
     public bTruce: Button_CLIP;

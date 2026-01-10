@@ -1,7 +1,9 @@
 import { MovieClip } from "openfl/display/MovieClip";
 import { TextField } from "openfl/text/TextField";
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="subscriptions_promo_popup")]
+@Embed({ source: "/_assets/assets.swf", symbol: "subscriptions_promo_popup" })
 export class subscriptions_promo_popup extends MovieClip {
     public mcCircle3: MovieClip;
     public mcCircle2: MovieClip;

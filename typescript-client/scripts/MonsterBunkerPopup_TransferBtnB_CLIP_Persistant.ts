@@ -2,12 +2,14 @@ import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
 import { HatcheryMonsterIcon_CLIP } from './HatcheryMonsterIcon_CLIP';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="MonsterBunkerPopup_TransferBtnB_CLIP_Persistant")]
 
 /**
  * MonsterBunkerPopup_TransferBtnB_CLIP_Persistant - CLIP class for persistent transfer button B
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "MonsterBunkerPopup_TransferBtnB_CLIP_Persistant" })
 export class MonsterBunkerPopup_TransferBtnB_CLIP_Persistant extends MovieClip {
     public bRemove: Button_CLIP;
     public tName: TextField;

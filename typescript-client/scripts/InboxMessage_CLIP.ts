@@ -1,8 +1,10 @@
 import { MovieClip } from 'openfl/display/MovieClip';
 import { TextField } from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
+import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="InboxMessage_CLIP")]
+@Embed({ source: "/_assets/assets.swf", symbol: "InboxMessage_CLIP" })
 export class InboxMessage_CLIP extends MovieClip {
     public subject_txt: TextField;
     public subjectType_txt: TextField;

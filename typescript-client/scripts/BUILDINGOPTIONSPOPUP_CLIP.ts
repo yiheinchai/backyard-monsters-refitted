@@ -2,6 +2,7 @@ import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { frame_CLIP } from './frame_CLIP';
 import { bubblepopup6_CLIP } from './bubblepopup6_CLIP';
+import { Embed } from "./core/Embed";
 
 /**
  * BUILDINGOPTIONSPOPUP_CLIP - Building options popup CLIP
@@ -9,6 +10,7 @@ import { bubblepopup6_CLIP } from './bubblepopup6_CLIP';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="BUILDINGOPTIONSPOPUP_CLIP")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "BUILDINGOPTIONSPOPUP_CLIP" })
 export class BUILDINGOPTIONSPOPUP_CLIP extends MovieClip {
     public mcCBBG: MovieClip;
     public mcBG: frame_CLIP;

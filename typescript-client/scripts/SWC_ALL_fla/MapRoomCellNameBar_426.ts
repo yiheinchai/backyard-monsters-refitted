@@ -1,6 +1,8 @@
 import { MovieClip } from "openfl/display/MovieClip";
+import { Embed } from "../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="SWC_ALL_fla.MapRoomCellNameBar_426")]
+@Embed({ source: "/_assets/assets.swf", symbol: "SWC_ALL_fla.MapRoomCellNameBar_426" })
 export class MapRoomCellNameBar_426 extends MovieClip {
     constructor() {
         super();

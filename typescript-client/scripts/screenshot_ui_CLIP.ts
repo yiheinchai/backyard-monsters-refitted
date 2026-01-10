@@ -1,12 +1,14 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
+import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="screenshot_ui_CLIP")]
 
 /**
  * screenshot_ui_CLIP - CLIP class for screenshot UI with filters
  * Converted from ActionScript to TypeScript
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "screenshot_ui_CLIP" })
 export class screenshot_ui_CLIP extends MovieClip {
     public bContrastUp: Button_CLIP;
     public tBrightness: TextField;

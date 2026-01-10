@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+import { Embed } from "./core/Embed";
 
 /**
  * creatureBarAdv - Advanced creature stat bar CLIP
@@ -6,6 +7,7 @@ import MovieClip from 'openfl/display/MovieClip';
  * 
  * Original: [Embed(source="/_assets/assets.swf", symbol="creatureBarAdv")]
  */
+@Embed({ source: "/_assets/assets.swf", symbol: "creatureBarAdv" })
 export class creatureBarAdv extends MovieClip {
     public mcBar2: MovieClip;
     public mcBar: MovieClip;
