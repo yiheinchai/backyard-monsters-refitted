@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+//    [Embed(source="/_assets/assets.swf", symbol="bubblepopup3_CLIP")]
 
 /**
  * bubblepopup3_CLIP - CLIP class for bubble popup variant 3

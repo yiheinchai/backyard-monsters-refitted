@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import { plannerBuildingSquare } from './plannerBuildingSquare';
+//    [Embed(source="/_assets/assets.swf", symbol="plannerBuilding_CLIP")]
 
 /**
  * plannerBuilding_CLIP - CLIP class for planner building

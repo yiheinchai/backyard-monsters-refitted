@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+//    [Embed(source="/_assets/assets.swf", symbol="icon_worker_inferno")]
 
 /**
  * icon_worker_inferno - Icon component for inferno worker display

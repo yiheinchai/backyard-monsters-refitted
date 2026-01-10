@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+//    [Embed(source="/_assets/assets.swf", symbol="buttonDefenseEvent_CLIP")]
 
 /**
  * buttonDefenseEvent_CLIP - CLIP class for defense event button

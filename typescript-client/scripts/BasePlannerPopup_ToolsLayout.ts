@@ -1,6 +1,7 @@
 import MovieClip from 'openfl/display/MovieClip';
 import { BasePlannerPopup_ToolsButton_Store } from './BasePlannerPopup_ToolsButton_Store';
 import { BasePlannerPopup_ToolsButton_Move } from './BasePlannerPopup_ToolsButton_Move';
+//    [Embed(source="/_assets/assets.swf", symbol="BasePlannerPopup_ToolsLayout")]
 
 /**
  * BasePlannerPopup_ToolsLayout - Tools layout for base planner popup

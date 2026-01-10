@@ -1,4 +1,5 @@
 import BitmapData from 'openfl/display/BitmapData';
+//    [Embed(source="/_assets/1820_ParticleScorch1_ParticleScorch1.png")]
 
 /**
  * ParticleScorch1 - Scorch particle bitmap asset

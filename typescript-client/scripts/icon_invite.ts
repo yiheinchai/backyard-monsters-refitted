@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="icon_invite")]
 
 /**
  * icon_invite - Icon component for invite display

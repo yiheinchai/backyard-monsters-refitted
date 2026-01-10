@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="BasePlannerPopup_ToolsButton_Store")]
 
 /**
  * BasePlannerPopup_ToolsButton_Store - Store tools button for base planner

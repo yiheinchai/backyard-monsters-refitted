@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="RewardRibbon")]
 
 /**
  * RewardRibbon - CLIP class for reward ribbon display

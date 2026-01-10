@@ -1,6 +1,7 @@
 import MovieClip from 'openfl/display/MovieClip';
 import Sprite from 'openfl/display/Sprite';
 import { popup_catapult_mc } from './popup_catapult_mc';
+//    [Embed(source="/_assets/assets.swf", symbol="CATAPULTPOPUP_view")]
 
 /**
  * CATAPULTPOPUP_view - View component for catapult popup

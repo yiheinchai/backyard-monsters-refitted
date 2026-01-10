@@ -1,6 +1,7 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { frame_CLIP } from './frame_CLIP';
+//    [Embed(source="/_assets/assets.swf", symbol="BasePlannerTransfer_CLIP")]
 
 /**
  * BasePlannerTransfer_CLIP - Transfer CLIP for base planner

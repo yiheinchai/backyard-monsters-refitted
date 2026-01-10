@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+//    [Embed(source="/_assets/assets.swf", symbol="UI_MISSIONS_ITEM_CLIP")]
 
 /**
  * UI_MISSIONS_ITEM_CLIP - CLIP class for mission item

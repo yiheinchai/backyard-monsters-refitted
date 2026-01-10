@@ -1,4 +1,5 @@
 import { buttonSaving } from './buttonSaving';
+//    [Embed(source="/_assets/assets.swf", symbol="buttonSaving_CLIP")]
 
 /**
  * buttonSaving_CLIP - CLIP class for saving button

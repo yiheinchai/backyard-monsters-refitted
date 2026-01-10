@@ -1,6 +1,7 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
+//    [Embed(source="/_assets/assets.swf", symbol="frontpage_featuredItem_CLIP")]
 
 /**
  * frontpage_featuredItem_CLIP - CLIP class for featured item on frontpage

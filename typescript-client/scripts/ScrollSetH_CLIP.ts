@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="ScrollSetH_CLIP")]
 
 /**
  * ScrollSetH_CLIP - CLIP class for horizontal scroll set

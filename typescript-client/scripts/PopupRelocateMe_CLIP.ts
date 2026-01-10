@@ -1,6 +1,7 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { frame_CLIP } from './frame_CLIP';
+//    [Embed(source="/_assets/assets.swf", symbol="PopupRelocateMe_CLIP")]
 
 /**
  * PopupRelocateMe_CLIP - CLIP class for base relocation popup

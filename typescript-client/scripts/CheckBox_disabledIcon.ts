@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="CheckBox_disabledIcon")]
 
 /**
  * CheckBox_disabledIcon - CheckBox disabled icon component

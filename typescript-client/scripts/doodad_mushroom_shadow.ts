@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="doodad_mushroom_shadow")]
 
 /**
  * doodad_mushroom_shadow - Mushroom shadow doodad component

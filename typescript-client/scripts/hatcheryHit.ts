@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="hatcheryHit")]
 
 /**
  * hatcheryHit - Hatchery hit animation component

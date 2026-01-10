@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+//    [Embed(source="/_assets/assets.swf", symbol="BasePlannerPopup_ExplorerItem_Category")]
 
 /**
  * BasePlannerPopup_ExplorerItem_Category - Explorer category item for base planner

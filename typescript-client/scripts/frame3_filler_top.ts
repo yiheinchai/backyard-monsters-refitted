@@ -1,4 +1,5 @@
 import BitmapData from 'openfl/display/BitmapData';
+//    [Embed(source="/_assets/2063_frame3_filler_top_frame3_filler_top.png")]
 
 /**
  * frame3_filler_top - BitmapData asset for frame3 top filler

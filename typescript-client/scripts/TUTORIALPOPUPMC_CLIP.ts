@@ -2,6 +2,7 @@ import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
 import { TUTORIALARROWMC_CLIP } from './TUTORIALARROWMC_CLIP';
+//    [Embed(source="/_assets/assets.swf", symbol="TUTORIALPOPUPMC_CLIP")]
 
 /**
  * TUTORIALPOPUPMC_CLIP - CLIP class for tutorial popup

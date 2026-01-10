@@ -1,4 +1,5 @@
 import BitmapData from 'openfl/display/BitmapData';
+//    [Embed(source="/_assets/1699_frame_button_help_frame_button_help.png")]
 
 /**
  * frame_button_help - BitmapData asset for frame help button

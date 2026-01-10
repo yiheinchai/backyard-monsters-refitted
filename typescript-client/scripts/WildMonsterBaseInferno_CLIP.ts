@@ -1,6 +1,7 @@
 import MovieClip from 'openfl/display/MovieClip';
 import SimpleButton from 'openfl/display/SimpleButton';
 import TextField from 'openfl/text/TextField';
+//    [Embed(source="/_assets/assets.swf", symbol="WildMonsterBaseInferno_CLIP")]
 
 /**
  * WildMonsterBaseInferno_CLIP - CLIP class for Inferno wild monster base

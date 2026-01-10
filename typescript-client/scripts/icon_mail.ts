@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="icon_mail")]
 
 /**
  * icon_mail - Icon component for mail display with counter

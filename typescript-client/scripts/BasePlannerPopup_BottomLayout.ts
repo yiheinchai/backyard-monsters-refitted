@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+//    [Embed(source="/_assets/assets.swf", symbol="BasePlannerPopup_BottomLayout")]
 
 /**
  * BasePlannerPopup_BottomLayout - Bottom layout for base planner popup

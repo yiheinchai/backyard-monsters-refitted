@@ -1,6 +1,7 @@
 import { Button_CLIP } from './Button_CLIP';
 import { HousingPopupMonster_CLIP } from './HousingPopupMonster_CLIP';
 import { frame_CLIP } from './frame_CLIP';
+//    [Embed(source="/_assets/assets.swf", symbol="AIATTACKPOPUP_CLIP")]
 
 /**
  * AIATTACKPOPUP_CLIP - Base UI clip class for AI Attack popup

@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="BasePlanner_FrameMask")]
 
 /**
  * BasePlanner_FrameMask - Frame mask for base planner

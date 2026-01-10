@@ -1,4 +1,5 @@
 import BitmapData from 'openfl/display/BitmapData';
+//    [Embed(source="/_assets/2049_frame3_background_frame3_background.jpg")]
 
 /**
  * frame3_background - BitmapData asset for frame3 background

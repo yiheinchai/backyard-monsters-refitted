@@ -1,6 +1,7 @@
 import MovieClip from 'openfl/display/MovieClip';
 import { BasePlannerPopup_ExplorerCanvas } from './BasePlannerPopup_ExplorerCanvas';
 import { BasePlannerPopup_ExplorerFrame } from './BasePlannerPopup_ExplorerFrame';
+//    [Embed(source="/_assets/assets.swf", symbol="BasePlannerPopup_ExplorerContainer")]
 
 /**
  * BasePlannerPopup_ExplorerContainer - Explorer container for base planner

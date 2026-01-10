@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="UI_MISSIONMENU_CLIP")]
 
 /**
  * UI_MISSIONMENU_CLIP - CLIP class for mission menu

@@ -1,6 +1,7 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
+//    [Embed(source="/_assets/assets.swf", symbol="WMListViewItemInferno_CLIP")]
 
 /**
  * WMListViewItemInferno_CLIP - CLIP class for inferno wild monster list item

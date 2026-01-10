@@ -1,6 +1,7 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { frame_CLIP } from './frame_CLIP';
+//    [Embed(source="/_assets/assets.swf", symbol="STREAMLINESPEEDUP_CLIP")]
 
 /**
  * STREAMLINESPEEDUP_CLIP - CLIP class for streamline speedup popup

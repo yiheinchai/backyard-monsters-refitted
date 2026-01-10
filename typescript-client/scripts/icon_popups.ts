@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="icon_popups")]
 
 /**
  * icon_popups - Icon component for popups display with counter

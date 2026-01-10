@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import { frame_CLIP } from './frame_CLIP';
+//    [Embed(source="/_assets/assets.swf", symbol="popup_frontpage_CLIP")]
 
 /**
  * popup_frontpage_CLIP - CLIP class for frontpage popup

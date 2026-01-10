@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import { packagedot } from './packagedot';
+//    [Embed(source="/_assets/assets.swf", symbol="ResourcePackage_CLIP")]
 
 /**
  * ResourcePackage_CLIP - CLIP class for resource package

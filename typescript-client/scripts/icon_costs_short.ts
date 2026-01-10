@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+//    [Embed(source="/_assets/assets.swf", symbol="icon_costs_short")]
 
 /**
  * icon_costs_short - Short icon component for displaying costs

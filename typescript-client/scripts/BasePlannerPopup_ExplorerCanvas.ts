@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="BasePlannerPopup_ExplorerCanvas")]
 
 /**
  * BasePlannerPopup_ExplorerCanvas - Explorer canvas for base planner popup

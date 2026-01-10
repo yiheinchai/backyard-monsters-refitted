@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="housingBunkerHit")]
 
 /**
  * housingBunkerHit - Housing bunker hit animation component

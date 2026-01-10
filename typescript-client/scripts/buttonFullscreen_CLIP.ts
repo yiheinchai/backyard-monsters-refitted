@@ -1,4 +1,5 @@
 import { buttonFullscreen } from './buttonFullscreen';
+//    [Embed(source="/_assets/assets.swf", symbol="buttonFullscreen_CLIP")]
 
 /**
  * buttonFullscreen_CLIP - CLIP class for fullscreen button

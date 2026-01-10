@@ -1,4 +1,5 @@
 import { buttonZoom } from './buttonZoom';
+//    [Embed(source="/_assets/assets.swf", symbol="buttonZoom_CLIP")]
 
 /**
  * buttonZoom_CLIP - CLIP class for zoom button

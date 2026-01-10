@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import Event from 'openfl/events/Event';
+//    [Embed(source="/_assets/assets.swf", symbol="BUILDINGSARROW")]
 
 /**
  * BUILDINGSARROW - Animated Arrow Indicator

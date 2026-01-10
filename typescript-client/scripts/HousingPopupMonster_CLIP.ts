@@ -1,6 +1,7 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { HatcheryMonsterIcon_CLIP } from './HatcheryMonsterIcon_CLIP';
+//    [Embed(source="/_assets/assets.swf", symbol="HousingPopupMonster_CLIP")]
 
 /**
  * HousingPopupMonster_CLIP - CLIP class for housing popup monster item

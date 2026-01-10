@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="ui_buffIcon_CLIP")]
 
 /**
  * ui_buffIcon_CLIP - CLIP class for buff icon

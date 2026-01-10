@@ -2,6 +2,7 @@ import { BUILDINGSARROW } from './BUILDINGSARROW';
 import { creatureBar } from './creatureBar';
 import { Button_CLIP } from './Button_CLIP';
 import { frame_CLIP } from './frame_CLIP';
+//    [Embed(source="/_assets/assets.swf", symbol="ACADEMYPOPUP_CLIP")]
 
 /**
  * ACADEMYPOPUP_CLIP - Base UI clip class for Academy popup

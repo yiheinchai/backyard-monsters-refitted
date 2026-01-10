@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+//    [Embed(source="/_assets/assets.swf", symbol="ChatBox_msg_name_CLIP")]
 
 /**
  * ChatBox_msg_name_CLIP - CLIP class for chat box message name

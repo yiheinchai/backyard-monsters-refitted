@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="UI_VISITOR_CLIP")]
 
 /**
  * UI_VISITOR_CLIP - CLIP class for visitor UI

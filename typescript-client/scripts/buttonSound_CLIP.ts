@@ -1,4 +1,5 @@
 import { buttonSound } from './buttonSound';
+//    [Embed(source="/_assets/assets.swf", symbol="buttonSound_CLIP")]
 
 /**
  * buttonSound_CLIP - CLIP class for sound button

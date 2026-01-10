@@ -6,6 +6,7 @@ import { creatureBar } from './creatureBar';
 import { frame_CLIP } from './frame_CLIP';
 import { HatcheryMonsterIcon_CLIP } from './HatcheryMonsterIcon_CLIP';
 import { ScrollSet_CLIP } from './ScrollSet_CLIP';
+//    [Embed(source="/_assets/assets.swf", symbol="HATCHERYCCPOPUP_CLIP")]
 
 /**
  * HATCHERYCCPOPUP_CLIP - CLIP class for hatchery CC popup

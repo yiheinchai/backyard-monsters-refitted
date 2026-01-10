@@ -1,6 +1,7 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
+//    [Embed(source="/_assets/assets.swf", symbol="screenshot_ui_CLIP")]
 
 /**
  * screenshot_ui_CLIP - CLIP class for screenshot UI with filters

@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+//    [Embed(source="/_assets/assets.swf", symbol="PlayerBaseInferno_CLIP")]
 
 /**
  * PlayerBaseInferno_CLIP - CLIP class for Inferno player base display

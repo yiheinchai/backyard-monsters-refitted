@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="icon_gifts")]
 
 /**
  * icon_gifts - Icon component for displaying gifts with counter

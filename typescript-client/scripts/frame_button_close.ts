@@ -1,4 +1,5 @@
 import BitmapData from 'openfl/display/BitmapData';
+//    [Embed(source="/_assets/2050_frame_button_close_frame_button_close.png")]
 
 /**
  * frame_button_close - BitmapData asset for frame close button

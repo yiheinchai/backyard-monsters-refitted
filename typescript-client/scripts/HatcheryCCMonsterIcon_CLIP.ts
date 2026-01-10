@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import { HatcheryMonsterIcon_CLIP } from './HatcheryMonsterIcon_CLIP';
+//    [Embed(source="/_assets/assets.swf", symbol="HatcheryCCMonsterIcon_CLIP")]
 
 /**
  * HatcheryCCMonsterIcon_CLIP - CLIP class for hatchery CC monster icon

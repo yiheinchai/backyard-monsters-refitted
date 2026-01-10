@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+//    [Embed(source="/_assets/assets.swf", symbol="frontpage_stonebtn")]
 
 /**
  * frontpage_stonebtn - Frontpage stone button component

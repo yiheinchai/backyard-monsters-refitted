@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import { BasePlanner_FrameMask } from './BasePlanner_FrameMask';
+//    [Embed(source="/_assets/assets.swf", symbol="BasePlannerPopup_DisplayViewContainer")]
 
 /**
  * BasePlannerPopup_DisplayViewContainer - Display view container for base planner

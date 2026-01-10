@@ -4,6 +4,7 @@ import { Button_CLIP } from './Button_CLIP';
 import { ButtonBrown_CLIP } from './ButtonBrown_CLIP';
 import { creatureBarAdv } from './creatureBarAdv';
 import { frame3_CLIP } from './frame3_CLIP';
+//    [Embed(source="/_assets/assets.swf", symbol="SIEGEBUILDINGPOPUP_CLIP")]
 
 /**
  * SIEGEBUILDINGPOPUP_CLIP - CLIP class for siege building popup

@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="meterBar_rounded_blue_CLIP")]
 
 /**
  * meterBar_rounded_blue_CLIP - CLIP class for blue rounded meter bar

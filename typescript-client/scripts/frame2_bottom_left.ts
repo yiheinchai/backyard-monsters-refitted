@@ -1,4 +1,5 @@
 import BitmapData from 'openfl/display/BitmapData';
+//    [Embed(source="/_assets/2061_frame2_bottom_left_frame2_bottom_left.png")]
 
 /**
  * frame2_bottom_left - BitmapData asset for frame2 bottom left corner

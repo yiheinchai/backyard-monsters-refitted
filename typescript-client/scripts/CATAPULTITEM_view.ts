@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="CATAPULTITEM_view")]
 
 /**
  * CATAPULTITEM_view - View component for catapult item

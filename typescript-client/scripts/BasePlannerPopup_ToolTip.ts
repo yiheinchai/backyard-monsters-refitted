@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+//    [Embed(source="/_assets/assets.swf", symbol="BasePlannerPopup_ToolTip")]
 
 /**
  * BasePlannerPopup_ToolTip - Tooltip for base planner popup

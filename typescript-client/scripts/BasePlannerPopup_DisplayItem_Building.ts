@@ -1,4 +1,5 @@
 import MovieClip from 'openfl/display/MovieClip';
+//    [Embed(source="/_assets/assets.swf", symbol="BasePlannerPopup_DisplayItem_Building")]
 
 /**
  * BasePlannerPopup_DisplayItem_Building - Display item for building in base planner

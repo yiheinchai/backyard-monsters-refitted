@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+//    [Embed(source="/_assets/assets.swf", symbol="buttonReinforcement_CLIP")]
 
 /**
  * buttonReinforcement_CLIP - CLIP class for reinforcement button

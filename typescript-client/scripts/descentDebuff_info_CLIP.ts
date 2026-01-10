@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
+//    [Embed(source="/_assets/assets.swf", symbol="descentDebuff_info_CLIP")]
 
 /**
  * descentDebuff_info_CLIP - CLIP class for descent debuff info display

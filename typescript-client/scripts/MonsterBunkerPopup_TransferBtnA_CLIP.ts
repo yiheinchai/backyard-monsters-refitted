@@ -2,6 +2,7 @@ import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
 import { HatcheryMonsterIcon_CLIP } from './HatcheryMonsterIcon_CLIP';
+//    [Embed(source="/_assets/assets.swf", symbol="MonsterBunkerPopup_TransferBtnA_CLIP")]
 
 /**
  * MonsterBunkerPopup_TransferBtnA_CLIP - CLIP class for bunker transfer button A

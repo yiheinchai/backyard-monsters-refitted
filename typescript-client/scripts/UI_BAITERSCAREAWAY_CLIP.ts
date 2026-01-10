@@ -1,5 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import { Button_CLIP } from './Button_CLIP';
+//    [Embed(source="/_assets/assets.swf", symbol="UI_BAITERSCAREAWAY_CLIP")]
 
 /**
  * UI_BAITERSCAREAWAY_CLIP - CLIP class for baiter scare away UI

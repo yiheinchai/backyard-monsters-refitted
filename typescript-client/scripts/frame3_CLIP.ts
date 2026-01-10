@@ -1,4 +1,5 @@
 import { frame3 } from './frame3';
+//    [Embed(source="/_assets/assets.swf", symbol="frame3_CLIP")]
 
 /**
  * frame3_CLIP - CLIP class for frame3
