@@ -1,6 +1,6 @@
-import { MovieClip } from "openfl/display/MovieClip";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Point } from "openfl/geom/Point";
+import MovieClip from "openfl/display/MovieClip";
+import MouseEvent from "openfl/events/MouseEvent";
+import Point from "openfl/geom/Point";
 
 import { SecNum } from "./com/cc/utils/SecNum";
 import { EnumInvasionType } from "./com/monsters/enums/EnumInvasionType";

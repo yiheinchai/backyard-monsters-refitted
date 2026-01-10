@@ -1,5 +1,5 @@
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { MapRoom3 } from "../MapRoom3";
 import { Bookmark } from "./Bookmark";

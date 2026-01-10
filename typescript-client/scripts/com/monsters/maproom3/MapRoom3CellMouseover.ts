@@ -1,14 +1,14 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { Loader } from "openfl/display/Loader";
-import { Sprite } from "openfl/display/Sprite";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { DropShadowFilter } from "openfl/filters/DropShadowFilter";
-import { URLRequest } from "openfl/net/URLRequest";
-import { TextField } from "openfl/text/TextField";
-import { TextFormat } from "openfl/text/TextFormat";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import DisplayObject from "openfl/display/DisplayObject";
+import Loader from "openfl/display/Loader";
+import Sprite from "openfl/display/Sprite";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import MouseEvent from "openfl/events/MouseEvent";
+import DropShadowFilter from "openfl/filters/DropShadowFilter";
+import URLRequest from "openfl/net/URLRequest";
+import TextField from "openfl/text/TextField";
+import TextFormat from "openfl/text/TextFormat";
 
 import { ALLIANCES } from "../alliances/ALLIANCES";
 import { ImageCache } from "../display/ImageCache";

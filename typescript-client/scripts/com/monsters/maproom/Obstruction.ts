@@ -1,4 +1,4 @@
-import { Rectangle } from "openfl/geom/Rectangle";
+import Rectangle from "openfl/geom/Rectangle";
 
 /**
  * Obstruction - manages blocked areas on the map room.

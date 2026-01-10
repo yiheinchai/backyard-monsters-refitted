@@ -1,5 +1,5 @@
-import { MovieClip } from 'openfl/display/MovieClip';
-import { TextField } from 'openfl/text/TextField';
+import MovieClip from 'openfl/display/MovieClip';
+import TextField from 'openfl/text/TextField';
 import { Button_CLIP } from './Button_CLIP';
 import { BUILDINGSARROW } from './BUILDINGSARROW';
 import { frame_CLIP } from './frame_CLIP';

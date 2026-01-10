@@ -1,10 +1,10 @@
-import { MovieClip } from 'openfl/display/MovieClip';
-import { Shape } from 'openfl/display/Shape';
-import { Event } from 'openfl/events/Event';
-import { MouseEvent } from 'openfl/events/MouseEvent';
-import { GlowFilter } from 'openfl/filters/GlowFilter';
-import { Point } from 'openfl/geom/Point';
-import { Rectangle } from 'openfl/geom/Rectangle';
+import MovieClip from 'openfl/display/MovieClip';
+import Shape from 'openfl/display/Shape';
+import Event from 'openfl/events/Event';
+import MouseEvent from 'openfl/events/MouseEvent';
+import GlowFilter from 'openfl/filters/GlowFilter';
+import Point from 'openfl/geom/Point';
+import Rectangle from 'openfl/geom/Rectangle';
 import { TweenLite } from 'gs/TweenLite';
 import { BuildingOverlay } from './com/monsters/display/BuildingOverlay';
 import { IAttackable } from './com/monsters/interfaces/IAttackable';

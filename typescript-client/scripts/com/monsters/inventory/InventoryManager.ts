@@ -1,4 +1,4 @@
-import { Point } from "openfl/geom/Point";
+import Point from "openfl/geom/Point";
 
 import { SecNum } from "../../cc/utils/SecNum";
 import { BaseTemplateNode } from "../baseplanner/BaseTemplateNode";

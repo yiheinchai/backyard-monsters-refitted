@@ -1,7 +1,7 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Event } from "openfl/events/Event";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import MovieClip from "openfl/display/MovieClip";
+import Event from "openfl/events/Event";
 
 import { ImageCache } from "../../../display/ImageCache";
 import { MapRoomManager } from "../../../maproom_manager/MapRoomManager";

@@ -1,8 +1,8 @@
-import { MovieClip } from 'openfl/display/MovieClip';
-import { Event } from 'openfl/events/Event';
-import { MouseEvent } from 'openfl/events/MouseEvent';
-import { Point } from 'openfl/geom/Point';
-import { Rectangle } from 'openfl/geom/Rectangle';
+import MovieClip from 'openfl/display/MovieClip';
+import Event from 'openfl/events/Event';
+import MouseEvent from 'openfl/events/MouseEvent';
+import Point from 'openfl/geom/Point';
+import Rectangle from 'openfl/geom/Rectangle';
 import { InstanceManager } from './com/monsters/managers/InstanceManager';
 import { PLANNERPOPUP_CLIP } from './PLANNERPOPUP_CLIP';
 import { plannerBuilding } from './plannerBuilding';

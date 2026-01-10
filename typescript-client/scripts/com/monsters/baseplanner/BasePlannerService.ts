@@ -1,4 +1,4 @@
-import { EventDispatcher } from "openfl/events/EventDispatcher";
+import EventDispatcher from "openfl/events/EventDispatcher";
 
 import { BasePlannerServiceEvent } from "./events/BasePlannerServiceEvent";
 import { BasePlanner } from "./BasePlanner";

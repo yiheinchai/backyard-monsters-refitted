@@ -1,5 +1,5 @@
-import { Event } from "openfl/events/Event";
-import { EventDispatcher } from "openfl/events/EventDispatcher";
+import Event from "openfl/events/Event";
+import EventDispatcher from "openfl/events/EventDispatcher";
 
 import { Component } from "./Component";
 

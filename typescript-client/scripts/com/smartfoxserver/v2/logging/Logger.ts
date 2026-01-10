@@ -1,4 +1,4 @@
-import { EventDispatcher } from "openfl/events/EventDispatcher";
+import EventDispatcher from "openfl/events/EventDispatcher";
 import { LoggerEvent } from "./LoggerEvent";
 import { LogLevel } from "./LogLevel";
 

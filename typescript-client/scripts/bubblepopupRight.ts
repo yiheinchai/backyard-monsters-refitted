@@ -1,6 +1,6 @@
-import { DropShadowFilter } from 'openfl/filters/DropShadowFilter';
-import { Rectangle } from 'openfl/geom/Rectangle';
-import { TextFieldAutoSize } from 'openfl/text/TextFieldAutoSize';
+import DropShadowFilter from 'openfl/filters/DropShadowFilter';
+import Rectangle from 'openfl/geom/Rectangle';
+import TextFieldAutoSize from 'openfl/text/TextFieldAutoSize';
 import { TweenLite } from 'gs/TweenLite';
 import { Elastic } from 'gs/easing';
 import { bubblepopupRight_CLIP } from './bubblepopupRight_CLIP';

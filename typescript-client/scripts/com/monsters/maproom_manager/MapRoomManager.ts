@@ -1,4 +1,4 @@
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
 
 import { MapRoom3 } from "../maproom3/MapRoom3";
 import { MapRoom3Cell } from "../maproom3/MapRoom3Cell";

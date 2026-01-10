@@ -1,9 +1,9 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { Loader } from "openfl/display/Loader";
-import { Event } from "openfl/events/Event";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { URLRequest } from "openfl/net/URLRequest";
-import { LoaderContext } from "openfl/system/LoaderContext";
+import Bitmap from "openfl/display/Bitmap";
+import Loader from "openfl/display/Loader";
+import Event from "openfl/events/Event";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import URLRequest from "openfl/net/URLRequest";
+import LoaderContext from "openfl/system/LoaderContext";
 
 import { MapRoom } from "../../MapRoom";
 import { PlayerHandler } from "../../PlayerHandler";

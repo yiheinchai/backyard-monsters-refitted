@@ -1,7 +1,7 @@
-import { Point } from "openfl/geom/Point";
-import { Shape } from "openfl/display/Shape";
-import { Sprite } from "openfl/display/Sprite";
-import { GlowFilter } from "openfl/filters/GlowFilter";
+import Point from "openfl/geom/Point";
+import Shape from "openfl/display/Shape";
+import Sprite from "openfl/display/Sprite";
+import GlowFilter from "openfl/filters/GlowFilter";
 import { TweenLite } from "gs/TweenLite";
 
 import { BYMConfig } from "../../configs/BYMConfig";

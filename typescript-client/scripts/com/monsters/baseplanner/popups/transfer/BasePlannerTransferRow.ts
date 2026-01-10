@@ -1,9 +1,9 @@
-import { Event } from "openfl/events/Event";
-import { KeyboardEvent } from "openfl/events/KeyboardEvent";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { ColorTransform } from "openfl/geom/ColorTransform";
-import { TextFieldType } from "openfl/text/TextFieldType";
-import { Keyboard } from "openfl/ui/Keyboard";
+import Event from "openfl/events/Event";
+import KeyboardEvent from "openfl/events/KeyboardEvent";
+import MouseEvent from "openfl/events/MouseEvent";
+import ColorTransform from "openfl/geom/ColorTransform";
+import TextFieldType from "openfl/text/TextFieldType";
+import Keyboard from "openfl/ui/Keyboard";
 
 import { BaseTemplate } from "../../../BaseTemplate";
 import { SubscriptionHandler } from "../../../../subscriptions/SubscriptionHandler";

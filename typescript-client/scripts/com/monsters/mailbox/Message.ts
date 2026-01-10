@@ -1,11 +1,11 @@
-import { StageDisplayState } from "openfl/display/StageDisplayState";
-import { Event } from "openfl/events/Event";
-import { FullScreenEvent } from "openfl/events/FullScreenEvent";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { KeyboardEvent } from "openfl/events/KeyboardEvent";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { TimerEvent } from "openfl/events/TimerEvent";
-import { Timer } from "openfl/utils/Timer";
+import StageDisplayState from "openfl/display/StageDisplayState";
+import Event from "openfl/events/Event";
+import FullScreenEvent from "openfl/events/FullScreenEvent";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import KeyboardEvent from "openfl/events/KeyboardEvent";
+import MouseEvent from "openfl/events/MouseEvent";
+import TimerEvent from "openfl/events/TimerEvent";
+import Timer from "openfl/utils/Timer";
 
 import { MapRoom } from "../maproom_advanced/MapRoom";
 import { MapRoomManager } from "../maproom_manager/MapRoomManager";

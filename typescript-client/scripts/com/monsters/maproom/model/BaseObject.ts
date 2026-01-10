@@ -1,9 +1,9 @@
-import { Loader } from "openfl/display/Loader";
-import { Event } from "openfl/events/Event";
-import { EventDispatcher } from "openfl/events/EventDispatcher";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { URLRequest } from "openfl/net/URLRequest";
-import { LoaderContext } from "openfl/system/LoaderContext";
+import Loader from "openfl/display/Loader";
+import Event from "openfl/events/Event";
+import EventDispatcher from "openfl/events/EventDispatcher";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import URLRequest from "openfl/net/URLRequest";
+import LoaderContext from "openfl/system/LoaderContext";
 
 import { SecNum } from "../../../../cc/utils/SecNum";
 

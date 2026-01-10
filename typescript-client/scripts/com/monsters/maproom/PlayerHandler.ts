@@ -1,5 +1,5 @@
-import { Sprite } from "openfl/display/Sprite";
-import { MouseEvent } from "openfl/events/MouseEvent";
+import Sprite from "openfl/display/Sprite";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { WMBASE } from "../ai/WMBASE";
 import { EnumYardType } from "../enums/EnumYardType";

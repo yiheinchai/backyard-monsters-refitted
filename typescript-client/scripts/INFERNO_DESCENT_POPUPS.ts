@@ -1,8 +1,8 @@
-import { MovieClip } from 'openfl/display/MovieClip';
-import { Event } from 'openfl/events/Event';
-import { MouseEvent } from 'openfl/events/MouseEvent';
-import { TextField } from 'openfl/text/TextField';
-import { Point } from 'openfl/geom/Point';
+import MovieClip from 'openfl/display/MovieClip';
+import Event from 'openfl/events/Event';
+import MouseEvent from 'openfl/events/MouseEvent';
+import TextField from 'openfl/text/TextField';
+import Point from 'openfl/geom/Point';
 import { WMBASE } from './com/monsters/ai/WMBASE';
 import { EnumYardType } from './com/monsters/enums/EnumYardType';
 import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';

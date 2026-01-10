@@ -1,6 +1,6 @@
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { Sprite } from "openfl/display/Sprite";
-import { Event } from "openfl/events/Event";
+import DisplayObject from "openfl/display/DisplayObject";
+import Sprite from "openfl/display/Sprite";
+import Event from "openfl/events/Event";
 import { TweenPlugin } from "./plugins/TweenPlugin";
 import { TweenInfo } from "./utils/tween/TweenInfo";
 

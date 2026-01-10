@@ -1,8 +1,8 @@
 import { DisplayObject, DisplayObjectContainer, Loader, MovieClip, Sprite } from "openfl/display";
 import { Event, IOErrorEvent, MouseEvent } from "openfl/events";
-import { Rectangle } from "openfl/geom";
-import { URLRequest } from "openfl/net";
-import { TextFieldAutoSize } from "openfl/text";
+import Rectangle from "openfl/geom";
+import URLRequest from "openfl/net";
+import TextFieldAutoSize from "openfl/text";
 
 import { BaseBuff } from "./com/monsters/baseBuffs/BaseBuff";
 import { BaseBuffHandler } from "./com/monsters/baseBuffs/BaseBuffHandler";

@@ -1,4 +1,4 @@
-import { Event } from "openfl/events/Event";
+import Event from "openfl/events/Event";
 
 import { ITargetable } from "../interfaces/ITargetable";
 import { BFOUNDATION } from "../../../BFOUNDATION";

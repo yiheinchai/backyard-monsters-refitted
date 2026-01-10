@@ -1,5 +1,5 @@
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { MouseEvent } from "openfl/events/MouseEvent";
+import DisplayObject from "openfl/display/DisplayObject";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { Chat } from "../chat/Chat";
 import { MapRoom3 } from "../maproom3/MapRoom3";

@@ -1,4 +1,4 @@
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
 
 import { EnumYardType } from "../../enums/EnumYardType";
 import { MapRoom3Cell } from "../MapRoom3Cell";

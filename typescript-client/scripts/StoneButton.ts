@@ -1,10 +1,10 @@
-import { Bitmap } from 'openfl/display/Bitmap';
-import { BitmapData } from 'openfl/display/BitmapData';
-import { Sprite } from 'openfl/display/Sprite';
-import { ColorTransform } from 'openfl/geom/ColorTransform';
-import { Matrix } from 'openfl/geom/Matrix';
-import { Point } from 'openfl/geom/Point';
-import { Rectangle } from 'openfl/geom/Rectangle';
+import Bitmap from 'openfl/display/Bitmap';
+import BitmapData from 'openfl/display/BitmapData';
+import Sprite from 'openfl/display/Sprite';
+import ColorTransform from 'openfl/geom/ColorTransform';
+import Matrix from 'openfl/geom/Matrix';
+import Point from 'openfl/geom/Point';
+import Rectangle from 'openfl/geom/Rectangle';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { ImageText } from './com/monsters/display/ImageText';
 import { KEYS } from './KEYS';

@@ -1,7 +1,7 @@
-import { DisplayObjectContainer } from 'openfl/display/DisplayObjectContainer';
-import { Event } from 'openfl/events/Event';
-import { Point } from 'openfl/geom/Point';
-import { Rectangle } from 'openfl/geom/Rectangle';
+import DisplayObjectContainer from 'openfl/display/DisplayObjectContainer';
+import Event from 'openfl/events/Event';
+import Point from 'openfl/geom/Point';
+import Rectangle from 'openfl/geom/Rectangle';
 import { ICoreBuilding } from './com/monsters/interfaces/ICoreBuilding';
 import { ITickable } from './com/monsters/interfaces/ITickable';
 import { MonsterBase } from './com/monsters/monsters/MonsterBase';

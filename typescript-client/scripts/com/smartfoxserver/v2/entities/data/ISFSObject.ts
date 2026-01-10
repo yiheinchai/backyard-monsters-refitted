@@ -1,4 +1,4 @@
-import { ByteArray } from "openfl/utils/ByteArray";
+import ByteArray from "openfl/utils/ByteArray";
 import { ISFSArray } from "./ISFSArray";
 import { SFSDataWrapper } from "./SFSDataWrapper";
 

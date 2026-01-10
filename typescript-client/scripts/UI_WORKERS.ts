@@ -1,6 +1,6 @@
-import { DisplayObject } from 'openfl/display/DisplayObject';
-import { MovieClip } from 'openfl/display/MovieClip';
-import { MouseEvent } from 'openfl/events/MouseEvent';
+import DisplayObject from 'openfl/display/DisplayObject';
+import MovieClip from 'openfl/display/MovieClip';
+import MouseEvent from 'openfl/events/MouseEvent';
 import { Chat } from './com/monsters/chat/Chat';
 import { icon_worker } from './icon_worker';
 import { icon_worker_inferno } from './icon_worker_inferno';

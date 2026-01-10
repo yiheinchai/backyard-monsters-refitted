@@ -1,6 +1,6 @@
-import { MovieClip } from 'openfl/display/MovieClip';
-import { MouseEvent } from 'openfl/events/MouseEvent';
-import { Point } from 'openfl/geom/Point';
+import MovieClip from 'openfl/display/MovieClip';
+import MouseEvent from 'openfl/events/MouseEvent';
+import Point from 'openfl/geom/Point';
 import { InstanceManager } from './com/monsters/managers/InstanceManager';
 import { BFOUNDATION } from './BFOUNDATION';
 import { BUILDING6 } from './BUILDING6';

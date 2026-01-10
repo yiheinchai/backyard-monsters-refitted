@@ -1,12 +1,12 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Sprite } from "openfl/display/Sprite";
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Point } from "openfl/geom/Point";
-import { Rectangle } from "openfl/geom/Rectangle";
-import { Timer } from "openfl/utils/Timer";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import MovieClip from "openfl/display/MovieClip";
+import Sprite from "openfl/display/Sprite";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
+import Point from "openfl/geom/Point";
+import Rectangle from "openfl/geom/Rectangle";
+import Timer from "openfl/utils/Timer";
 import { TweenLite, Quad } from "gs/TweenLite";
 
 import { ImageCache } from "../../display/ImageCache";

@@ -1,10 +1,10 @@
-import { BitmapData } from "openfl/display/BitmapData";
-import { Sprite } from "openfl/display/Sprite";
-import { BlurFilter } from "openfl/filters/BlurFilter";
-import { ColorMatrixFilter } from "openfl/filters/ColorMatrixFilter";
-import { ColorTransform } from "openfl/geom/ColorTransform";
-import { Matrix } from "openfl/geom/Matrix";
-import { Point } from "openfl/geom/Point";
+import BitmapData from "openfl/display/BitmapData";
+import Sprite from "openfl/display/Sprite";
+import BlurFilter from "openfl/filters/BlurFilter";
+import ColorMatrixFilter from "openfl/filters/ColorMatrixFilter";
+import ColorTransform from "openfl/geom/ColorTransform";
+import Matrix from "openfl/geom/Matrix";
+import Point from "openfl/geom/Point";
 import { ColorMatrix } from "../../gskinner/geom/ColorMatrix";
 import { Embed } from "../../../core/Embed";
 

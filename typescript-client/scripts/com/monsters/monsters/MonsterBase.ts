@@ -1,11 +1,11 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { BitmapFilter } from "openfl/filters/BitmapFilter";
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { Event } from "openfl/events/Event";
-import { GlowFilter } from "openfl/filters/GlowFilter";
-import { Point } from "openfl/geom/Point";
-import { Rectangle } from "openfl/geom/Rectangle";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import BitmapFilter from "openfl/filters/BitmapFilter";
+import DisplayObject from "openfl/display/DisplayObject";
+import Event from "openfl/events/Event";
+import GlowFilter from "openfl/filters/GlowFilter";
+import Point from "openfl/geom/Point";
+import Rectangle from "openfl/geom/Rectangle";
 
 import { SecNum } from "../../cc/utils/SecNum";
 import { GameObject } from "../GameObject";

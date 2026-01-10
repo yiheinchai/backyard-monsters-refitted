@@ -1,9 +1,9 @@
-import { MovieClip } from "openfl/display/MovieClip";
-import { Sprite } from "openfl/display/Sprite";
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Point } from "openfl/geom/Point";
-import { Rectangle } from "openfl/geom/Rectangle";
+import MovieClip from "openfl/display/MovieClip";
+import Sprite from "openfl/display/Sprite";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
+import Point from "openfl/geom/Point";
+import Rectangle from "openfl/geom/Rectangle";
 
 import { BuildingItem } from "./components/BuildingItem";
 import { DashedLine } from "./components/DashedLine";

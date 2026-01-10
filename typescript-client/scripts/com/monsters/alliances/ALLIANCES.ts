@@ -1,4 +1,4 @@
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
 
 import { AllyInfo } from "./AllyInfo";
 

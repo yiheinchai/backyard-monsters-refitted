@@ -1,8 +1,8 @@
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Rectangle } from "openfl/geom/Rectangle";
+import DisplayObject from "openfl/display/DisplayObject";
+import MovieClip from "openfl/display/MovieClip";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
+import Rectangle from "openfl/geom/Rectangle";
 import { Embed } from "../../../core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="ScrollSetH_CLIP")]

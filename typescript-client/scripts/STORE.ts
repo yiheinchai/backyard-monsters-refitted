@@ -1,6 +1,6 @@
 import { Bitmap, BitmapData, MovieClip, Sprite } from "openfl/display";
 import { Event, MouseEvent } from "openfl/events";
-import { Rectangle } from "openfl/geom";
+import Rectangle from "openfl/geom";
 
 import { SecNum } from "./com/cc/utils/SecNum";
 import { BYMConfig } from "./com/monsters/configs/BYMConfig";

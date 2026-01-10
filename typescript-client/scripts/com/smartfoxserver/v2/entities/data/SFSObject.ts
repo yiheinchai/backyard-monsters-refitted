@@ -1,4 +1,4 @@
-import { ByteArray } from "openfl/utils/ByteArray";
+import ByteArray from "openfl/utils/ByteArray";
 import { DefaultObjectDumpFormatter } from "../../protocol/serialization/DefaultObjectDumpFormatter";
 import { DefaultSFSDataSerializer } from "../../protocol/serialization/DefaultSFSDataSerializer";
 import { ISFSDataSerializer } from "../../protocol/serialization/ISFSDataSerializer";

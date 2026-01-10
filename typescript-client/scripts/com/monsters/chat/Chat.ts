@@ -1,5 +1,5 @@
-import { DisplayObjectContainer } from "openfl/display/DisplayObjectContainer";
-import { StageDisplayState } from "openfl/display/StageDisplayState";
+import DisplayObjectContainer from "openfl/display/DisplayObjectContainer";
+import StageDisplayState from "openfl/display/StageDisplayState";
 
 import { BYMChat } from "./BYMChat";
 import { MapRoomManager } from "../maproom_manager/MapRoomManager";

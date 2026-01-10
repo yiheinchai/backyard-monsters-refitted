@@ -1,9 +1,9 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Timer } from "openfl/utils/Timer";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import DisplayObject from "openfl/display/DisplayObject";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
+import Timer from "openfl/utils/Timer";
 
 import { Chat } from "../chat/Chat";
 import { ImageCache } from "../display/ImageCache";

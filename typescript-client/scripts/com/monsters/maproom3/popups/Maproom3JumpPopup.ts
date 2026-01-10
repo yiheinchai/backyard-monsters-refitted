@@ -1,7 +1,7 @@
-import { Event } from "openfl/events/Event";
-import { KeyboardEvent } from "openfl/events/KeyboardEvent";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Keyboard } from "openfl/ui/Keyboard";
+import Event from "openfl/events/Event";
+import KeyboardEvent from "openfl/events/KeyboardEvent";
+import MouseEvent from "openfl/events/MouseEvent";
+import Keyboard from "openfl/ui/Keyboard";
 
 import { EnumYardType } from "../../enums/EnumYardType";
 import { IMapRoomCell } from "../../maproom_manager/IMapRoomCell";

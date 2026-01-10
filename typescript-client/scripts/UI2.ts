@@ -1,6 +1,6 @@
 import { MovieClip, StageDisplayState, TextField } from "openfl/display";
 import { Event, MouseEvent } from "openfl/events";
-import { Rectangle } from "openfl/geom";
+import Rectangle from "openfl/geom";
 import { TextFieldAutoSize, TextFormat, TextFormatAlign } from "openfl/text";
 
 import { ABTest } from "./com/cc/tests/ABTest";

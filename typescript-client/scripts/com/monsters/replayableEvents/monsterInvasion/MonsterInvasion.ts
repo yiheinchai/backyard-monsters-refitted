@@ -1,4 +1,4 @@
-import { Event } from "openfl/events/Event";
+import Event from "openfl/events/Event";
 
 import { InstanceManager } from "../../managers/InstanceManager";
 import { ReplayableEvent } from "../ReplayableEvent";

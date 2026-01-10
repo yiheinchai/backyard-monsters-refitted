@@ -1,9 +1,9 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { Sprite } from "openfl/display/Sprite";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Point } from "openfl/geom/Point";
-import { TextFieldAutoSize } from "openfl/text/TextFieldAutoSize";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import Sprite from "openfl/display/Sprite";
+import MouseEvent from "openfl/events/MouseEvent";
+import Point from "openfl/geom/Point";
+import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
 
 import { MapRoom3AssetCache } from "./MapRoom3AssetCache";
 

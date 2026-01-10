@@ -1,6 +1,6 @@
 import { DisplayObject, MovieClip } from "openfl/display";
-import { MouseEvent } from "openfl/events";
-import { Point } from "openfl/geom";
+import MouseEvent from "openfl/events";
+import Point from "openfl/geom";
 
 import { SecNum } from "./com/cc/utils/SecNum";
 import { Console } from "./com/monsters/debug/Console";

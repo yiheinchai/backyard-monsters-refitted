@@ -1,9 +1,9 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Point } from "openfl/geom/Point";
-import { Rectangle } from "openfl/geom/Rectangle";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import DisplayObject from "openfl/display/DisplayObject";
+import MouseEvent from "openfl/events/MouseEvent";
+import Point from "openfl/geom/Point";
+import Rectangle from "openfl/geom/Rectangle";
 
 import { SecNum } from "../../../cc/utils/SecNum";
 import { BYMConfig } from "../../configs/BYMConfig";

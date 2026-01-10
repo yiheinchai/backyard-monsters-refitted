@@ -1,7 +1,7 @@
-import { BitmapData } from "openfl/display/BitmapData";
-import { Matrix } from "openfl/geom/Matrix";
-import { Point } from "openfl/geom/Point";
-import { Rectangle } from "openfl/geom/Rectangle";
+import BitmapData from "openfl/display/BitmapData";
+import Matrix from "openfl/geom/Matrix";
+import Point from "openfl/geom/Point";
+import Rectangle from "openfl/geom/Rectangle";
 
 import { ParticlesObject } from "./ParticlesObject";
 

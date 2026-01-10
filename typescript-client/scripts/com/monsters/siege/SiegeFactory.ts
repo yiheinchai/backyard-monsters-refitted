@@ -1,4 +1,4 @@
-import { MouseEvent } from "openfl/events/MouseEvent";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { SecNum } from "../../cc/utils/SecNum";
 import { SiegeBuilding } from "./SiegeBuilding";

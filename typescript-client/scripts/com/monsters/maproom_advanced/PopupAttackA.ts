@@ -1,11 +1,11 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { Loader } from "openfl/display/Loader";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Event } from "openfl/events/Event";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { URLRequest } from "openfl/net/URLRequest";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import Loader from "openfl/display/Loader";
+import MovieClip from "openfl/display/MovieClip";
+import Event from "openfl/events/Event";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import MouseEvent from "openfl/events/MouseEvent";
+import URLRequest from "openfl/net/URLRequest";
 
 import { SecNum } from "../../cc/utils/SecNum";
 import { ALLIANCES } from "../alliances/ALLIANCES";

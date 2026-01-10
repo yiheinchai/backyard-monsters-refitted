@@ -1,8 +1,8 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Point } from "openfl/geom/Point";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
+import Point from "openfl/geom/Point";
 import { TweenLite } from "gs/TweenLite";
 
 import { ImageCache } from "../display/ImageCache";

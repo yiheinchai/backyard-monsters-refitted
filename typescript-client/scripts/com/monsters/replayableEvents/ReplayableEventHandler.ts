@@ -1,4 +1,4 @@
-import { Event } from "openfl/events/Event";
+import Event from "openfl/events/Event";
 
 import { ABTest } from "../../cc/tests/ABTest";
 import { Console } from "../debug/Console";

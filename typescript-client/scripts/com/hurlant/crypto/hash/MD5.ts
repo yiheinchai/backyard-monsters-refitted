@@ -1,5 +1,5 @@
-import { ByteArray } from "openfl/utils/ByteArray";
-import { Endian } from "openfl/utils/Endian";
+import ByteArray from "openfl/utils/ByteArray";
+import Endian from "openfl/utils/Endian";
 import { IHash } from "./IHash";
 
 /**

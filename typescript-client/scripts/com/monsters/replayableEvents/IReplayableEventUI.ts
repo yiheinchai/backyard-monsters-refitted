@@ -1,5 +1,5 @@
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { IEventDispatcher } from "openfl/events/IEventDispatcher";
+import DisplayObject from "openfl/display/DisplayObject";
+import IEventDispatcher from "openfl/events/IEventDispatcher";
 
 import { ReplayableEvent } from "./ReplayableEvent";
 

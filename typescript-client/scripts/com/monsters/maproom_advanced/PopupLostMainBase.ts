@@ -1,7 +1,7 @@
-import { Sprite } from "openfl/display/Sprite";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Point } from "openfl/geom/Point";
+import Sprite from "openfl/display/Sprite";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import MouseEvent from "openfl/events/MouseEvent";
+import Point from "openfl/geom/Point";
 
 import { MapRoom } from "./MapRoom";
 

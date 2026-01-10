@@ -1,12 +1,12 @@
-import { Event } from "openfl/events/Event";
-import { EventDispatcher } from "openfl/events/EventDispatcher";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { URLLoader } from "openfl/net/URLLoader";
-import { URLLoaderDataFormat } from "openfl/net/URLLoaderDataFormat";
-import { URLRequest } from "openfl/net/URLRequest";
-import { URLRequestMethod } from "openfl/net/URLRequestMethod";
-import { URLVariables } from "openfl/net/URLVariables";
-import { ByteArray } from "openfl/utils/ByteArray";
+import Event from "openfl/events/Event";
+import EventDispatcher from "openfl/events/EventDispatcher";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import URLLoader from "openfl/net/URLLoader";
+import URLLoaderDataFormat from "openfl/net/URLLoaderDataFormat";
+import URLRequest from "openfl/net/URLRequest";
+import URLRequestMethod from "openfl/net/URLRequestMethod";
+import URLVariables from "openfl/net/URLVariables";
+import ByteArray from "openfl/utils/ByteArray";
 import { Base64 } from "../../../../hurlant/util/Base64";
 import { BBEvent } from "./BBEvent";
 

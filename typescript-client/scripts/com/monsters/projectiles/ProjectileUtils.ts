@@ -1,6 +1,6 @@
-import { BitmapData } from "openfl/display/BitmapData";
-import { MovieClip } from "openfl/display/MovieClip";
-import { GlowFilter } from "openfl/filters/GlowFilter";
+import BitmapData from "openfl/display/BitmapData";
+import MovieClip from "openfl/display/MovieClip";
+import GlowFilter from "openfl/filters/GlowFilter";
 
 import { MovieClipUtils } from "../utils/MovieClipUtils";
 

@@ -1,8 +1,8 @@
-import { Bitmap } from 'openfl/display/Bitmap';
-import { BitmapData } from 'openfl/display/BitmapData';
-import { MovieClip } from 'openfl/display/MovieClip';
-import { Sprite } from 'openfl/display/Sprite';
-import { MouseEvent } from 'openfl/events/MouseEvent';
+import Bitmap from 'openfl/display/Bitmap';
+import BitmapData from 'openfl/display/BitmapData';
+import MovieClip from 'openfl/display/MovieClip';
+import Sprite from 'openfl/display/Sprite';
+import MouseEvent from 'openfl/events/MouseEvent';
 import { TweenLite } from 'gsap';
 import { Circ } from 'gsap/easing';
 import { ImageCache } from './com/monsters/display/ImageCache';

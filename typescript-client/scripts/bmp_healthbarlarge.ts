@@ -1,4 +1,4 @@
-import { BitmapData } from 'openfl/display/BitmapData';
+import BitmapData from 'openfl/display/BitmapData';
 import { Embed, EmbedImage } from "./core/Embed";
 //    [Embed(source="/_assets/1704_bmp_healthbarlarge_bmp_healthbarlarge.png")]
 

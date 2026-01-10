@@ -1,10 +1,10 @@
-import { Event } from "openfl/events/Event";
-import { EventDispatcher } from "openfl/events/EventDispatcher";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { ProgressEvent } from "openfl/events/ProgressEvent";
-import { SecurityErrorEvent } from "openfl/events/SecurityErrorEvent";
-import { Socket } from "openfl/net/Socket";
-import { ByteArray } from "openfl/utils/ByteArray";
+import Event from "openfl/events/Event";
+import EventDispatcher from "openfl/events/EventDispatcher";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import ProgressEvent from "openfl/events/ProgressEvent";
+import SecurityErrorEvent from "openfl/events/SecurityErrorEvent";
+import Socket from "openfl/net/Socket";
+import ByteArray from "openfl/utils/ByteArray";
 import { SmartFox } from "../SmartFox";
 import { ExtensionController } from "../controllers/ExtensionController";
 import { SystemController } from "../controllers/SystemController";

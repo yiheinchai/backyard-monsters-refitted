@@ -1,4 +1,4 @@
-import { MovieClip } from "openfl/display/MovieClip";
+import MovieClip from "openfl/display/MovieClip";
 
 /**
  * Container for building assets that can be cleared.

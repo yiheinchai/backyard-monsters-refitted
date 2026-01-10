@@ -1,7 +1,7 @@
-import { Loader } from "openfl/display/Loader";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { URLRequest } from "openfl/net/URLRequest";
+import Loader from "openfl/display/Loader";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import MouseEvent from "openfl/events/MouseEvent";
+import URLRequest from "openfl/net/URLRequest";
 
 import { MapRoom3FriendData } from "../data/MapRoom3FriendData";
 import { MapRoom3RelocatePopup } from "./MapRoom3RelocatePopup";

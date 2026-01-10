@@ -1,6 +1,6 @@
-import { MovieClip } from "openfl/display/MovieClip";
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
+import MovieClip from "openfl/display/MovieClip";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { RewardHandler } from "../../rewarding/RewardHandler";
 import { SubscriptionHandler } from "../SubscriptionHandler";

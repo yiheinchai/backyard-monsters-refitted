@@ -1,4 +1,4 @@
-import { Point } from "openfl/geom/Point";
+import Point from "openfl/geom/Point";
 
 import { ParticleText } from "./ParticleText";
 import { ParticleDamageItem_CLIP } from "./ParticleDamageItem_CLIP";

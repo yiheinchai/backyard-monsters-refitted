@@ -1,7 +1,7 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { Point } from "openfl/geom/Point";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import DisplayObject from "openfl/display/DisplayObject";
+import Point from "openfl/geom/Point";
 
 import { BYMConfig } from "../../../configs/BYMConfig";
 import { CreepSkinManager } from "../../../display/CreepSkinManager";

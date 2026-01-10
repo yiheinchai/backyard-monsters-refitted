@@ -1,13 +1,13 @@
-import { Sprite } from "openfl/display/Sprite";
-import { Stage } from "openfl/display/Stage";
-import { InteractiveObject } from "openfl/display/InteractiveObject";
-import { Event } from "openfl/events/Event";
-import { EventDispatcher } from "openfl/events/EventDispatcher";
-import { TextField } from "openfl/text/TextField";
-import { TextFieldAutoSize } from "openfl/text/TextFieldAutoSize";
-import { TextFormat } from "openfl/text/TextFormat";
-import { Shape } from "openfl/display/Shape";
-import { Graphics } from "openfl/display/Graphics";
+import Sprite from "openfl/display/Sprite";
+import Stage from "openfl/display/Stage";
+import InteractiveObject from "openfl/display/InteractiveObject";
+import Event from "openfl/events/Event";
+import EventDispatcher from "openfl/events/EventDispatcher";
+import TextField from "openfl/text/TextField";
+import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
+import TextFormat from "openfl/text/TextFormat";
+import Shape from "openfl/display/Shape";
+import Graphics from "openfl/display/Graphics";
 
 declare var GLOBAL: any;
 

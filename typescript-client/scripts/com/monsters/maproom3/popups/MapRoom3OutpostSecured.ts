@@ -1,4 +1,4 @@
-import { MouseEvent } from "openfl/events/MouseEvent";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { EnumYardType } from "../../enums/EnumYardType";
 import { MapRoom3Tutorial } from "../MapRoom3Tutorial";

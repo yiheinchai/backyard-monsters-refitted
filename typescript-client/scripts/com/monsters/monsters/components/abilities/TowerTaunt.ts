@@ -1,4 +1,4 @@
-import { Point } from "openfl/geom/Point";
+import Point from "openfl/geom/Point";
 
 import { Component } from "../Component";
 import { Targeting } from "../../Targeting";

@@ -1,4 +1,4 @@
-import { MouseEvent } from "openfl/events/MouseEvent";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { popup_juice_all } from "../../../popup_juice_all";
 

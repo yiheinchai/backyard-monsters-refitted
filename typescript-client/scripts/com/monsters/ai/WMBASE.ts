@@ -1,7 +1,7 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { MovieClip } from "openfl/display/MovieClip";
-import { MouseEvent } from "openfl/events/MouseEvent";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import MovieClip from "openfl/display/MovieClip";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { SecNum } from "../../cc/utils/SecNum";
 import { InstanceManager } from "../managers/InstanceManager";

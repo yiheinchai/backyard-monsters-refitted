@@ -1,5 +1,5 @@
-import { MovieClip } from 'openfl/display/MovieClip';
-import { MouseEvent } from 'openfl/events/MouseEvent';
+import MovieClip from 'openfl/display/MovieClip';
+import MouseEvent from 'openfl/events/MouseEvent';
 import { CreepTypeManager } from './com/monsters/creep_types/CreepTypeManager';
 import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
 import { Bandito } from './com/monsters/monsters/creeps/Bandito';

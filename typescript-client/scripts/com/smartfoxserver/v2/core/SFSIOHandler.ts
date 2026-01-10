@@ -1,4 +1,4 @@
-import { ByteArray } from "openfl/utils/ByteArray";
+import ByteArray from "openfl/utils/ByteArray";
 import { BitSwarmClient } from "../bitswarm/BitSwarmClient";
 import { IMessage } from "../bitswarm/IMessage";
 import { IoHandler } from "../bitswarm/IoHandler";

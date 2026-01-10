@@ -1,4 +1,4 @@
-import { BitmapFilter } from "openfl/filters/BitmapFilter";
+import BitmapFilter from "openfl/filters/BitmapFilter";
 import { TweenPlugin } from "./TweenPlugin";
 import { TweenInfo } from "../utils/tween/TweenInfo";
 import { HexColorsPlugin } from "./HexColorsPlugin";

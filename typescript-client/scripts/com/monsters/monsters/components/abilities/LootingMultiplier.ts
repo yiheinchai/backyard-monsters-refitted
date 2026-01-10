@@ -1,5 +1,5 @@
-import { BitmapFilter } from "openfl/filters/BitmapFilter";
-import { GlowFilter } from "openfl/filters/GlowFilter";
+import BitmapFilter from "openfl/filters/BitmapFilter";
+import GlowFilter from "openfl/filters/GlowFilter";
 
 import { MonsterBase } from "../../MonsterBase";
 import { CModifiableProperty } from "../CModifiableProperty";

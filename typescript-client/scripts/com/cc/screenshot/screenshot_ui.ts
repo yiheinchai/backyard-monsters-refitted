@@ -1,8 +1,8 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Point } from "openfl/geom/Point";
-import { FileReference } from "openfl/net/FileReference";
-import { ByteArray } from "openfl/utils/ByteArray";
+import Bitmap from "openfl/display/Bitmap";
+import MouseEvent from "openfl/events/MouseEvent";
+import Point from "openfl/geom/Point";
+import FileReference from "openfl/net/FileReference";
+import ByteArray from "openfl/utils/ByteArray";
 
 import { JPGEncoder } from "../../adobe/images/JPGEncoder";
 import { screenshot } from "./screenshot";

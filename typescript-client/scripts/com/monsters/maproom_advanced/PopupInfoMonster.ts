@@ -1,6 +1,6 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { Sprite } from "openfl/display/Sprite";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import Sprite from "openfl/display/Sprite";
 
 import { ImageCache } from "../display/ImageCache";
 

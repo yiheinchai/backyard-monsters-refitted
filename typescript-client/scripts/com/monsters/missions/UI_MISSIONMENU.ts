@@ -1,7 +1,7 @@
-import { MovieClip } from "openfl/display/MovieClip";
-import { Shape } from "openfl/display/Shape";
-import { Sprite } from "openfl/display/Sprite";
-import { MouseEvent } from "openfl/events/MouseEvent";
+import MovieClip from "openfl/display/MovieClip";
+import Shape from "openfl/display/Shape";
+import Sprite from "openfl/display/Sprite";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { TweenLite } from "../../../gs/TweenLite";
 import { Expo, Quad } from "../../../gs/easing";

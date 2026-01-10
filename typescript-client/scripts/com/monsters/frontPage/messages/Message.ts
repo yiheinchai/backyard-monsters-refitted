@@ -1,5 +1,5 @@
-import { MovieClip } from "openfl/display/MovieClip";
-import { MouseEvent } from "openfl/events/MouseEvent";
+import MovieClip from "openfl/display/MovieClip";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { FrontPageHandler } from "../FrontPageHandler";
 import { Category } from "../categories/Category";

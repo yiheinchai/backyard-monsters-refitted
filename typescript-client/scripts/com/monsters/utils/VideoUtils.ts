@@ -1,9 +1,9 @@
-import { Video } from "openfl/media/Video";
-import { NetConnection } from "openfl/net/NetConnection";
-import { NetStream } from "openfl/net/NetStream";
-import { AsyncErrorEvent } from "openfl/events/AsyncErrorEvent";
-import { NetStatusEvent } from "openfl/events/NetStatusEvent";
-import { SecurityErrorEvent } from "openfl/events/SecurityErrorEvent";
+import Video from "openfl/media/Video";
+import NetConnection from "openfl/net/NetConnection";
+import NetStream from "openfl/net/NetStream";
+import AsyncErrorEvent from "openfl/events/AsyncErrorEvent";
+import NetStatusEvent from "openfl/events/NetStatusEvent";
+import SecurityErrorEvent from "openfl/events/SecurityErrorEvent";
 
 /**
  * Utility functions for video streaming and playback.

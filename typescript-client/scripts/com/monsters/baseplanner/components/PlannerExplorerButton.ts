@@ -1,4 +1,4 @@
-import { MouseEvent } from "openfl/events/MouseEvent";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { PlannerExplorer } from "../PlannerExplorer";
 import { PlannerNode } from "../PlannerNode";

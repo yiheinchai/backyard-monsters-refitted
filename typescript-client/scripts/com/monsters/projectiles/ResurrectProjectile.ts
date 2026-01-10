@@ -1,7 +1,7 @@
-import { BitmapData } from "openfl/display/BitmapData";
-import { IBitmapDrawable } from "openfl/display/IBitmapDrawable";
-import { GlowFilter } from "openfl/filters/GlowFilter";
-import { Point } from "openfl/geom/Point";
+import BitmapData from "openfl/display/BitmapData";
+import IBitmapDrawable from "openfl/display/IBitmapDrawable";
+import GlowFilter from "openfl/filters/GlowFilter";
+import Point from "openfl/geom/Point";
 
 import { SpriteData } from "../display/SpriteData";
 import { IAttackable } from "../interfaces/IAttackable";

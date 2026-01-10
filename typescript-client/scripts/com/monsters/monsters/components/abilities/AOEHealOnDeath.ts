@@ -1,5 +1,5 @@
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { MovieClip } from "openfl/display/MovieClip";
+import DisplayObject from "openfl/display/DisplayObject";
+import MovieClip from "openfl/display/MovieClip";
 
 import { IAttackable } from "../../../interfaces/IAttackable";
 import { Targeting } from "../../Targeting";

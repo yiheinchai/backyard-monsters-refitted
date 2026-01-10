@@ -1,4 +1,4 @@
-import { MovieClip } from 'openfl/display/MovieClip';
+import MovieClip from 'openfl/display/MovieClip';
 import { RewardLayerMask } from './RewardLayerMask';
 import { RewardRibbon } from './RewardRibbon';
 import { Embed } from "./core/Embed";

@@ -1,4 +1,4 @@
-import { BevelFilter } from "openfl/filters/BevelFilter";
+import BevelFilter from "openfl/filters/BevelFilter";
 import { FilterPlugin } from "./FilterPlugin";
 import { TweenLite } from "../TweenLite";
 

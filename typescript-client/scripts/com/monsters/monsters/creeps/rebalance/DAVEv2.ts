@@ -1,4 +1,4 @@
-import { Point } from "openfl/geom/Point";
+import Point from "openfl/geom/Point";
 
 import { SpriteData } from "../../../display/SpriteData";
 import { SpriteSheetAnimation } from "../../../display/SpriteSheetAnimation";

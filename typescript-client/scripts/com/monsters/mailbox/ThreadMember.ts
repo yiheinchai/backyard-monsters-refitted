@@ -1,10 +1,10 @@
-import { Loader } from "openfl/display/Loader";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Sprite } from "openfl/display/Sprite";
-import { Event } from "openfl/events/Event";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { URLRequest } from "openfl/net/URLRequest";
-import { TextFieldAutoSize } from "openfl/text/TextFieldAutoSize";
+import Loader from "openfl/display/Loader";
+import MovieClip from "openfl/display/MovieClip";
+import Sprite from "openfl/display/Sprite";
+import Event from "openfl/events/Event";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import URLRequest from "openfl/net/URLRequest";
+import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
 
 import { Contact } from "./model/Contact";
 

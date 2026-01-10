@@ -1,6 +1,6 @@
-import { BitmapData } from "openfl/display/BitmapData";
-import { Point } from "openfl/geom/Point";
-import { Rectangle } from "openfl/geom/Rectangle";
+import BitmapData from "openfl/display/BitmapData";
+import Point from "openfl/geom/Point";
+import Rectangle from "openfl/geom/Rectangle";
 
 import { ImageCache } from "../display/ImageCache";
 import { SpriteData } from "../display/SpriteData";

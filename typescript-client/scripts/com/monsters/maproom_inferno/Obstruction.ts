@@ -1,4 +1,4 @@
-import { Rectangle } from "openfl/geom/Rectangle";
+import Rectangle from "openfl/geom/Rectangle";
 
 /**
  * Obstruction (Inferno) - manages blocked areas on the inferno map room.

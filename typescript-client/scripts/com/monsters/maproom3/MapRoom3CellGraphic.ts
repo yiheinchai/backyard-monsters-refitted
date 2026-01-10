@@ -1,14 +1,14 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { Graphics } from "openfl/display/Graphics";
-import { Shape } from "openfl/display/Shape";
-import { Sprite } from "openfl/display/Sprite";
-import { BitmapFilterQuality } from "openfl/filters/BitmapFilterQuality";
-import { GlowFilter } from "openfl/filters/GlowFilter";
-import { Point } from "openfl/geom/Point";
-import { TextField } from "openfl/text/TextField";
-import { TextFormat } from "openfl/text/TextFormat";
-import { TextFormatAlign } from "openfl/text/TextFormatAlign";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import Graphics from "openfl/display/Graphics";
+import Shape from "openfl/display/Shape";
+import Sprite from "openfl/display/Sprite";
+import BitmapFilterQuality from "openfl/filters/BitmapFilterQuality";
+import GlowFilter from "openfl/filters/GlowFilter";
+import Point from "openfl/geom/Point";
+import TextField from "openfl/text/TextField";
+import TextFormat from "openfl/text/TextFormat";
+import TextFormatAlign from "openfl/text/TextFormatAlign";
 
 import { SpriteData } from "../../display/SpriteData";
 import { SpriteSheetAnimation } from "../../display/SpriteSheetAnimation";

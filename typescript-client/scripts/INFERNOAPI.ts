@@ -1,7 +1,7 @@
-import { EventDispatcher } from 'openfl/events/EventDispatcher';
-import { Event } from 'openfl/events/Event';
-import { IOErrorEvent } from 'openfl/events/IOErrorEvent';
-import { getTimer } from 'openfl/utils/getTimer';
+import EventDispatcher from 'openfl/events/EventDispatcher';
+import Event from 'openfl/events/Event';
+import IOErrorEvent from 'openfl/events/IOErrorEvent';
+import getTimer from 'openfl/utils/getTimer';
 import { SecNum } from './com/cc/utils/SecNum';
 import { WMBASE } from './com/monsters/ai/WMBASE';
 import { URLLoaderApi } from './URLLoaderApi';

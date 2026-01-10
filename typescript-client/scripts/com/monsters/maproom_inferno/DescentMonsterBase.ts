@@ -1,12 +1,12 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { Loader } from "openfl/display/Loader";
-import { SimpleButton } from "openfl/display/SimpleButton";
-import { Sprite } from "openfl/display/Sprite";
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { TimerEvent } from "openfl/events/TimerEvent";
-import { Timer } from "openfl/utils/Timer";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import Loader from "openfl/display/Loader";
+import SimpleButton from "openfl/display/SimpleButton";
+import Sprite from "openfl/display/Sprite";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
+import TimerEvent from "openfl/events/TimerEvent";
+import Timer from "openfl/utils/Timer";
 
 import { BaseObject } from "./model/BaseObject";
 import { DescentBaseInfo } from "./views/DescentBaseInfo";

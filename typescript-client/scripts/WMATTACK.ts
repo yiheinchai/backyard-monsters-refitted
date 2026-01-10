@@ -1,7 +1,7 @@
 import { Bitmap, BitmapData, MovieClip } from "openfl/display";
-import { MouseEvent } from "openfl/events";
-import { Point } from "openfl/geom";
-import { getTimer } from "openfl/utils";
+import MouseEvent from "openfl/events";
+import Point from "openfl/geom";
+import getTimer from "openfl/utils";
 
 import { Rndm } from "./com/gskinner/utils/Rndm";
 import { ImageCache } from "./com/monsters/display/ImageCache";

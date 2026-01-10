@@ -1,4 +1,4 @@
-import { Point } from "openfl/geom/Point";
+import Point from "openfl/geom/Point";
 
 import { MonsterBase } from "../../MonsterBase";
 import { BanditoAOEDamageSpin } from "../../components/abilities/BanditoAOEDamageSpin";

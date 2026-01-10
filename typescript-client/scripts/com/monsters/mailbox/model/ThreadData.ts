@@ -1,7 +1,7 @@
-import { Event } from "openfl/events/Event";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { EventDispatcher } from "openfl/events/EventDispatcher";
-import { Point } from "openfl/geom/Point";
+import Event from "openfl/events/Event";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import EventDispatcher from "openfl/events/EventDispatcher";
+import Point from "openfl/geom/Point";
 
 import { MailBox } from "../MailBox";
 import { URLLoaderApi } from "../../URLLoaderApi";

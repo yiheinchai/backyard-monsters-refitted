@@ -1,9 +1,9 @@
-import { MovieClip } from "openfl/display/MovieClip";
-import { Sprite } from "openfl/display/Sprite";
-import { Event } from "openfl/events/Event";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Point } from "openfl/geom/Point";
+import MovieClip from "openfl/display/MovieClip";
+import Sprite from "openfl/display/Sprite";
+import Event from "openfl/events/Event";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import MouseEvent from "openfl/events/MouseEvent";
+import Point from "openfl/geom/Point";
 
 import { SecNum } from "../../cc/utils/SecNum";
 import { MapRoomCell } from "./MapRoomCell";

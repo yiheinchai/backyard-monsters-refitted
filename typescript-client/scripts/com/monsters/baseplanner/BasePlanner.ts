@@ -1,5 +1,5 @@
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { BasePlannerEvent } from "./events/BasePlannerEvent";
 import { BasePlannerServiceEvent } from "./events/BasePlannerServiceEvent";

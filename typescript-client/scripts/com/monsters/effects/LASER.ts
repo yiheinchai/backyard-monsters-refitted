@@ -1,10 +1,10 @@
-import { BitmapData } from "openfl/display/BitmapData";
-import { DisplayObjectContainer } from "openfl/display/DisplayObjectContainer";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Shape } from "openfl/display/Shape";
-import { GlowFilter } from "openfl/filters/GlowFilter";
-import { Point } from "openfl/geom/Point";
-import { getTimer } from "openfl/Lib";
+import BitmapData from "openfl/display/BitmapData";
+import DisplayObjectContainer from "openfl/display/DisplayObjectContainer";
+import MovieClip from "openfl/display/MovieClip";
+import Shape from "openfl/display/Shape";
+import GlowFilter from "openfl/filters/GlowFilter";
+import Point from "openfl/geom/Point";
+import getTimer from "openfl/Lib";
 
 import { MonsterBase } from "../monsters/MonsterBase";
 

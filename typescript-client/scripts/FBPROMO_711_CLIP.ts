@@ -1,4 +1,4 @@
-import { MovieClip } from 'openfl/display/MovieClip';
+import MovieClip from 'openfl/display/MovieClip';
 import { frame_CLIP } from './frame_CLIP';
 import { Embed } from "./core/Embed";
 

@@ -1,7 +1,7 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Shape } from "openfl/display/Shape";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import MovieClip from "openfl/display/MovieClip";
+import Shape from "openfl/display/Shape";
 
 import { ImageCache } from "../display/ImageCache";
 import { ALLIANCES } from "./ALLIANCES";

@@ -1,8 +1,8 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Sprite } from "openfl/display/Sprite";
-import { Point } from "openfl/geom/Point";
+import Bitmap from "openfl/display/Bitmap";
+import DisplayObject from "openfl/display/DisplayObject";
+import MovieClip from "openfl/display/MovieClip";
+import Sprite from "openfl/display/Sprite";
+import Point from "openfl/geom/Point";
 
 import { Flame } from "./Flame";
 

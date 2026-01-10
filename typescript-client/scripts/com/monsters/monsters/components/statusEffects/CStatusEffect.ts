@@ -1,4 +1,4 @@
-import { Point } from "openfl/geom/Point";
+import Point from "openfl/geom/Point";
 
 import { BYMConfig } from "../../../configs/BYMConfig";
 import { SpriteSheetAnimation } from "../../../display/SpriteSheetAnimation";

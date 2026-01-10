@@ -1,9 +1,9 @@
-import { Event } from "openfl/events/Event";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { SecurityErrorEvent } from "openfl/events/SecurityErrorEvent";
-import { Point } from "openfl/geom/Point";
-import { URLLoader } from "openfl/net/URLLoader";
-import { URLRequest } from "openfl/net/URLRequest";
+import Event from "openfl/events/Event";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import SecurityErrorEvent from "openfl/events/SecurityErrorEvent";
+import Point from "openfl/geom/Point";
+import URLLoader from "openfl/net/URLLoader";
+import URLRequest from "openfl/net/URLRequest";
 
 import { FriendPicker } from "../mailbox/FriendPicker";
 import { BookmarksManager } from "./bookmarks/BookmarksManager";

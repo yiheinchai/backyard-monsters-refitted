@@ -1,4 +1,4 @@
-import { MovieClip } from "openfl/display/MovieClip";
+import MovieClip from "openfl/display/MovieClip";
 
 /**
  * Lib - Flash library helper utilities.

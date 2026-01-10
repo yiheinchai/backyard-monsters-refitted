@@ -1,5 +1,5 @@
-import { Point } from "openfl/geom/Point";
-import { getTimer } from "openfl/utils/getTimer";
+import Point from "openfl/geom/Point";
+import getTimer from "openfl/utils/getTimer";
 
 import { EnumYardType } from "../../enums/EnumYardType";
 import { MapRoom3 } from "../MapRoom3";

@@ -1,4 +1,4 @@
-import { BitmapData } from "openfl/display/BitmapData";
+import BitmapData from "openfl/display/BitmapData";
 
 import { ImageCache } from "../../display/ImageCache";
 import { MapRoom3Cell } from "../MapRoom3Cell";

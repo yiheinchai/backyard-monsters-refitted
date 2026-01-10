@@ -1,4 +1,4 @@
-import { Point } from "openfl/geom/Point";
+import Point from "openfl/geom/Point";
 
 import { IAttackable } from "../../../interfaces/IAttackable";
 import { MonsterBase } from "../../MonsterBase";

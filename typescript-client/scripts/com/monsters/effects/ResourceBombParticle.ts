@@ -1,10 +1,10 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Event } from "openfl/events/Event";
-import { Point } from "openfl/geom/Point";
-import { Rectangle } from "openfl/geom/Rectangle";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import DisplayObject from "openfl/display/DisplayObject";
+import MovieClip from "openfl/display/MovieClip";
+import Event from "openfl/events/Event";
+import Point from "openfl/geom/Point";
+import Rectangle from "openfl/geom/Rectangle";
 import { TweenLite, Sine } from "gs/TweenLite";
 
 import { BYMConfig } from "../configs/BYMConfig";

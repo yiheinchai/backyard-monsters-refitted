@@ -1,5 +1,5 @@
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { Event } from "openfl/events/Event";
+import DisplayObject from "openfl/display/DisplayObject";
+import Event from "openfl/events/Event";
 
 import { Category } from "./categories/Category";
 import { FrontPageEvent } from "./events/FrontPageEvent";

@@ -1,7 +1,7 @@
-import { MovieClip } from "openfl/display/MovieClip";
-import { Sprite } from "openfl/display/Sprite";
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
+import MovieClip from "openfl/display/MovieClip";
+import Sprite from "openfl/display/Sprite";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { old_maproom } from "./old_maproom";
 import { ListView } from "./views/ListView";

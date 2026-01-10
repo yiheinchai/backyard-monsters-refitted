@@ -1,10 +1,10 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { MovieClip } from "openfl/display/MovieClip";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Point } from "openfl/geom/Point";
-import { getTimer } from "openfl/utils/getTimer";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import DisplayObject from "openfl/display/DisplayObject";
+import MovieClip from "openfl/display/MovieClip";
+import MouseEvent from "openfl/events/MouseEvent";
+import Point from "openfl/geom/Point";
+import getTimer from "openfl/utils/getTimer";
 
 import { SecNum } from "../../../cc/utils/SecNum";
 import { AllyInfo } from "../alliances/AllyInfo";

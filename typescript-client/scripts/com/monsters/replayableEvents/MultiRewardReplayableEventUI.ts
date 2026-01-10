@@ -1,10 +1,10 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { Shape } from "openfl/display/Shape";
-import { Sprite } from "openfl/display/Sprite";
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import DisplayObject from "openfl/display/DisplayObject";
+import Shape from "openfl/display/Shape";
+import Sprite from "openfl/display/Sprite";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
 import { TweenLite } from "../../TweenLite";
 
 import { Chat } from "../chat/Chat";

@@ -1,7 +1,7 @@
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { DropShadowFilter } from "openfl/filters/DropShadowFilter";
-import { Point } from "openfl/geom/Point";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
+import DropShadowFilter from "openfl/filters/DropShadowFilter";
+import Point from "openfl/geom/Point";
 
 import { BASE } from "./BASE";
 import { BFOUNDATION } from "./BFOUNDATION";

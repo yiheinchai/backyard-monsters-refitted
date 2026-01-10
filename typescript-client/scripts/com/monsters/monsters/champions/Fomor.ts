@@ -1,4 +1,4 @@
-import { Point } from "openfl/geom/Point";
+import Point from "openfl/geom/Point";
 
 import { ITargetable } from "../../interfaces/ITargetable";
 import { InstanceManager } from "../../managers/InstanceManager";

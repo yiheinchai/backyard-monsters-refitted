@@ -1,4 +1,4 @@
-import { ByteArray } from "openfl/utils/ByteArray";
+import ByteArray from "openfl/utils/ByteArray";
 import { ISFSArray } from "../../entities/data/ISFSArray";
 import { ISFSObject } from "../../entities/data/ISFSObject";
 import { SFSArray } from "../../entities/data/SFSArray";

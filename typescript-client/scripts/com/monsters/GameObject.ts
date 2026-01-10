@@ -1,9 +1,9 @@
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { IBitmapDrawable } from "openfl/display/IBitmapDrawable";
-import { Sprite } from "openfl/display/Sprite";
-import { EventDispatcher } from "openfl/events/EventDispatcher";
-import { Point } from "openfl/geom/Point";
-import { Rectangle } from "openfl/geom/Rectangle";
+import DisplayObject from "openfl/display/DisplayObject";
+import IBitmapDrawable from "openfl/display/IBitmapDrawable";
+import Sprite from "openfl/display/Sprite";
+import EventDispatcher from "openfl/events/EventDispatcher";
+import Point from "openfl/geom/Point";
+import Rectangle from "openfl/geom/Rectangle";
 
 import { SecNum } from "../cc/utils/SecNum";
 import { BYMConfig } from "./configs/BYMConfig";

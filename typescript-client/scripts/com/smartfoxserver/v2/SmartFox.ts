@@ -1,4 +1,4 @@
-import { EventDispatcher } from "openfl/events/EventDispatcher";
+import EventDispatcher from "openfl/events/EventDispatcher";
 import { BitSwarmClient } from "./bitswarm/BitSwarmClient";
 import { BitSwarmEvent } from "./bitswarm/BitSwarmEvent";
 import { DefaultUDPManager } from "./bitswarm/DefaultUDPManager";

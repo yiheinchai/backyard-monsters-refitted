@@ -1,5 +1,5 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
 
 import { SpriteData } from "./SpriteData";
 import { SPRITES } from "../../../SPRITES";

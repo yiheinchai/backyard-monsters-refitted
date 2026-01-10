@@ -1,4 +1,4 @@
-import { Point } from "openfl/geom/Point";
+import Point from "openfl/geom/Point";
 
 import { MonsterBase } from "../../../MonsterBase";
 import { AOEZergBonus } from "../../../components/abilities/AOEZergBonus";

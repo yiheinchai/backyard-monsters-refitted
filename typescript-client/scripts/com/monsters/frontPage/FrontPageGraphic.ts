@@ -1,10 +1,10 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { Sprite } from "openfl/display/Sprite";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Video } from "openfl/media/Video";
-import { NetStream } from "openfl/net/NetStream";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import DisplayObject from "openfl/display/DisplayObject";
+import Sprite from "openfl/display/Sprite";
+import MouseEvent from "openfl/events/MouseEvent";
+import Video from "openfl/media/Video";
+import NetStream from "openfl/net/NetStream";
 
 import { ImageCache } from "../display/ImageCache";
 import { VideoUtils } from "../utils/VideoUtils";

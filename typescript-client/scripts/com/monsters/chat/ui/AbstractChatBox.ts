@@ -1,9 +1,9 @@
-import { MovieClip } from "openfl/display/MovieClip";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { TextField } from "openfl/text/TextField";
-import { TextFieldAutoSize } from "openfl/text/TextFieldAutoSize";
-import { TextFieldType } from "openfl/text/TextFieldType";
-import { TextFormat } from "openfl/text/TextFormat";
+import MovieClip from "openfl/display/MovieClip";
+import MouseEvent from "openfl/events/MouseEvent";
+import TextField from "openfl/text/TextField";
+import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
+import TextFieldType from "openfl/text/TextFieldType";
+import TextFormat from "openfl/text/TextFormat";
 
 /**
  * Abstract chat box - base class for chat UI components.

@@ -1,4 +1,4 @@
-import { DisplayObject } from "openfl/display/DisplayObject";
+import DisplayObject from "openfl/display/DisplayObject";
 
 import { MonsterMadnessPopupInfo } from "./MonsterMadnessPopupInfo";
 import { MonsterMadnessPopup } from "./MonsterMadnessPopup";

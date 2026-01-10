@@ -1,7 +1,7 @@
-import { Sprite } from "openfl/display/Sprite";
-import { Event } from "openfl/events/Event";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { MouseEvent } from "openfl/events/MouseEvent";
+import Sprite from "openfl/display/Sprite";
+import Event from "openfl/events/Event";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { Contact } from "./model/Contact";
 import { Inbox } from "./Inbox";

@@ -1,5 +1,5 @@
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { MouseEvent } from "openfl/events/MouseEvent";
+import DisplayObject from "openfl/display/DisplayObject";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { MonsterMadnessPopupInfo } from "./MonsterMadnessPopupInfo";
 

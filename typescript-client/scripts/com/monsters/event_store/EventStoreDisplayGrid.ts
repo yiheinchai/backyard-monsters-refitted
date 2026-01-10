@@ -1,4 +1,4 @@
-import { Sprite } from "openfl/display/Sprite";
+import Sprite from "openfl/display/Sprite";
 
 import { ScrollSetV } from "../display/ScrollSetV";
 import { EventStorePrize } from "./EventStorePrize";

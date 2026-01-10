@@ -1,7 +1,7 @@
-import { MovieClip } from 'openfl/display/MovieClip';
-import { Event } from 'openfl/events/Event';
-import { MouseEvent } from 'openfl/events/MouseEvent';
-import { Rectangle } from 'openfl/geom/Rectangle';
+import MovieClip from 'openfl/display/MovieClip';
+import Event from 'openfl/events/Event';
+import MouseEvent from 'openfl/events/MouseEvent';
+import Rectangle from 'openfl/geom/Rectangle';
 import { EnumYardType } from './com/monsters/enums/EnumYardType';
 import { InstanceManager } from './com/monsters/managers/InstanceManager';
 import { MapRoom3Cell } from './com/monsters/maproom3/MapRoom3Cell';

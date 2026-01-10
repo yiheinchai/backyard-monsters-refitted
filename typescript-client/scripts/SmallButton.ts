@@ -1,6 +1,6 @@
-import { MovieClip } from 'openfl/display/MovieClip';
-import { MouseEvent } from 'openfl/events/MouseEvent';
-import { TextField } from 'openfl/text/TextField';
+import MovieClip from 'openfl/display/MovieClip';
+import MouseEvent from 'openfl/events/MouseEvent';
+import TextField from 'openfl/text/TextField';
 
 export class SmallButton extends MovieClip {
     public label_txt: TextField;

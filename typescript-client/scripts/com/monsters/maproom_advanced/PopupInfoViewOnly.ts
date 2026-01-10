@@ -1,11 +1,11 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { Loader } from "openfl/display/Loader";
-import { Sprite } from "openfl/display/Sprite";
-import { Event } from "openfl/events/Event";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { URLRequest } from "openfl/net/URLRequest";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import Loader from "openfl/display/Loader";
+import Sprite from "openfl/display/Sprite";
+import Event from "openfl/events/Event";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import MouseEvent from "openfl/events/MouseEvent";
+import URLRequest from "openfl/net/URLRequest";
 
 import { ImageCache } from "../display/ImageCache";
 import { EnumYardType } from "../enums/EnumYardType";

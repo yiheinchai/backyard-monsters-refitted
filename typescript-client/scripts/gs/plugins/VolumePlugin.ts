@@ -1,4 +1,4 @@
-import { SoundTransform } from "openfl/media/SoundTransform";
+import SoundTransform from "openfl/media/SoundTransform";
 import { TweenPlugin } from "./TweenPlugin";
 import { TweenLite } from "../TweenLite";
 

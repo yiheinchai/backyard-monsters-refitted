@@ -1,11 +1,11 @@
-import { BitmapData } from "openfl/display/BitmapData";
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { IBitmapDrawable } from "openfl/display/IBitmapDrawable";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Shape } from "openfl/display/Shape";
-import { BitmapFilter } from "openfl/filters/BitmapFilter";
-import { Point } from "openfl/geom/Point";
-import { Rectangle } from "openfl/geom/Rectangle";
+import BitmapData from "openfl/display/BitmapData";
+import DisplayObject from "openfl/display/DisplayObject";
+import IBitmapDrawable from "openfl/display/IBitmapDrawable";
+import MovieClip from "openfl/display/MovieClip";
+import Shape from "openfl/display/Shape";
+import BitmapFilter from "openfl/filters/BitmapFilter";
+import Point from "openfl/geom/Point";
+import Rectangle from "openfl/geom/Rectangle";
 
 /**
  * Rendering data for bitmap rendering system.

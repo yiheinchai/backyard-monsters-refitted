@@ -1,12 +1,12 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { Sprite } from "openfl/display/Sprite";
-import { GlowFilter } from "openfl/filters/GlowFilter";
-import { Point } from "openfl/geom/Point";
-import { Rectangle } from "openfl/geom/Rectangle";
-import { TextField } from "openfl/text/TextField";
-import { TextFormat } from "openfl/text/TextFormat";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import DisplayObject from "openfl/display/DisplayObject";
+import Sprite from "openfl/display/Sprite";
+import GlowFilter from "openfl/filters/GlowFilter";
+import Point from "openfl/geom/Point";
+import Rectangle from "openfl/geom/Rectangle";
+import TextField from "openfl/text/TextField";
+import TextFormat from "openfl/text/TextFormat";
 
 import { BYMConfig } from "../configs/BYMConfig";
 import { ImageText } from "./ImageText";

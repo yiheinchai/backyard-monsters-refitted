@@ -1,9 +1,9 @@
 import { DisplayObject, DisplayObjectContainer, MovieClip, Sprite, Stage, StageDisplayState } from "openfl/display";
 import { Event, EventDispatcher, IEventDispatcher, IOErrorEvent, MouseEvent, TimerEvent } from "openfl/events";
-import { ExternalInterface } from "openfl/external";
+import ExternalInterface from "openfl/external";
 import { Point, Rectangle } from "openfl/geom";
 import { navigateToURL, URLLoader, URLRequest, URLRequestMethod, URLVariables } from "openfl/net";
-import { getTimer } from "openfl/utils";
+import getTimer from "openfl/utils";
 
 import { ABTest } from "./com/cc/tests/ABTest";
 import { SecNum } from "./com/cc/utils/SecNum";

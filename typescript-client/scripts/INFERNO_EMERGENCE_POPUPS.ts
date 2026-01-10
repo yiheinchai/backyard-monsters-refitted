@@ -1,11 +1,11 @@
 import { INFERNO_EMERGENCE_ATTACKPOPUP } from "com.monsters.ai.INFERNO_EMERGENCE_ATTACKPOPUP";
 import { ImageCache } from "com.monsters.display.ImageCache";
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Point } from "openfl/geom/Point";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import MovieClip from "openfl/display/MovieClip";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
+import Point from "openfl/geom/Point";
 import { GLOBAL } from "./GLOBAL";
 import { KEYS } from "./KEYS";
 import { POPUPS } from "./POPUPS";

@@ -1,4 +1,4 @@
-import { BitmapData } from "openfl/display/BitmapData";
+import BitmapData from "openfl/display/BitmapData";
 
 import { SpriteSheetAnimation } from "../../display/SpriteSheetAnimation";
 import { Projectilev2 } from "../Projectilev2";

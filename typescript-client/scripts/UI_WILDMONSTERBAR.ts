@@ -1,4 +1,4 @@
-import { MouseEvent } from 'openfl/events/MouseEvent';
+import MouseEvent from 'openfl/events/MouseEvent';
 import { UI_WILDMONSTERBAR_CLIP } from './UI_WILDMONSTERBAR_CLIP';
 import { KEYS } from './KEYS';
 import { WMATTACK } from './WMATTACK';

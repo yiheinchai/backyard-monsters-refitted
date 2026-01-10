@@ -1,5 +1,5 @@
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { Point } from "openfl/geom/Point";
+import DisplayObject from "openfl/display/DisplayObject";
+import Point from "openfl/geom/Point";
 import { TweenPlugin } from "./TweenPlugin";
 import { ShortRotationPlugin } from "./ShortRotationPlugin";
 import { TweenLite } from "../TweenLite";

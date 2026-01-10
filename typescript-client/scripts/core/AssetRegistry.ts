@@ -1,10 +1,10 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Loader } from "openfl/display/Loader";
-import { URLRequest } from "openfl/net/URLRequest";
-import { Event } from "openfl/events/Event";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import MovieClip from "openfl/display/MovieClip";
+import Loader from "openfl/display/Loader";
+import URLRequest from "openfl/net/URLRequest";
+import Event from "openfl/events/Event";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
 
 /**
  * AssetRegistry - Central registry for mapping symbol names to asset paths.

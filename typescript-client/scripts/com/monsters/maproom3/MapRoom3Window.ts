@@ -1,11 +1,11 @@
-import { BitmapData } from "openfl/display/BitmapData";
-import { Sprite } from "openfl/display/Sprite";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { TimerEvent } from "openfl/events/TimerEvent";
-import { GlowFilter } from "openfl/filters/GlowFilter";
-import { Matrix } from "openfl/geom/Matrix";
-import { Point } from "openfl/geom/Point";
-import { Timer } from "openfl/utils/Timer";
+import BitmapData from "openfl/display/BitmapData";
+import Sprite from "openfl/display/Sprite";
+import MouseEvent from "openfl/events/MouseEvent";
+import TimerEvent from "openfl/events/TimerEvent";
+import GlowFilter from "openfl/filters/GlowFilter";
+import Matrix from "openfl/geom/Matrix";
+import Point from "openfl/geom/Point";
+import Timer from "openfl/utils/Timer";
 
 import { TweenLite } from "../../../gs/TweenLite";
 import { Quad } from "../../../gs/easing";

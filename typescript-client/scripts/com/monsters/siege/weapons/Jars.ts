@@ -1,5 +1,5 @@
-import { TimerEvent } from "openfl/events/TimerEvent";
-import { Timer } from "openfl/utils/Timer";
+import TimerEvent from "openfl/events/TimerEvent";
+import Timer from "openfl/utils/Timer";
 
 import { SecNum } from "../../../../cc/utils/SecNum";
 import { SiegeWeaponProperty } from "../SiegeWeaponProperty";

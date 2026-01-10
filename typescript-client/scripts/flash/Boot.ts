@@ -1,9 +1,9 @@
-import { MovieClip } from "openfl/display/MovieClip";
-import { Stage } from "openfl/display/Stage";
-import { Event } from "openfl/events/Event";
-import { TextField } from "openfl/text/TextField";
-import { TextFieldAutoSize } from "openfl/text/TextFieldAutoSize";
-import { TextFormat } from "openfl/text/TextFormat";
+import MovieClip from "openfl/display/MovieClip";
+import Stage from "openfl/display/Stage";
+import Event from "openfl/events/Event";
+import TextField from "openfl/text/TextField";
+import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
+import TextFormat from "openfl/text/TextFormat";
 import { Lib } from "./Lib";
 
 /**

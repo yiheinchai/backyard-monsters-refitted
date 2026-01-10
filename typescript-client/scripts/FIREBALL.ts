@@ -1,8 +1,8 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { MovieClip } from "openfl/display/MovieClip";
-import { GlowFilter } from "openfl/filters/GlowFilter";
-import { Point } from "openfl/geom/Point";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import MovieClip from "openfl/display/MovieClip";
+import GlowFilter from "openfl/filters/GlowFilter";
+import Point from "openfl/geom/Point";
 
 import { SpriteData } from "./com/monsters/display/SpriteData";
 import { ProjectileEvent } from "./com/monsters/events/ProjectileEvent";

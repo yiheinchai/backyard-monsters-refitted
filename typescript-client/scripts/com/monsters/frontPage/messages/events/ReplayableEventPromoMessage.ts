@@ -1,6 +1,6 @@
-import { DisplayObjectContainer } from "openfl/display/DisplayObjectContainer";
-import { MovieClip } from "openfl/display/MovieClip";
-import { MouseEvent } from "openfl/events/MouseEvent";
+import DisplayObjectContainer from "openfl/display/DisplayObjectContainer";
+import MovieClip from "openfl/display/MovieClip";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { KeywordMessage } from "../KeywordMessage";
 import { ReplayableEventHandler } from "../../../replayableEvents/ReplayableEventHandler";

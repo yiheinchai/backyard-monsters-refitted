@@ -1,5 +1,5 @@
-import { MovieClip } from 'openfl/display/MovieClip';
-import { MouseEvent } from 'openfl/events/MouseEvent';
+import MovieClip from 'openfl/display/MovieClip';
+import MouseEvent from 'openfl/events/MouseEvent';
 import { UI_BOTTOM } from './com/monsters/ui/UI_BOTTOM';
 import { bubblepopupDownBuff } from './bubblepopupDownBuff';
 import { NEXTWAVEBAR_CLIP } from './NEXTWAVEBAR_CLIP';

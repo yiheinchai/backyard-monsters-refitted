@@ -1,9 +1,9 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { Shape } from "openfl/display/Shape";
-import { Matrix } from "openfl/geom/Matrix";
-import { Point } from "openfl/geom/Point";
-import { Rectangle } from "openfl/geom/Rectangle";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import Shape from "openfl/display/Shape";
+import Matrix from "openfl/geom/Matrix";
+import Point from "openfl/geom/Point";
+import Rectangle from "openfl/geom/Rectangle";
 
 import { RasterData } from "./RasterData";
 

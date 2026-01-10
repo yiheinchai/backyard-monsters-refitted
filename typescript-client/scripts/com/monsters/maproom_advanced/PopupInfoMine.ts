@@ -1,5 +1,5 @@
-import { MovieClip } from "openfl/display/MovieClip";
-import { MouseEvent } from "openfl/events/MouseEvent";
+import MovieClip from "openfl/display/MovieClip";
+import MouseEvent from "openfl/events/MouseEvent";
 import { TweenLite, Elastic } from "gs/TweenLite";
 
 import { ScrollSet } from "../display/ScrollSet";

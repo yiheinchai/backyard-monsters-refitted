@@ -1,4 +1,4 @@
-import { Event } from "openfl/events/Event";
+import Event from "openfl/events/Event";
 
 import { SecNum } from "../../../../cc/utils/SecNum";
 import { Console } from "../../debug/Console";

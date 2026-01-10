@@ -1,4 +1,4 @@
-import { ByteArray } from "openfl/utils/ByteArray";
+import ByteArray from "openfl/utils/ByteArray";
 
 /**
  * decodeJson - Fast JSON decoder using ByteArray parsing.

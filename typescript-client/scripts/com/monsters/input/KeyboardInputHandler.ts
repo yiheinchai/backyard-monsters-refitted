@@ -1,4 +1,4 @@
-import { KeyboardEvent } from "openfl/events/KeyboardEvent";
+import KeyboardEvent from "openfl/events/KeyboardEvent";
 
 // Forward declarations
 declare class screenshot {

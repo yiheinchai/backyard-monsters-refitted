@@ -1,5 +1,5 @@
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { SubscriptionHandler } from "../../../SubscriptionHandler";
 import { SubscriptionCancelPopup } from "./SubscriptionCancelPopup";

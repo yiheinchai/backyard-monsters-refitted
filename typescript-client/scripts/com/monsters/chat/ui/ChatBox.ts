@@ -1,14 +1,14 @@
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Sprite } from "openfl/display/Sprite";
-import { StageDisplayState } from "openfl/display/StageDisplayState";
-import { Event } from "openfl/events/Event";
-import { FocusEvent } from "openfl/events/FocusEvent";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { TextField } from "openfl/text/TextField";
-import { TextFieldAutoSize } from "openfl/text/TextFieldAutoSize";
-import { TextFieldType } from "openfl/text/TextFieldType";
-import { TextFormat } from "openfl/text/TextFormat";
+import DisplayObject from "openfl/display/DisplayObject";
+import MovieClip from "openfl/display/MovieClip";
+import Sprite from "openfl/display/Sprite";
+import StageDisplayState from "openfl/display/StageDisplayState";
+import Event from "openfl/events/Event";
+import FocusEvent from "openfl/events/FocusEvent";
+import MouseEvent from "openfl/events/MouseEvent";
+import TextField from "openfl/text/TextField";
+import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
+import TextFieldType from "openfl/text/TextFieldType";
+import TextFormat from "openfl/text/TextFormat";
 
 import { TweenLite } from "../../../../gs/TweenLite";
 import { Circ, Expo, Quad } from "../../../../gs/easing";

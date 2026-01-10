@@ -1,5 +1,5 @@
-import { Event } from 'openfl/events/Event';
-import { MouseEvent } from 'openfl/events/MouseEvent';
+import Event from 'openfl/events/Event';
+import MouseEvent from 'openfl/events/MouseEvent';
 import { UI_BAITERSCAREAWAY_CLIP } from './UI_BAITERSCAREAWAY_CLIP';
 import { SPECIALEVENT } from './SPECIALEVENT';
 import { GLOBAL } from './GLOBAL';

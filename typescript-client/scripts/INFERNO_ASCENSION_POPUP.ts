@@ -1,7 +1,7 @@
-import { Bitmap } from 'openfl/display/Bitmap';
-import { BitmapData } from 'openfl/display/BitmapData';
-import { MouseEvent } from 'openfl/events/MouseEvent';
-import { Point } from 'openfl/geom/Point';
+import Bitmap from 'openfl/display/Bitmap';
+import BitmapData from 'openfl/display/BitmapData';
+import MouseEvent from 'openfl/events/MouseEvent';
+import Point from 'openfl/geom/Point';
 import { SecNum } from './com/cc/utils/SecNum';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { InfernoTransferPopup_CLIP } from './InfernoTransferPopup_CLIP';

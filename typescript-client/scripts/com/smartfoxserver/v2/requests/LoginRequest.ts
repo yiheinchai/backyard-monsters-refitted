@@ -1,4 +1,4 @@
-import { ByteArray } from "openfl/utils/ByteArray";
+import ByteArray from "openfl/utils/ByteArray";
 import { IHash } from "../../../hurlant/crypto/hash/IHash";
 import { MD5 } from "../../../hurlant/crypto/hash/MD5";
 import { Hex } from "../../../hurlant/util/Hex";

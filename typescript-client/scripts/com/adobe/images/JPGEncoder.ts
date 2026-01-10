@@ -1,5 +1,5 @@
-import { BitmapData } from "openfl/display/BitmapData";
-import { ByteArray } from "openfl/utils/ByteArray";
+import BitmapData from "openfl/display/BitmapData";
+import ByteArray from "openfl/utils/ByteArray";
 
 /**
  * BitString - Helper class for JPG encoding.

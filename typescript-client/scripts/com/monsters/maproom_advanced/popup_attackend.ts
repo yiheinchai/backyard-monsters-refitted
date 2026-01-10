@@ -1,6 +1,6 @@
-import { Sprite } from "openfl/display/Sprite";
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
+import Sprite from "openfl/display/Sprite";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { EnumYardType } from "../enums/EnumYardType";
 import { MapRoomCell } from "./MapRoomCell";

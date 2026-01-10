@@ -1,5 +1,5 @@
-import { DropShadowFilter } from 'openfl/filters/DropShadowFilter';
-import { TextFieldAutoSize } from 'openfl/text/TextFieldAutoSize';
+import DropShadowFilter from 'openfl/filters/DropShadowFilter';
+import TextFieldAutoSize from 'openfl/text/TextFieldAutoSize';
 import { TweenLite } from 'gs/TweenLite';
 import { Elastic } from 'gs/easing';
 import { bubblepopupDownBuff_CLIP } from './bubblepopupDownBuff_CLIP';

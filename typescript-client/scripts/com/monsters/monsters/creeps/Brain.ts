@@ -1,4 +1,4 @@
-import { Point } from "openfl/geom/Point";
+import Point from "openfl/geom/Point";
 
 import { MonsterBase } from "../../MonsterBase";
 import { Invisibility } from "../../components/abilities/Invisibility";

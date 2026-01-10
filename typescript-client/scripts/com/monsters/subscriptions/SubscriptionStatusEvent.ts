@@ -1,4 +1,4 @@
-import { Event } from "openfl/events/Event";
+import Event from "openfl/events/Event";
 
 /**
  * Subscription status event - fired when subscription status changes.

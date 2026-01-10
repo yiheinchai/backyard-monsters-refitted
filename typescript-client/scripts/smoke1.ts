@@ -1,4 +1,4 @@
-import { BitmapData } from "openfl/display/BitmapData";
+import BitmapData from "openfl/display/BitmapData";
 import { Embed, EmbedImage } from "./core/Embed";
 
 // [Embed(source="/_assets/1565_smoke1_smoke1.png")]

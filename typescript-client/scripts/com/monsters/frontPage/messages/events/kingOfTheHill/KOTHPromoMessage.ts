@@ -1,4 +1,4 @@
-import { URLRequest } from "openfl/net/URLRequest";
+import URLRequest from "openfl/net/URLRequest";
 
 import { KeywordMessage } from "../../KeywordMessage";
 import { Message } from "../../Message";

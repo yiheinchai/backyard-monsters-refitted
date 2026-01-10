@@ -1,4 +1,4 @@
-import { MouseEvent } from "openfl/events/MouseEvent";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { AttackEvent } from "../events/AttackEvent";
 import { BuildingEvent } from "../events/BuildingEvent";

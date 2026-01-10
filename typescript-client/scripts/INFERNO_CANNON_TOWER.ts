@@ -1,5 +1,5 @@
-import { Point } from 'openfl/geom/Point';
-import { Rectangle } from 'openfl/geom/Rectangle';
+import Point from 'openfl/geom/Point';
+import Rectangle from 'openfl/geom/Rectangle';
 import { IAttackable } from './com/monsters/interfaces/IAttackable';
 import { BTOWER } from './BTOWER';
 import { GLOBAL } from './GLOBAL';

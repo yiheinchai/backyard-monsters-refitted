@@ -1,4 +1,4 @@
-import { ByteArray } from "openfl/utils/ByteArray";
+import ByteArray from "openfl/utils/ByteArray";
 import { IProtocolCodec } from "../protocol/IProtocolCodec";
 import { IMessage } from "./IMessage";
 

@@ -1,4 +1,4 @@
-import { Capabilities } from "openfl/system/Capabilities";
+import Capabilities from "openfl/system/Capabilities";
 import { BaseRequest } from "./BaseRequest";
 
 /**

@@ -1,10 +1,10 @@
 import { SecNum } from "com.cc.utils.SecNum";
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Rectangle } from "openfl/geom/Rectangle";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import MovieClip from "openfl/display/MovieClip";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
+import Rectangle from "openfl/geom/Rectangle";
 import { BFOUNDATION } from "./BFOUNDATION";
 import { GLOBAL } from "./GLOBAL";
 import { SOUNDS } from "./SOUNDS";

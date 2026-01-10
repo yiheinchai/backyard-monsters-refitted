@@ -1,4 +1,4 @@
-import { DropShadowFilter } from "openfl/filters/DropShadowFilter";
+import DropShadowFilter from "openfl/filters/DropShadowFilter";
 import { FilterPlugin } from "./FilterPlugin";
 import { TweenLite } from "../TweenLite";
 

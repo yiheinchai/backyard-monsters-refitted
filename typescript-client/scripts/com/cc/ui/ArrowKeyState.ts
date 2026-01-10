@@ -1,5 +1,5 @@
-import { KeyboardEvent } from "openfl/events/KeyboardEvent";
-import { Keyboard } from "openfl/ui/Keyboard";
+import KeyboardEvent from "openfl/events/KeyboardEvent";
+import Keyboard from "openfl/ui/Keyboard";
 
 /**
  * ArrowKeyState - Tracks arrow key press states.

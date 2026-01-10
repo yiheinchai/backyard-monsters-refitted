@@ -1,7 +1,7 @@
-import { Shape } from "openfl/display/Shape";
-import { Event } from "openfl/events/Event";
-import { GlowFilter } from "openfl/filters/GlowFilter";
-import { ColorTransform } from "openfl/geom/ColorTransform";
+import Shape from "openfl/display/Shape";
+import Event from "openfl/events/Event";
+import GlowFilter from "openfl/filters/GlowFilter";
+import ColorTransform from "openfl/geom/ColorTransform";
 
 import { Console } from "./Console";
 import { SecNum } from "../../../cc/utils/SecNum";

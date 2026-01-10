@@ -1,5 +1,5 @@
-import { BitmapData } from "openfl/display/BitmapData";
-import { Point } from "openfl/geom/Point";
+import BitmapData from "openfl/display/BitmapData";
+import Point from "openfl/geom/Point";
 
 import { ITargetable } from "../../../interfaces/ITargetable";
 import { MonsterBase } from "../../../MonsterBase";

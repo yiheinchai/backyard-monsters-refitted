@@ -1,7 +1,7 @@
-import { Sprite } from "openfl/display/Sprite";
-import { Event } from "openfl/events/Event";
-import { Point } from "openfl/geom/Point";
-import { SoundChannel } from "openfl/media/SoundChannel";
+import Sprite from "openfl/display/Sprite";
+import Event from "openfl/events/Event";
+import Point from "openfl/geom/Point";
+import SoundChannel from "openfl/media/SoundChannel";
 import { TweenLite, Expo } from "gs/TweenLite";
 
 import { SpriteData } from "../../display/SpriteData";

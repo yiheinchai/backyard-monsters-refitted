@@ -1,7 +1,7 @@
-import { BitmapData } from "openfl/display/BitmapData";
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Matrix } from "openfl/geom/Matrix";
+import BitmapData from "openfl/display/BitmapData";
+import DisplayObject from "openfl/display/DisplayObject";
+import MovieClip from "openfl/display/MovieClip";
+import Matrix from "openfl/geom/Matrix";
 
 // Declare FrameLabel interface for OpenFL compatibility
 interface FrameLabel {

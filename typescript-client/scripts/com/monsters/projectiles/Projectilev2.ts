@@ -1,7 +1,7 @@
-import { BitmapData } from "openfl/display/BitmapData";
-import { IBitmapDrawable } from "openfl/display/IBitmapDrawable";
-import { EventDispatcher } from "openfl/events/EventDispatcher";
-import { Point } from "openfl/geom/Point";
+import BitmapData from "openfl/display/BitmapData";
+import IBitmapDrawable from "openfl/display/IBitmapDrawable";
+import EventDispatcher from "openfl/events/EventDispatcher";
+import Point from "openfl/geom/Point";
 
 import { ProjectileEvent } from "../events/ProjectileEvent";
 import { IAttackable } from "../interfaces/IAttackable";

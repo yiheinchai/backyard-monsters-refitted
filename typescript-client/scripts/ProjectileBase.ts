@@ -1,7 +1,7 @@
-import { MovieClip } from 'openfl/display/MovieClip';
-import { EventDispatcher } from 'openfl/events/EventDispatcher';
-import { IEventDispatcher } from 'openfl/events/IEventDispatcher';
-import { Point } from 'openfl/geom/Point';
+import MovieClip from 'openfl/display/MovieClip';
+import EventDispatcher from 'openfl/events/EventDispatcher';
+import IEventDispatcher from 'openfl/events/IEventDispatcher';
+import Point from 'openfl/geom/Point';
 import { ITargetable } from './com/monsters/interfaces/ITargetable';
 import { IAttackable } from './com/monsters/interfaces/IAttackable';
 

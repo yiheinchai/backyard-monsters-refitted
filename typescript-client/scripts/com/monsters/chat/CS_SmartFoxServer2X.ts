@@ -1,6 +1,6 @@
-import { EventDispatcher } from "openfl/events/EventDispatcher";
-import { TimerEvent } from "openfl/events/TimerEvent";
-import { Timer } from "openfl/utils/Timer";
+import EventDispatcher from "openfl/events/EventDispatcher";
+import TimerEvent from "openfl/events/TimerEvent";
+import Timer from "openfl/utils/Timer";
 
 import { AdminMessageRequest } from "../../../smartfoxserver/v2/requests/AdminMessageRequest";
 import { ExtensionRequest } from "../../../smartfoxserver/v2/requests/ExtensionRequest";

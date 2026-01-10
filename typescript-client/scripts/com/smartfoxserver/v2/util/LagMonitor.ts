@@ -1,7 +1,7 @@
-import { EventDispatcher } from "openfl/events/EventDispatcher";
-import { Event } from "openfl/events/Event";
-import { TimerEvent } from "openfl/events/TimerEvent";
-import { Timer } from "openfl/utils/Timer";
+import EventDispatcher from "openfl/events/EventDispatcher";
+import Event from "openfl/events/Event";
+import TimerEvent from "openfl/events/TimerEvent";
+import Timer from "openfl/utils/Timer";
 import { SmartFox } from "../SmartFox";
 import { PingPongRequest } from "../requests/PingPongRequest";
 

@@ -1,10 +1,10 @@
-import { Loader } from "openfl/display/Loader";
-import { Sprite } from "openfl/display/Sprite";
-import { Event } from "openfl/events/Event";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { URLRequest } from "openfl/net/URLRequest";
-import { LoaderContext } from "openfl/system/LoaderContext";
-import { TextFieldAutoSize } from "openfl/text/TextFieldAutoSize";
+import Loader from "openfl/display/Loader";
+import Sprite from "openfl/display/Sprite";
+import Event from "openfl/events/Event";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import URLRequest from "openfl/net/URLRequest";
+import LoaderContext from "openfl/system/LoaderContext";
+import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
 
 import { SecNum } from "../../../cc/utils/SecNum";
 import { PlayerBaseInferno_CLIP } from "./PlayerBaseInferno_CLIP";

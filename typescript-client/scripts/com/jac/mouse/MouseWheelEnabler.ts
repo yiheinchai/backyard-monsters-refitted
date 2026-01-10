@@ -1,8 +1,8 @@
-import { InteractiveObject } from "openfl/display/InteractiveObject";
-import { Stage } from "openfl/display/Stage";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { ExternalInterface } from "openfl/external/ExternalInterface";
-import { getTimer } from "openfl/utils/getTimer";
+import InteractiveObject from "openfl/display/InteractiveObject";
+import Stage from "openfl/display/Stage";
+import MouseEvent from "openfl/events/MouseEvent";
+import ExternalInterface from "openfl/external/ExternalInterface";
+import getTimer from "openfl/utils/getTimer";
 
 import { BrowserInfo } from "./BrowserInfo";
 import { MouseWheelEnabler_JavaScript } from "./MouseWheelEnabler_JavaScript";

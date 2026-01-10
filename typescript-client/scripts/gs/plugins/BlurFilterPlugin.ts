@@ -1,4 +1,4 @@
-import { BlurFilter } from "openfl/filters/BlurFilter";
+import BlurFilter from "openfl/filters/BlurFilter";
 import { FilterPlugin } from "./FilterPlugin";
 import { TweenLite } from "../TweenLite";
 

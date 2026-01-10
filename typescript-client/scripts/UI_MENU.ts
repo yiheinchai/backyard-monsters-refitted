@@ -1,7 +1,7 @@
-import { BitmapData } from 'openfl/display/BitmapData';
-import { MovieClip } from 'openfl/display/MovieClip';
-import { Sprite } from 'openfl/display/Sprite';
-import { Rectangle } from 'openfl/geom/Rectangle';
+import BitmapData from 'openfl/display/BitmapData';
+import MovieClip from 'openfl/display/MovieClip';
+import Sprite from 'openfl/display/Sprite';
+import Rectangle from 'openfl/geom/Rectangle';
 import { ScaleBitmap } from 'org/bytearray/display/ScaleBitmap';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';

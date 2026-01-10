@@ -1,4 +1,4 @@
-import { Event } from "openfl/events/Event";
+import Event from "openfl/events/Event";
 
 import { ListViewArrow_CLIP } from "./ListViewArrow_CLIP";
 

@@ -1,7 +1,7 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { Matrix } from "openfl/geom/Matrix";
-import { Rectangle } from "openfl/geom/Rectangle";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import Matrix from "openfl/geom/Matrix";
+import Rectangle from "openfl/geom/Rectangle";
 
 /**
  * ScaleBitmap - Bitmap with 9-slice scaling support.

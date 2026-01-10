@@ -1,5 +1,5 @@
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { ColorTransform } from "openfl/geom/ColorTransform";
+import DisplayObject from "openfl/display/DisplayObject";
+import ColorTransform from "openfl/geom/ColorTransform";
 import { TweenPlugin } from "./TweenPlugin";
 import { TweenLite } from "../TweenLite";
 import { TweenInfo } from "../utils/tween/TweenInfo";

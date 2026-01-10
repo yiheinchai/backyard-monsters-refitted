@@ -1,8 +1,8 @@
-import { Sprite } from "openfl/display/Sprite";
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Point } from "openfl/geom/Point";
-import { TextFieldAutoSize } from "openfl/text/TextFieldAutoSize";
+import Sprite from "openfl/display/Sprite";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
+import Point from "openfl/geom/Point";
+import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
 
 import { ScrollSetV } from "../../display/ScrollSetV";
 import { BasePlanner } from "../BasePlanner";

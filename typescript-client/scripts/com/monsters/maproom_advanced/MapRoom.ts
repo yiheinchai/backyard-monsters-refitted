@@ -1,13 +1,13 @@
-import { BitmapData } from "openfl/display/BitmapData";
-import { DisplayObjectContainer } from "openfl/display/DisplayObjectContainer";
-import { Sprite } from "openfl/display/Sprite";
-import { StageDisplayState } from "openfl/display/StageDisplayState";
-import { Event } from "openfl/events/Event";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { TimerEvent } from "openfl/events/TimerEvent";
-import { Point } from "openfl/geom/Point";
-import { Timer } from "openfl/utils/Timer";
+import BitmapData from "openfl/display/BitmapData";
+import DisplayObjectContainer from "openfl/display/DisplayObjectContainer";
+import Sprite from "openfl/display/Sprite";
+import StageDisplayState from "openfl/display/StageDisplayState";
+import Event from "openfl/events/Event";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import MouseEvent from "openfl/events/MouseEvent";
+import TimerEvent from "openfl/events/TimerEvent";
+import Point from "openfl/geom/Point";
+import Timer from "openfl/utils/Timer";
 
 import { SecNum } from "../../../cc/utils/SecNum";
 import { ALLIANCES } from "../alliances/ALLIANCES";

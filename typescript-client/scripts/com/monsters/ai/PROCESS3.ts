@@ -1,5 +1,5 @@
-import { Point } from "openfl/geom/Point";
-import { Rectangle } from "openfl/geom/Rectangle";
+import Point from "openfl/geom/Point";
+import Rectangle from "openfl/geom/Rectangle";
 
 import { InstanceManager } from "../managers/InstanceManager";
 import { PATHING } from "../pathing/PATHING";

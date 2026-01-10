@@ -1,11 +1,11 @@
-import { Loader } from "openfl/display/Loader";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Event } from "openfl/events/Event";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { URLRequest } from "openfl/net/URLRequest";
-import { LoaderContext } from "openfl/system/LoaderContext";
-import { Security } from "openfl/system/Security";
+import Loader from "openfl/display/Loader";
+import MovieClip from "openfl/display/MovieClip";
+import Event from "openfl/events/Event";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import MouseEvent from "openfl/events/MouseEvent";
+import URLRequest from "openfl/net/URLRequest";
+import LoaderContext from "openfl/system/LoaderContext";
+import Security from "openfl/system/Security";
 
 import { GLOBAL } from "../../../GLOBAL";
 import { KEYS } from "../../../KEYS";

@@ -1,4 +1,4 @@
-import { URLRequest } from "openfl/net/URLRequest";
+import URLRequest from "openfl/net/URLRequest";
 
 import { FrontPageGraphic } from "../../../../FrontPageGraphic";
 import { KeywordMessage } from "../../../../messages/KeywordMessage";

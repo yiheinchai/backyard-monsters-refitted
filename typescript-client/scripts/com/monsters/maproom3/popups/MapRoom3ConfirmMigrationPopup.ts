@@ -1,4 +1,4 @@
-import { MouseEvent } from "openfl/events/MouseEvent";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
 import { popup_new_map_confirm } from "../../../popup_new_map_confirm";

@@ -1,5 +1,5 @@
-import { MovieClip } from "openfl/display/MovieClip";
-import { TextField } from "openfl/text/TextField";
+import MovieClip from "openfl/display/MovieClip";
+import TextField from "openfl/text/TextField";
 import { Embed } from "./core/Embed";
 
 // [Embed(source="/_assets/assets.swf", symbol="workerMessage")]

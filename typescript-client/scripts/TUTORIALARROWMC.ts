@@ -1,7 +1,7 @@
-import { DisplayObject } from 'openfl/display/DisplayObject';
-import { Event } from 'openfl/events/Event';
-import { MouseEvent } from 'openfl/events/MouseEvent';
-import { Point } from 'openfl/geom/Point';
+import DisplayObject from 'openfl/display/DisplayObject';
+import Event from 'openfl/events/Event';
+import MouseEvent from 'openfl/events/MouseEvent';
+import Point from 'openfl/geom/Point';
 import { TweenLite } from './gs/TweenLite';
 import { Expo, Bounce } from './gs/easing';
 import { TUTORIALARROWMC_CLIP } from './TUTORIALARROWMC_CLIP';

@@ -1,6 +1,6 @@
-import { BitmapData } from "openfl/display/BitmapData";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Point } from "openfl/geom/Point";
+import BitmapData from "openfl/display/BitmapData";
+import MovieClip from "openfl/display/MovieClip";
+import Point from "openfl/geom/Point";
 
 import { SecNum } from "../../cc/utils/SecNum";
 import { ALLIANCES } from "../alliances/ALLIANCES";

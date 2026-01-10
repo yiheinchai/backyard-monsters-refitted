@@ -1,7 +1,7 @@
-import { MovieClip } from "openfl/display/MovieClip";
-import { Sprite } from "openfl/display/Sprite";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Rectangle } from "openfl/geom/Rectangle";
+import MovieClip from "openfl/display/MovieClip";
+import Sprite from "openfl/display/Sprite";
+import MouseEvent from "openfl/events/MouseEvent";
+import Rectangle from "openfl/geom/Rectangle";
 
 /**
  * Planner item - base class for items in the yard planner.

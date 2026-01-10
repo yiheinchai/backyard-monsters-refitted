@@ -1,10 +1,10 @@
-import { BitmapData } from "openfl/display/BitmapData";
-import { BlendMode } from "openfl/display/BlendMode";
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { ColorTransform } from "openfl/geom/ColorTransform";
-import { Matrix } from "openfl/geom/Matrix";
-import { Point } from "openfl/geom/Point";
-import { Rectangle } from "openfl/geom/Rectangle";
+import BitmapData from "openfl/display/BitmapData";
+import BlendMode from "openfl/display/BlendMode";
+import DisplayObject from "openfl/display/DisplayObject";
+import ColorTransform from "openfl/geom/ColorTransform";
+import Matrix from "openfl/geom/Matrix";
+import Point from "openfl/geom/Point";
+import Rectangle from "openfl/geom/Rectangle";
 
 /**
  * HitTestBitmap - provides complex hit testing between display objects.

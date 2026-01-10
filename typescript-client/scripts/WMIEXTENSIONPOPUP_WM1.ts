@@ -1,6 +1,6 @@
-import { Bitmap } from 'openfl/display/Bitmap';
-import { BitmapData } from 'openfl/display/BitmapData';
-import { MouseEvent } from 'openfl/events/MouseEvent';
+import Bitmap from 'openfl/display/Bitmap';
+import BitmapData from 'openfl/display/BitmapData';
+import MouseEvent from 'openfl/events/MouseEvent';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { WMIEXTENSIONPOPUP_CLIP } from './WMIEXTENSIONPOPUP_CLIP';
 import { KEYS } from './KEYS';

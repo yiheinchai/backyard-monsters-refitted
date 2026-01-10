@@ -1,11 +1,11 @@
-import { MovieClip } from "openfl/display/MovieClip";
-import { Sprite } from "openfl/display/Sprite";
-import { Event } from "openfl/events/Event";
-import { KeyboardEvent } from "openfl/events/KeyboardEvent";
-import { TimerEvent } from "openfl/events/TimerEvent";
-import { Rectangle } from "openfl/geom/Rectangle";
-import { Keyboard } from "openfl/ui/Keyboard";
-import { Timer } from "openfl/utils/Timer";
+import MovieClip from "openfl/display/MovieClip";
+import Sprite from "openfl/display/Sprite";
+import Event from "openfl/events/Event";
+import KeyboardEvent from "openfl/events/KeyboardEvent";
+import TimerEvent from "openfl/events/TimerEvent";
+import Rectangle from "openfl/geom/Rectangle";
+import Keyboard from "openfl/ui/Keyboard";
+import Timer from "openfl/utils/Timer";
 import { TweenLite } from "gs/TweenLite";
 
 import { ChatBox } from "./ui/ChatBox";

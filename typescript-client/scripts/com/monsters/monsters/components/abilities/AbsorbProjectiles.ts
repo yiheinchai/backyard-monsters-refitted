@@ -1,5 +1,5 @@
-import { Event } from "openfl/events/Event";
-import { Point } from "openfl/geom/Point";
+import Event from "openfl/events/Event";
+import Point from "openfl/geom/Point";
 
 import { IAttackable } from "../../../interfaces/IAttackable";
 import { ITargetable } from "../../../interfaces/ITargetable";

@@ -1,5 +1,5 @@
-import { Timer } from "openfl/utils/Timer";
-import { TimerEvent } from "openfl/events/TimerEvent";
+import Timer from "openfl/utils/Timer";
+import TimerEvent from "openfl/events/TimerEvent";
 
 import { Decoy } from "./weapons/Decoy";
 import { Vacuum } from "./weapons/Vacuum";

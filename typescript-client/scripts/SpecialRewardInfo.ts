@@ -1,5 +1,5 @@
-import { Bitmap } from 'openfl/display/Bitmap';
-import { BitmapData } from 'openfl/display/BitmapData';
+import Bitmap from 'openfl/display/Bitmap';
+import BitmapData from 'openfl/display/BitmapData';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { SpecialInfo_CLIP } from './SpecialInfo_CLIP';
 import { GLOBAL } from './GLOBAL';

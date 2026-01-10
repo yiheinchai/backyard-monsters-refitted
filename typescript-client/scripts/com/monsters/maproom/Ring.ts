@@ -1,7 +1,7 @@
-import { DisplayObjectContainer } from "openfl/display/DisplayObjectContainer";
-import { Sprite } from "openfl/display/Sprite";
-import { TimerEvent } from "openfl/events/TimerEvent";
-import { Timer } from "openfl/utils/Timer";
+import DisplayObjectContainer from "openfl/display/DisplayObjectContainer";
+import Sprite from "openfl/display/Sprite";
+import TimerEvent from "openfl/events/TimerEvent";
+import Timer from "openfl/utils/Timer";
 
 import { TweenLite } from "gs/TweenLite";
 

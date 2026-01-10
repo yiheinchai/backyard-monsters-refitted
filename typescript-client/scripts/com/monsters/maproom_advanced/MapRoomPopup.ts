@@ -1,15 +1,15 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { Loader } from "openfl/display/Loader";
-import { MovieClip } from "openfl/display/MovieClip";
-import { StageDisplayState } from "openfl/display/StageDisplayState";
-import { Event } from "openfl/events/Event";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { Point } from "openfl/geom/Point";
-import { Rectangle } from "openfl/geom/Rectangle";
-import { URLRequest } from "openfl/net/URLRequest";
-import { getTimer } from "openfl/utils/getTimer";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import Loader from "openfl/display/Loader";
+import MovieClip from "openfl/display/MovieClip";
+import StageDisplayState from "openfl/display/StageDisplayState";
+import Event from "openfl/events/Event";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import MouseEvent from "openfl/events/MouseEvent";
+import Point from "openfl/geom/Point";
+import Rectangle from "openfl/geom/Rectangle";
+import URLRequest from "openfl/net/URLRequest";
+import getTimer from "openfl/utils/getTimer";
 
 import { AllyInfo } from "../alliances/AllyInfo";
 import { ImageCache } from "../display/ImageCache";

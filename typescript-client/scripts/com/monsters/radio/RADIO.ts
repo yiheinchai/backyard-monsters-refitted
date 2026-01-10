@@ -1,4 +1,4 @@
-import { StageDisplayState } from "openfl/display/StageDisplayState";
+import StageDisplayState from "openfl/display/StageDisplayState";
 
 import { RADIOSETTINGSPOPUP } from "./RADIOSETTINGSPOPUP";
 

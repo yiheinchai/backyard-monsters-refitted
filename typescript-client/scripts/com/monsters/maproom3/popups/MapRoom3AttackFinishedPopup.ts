@@ -1,5 +1,5 @@
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
 import { popup_attackend_CLIP } from "../../../../popup_attackend_CLIP";

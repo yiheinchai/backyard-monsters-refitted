@@ -1,4 +1,4 @@
-import { EventDispatcher } from "openfl/events/EventDispatcher";
+import EventDispatcher from "openfl/events/EventDispatcher";
 
 import { Console } from "../debug/Console";
 import { SubscriptionStatusEvent } from "./SubscriptionStatusEvent";

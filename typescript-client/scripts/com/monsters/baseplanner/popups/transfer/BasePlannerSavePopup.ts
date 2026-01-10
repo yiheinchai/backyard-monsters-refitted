@@ -1,4 +1,4 @@
-import { Event } from "openfl/events/Event";
+import Event from "openfl/events/Event";
 
 import { BasePlannerEvent } from "../../events/BasePlannerEvent";
 import { BasePlannerTransferEvent } from "../../events/BasePlannerTransferEvent";

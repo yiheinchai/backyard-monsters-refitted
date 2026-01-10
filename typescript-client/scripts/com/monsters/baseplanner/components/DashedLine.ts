@@ -1,7 +1,7 @@
-import { CapsStyle } from "openfl/display/CapsStyle";
-import { Shape } from "openfl/display/Shape";
-import { Sprite } from "openfl/display/Sprite";
-import { Point } from "openfl/geom/Point";
+import CapsStyle from "openfl/display/CapsStyle";
+import Shape from "openfl/display/Shape";
+import Sprite from "openfl/display/Sprite";
+import Point from "openfl/geom/Point";
 
 /**
  * DashedLine - utility for drawing dashed lines with configurable patterns.

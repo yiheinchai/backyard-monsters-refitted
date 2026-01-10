@@ -1,7 +1,7 @@
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { DropShadowFilter } from "openfl/filters/DropShadowFilter";
-import { Point } from "openfl/geom/Point";
-import { Rectangle } from "openfl/geom/Rectangle";
+import MouseEvent from "openfl/events/MouseEvent";
+import DropShadowFilter from "openfl/filters/DropShadowFilter";
+import Point from "openfl/geom/Point";
+import Rectangle from "openfl/geom/Rectangle";
 
 import { PlannerDesignView } from "../PlannerDesignView";
 import { PlannerNode } from "../PlannerNode";

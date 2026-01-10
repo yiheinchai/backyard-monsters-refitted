@@ -1,4 +1,4 @@
-import { ColorMatrixFilter } from "openfl/filters/ColorMatrixFilter";
+import ColorMatrixFilter from "openfl/filters/ColorMatrixFilter";
 import { FilterPlugin } from "./FilterPlugin";
 import { EndArrayPlugin } from "./EndArrayPlugin";
 import { TweenLite } from "../TweenLite";

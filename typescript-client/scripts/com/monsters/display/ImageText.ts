@@ -1,8 +1,8 @@
-import { BitmapData } from "openfl/display/BitmapData";
-import { GlowFilter } from "openfl/filters/GlowFilter";
-import { AntiAliasType } from "openfl/text/AntiAliasType";
-import { TextField } from "openfl/text/TextField";
-import { TextFormat } from "openfl/text/TextFormat";
+import BitmapData from "openfl/display/BitmapData";
+import GlowFilter from "openfl/filters/GlowFilter";
+import AntiAliasType from "openfl/text/AntiAliasType";
+import TextField from "openfl/text/TextField";
+import TextFormat from "openfl/text/TextFormat";
 
 /**
  * Utility for rendering text to BitmapData images.

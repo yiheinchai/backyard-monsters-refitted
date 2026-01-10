@@ -1,4 +1,4 @@
-import { Point } from "openfl/geom/Point";
+import Point from "openfl/geom/Point";
 
 import { BFOUNDATION } from "../../../BFOUNDATION";
 

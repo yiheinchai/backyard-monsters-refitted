@@ -1,9 +1,9 @@
-import { MovieClip } from 'openfl/display/MovieClip';
-import { Event } from 'openfl/events/Event';
-import { IOErrorEvent } from 'openfl/events/IOErrorEvent';
-import { MouseEvent } from 'openfl/events/MouseEvent';
-import { Point } from 'openfl/geom/Point';
-import { TextFieldAutoSize } from 'openfl/text/TextFieldAutoSize';
+import MovieClip from 'openfl/display/MovieClip';
+import Event from 'openfl/events/Event';
+import IOErrorEvent from 'openfl/events/IOErrorEvent';
+import MouseEvent from 'openfl/events/MouseEvent';
+import Point from 'openfl/geom/Point';
+import TextFieldAutoSize from 'openfl/text/TextFieldAutoSize';
 import { BYMConfig } from './com/monsters/configs/BYMConfig';
 import { InventoryManager } from './com/monsters/inventory/InventoryManager';
 import { InstanceManager } from './com/monsters/managers/InstanceManager';

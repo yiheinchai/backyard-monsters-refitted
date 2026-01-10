@@ -1,6 +1,6 @@
-import { BitmapData } from 'openfl/display/BitmapData';
-import { Event } from 'openfl/events/Event';
-import { Rectangle } from 'openfl/geom/Rectangle';
+import BitmapData from 'openfl/display/BitmapData';
+import Event from 'openfl/events/Event';
+import Rectangle from 'openfl/geom/Rectangle';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { ICoreBuilding } from './com/monsters/interfaces/ICoreBuilding';
 import { BFOUNDATION } from './BFOUNDATION';

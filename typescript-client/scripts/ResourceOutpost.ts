@@ -1,5 +1,5 @@
-import { Event } from 'openfl/events/Event';
-import { Rectangle } from 'openfl/geom/Rectangle';
+import Event from 'openfl/events/Event';
+import Rectangle from 'openfl/geom/Rectangle';
 import { ICoreBuilding } from './com/monsters/interfaces/ICoreBuilding';
 import { MapRoom3Cell } from './com/monsters/maproom3/MapRoom3Cell';
 import { BFOUNDATION } from './BFOUNDATION';

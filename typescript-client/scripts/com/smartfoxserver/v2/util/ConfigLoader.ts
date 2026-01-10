@@ -1,8 +1,8 @@
-import { EventDispatcher } from "openfl/events/EventDispatcher";
-import { Event } from "openfl/events/Event";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { URLLoader } from "openfl/net/URLLoader";
-import { URLRequest } from "openfl/net/URLRequest";
+import EventDispatcher from "openfl/events/EventDispatcher";
+import Event from "openfl/events/Event";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import URLLoader from "openfl/net/URLLoader";
+import URLRequest from "openfl/net/URLRequest";
 import { SFSEvent } from "../core/SFSEvent";
 import { ConfigData } from "./ConfigData";
 

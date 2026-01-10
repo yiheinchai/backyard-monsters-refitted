@@ -1,5 +1,5 @@
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { URLRequest } from "openfl/net/URLRequest";
+import MouseEvent from "openfl/events/MouseEvent";
+import URLRequest from "openfl/net/URLRequest";
 
 import { KeywordMessage } from "../../KeywordMessage";
 import { ReplayableEventHandler } from "../../../../replayableEvents/ReplayableEventHandler";

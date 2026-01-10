@@ -1,5 +1,5 @@
-import { MovieClip } from "openfl/display/MovieClip";
-import { Point } from "openfl/geom/Point";
+import MovieClip from "openfl/display/MovieClip";
+import Point from "openfl/geom/Point";
 
 import { Particles } from "./Particles";
 import { ParticlesObject_CLIP } from "./ParticlesObject_CLIP";

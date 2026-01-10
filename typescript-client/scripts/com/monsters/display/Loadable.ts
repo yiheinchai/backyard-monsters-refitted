@@ -1,4 +1,4 @@
-import { Loader } from "openfl/display/Loader";
+import Loader from "openfl/display/Loader";
 
 /**
  * Asset loader with retry logic and priority queue support.

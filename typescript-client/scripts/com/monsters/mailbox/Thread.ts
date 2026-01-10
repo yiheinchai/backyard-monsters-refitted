@@ -1,13 +1,13 @@
-import { Sprite } from "openfl/display/Sprite";
-import { StageDisplayState } from "openfl/display/StageDisplayState";
-import { Event } from "openfl/events/Event";
-import { FocusEvent } from "openfl/events/FocusEvent";
-import { FullScreenEvent } from "openfl/events/FullScreenEvent";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { KeyboardEvent } from "openfl/events/KeyboardEvent";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { TimerEvent } from "openfl/events/TimerEvent";
-import { Timer } from "openfl/utils/Timer";
+import Sprite from "openfl/display/Sprite";
+import StageDisplayState from "openfl/display/StageDisplayState";
+import Event from "openfl/events/Event";
+import FocusEvent from "openfl/events/FocusEvent";
+import FullScreenEvent from "openfl/events/FullScreenEvent";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import KeyboardEvent from "openfl/events/KeyboardEvent";
+import MouseEvent from "openfl/events/MouseEvent";
+import TimerEvent from "openfl/events/TimerEvent";
+import Timer from "openfl/utils/Timer";
 
 import { ALLIANCES } from "../alliances/ALLIANCES";
 import { ScrollSet } from "../display/ScrollSet";

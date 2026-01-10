@@ -1,13 +1,13 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { Sprite } from "openfl/display/Sprite";
-import { StageDisplayState } from "openfl/display/StageDisplayState";
-import { Event } from "openfl/events/Event";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { TextField } from "openfl/text/TextField";
-import { TextFieldAutoSize } from "openfl/text/TextFieldAutoSize";
-import { TextFormat } from "openfl/text/TextFormat";
-import { TextFormatAlign } from "openfl/text/TextFormatAlign";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import Sprite from "openfl/display/Sprite";
+import StageDisplayState from "openfl/display/StageDisplayState";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
+import TextField from "openfl/text/TextField";
+import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
+import TextFormat from "openfl/text/TextFormat";
+import TextFormatAlign from "openfl/text/TextFormatAlign";
 import { ScaleBitmap } from "org/bytearray/display/ScaleBitmap";
 
 import { Chat } from "../chat/Chat";

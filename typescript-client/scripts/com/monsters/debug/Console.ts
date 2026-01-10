@@ -1,5 +1,5 @@
-import { Stage } from "openfl/display/Stage";
-import { KeyboardEvent } from "openfl/events/KeyboardEvent";
+import Stage from "openfl/display/Stage";
+import KeyboardEvent from "openfl/events/KeyboardEvent";
 
 import { ConsoleCommands } from "./ConsoleCommands";
 import { ConsoleView } from "./ConsoleView";

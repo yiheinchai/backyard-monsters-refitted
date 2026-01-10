@@ -1,4 +1,4 @@
-import { GlowFilter } from "openfl/filters/GlowFilter";
+import GlowFilter from "openfl/filters/GlowFilter";
 import { FilterPlugin } from "./FilterPlugin";
 import { TweenLite } from "../TweenLite";
 

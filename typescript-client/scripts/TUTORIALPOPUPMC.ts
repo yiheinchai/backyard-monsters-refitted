@@ -1,7 +1,7 @@
-import { MovieClip } from 'openfl/display/MovieClip';
-import { Event } from 'openfl/events/Event';
-import { MouseEvent } from 'openfl/events/MouseEvent';
-import { Point } from 'openfl/geom/Point';
+import MovieClip from 'openfl/display/MovieClip';
+import Event from 'openfl/events/Event';
+import MouseEvent from 'openfl/events/MouseEvent';
+import Point from 'openfl/geom/Point';
 import { TUTORIALPOPUPMC_CLIP } from './TUTORIALPOPUPMC_CLIP';
 import { TUTORIAL } from './TUTORIAL';
 import { GLOBAL } from './GLOBAL';

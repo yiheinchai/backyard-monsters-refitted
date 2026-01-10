@@ -1,10 +1,10 @@
-import { Loader } from "openfl/display/Loader";
-import { Sprite } from "openfl/display/Sprite";
-import { Event } from "openfl/events/Event";
-import { IOErrorEvent } from "openfl/events/IOErrorEvent";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { URLRequest } from "openfl/net/URLRequest";
-import { LoaderContext } from "openfl/system/LoaderContext";
+import Loader from "openfl/display/Loader";
+import Sprite from "openfl/display/Sprite";
+import Event from "openfl/events/Event";
+import IOErrorEvent from "openfl/events/IOErrorEvent";
+import MouseEvent from "openfl/events/MouseEvent";
+import URLRequest from "openfl/net/URLRequest";
+import LoaderContext from "openfl/system/LoaderContext";
 
 import { Contact } from "./model/Contact";
 

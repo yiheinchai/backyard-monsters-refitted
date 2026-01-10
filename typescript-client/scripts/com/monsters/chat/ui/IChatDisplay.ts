@@ -1,4 +1,4 @@
-import { IEventDispatcher } from "openfl/events/IEventDispatcher";
+import IEventDispatcher from "openfl/events/IEventDispatcher";
 
 /**
  * Interface for chat display components.

@@ -1,7 +1,7 @@
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { Sprite } from "openfl/display/Sprite";
-import { Point } from "openfl/geom/Point";
-import { Rectangle } from "openfl/geom/Rectangle";
+import DisplayObject from "openfl/display/DisplayObject";
+import Sprite from "openfl/display/Sprite";
+import Point from "openfl/geom/Point";
+import Rectangle from "openfl/geom/Rectangle";
 import { TransformAroundPointPlugin } from "./TransformAroundPointPlugin";
 import { TweenLite } from "../TweenLite";
 

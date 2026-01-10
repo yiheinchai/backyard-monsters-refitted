@@ -1,5 +1,5 @@
-import { Event } from "openfl/events/Event";
-import { Point } from "openfl/geom/Point";
+import Event from "openfl/events/Event";
+import Point from "openfl/geom/Point";
 
 import { MonsterBase } from "../../MonsterBase";
 import { Component } from "../Component";

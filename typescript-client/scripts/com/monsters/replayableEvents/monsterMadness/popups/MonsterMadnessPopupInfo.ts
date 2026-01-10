@@ -1,14 +1,14 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { Event } from "openfl/events/Event";
-import { EventDispatcher } from "openfl/events/EventDispatcher";
-import { MouseEvent } from "openfl/events/MouseEvent";
-import { NetStatusEvent } from "openfl/events/NetStatusEvent";
-import { Video } from "openfl/media/Video";
-import { NetStream } from "openfl/net/NetStream";
-import { URLRequest } from "openfl/net/URLRequest";
-import { navigateToURL } from "openfl/net/navigateToURL";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import DisplayObject from "openfl/display/DisplayObject";
+import Event from "openfl/events/Event";
+import EventDispatcher from "openfl/events/EventDispatcher";
+import MouseEvent from "openfl/events/MouseEvent";
+import NetStatusEvent from "openfl/events/NetStatusEvent";
+import Video from "openfl/media/Video";
+import NetStream from "openfl/net/NetStream";
+import URLRequest from "openfl/net/URLRequest";
+import navigateToURL from "openfl/net/navigateToURL";
 
 import { ImageCache } from "../../../display/ImageCache";
 import { MonsterMadness } from "../../attacking/monsterMadness/MonsterMadness";

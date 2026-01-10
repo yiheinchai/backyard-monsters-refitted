@@ -1,4 +1,4 @@
-import { MovieClip } from "openfl/display/MovieClip";
+import MovieClip from "openfl/display/MovieClip";
 
 import { MiniMapBackgroundDescent_CLIP } from "./MiniMapBackgroundDescent_CLIP";
 import { Embed } from "../../../core/Embed";

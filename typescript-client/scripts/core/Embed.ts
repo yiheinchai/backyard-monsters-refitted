@@ -1,4 +1,4 @@
-import { MovieClip } from "openfl/display/MovieClip";
+import MovieClip from "openfl/display/MovieClip";
 import { AssetRegistry } from "./AssetRegistry";
 
 /**

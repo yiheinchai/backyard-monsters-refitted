@@ -1,5 +1,5 @@
-import { Rectangle } from "openfl/geom/Rectangle";
-import { Event } from "openfl/events/Event";
+import Rectangle from "openfl/geom/Rectangle";
+import Event from "openfl/events/Event";
 
 import { SecNum } from "../../cc/utils/SecNum";
 import { SiegeBuildingPopup } from "./SiegeBuildingPopup";

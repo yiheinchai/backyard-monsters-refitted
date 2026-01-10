@@ -1,6 +1,6 @@
-import { Bitmap } from "openfl/display/Bitmap";
-import { BitmapData } from "openfl/display/BitmapData";
-import { Loader } from "openfl/display/Loader";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import Loader from "openfl/display/Loader";
 
 import { ImageCache } from "../../../display/ImageCache";
 import { PlayerHandler } from "../../PlayerHandler";

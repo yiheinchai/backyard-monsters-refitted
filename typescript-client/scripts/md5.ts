@@ -1,4 +1,4 @@
-import { ByteArray } from "openfl/utils/ByteArray";
+import ByteArray from "openfl/utils/ByteArray";
 
 const leadingZeros: string[] = ["", "0", "00", "000", "0000", "00000", "000000", "0000000", "00000000"];
 

@@ -1,6 +1,6 @@
-import { Event } from "openfl/events/Event";
-import { EventDispatcher } from "openfl/events/EventDispatcher";
-import { IEventDispatcher } from "openfl/events/IEventDispatcher";
+import Event from "openfl/events/Event";
+import EventDispatcher from "openfl/events/EventDispatcher";
+import IEventDispatcher from "openfl/events/IEventDispatcher";
 import { TweenEvent } from "./events/TweenEvent";
 import { OverwriteManager } from "./OverwriteManager";
 import { TweenLite } from "./TweenLite";

@@ -1,5 +1,5 @@
-import { Sprite } from "openfl/display/Sprite";
-import { Event } from "openfl/events/Event";
+import Sprite from "openfl/display/Sprite";
+import Event from "openfl/events/Event";
 
 import { BasePlanner } from "../../BasePlanner";
 import { BaseTemplate } from "../../BaseTemplate";

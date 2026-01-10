@@ -1,4 +1,4 @@
-import { Point } from "openfl/geom/Point";
+import Point from "openfl/geom/Point";
 
 /**
  * Smoke particle - individual particle for smoke effects.

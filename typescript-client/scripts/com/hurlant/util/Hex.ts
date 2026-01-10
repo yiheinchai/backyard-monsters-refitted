@@ -1,4 +1,4 @@
-import { ByteArray } from "openfl/utils/ByteArray";
+import ByteArray from "openfl/utils/ByteArray";
 
 /**
  * Hex - Hexadecimal encoding/decoding utility.

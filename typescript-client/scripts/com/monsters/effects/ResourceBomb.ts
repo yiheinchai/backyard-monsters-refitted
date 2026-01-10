@@ -1,6 +1,6 @@
-import { DisplayObject } from "openfl/display/DisplayObject";
-import { MovieClip } from "openfl/display/MovieClip";
-import { Point } from "openfl/geom/Point";
+import DisplayObject from "openfl/display/DisplayObject";
+import MovieClip from "openfl/display/MovieClip";
+import Point from "openfl/geom/Point";
 
 import { InstanceManager } from "../managers/InstanceManager";
 import { MonsterBase } from "../monsters/MonsterBase";

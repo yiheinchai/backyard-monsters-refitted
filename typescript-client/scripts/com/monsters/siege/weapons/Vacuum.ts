@@ -1,5 +1,5 @@
-import { Event } from "openfl/events/Event";
-import { getQualifiedClassName } from "openfl/Lib";
+import Event from "openfl/events/Event";
+import getQualifiedClassName from "openfl/Lib";
 
 import { SiegeWeaponProperty } from "../SiegeWeaponProperty";
 import { SiegeWeapons } from "../SiegeWeapons";
