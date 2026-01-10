@@ -1,7 +1,12 @@
-import { MovieClip, StageDisplayState, TextField } from "openfl/display";
-import { Event, MouseEvent } from "openfl/events";
-import Rectangle from "openfl/geom";
-import { TextFieldAutoSize, TextFormat, TextFormatAlign } from "openfl/text";
+import MovieClip from "openfl/display/MovieClip";
+import StageDisplayState from "openfl/display/StageDisplayState";
+import TextField from "openfl/display/TextField";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
+import Rectangle from "openfl/geom/Rectangle";
+import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
+import TextFormat from "openfl/text/TextFormat";
+import TextFormatAlign from "openfl/text/TextFormatAlign";
 
 import { ABTest } from "./com/cc/tests/ABTest";
 import { Chat } from "./com/monsters/chat/Chat";

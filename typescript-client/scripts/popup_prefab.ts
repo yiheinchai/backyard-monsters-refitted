@@ -1,5 +1,7 @@
-import { Bitmap, BitmapData } from "openfl/display";
-import { Event, MouseEvent } from "openfl/events";
+import Bitmap from "openfl/display/Bitmap";
+import BitmapData from "openfl/display/BitmapData";
+import Event from "openfl/events/Event";
+import MouseEvent from "openfl/events/MouseEvent";
 
 import { SecNum } from "./com/cc/utils/SecNum";
 import { ImageCache } from "./com/monsters/display/ImageCache";

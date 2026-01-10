@@ -1,4 +1,5 @@
-import { Point, Rectangle } from "openfl/geom";
+import Point from "openfl/geom/Point";
+import Rectangle from "openfl/geom/Rectangle";
 import { SecNum } from "./com/cc/utils/SecNum";
 import { SiegeFactory } from "./com/monsters/siege/SiegeFactory";
 import { SiegeLab } from "./com/monsters/siege/SiegeLab";

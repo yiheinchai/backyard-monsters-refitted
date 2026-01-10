@@ -4,7 +4,7 @@ import MovieClip from "openfl/display/MovieClip";
 import Shape from "openfl/display/Shape";
 import GlowFilter from "openfl/filters/GlowFilter";
 import Point from "openfl/geom/Point";
-import getTimer from "openfl/Lib";
+import getTimer from "openfl/Lib/getTimer";
 
 import { MonsterBase } from "../monsters/MonsterBase";
 

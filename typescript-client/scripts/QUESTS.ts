@@ -1,5 +1,5 @@
-import MouseEvent from "openfl/events";
-import TextFieldAutoSize from "openfl/text";
+import MouseEvent from "openfl/events/MouseEvent";
+import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
 
 import { MapRoomManager } from "./com/monsters/maproom_manager/MapRoomManager";
 import { SiegeWeapons } from "./com/monsters/siege/SiegeWeapons";

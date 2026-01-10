@@ -39,7 +39,7 @@ import { MAILBOX } from "../../../MAILBOX";
 import { PLEASEWAIT } from "../../../PLEASEWAIT";
 import { POPUPS } from "../../../POPUPS";
 import { SOUNDS } from "../../../SOUNDS";
-import { Tutorial } from "../../../Tutorial";
+import { TUTORIAL } from "../../../TUTORIAL";
 import { UI2 } from "../../../UI2";
 
 /**
@@ -490,7 +490,7 @@ export class MapRoom implements IMapRoom {
             if (GLOBAL._ROOT.stage.displayState === StageDisplayState.NORMAL) { if (Chat._bymChat) Chat._bymChat.show(); if (UI_BOTTOM._missions) UI_BOTTOM._missions.visible = true; }
             else { if (Chat._bymChat) Chat._bymChat.hide(); if (UI_BOTTOM._missions) UI_BOTTOM._missions.visible = false; }
         }
-        Tutorial.ShowIfNeeded();
+        TUTORIAL.ShowIfNeeded();
     }
     public Hide(): void { if (MapRoom._open && GLOBAL.mode !== GLOBAL.e_BASE_MODE.ATTACK && GLOBAL.mode !== GLOBAL.e_BASE_MODE.WMATTACK) { SOUNDS.Play("close"); if (MapRoom._mc!.parent) MapRoom._mc!.parent.removeChild(MapRoom._mc!); MapRoom.ClearCells(); MapRoom._mc!.Cleanup(); MapRoom._mc = null; } MapRoom._open = false; }
     public BookmarksClear(): void { MapRoom._bookmarkData = {}; MapRoom._bookmarks = []; MapRoom.BookmarksSave(); }

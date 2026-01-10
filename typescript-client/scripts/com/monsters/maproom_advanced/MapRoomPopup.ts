@@ -39,7 +39,7 @@ import { KEYS } from "../../../KEYS";
 import { LOGGER } from "../../../LOGGER";
 import { POWERUPS } from "../../../POWERUPS";
 import { SOUNDS } from "../../../SOUNDS";
-import { Tutorial } from "../../../Tutorial";
+import { TUTORIAL } from "../../../TUTORIAL";
 
 /**
  * MapRoomPopup - Main map room popup UI controller.
@@ -535,7 +535,7 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
     public BuffShow(event: MouseEvent): void { const target = event.currentTarget as MovieClip; const desc = KEYS.Get(target.name + "_desc"); let duration = "<b>" + KEYS.Get("buff_duration") + "</b>"; if (POWERUPS._expireRealTime) { if (POWERUPS.Timeleft(target.name) > 0) duration += GLOBAL.ToTime(POWERUPS.Timeleft(target.name), true); else duration = ""; } else { if (POWERUPS.Timeleft(target.name) > 0) duration += GLOBAL.ToTime(POWERUPS.Timeleft(target.name), true); else duration = ""; } if (!this._popupBuff) { const buff = new bubblepopupBuff(); this._popupBuff = this.addChild(buff) as bubblepopupBuff; buff.Setup(target.x + target.width / 2, target.y + target.height + 4, desc, duration); buff.x = this.mcBuffHolder.x + (target.x + target.width / 2); if (buff.x >= this.mcBuffHolder.x) { buff.x = this.mcBuffHolder.x + (target.x + target.width / 2) - 60; buff.mcArrow.x = 60; } buff.y = this.mcBuffHolder.y + (target.y + target.height + 4); } else { (this._popupBuff as bubblepopupBuff).Update(desc, duration); } }
     public BuffHide(event: MouseEvent | null): void { if (this._popupBuff) { this.removeChild(this._popupBuff); (this._popupBuff as bubblepopupBuff).Cleanup(); this._popupBuff = null; } }
     public BuffOff(event: MouseEvent): void { POWERUPS._testToggleOffPowers = true; const target = event.currentTarget as MovieClip; POWERUPS.Remove(target.name); this.BuffHide(null); }
-    public Help(): void { Tutorial.ForceShowAll(); }
+    public Help(): void { TUTORIAL.ForceShowAll(); }
     public FullScreen(): void { if (GLOBAL.isFullScreen) this._fullScreen = true; else this._fullScreen = false; MapRoomManager.instance.ResizeHandler(); }
     public Resize(): void { let needsResize = false; if (GLOBAL.isFullScreen) { if (this._fullScreen !== true) needsResize = true; } else if (this._fullScreen !== false) needsResize = true; if (needsResize) MapRoomManager.instance.ResizeHandler(); }
 }
