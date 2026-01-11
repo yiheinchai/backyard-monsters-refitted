@@ -18,9 +18,9 @@ export class Thread_CLIP extends MovieClip {
     public denyBtn: Button_CLIP;
     public spinner: MovieClip;
     public mask_mc: MovieClip;
-    public fsWarning: MovieClip;
+    public fsWarning: any; // Dynamic MovieClip with tBody
     public largeOutline_mc: MovieClip;
-    public reportBtn: MovieClip;
+    public reportBtn: any; // Dynamic MovieClip with label_txt
     public viewBtn: Button_CLIP;
     public mcFrame: frame_CLIP;
     public acceptBtn: Button_CLIP;

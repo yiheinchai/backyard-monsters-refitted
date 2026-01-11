@@ -14,6 +14,7 @@ export class popup_taunt_friend extends MovieClip {
     public tTitle: TextField;
     public mcFrame: frame_CLIP;
     public bShare: Button_CLIP;
+    public Resize: (() => void) | null = null;
 
     constructor() {
         super();

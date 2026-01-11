@@ -5,25 +5,14 @@ import MouseEvent from "openfl/events/MouseEvent";
 import { EnumYardType } from "../enums/EnumYardType";
 import { MapRoomCell } from "./MapRoomCell";
 import { MapRoom } from "./MapRoom";
+import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 
 import { BASE } from "../../../BASE";
 import { GLOBAL } from "../../../GLOBAL";
 import { KEYS } from "../../../KEYS";
 import { MAPROOM_DESCENT } from "../../../MAPROOM_DESCENT";
 import { POPUPS } from "../../../POPUPS";
-
-// Forward declaration for MapRoomManager
-declare class MapRoomManager {
-    static instance: { isInMapRoom2: boolean; Show: () => void };
-}
-
-// Declare popup clip class
-declare class popup_attackend_CLIP extends Sprite {
-    tTitle: any;
-    tMessage: any;
-    tProcessing: any;
-    bAction: any;
-}
+import { popup_attackend_CLIP } from "../../../popup_attackend_CLIP";
 
 /**
  * Attack end popup - shown when an attack ends (success or failure).

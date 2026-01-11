@@ -23,9 +23,9 @@ export class MONSTERLABPOPUP_CLIP extends MovieClip {
     public mcList: MovieClip;
     public txtGuide: TextField;
     public tStatsWarning: TextField;
-    public mcInstant: MovieClip;
+    public mcInstant: any; // Dynamic MovieClip with bAction, tDescription, gCoin
     public tIdle: TextField;
-    public mcResources: MovieClip;
+    public mcResources: any; // Dynamic MovieClip with bAction, mcR1-4, mcTime
     public mcPBarStatus: creatureBarAdv;
     public mcPBarStats: creatureBarAdv;
     public mcStatusIcon: MovieClip;

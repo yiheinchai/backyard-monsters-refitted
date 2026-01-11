@@ -3,7 +3,7 @@ import Point from "openfl/geom/Point";
 import { IAttackable } from "../../../interfaces/IAttackable";
 import { MonsterBase } from "../../MonsterBase";
 import { Component } from "../Component";
-import { Targeting } from "../../Targeting";
+import { Targeting } from "../../../../../Targeting";
 
 import { BFOUNDATION } from "../../../../../BFOUNDATION";
 

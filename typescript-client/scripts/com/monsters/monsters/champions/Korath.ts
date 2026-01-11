@@ -10,7 +10,7 @@ import { MonsterBase } from "../MonsterBase";
 import { FlameEffect } from "../components/statusEffects/FlameEffect";
 import { ChampionBase } from "./ChampionBase";
 import { PATHING } from "../../pathing/PATHING";
-import { Targeting } from "../../Targeting";
+import { Targeting } from "../../../../Targeting";
 import { RasterData } from "../../rendering/RasterData";
 
 import { ATTACK } from "../../../../ATTACK";

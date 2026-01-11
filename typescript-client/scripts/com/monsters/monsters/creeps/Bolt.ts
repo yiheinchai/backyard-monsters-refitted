@@ -1,10 +1,10 @@
 import Point from "openfl/geom/Point";
 
-import { MonsterBase } from "../../MonsterBase";
+import { MonsterBase } from "../MonsterBase";
 import { Blink } from "../../components/abilities/Blink";
 import { CreepBase } from "./CreepBase";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
+import { BFOUNDATION } from "../../../../BFOUNDATION";
 
 /**
  * Bolt - creep that can blink when powered up.

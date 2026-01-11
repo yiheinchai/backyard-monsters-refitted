@@ -1,6 +1,7 @@
 import MovieClip from "openfl/display/MovieClip";
 import MouseEvent from "openfl/events/MouseEvent";
-import { TweenLite, Elastic } from "gs/TweenLite";
+import { TweenLite } from "gs/TweenLite";
+import { Elastic } from "gs/easing";
 
 import { ScrollSet } from "../display/ScrollSet";
 import { EnumYardType } from "../enums/EnumYardType";
@@ -10,7 +11,7 @@ import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { CellData } from "./CellData";
 import { MapRoom } from "./MapRoom";
 import { MapRoomCell } from "./MapRoomCell";
-import { PopupInfoMine_CLIP } from "./PopupInfoMine_CLIP";
+import { PopupInfoMine_CLIP } from "../../../PopupInfoMine_CLIP";
 import { PopupInfoMonster } from "./PopupInfoMonster";
 
 import { BASE } from "../../../BASE";

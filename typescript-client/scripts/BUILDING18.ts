@@ -1,5 +1,6 @@
 import Bitmap from 'openfl/display/Bitmap';
 import BitmapData from 'openfl/display/BitmapData';
+import BlendMode from 'openfl/display/BlendMode';
 import MovieClip from 'openfl/display/MovieClip';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BWALL } from './BWALL';
@@ -24,7 +25,7 @@ export class BUILDING18 extends BWALL {
             const bitmap: Bitmap = this._mcBase!.addChild(new Bitmap(bitmapData)) as Bitmap;
             bitmap.x = this.imageData.shadowX;
             bitmap.y = this.imageData.shadowY;
-            bitmap.blendMode = "multiply";
+            bitmap.blendMode = BlendMode.MULTIPLY;
         } else if (url === this.imageData.topURL) {
             (this.topContainer as MovieClip).addChild(new Bitmap(bitmapData));
         }

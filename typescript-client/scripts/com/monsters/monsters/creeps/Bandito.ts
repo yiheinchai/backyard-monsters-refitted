@@ -1,11 +1,11 @@
 import Point from "openfl/geom/Point";
 
-import { MonsterBase } from "../../MonsterBase";
+import { MonsterBase } from "../MonsterBase";
 import { BanditoAOEDamageSpin } from "../../components/abilities/BanditoAOEDamageSpin";
-import { Targeting } from "../../Targeting";
+import { Targeting } from "../../../../Targeting";
 import { CreepBase } from "./CreepBase";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
+import { BFOUNDATION } from "../../../../BFOUNDATION";
 
 /**
  * Bandito - creep with AOE damage spin ability when powered up.

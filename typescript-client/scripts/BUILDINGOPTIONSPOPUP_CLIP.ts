@@ -14,8 +14,8 @@ import { Embed } from "./core/Embed";
 export class BUILDINGOPTIONSPOPUP_CLIP extends MovieClip {
     public mcCBBG: MovieClip;
     public mcBG: frame_CLIP;
-    public mcInstant: MovieClip;
-    public mcResources: MovieClip;
+    public mcInstant: any; // Dynamic MovieClip with bAction, tDescription, gCoin
+    public mcResources: any; // Dynamic MovieClip with bAction, mcR1-mcR4, mcTime
     public mcImage: MovieClip;
     public mcInfoCB: bubblepopup6_CLIP;
     public tDescription: TextField;

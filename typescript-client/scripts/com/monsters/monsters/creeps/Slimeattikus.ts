@@ -1,10 +1,10 @@
 import Point from "openfl/geom/Point";
 
-import { MonsterBase } from "../../MonsterBase";
+import { MonsterBase } from "../MonsterBase";
 import { DeathSplit } from "../../components/abilities/DeathSplit";
 import { CreepBase } from "./CreepBase";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
+import { BFOUNDATION } from "../../../../BFOUNDATION";
 
 /**
  * Slimeattikus - special creep that splits on death.

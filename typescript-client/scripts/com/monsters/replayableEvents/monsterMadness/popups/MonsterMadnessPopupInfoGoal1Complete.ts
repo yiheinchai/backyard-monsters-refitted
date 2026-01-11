@@ -9,7 +9,7 @@ import { CREATURES } from "../../../../../CREATURES";
 import { BUILDINGS } from "../../../../../BUILDINGS";
 import { CHAMPIONCHAMBER } from "../../../../../CHAMPIONCHAMBER";
 import { CHAMPIONCAGE } from "../../../../../CHAMPIONCAGE";
-import { Button } from "../../../../Button";
+import { Button } from "../../../../../Button";
 
 /**
  * Monster Madness popup info goal 1 complete - displayed when goal 1 is completed.

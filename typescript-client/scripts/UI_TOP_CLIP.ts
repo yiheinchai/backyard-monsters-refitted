@@ -22,7 +22,7 @@ export class UI_TOP_CLIP extends MovieClip {
     public mcBuffHolder: MovieClip;
     public mcSpecialEvent: buttonDefenseEvent_CLIP;
     public mcSound: buttonSound_CLIP;
-    public mc: MovieClip;
+    public mc: any; // Dynamic MovieClip with mcPoints, mcR5, mcOutposts, bEarn, bDailyDeal, etc
     public mcMusic: buttonMusic_CLIP;
     public mcReinforcements: buttonReinforcement_CLIP;
 

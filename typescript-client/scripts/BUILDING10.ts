@@ -1,5 +1,6 @@
 import Bitmap from 'openfl/display/Bitmap';
 import BitmapData from 'openfl/display/BitmapData';
+import BlendMode from 'openfl/display/BlendMode';
 import MovieClip from 'openfl/display/MovieClip';
 import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
@@ -30,7 +31,7 @@ export class BUILDING10 extends BFOUNDATION {
             const bitmap: Bitmap = this._mcBase!.addChild(new Bitmap(bitmapData)) as Bitmap;
             bitmap.x = this.imageData.shadowX;
             bitmap.y = this.imageData.shadowY;
-            bitmap.blendMode = "multiply";
+            bitmap.blendMode = BlendMode.MULTIPLY;
         } else if (url === this.imageData.topURL) {
             (this.animContainer as MovieClip).addChild(new Bitmap(bitmapData));
         }

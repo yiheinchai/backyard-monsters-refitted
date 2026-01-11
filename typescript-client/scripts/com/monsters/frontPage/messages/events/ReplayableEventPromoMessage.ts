@@ -9,7 +9,7 @@ import { GLOBAL } from "../../../../../GLOBAL";
 import { POPUPS } from "../../../../../POPUPS";
 import { KEYS } from "../../../../../KEYS";
 import { LOGIN } from "../../../../../LOGIN";
-import { Button } from "../../../../Button";
+import { Button } from "../../../../../Button";
 import { frontpage_stonebtn } from "../../../../../frontpage_stonebtn";
 
 /**

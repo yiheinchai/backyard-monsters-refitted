@@ -12,6 +12,7 @@ import { ParticleText } from './com/monsters/effects/particles/ParticleText';
 import { Smoke } from './com/monsters/effects/smoke/Smoke';
 import { EnumYardType } from './com/monsters/enums/EnumYardType';
 import { InstanceManager } from './com/monsters/managers/InstanceManager';
+import { InventoryManager } from './com/monsters/inventory/InventoryManager';
 import { MapRoom3 } from './com/monsters/maproom3/MapRoom3';
 import { MapRoom3Tutorial } from './com/monsters/maproom3/MapRoom3Tutorial';
 import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
@@ -21,16 +22,24 @@ import { Player } from './com/monsters/player/Player';
 import { RasterData } from './com/monsters/rendering/RasterData';
 import { RewardHandler } from './com/monsters/rewarding/RewardHandler';
 import { SiegeWeapons } from './com/monsters/siege/SiegeWeapons';
+import Point from 'openfl/geom/Point';
 
 import { ACADEMY } from './ACADEMY';
 import { ACHIEVEMENTS } from './ACHIEVEMENTS';
 import { ATTACK } from './ATTACK';
 import { BFOUNDATION } from './BFOUNDATION';
+import { BlackSpurtzCannon } from './BlackSpurtzCannon';
 import { BTOWER } from './BTOWER';
 import { BTRAP } from './BTRAP';
+import { BUILDINGINFO } from './BUILDINGINFO';
 import { BWALL } from './BWALL';
 import { Bunker } from './Bunker';
+import { BUILDING14 } from './BUILDING14';
+import { BUILDING15 } from './BUILDING15';
+import { BUILDING6 } from './BUILDING6';
 import { CHECKER } from './CHECKER';
+import { SiegeFactory } from './com/monsters/siege/SiegeFactory';
+import { SiegeLab } from './com/monsters/siege/SiegeLab';
 import { CREATURELOCKER } from './CREATURELOCKER';
 import { CREATURES } from './CREATURES';
 import { CREEPS } from './CREEPS';
@@ -43,6 +52,10 @@ import { GIFTS } from './GIFTS';
 import { GLOBAL } from './GLOBAL';
 import { GRID } from './GRID';
 import { HOUSING } from './HOUSING';
+import { HOUSINGBUNKER } from './HOUSINGBUNKER';
+import { INFERNO_DESCENT_POPUPS } from './INFERNO_DESCENT_POPUPS';
+import { INFERNO_MAGMA_TOWER } from './INFERNO_MAGMA_TOWER';
+import { INFERNOQUAKETOWER } from './INFERNOQUAKETOWER';
 import { KEYS } from './KEYS';
 import { LOGGER } from './LOGGER';
 import { LOGIN } from './LOGIN';
@@ -65,6 +78,7 @@ import { SOUNDS } from './SOUNDS';
 import { SPECIALEVENT } from './SPECIALEVENT';
 import { SPECIALEVENT_WM1 } from './SPECIALEVENT_WM1';
 import { SPRITES } from './SPRITES';
+import { SpurtzCannon } from './SpurtzCannon';
 import { STORE } from './STORE';
 import { Targeting } from './Targeting';
 import { TUTORIAL } from './TUTORIAL';
@@ -946,20 +960,24 @@ export class BASE {
     
     public static CalcResources(): void {
         // Calculate max resources based on storage buildings
-        const buildings = InstanceManager.getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        // For main yard, start with 10000 base
+        if (!BASE.isOutpostOrInfernoOutpost) {
+            BASE._resources.r1max = 10000;
+            BASE._resources.r2max = 10000;
+            BASE._resources.r3max = 10000;
+            BASE._resources.r4max = 10000;
+        }
         
-        BASE._resources.r1max = 0;
-        BASE._resources.r2max = 0;
-        BASE._resources.r3max = 0;
-        BASE._resources.r4max = 0;
-        
-        for (const building of buildings) {
-            if (building._capacity) {
-                for (let i = 1; i <= 4; i++) {
-                    if (building._capacity["r" + i]) {
-                        BASE._resources["r" + i + "max"] += building._capacity["r" + i];
-                    }
-                }
+        // Get storage silo buildings (BUILDING6)
+        const silos = InstanceManager.getInstancesByClass(BUILDING6) as BFOUNDATION[];
+        for (const silo of silos) {
+            if (silo._lvl.Get() >= 1 && BASE.isMainYardOrInfernoMainYard) {
+                const type = silo._type;
+                const capacity = GLOBAL._buildingProps[type - 1].capacity[silo._lvl.Get() - 1];
+                BASE._resources.r1max += capacity;
+                BASE._resources.r2max += capacity;
+                BASE._resources.r3max += capacity;
+                BASE._resources.r4max += capacity;
             }
         }
     }
@@ -1063,4 +1081,447 @@ export class BASE {
         STORE.ShowB(3, 1, ["HAMS"], true);
         POPUPS.Next();
     }
+
+    /**
+     * Check if a building placement has blockers (overlaps with other buildings).
+     * @param building The building to check
+     * @param allowTraps Whether to allow overlap with traps
+     * @returns Empty string if no blockers, "overlap" if blocked
+     */
+    public static BuildBlockers(building: BFOUNDATION, allowTraps: boolean = false): string {
+        if (GRID.FootprintBlocked(building._footprint, new Point(building._mc.x, building._mc.y), true, allowTraps)) {
+            return "overlap";
+        }
+        return "";
+    }
+
+    /**
+     * Add resources to the base (opposite of Charge).
+     * @param resourceType Resource type (1-4)
+     * @param amount Amount to add
+     * @param ignoreMax Whether to ignore max capacity
+     * @param building Optional building that produced the resources
+     * @param useInferno Whether to use inferno resources
+     * @param triggerSave Whether to trigger a save
+     * @returns Amount actually added
+     */
+    public static Fund(
+        resourceType: number, 
+        amount: number, 
+        ignoreMax: boolean = false, 
+        building: BFOUNDATION | null = null, 
+        useInferno: boolean = false,
+        triggerSave: boolean = true
+    ): number {
+        amount = Math.floor(amount);
+        
+        if (useInferno && BASE.isInfernoMainYardOrOutpost) {
+            useInferno = false;
+        }
+        
+        if (resourceType < 5) {
+            const resources = useInferno ? BASE._iresources : BASE._resources;
+            const deltaResources = useInferno ? BASE._ideltaResources : BASE._deltaResources;
+            const hpDeltaResources = useInferno ? {} : BASE._hpDeltaResources;
+            const resourceKey = "r" + resourceType;
+            const maxKey = "r" + resourceType + "max";
+            let actualGain = 0;
+            
+            if (resources[resourceKey].Get() < resources[maxKey] || ignoreMax) {
+                if (resources[resourceKey].Get() + amount < resources[maxKey] || ignoreMax) {
+                    resources[resourceKey].Add(amount);
+                    if (!useInferno) {
+                        BASE._hpResources[resourceKey] += amount;
+                    }
+                    if (deltaResources[resourceKey]) {
+                        deltaResources[resourceKey].Add(amount);
+                        hpDeltaResources[resourceKey] += amount;
+                    } else {
+                        deltaResources[resourceKey] = new SecNum(amount);
+                        hpDeltaResources[resourceKey] = amount;
+                    }
+                    if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === GLOBAL.e_BASE_MODE.IBUILD) {
+                        GLOBAL._resources[resourceKey].Add(amount);
+                        GLOBAL._hpResources[resourceKey] += amount;
+                    }
+                    deltaResources.dirty = true;
+                    hpDeltaResources.dirty = true;
+                    actualGain = amount;
+                } else {
+                    actualGain = resources[maxKey] - resources[resourceKey].Get();
+                    resources[resourceKey].Set(resources[maxKey]);
+                    if (!useInferno) {
+                        BASE._hpResources[resourceKey] = resources[maxKey];
+                    }
+                    if (deltaResources[resourceKey]) {
+                        deltaResources[resourceKey].Add(Math.floor(actualGain));
+                        hpDeltaResources[resourceKey] += Math.floor(actualGain);
+                    } else {
+                        deltaResources[resourceKey] = new SecNum(Math.floor(actualGain));
+                        hpDeltaResources[resourceKey] = Math.floor(actualGain);
+                    }
+                    if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === GLOBAL.e_BASE_MODE.IBUILD) {
+                        GLOBAL._resources[resourceKey].Add(Math.floor(actualGain));
+                        GLOBAL._hpResources[resourceKey] += Math.floor(actualGain);
+                    }
+                    deltaResources.dirty = true;
+                    hpDeltaResources.dirty = true;
+                }
+                
+                BASE._bankedValue += actualGain;
+                BASE._bankedTime = GLOBAL.Timestamp();
+            } else if ((GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === GLOBAL.e_BASE_MODE.IBUILD) && 
+                       !useInferno && !WMATTACK._inProgress && triggerSave) {
+                UI2._top.OverchargeShow(resourceType);
+            }
+            
+            if (building) {
+                building._stored.Add(-actualGain);
+                if (!building._producing) {
+                    building.StartProduction();
+                }
+                building.Update();
+            }
+            
+            if (actualGain > 0 && (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === GLOBAL.e_BASE_MODE.IBUILD) && triggerSave) {
+                BASE.Save();
+            }
+            
+            UI2.Update();
+            return actualGain;
+        }
+        
+        UI2.Update();
+        return 0;
+    }
+
+    /**
+     * Select a building.
+     * @param building The building to select
+     * @param suppressPopup Whether to suppress the building info popup
+     */
+    public static BuildingSelect(building: BFOUNDATION, suppressPopup: boolean = false): void {
+        if (GLOBAL._selectedBuilding) {
+            BASE.BuildingDeselect();
+        }
+        
+        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === "ibuild") {
+            if (UI2._showBottom || TUTORIAL._stage === 3 || TUTORIAL._stage === 4 || 
+                TUTORIAL._stage === 20 || TUTORIAL._stage === 21 || TUTORIAL._stage === 23) {
+                GLOBAL._selectedBuilding = building;
+                if (building._class !== "mushroom") {
+                    GLOBAL._selectedBuilding.showFootprint(false, true);
+                }
+                building.Update();
+                if (!suppressPopup) {
+                    if (building._type === 127 && GLOBAL.StatGet("p_id") !== 1 && 
+                        !MAPROOM_DESCENT.DescentPassed && !BASE.isInfernoMainYardOrOutpost) {
+                        INFERNO_DESCENT_POPUPS.ShowEnticePopup();
+                    } else {
+                        BUILDINGINFO.Show(building);
+                    }
+                }
+            }
+        } else if (GLOBAL.mode === "help" || GLOBAL.mode === "ihelp" || LOGIN._playerID === building._senderid) {
+            GLOBAL._selectedBuilding = building;
+            GLOBAL._selectedBuilding.showFootprint(false);
+            building.Update();
+            if (!suppressPopup) {
+                BUILDINGINFO.Show(building);
+            }
+        }
+    }
+
+    /**
+     * Check if a building type can be built.
+     * @param buildingType The building type ID
+     * @param checkOnly Whether to just check without showing errors
+     * @returns Object with error status and message
+     */
+    public static CanBuild(buildingType: number, checkOnly: boolean = false): { error: boolean; errorMessage?: string } {
+        let buildingProps: any = null;
+        let hasError = false;
+        let errorMessage = "";
+        
+        if (GLOBAL._aiDesignMode) {
+            return { error: false };
+        }
+        
+        for (const key in GLOBAL._buildingProps) {
+            if (GLOBAL._buildingProps[key].id === buildingType) {
+                if (GLOBAL._buildingProps[key].rewarded) {
+                    return { error: false };
+                }
+                buildingProps = GLOBAL._buildingProps[key];
+                break;
+            }
+        }
+        
+        if (!buildingProps) {
+            return { error: true, errorMessage: "Building not found" };
+        }
+        
+        if (TUTORIAL._stage < 200 && buildingProps.tutstage > TUTORIAL._stage) {
+            hasError = true;
+            errorMessage = KEYS.Get("base_builderr_locked");
+        } else if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && (buildingProps.type === "taunt" || buildingProps.type === "gift")) {
+            hasError = true;
+            errorMessage = KEYS.Get("base_builderr_ownyard1");
+        } else if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD && buildingProps.type !== "taunt" && buildingProps.type !== "gift") {
+            hasError = true;
+            errorMessage = KEYS.Get("base_builderr_ownyard2");
+        }
+        
+        return { error: hasError, errorMessage: errorMessage };
+    }
+
+    /**
+     * Check if a building can be fortified.
+     * @param building The building to check
+     * @param checkOnly Whether to just check without showing errors  
+     * @returns Object with error status and message
+     */
+    public static CanFortify(building: BFOUNDATION, checkOnly: boolean = false): { error: boolean; errorMessage?: string } {
+        if (!building || !building._fortification) {
+            return { error: true, errorMessage: "Cannot fortify this building" };
+        }
+        
+        const buildingProps = GLOBAL._buildingProps[building._type - 1];
+        if (!buildingProps || !buildingProps.fortify_costs) {
+            return { error: true, errorMessage: "No fortify data" };
+        }
+        
+        const currentFortifyLevel = building._fortification.Get();
+        if (currentFortifyLevel >= buildingProps.fortify_costs.length) {
+            return { error: true, errorMessage: KEYS.Get("base_forterr_maxlvl") };
+        }
+        
+        return { error: false };
+    }
+
+    /**
+     * Check if a building can be upgraded.
+     * @param building The building to check
+     * @param checkOnly Whether to just check without showing errors
+     * @returns Object with error status and message
+     */
+    public static CanUpgrade(building: BFOUNDATION, checkOnly: boolean = false): { error: boolean; errorMessage?: string } {
+        if (!building || !building._lvl) {
+            return { error: true, errorMessage: "Cannot upgrade this building" };
+        }
+        
+        const buildingProps = GLOBAL._buildingProps[building._type - 1];
+        if (!buildingProps || !buildingProps.costs) {
+            return { error: true, errorMessage: "No upgrade data" };
+        }
+        
+        const currentLevel = building._lvl.Get();
+        if (currentLevel >= buildingProps.costs.length) {
+            return { error: true, errorMessage: KEYS.Get("base_upgraderr_maxlvl") };
+        }
+        
+        if (building._countdownBuild && building._countdownBuild.Get() > 0) {
+            return { error: true, errorMessage: KEYS.Get("base_upgraderr_building") };
+        }
+        
+        if (building._countdownUpgrade && building._countdownUpgrade.Get() > 0) {
+            return { error: true, errorMessage: KEYS.Get("base_upgraderr_upgrading") };
+        }
+        
+        return { error: false };
+    }
+
+    /**
+     * Check if a building type is an inferno-specific building that shouldn't appear in normal yards.
+     * @param buildingType The building type ID
+     * @returns True if it's an inferno building in a non-inferno yard
+     */
+    public static isInfernoBuilding(buildingType: number): boolean {
+        return (buildingType === INFERNOQUAKETOWER.TYPE || 
+                buildingType === INFERNO_MAGMA_TOWER.ID || 
+                buildingType === SiegeFactory.ID || 
+                buildingType === SiegeLab.ID || 
+                buildingType === SpurtzCannon.TYPE || 
+                buildingType === BlackSpurtzCannon.TYPE) && 
+               !BASE.isInfernoMainYardOrOutpost;
+    }
+
+    /**
+     * Check if in 711 mode (special promo event).
+     * @returns True if 711 mode is valid
+     */
+    public static is711Valid(): boolean {
+        // 711 promo event check - typically checks for specific flags
+        return GLOBAL._flags && GLOBAL._flags.is711 === true;
+    }
+
+    /**
+     * Count buildings of a specific type.
+     * @param buildingType The building type ID
+     * @param minLevel Minimum level to count
+     * @param countOne Whether to stop counting after finding one
+     * @returns Number of buildings found
+     */
+    public static hasNumBuildings(buildingType: number, minLevel: number = 0, countOne: boolean = false): number {
+        const buildingProps = GLOBAL._buildingProps[buildingType - 1];
+        const buildings = InstanceManager.getInstancesByClass(buildingProps?.cls || BFOUNDATION) as BFOUNDATION[];
+        let count = 0;
+        
+        for (const building of buildings) {
+            if (building._type === buildingType && building._lvl.Get() >= minLevel) {
+                count++;
+                if (countOne) {
+                    break;
+                }
+            }
+        }
+        
+        return count;
+    }
+
+    /**
+     * Find a building by type.
+     * @param buildingType The building type ID
+     * @returns The first building of that type, or null
+     */
+    public static findBuilding(buildingType: number): BFOUNDATION | null {
+        const buildingProps = GLOBAL._buildingProps[buildingType];
+        const buildings = InstanceManager.getInstancesByClass(buildingProps?.cls || BFOUNDATION) as BFOUNDATION[];
+        
+        for (const building of buildings) {
+            if (building._type === buildingType) {
+                return building;
+            }
+        }
+        
+        return null;
+    }
+
+    /**
+     * Check if a creature ID is an inferno creature.
+     * @param creatureId The creature ID string
+     * @returns True if it's an inferno creature (starts with "I")
+     */
+    public static isInfernoCreep(creatureId: string): boolean {
+        return creatureId.substring(0, 1) === "I";
+    }
+
+    /**
+     * Find closest housing to a point.
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @param exclude Building to exclude from search
+     * @param isLvl If true, exclude buildings under construction
+     * @param isFlyer If true, exclude destroyed buildings
+     * @returns The closest housing building or null
+     */
+    public static FindClosestHousingToPoint(x: number, y: number, exclude: BFOUNDATION | null = null, isLvl: boolean = true, isFlyer: boolean = true): BFOUNDATION | null {
+        const distances: Array<{house: BFOUNDATION, dist: number}> = [];
+        const buildingClass = BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15;
+        const buildings = InstanceManager.getInstancesByClass(buildingClass) as BFOUNDATION[];
+        
+        for (const building of buildings) {
+            if (building !== exclude) {
+                // Skip if under construction and isLvl is true
+                if (isLvl && building._countdownBuild.Get() > 0) {
+                    continue;
+                }
+                // Skip if destroyed and isFlyer is true
+                if (isFlyer && building.health <= 0) {
+                    continue;
+                }
+                const dx = building.x - x;
+                const dy = building.y - y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                distances.push({ house: building, dist: dist });
+            }
+        }
+        
+        if (distances.length === 0) {
+            return null;
+        }
+        
+        distances.sort((a, b) => a.dist - b.dist);
+        return distances[0].house;
+    }
+
+    /**
+     * Check if all requirements for a building are met.
+     * @param buildingProps The building properties object with requirements
+     * @returns True if all requirements are met
+     */
+    public static HasRequirements(buildingProps: any): boolean {
+        if (!buildingProps.re) {
+            return true;
+        }
+        
+        for (const req of buildingProps.re) {
+            let count = 0;
+            
+            if (req[0] === INFERNOQUAKETOWER.UNDERHALL_ID) {
+                // Check Underhall level requirement
+                if (GLOBAL.StatGet(BUILDING14.UNDERHALL_LEVEL) >= req[2] && MAPROOM_DESCENT.DescentPassed) {
+                    count = 1;
+                }
+            } else {
+                // Check other building requirements
+                const buildings = InstanceManager.getInstancesByClass(BFOUNDATION);
+                for (const building of buildings) {
+                    if (building._type === req[0] && building._lvl.Get() >= req[2]) {
+                        count++;
+                    }
+                }
+            }
+            
+            if (count < req[1]) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    /**
+     * Add a building to the base in build mode.
+     * @param buildingType The type of building to add
+     * @param forceCheck If true, force requirement check
+     * @returns The created building or null
+     */
+    public static addBuildingB(buildingType: number, forceCheck: boolean = false): BFOUNDATION | null {
+        let canBuildNow = false;
+        BASE.BuildingDeselect();
+        
+        // Check if building is instant (no build time) or queue is available
+        canBuildNow = GLOBAL._buildingProps[buildingType - 1].costs[0].time.Get() === 0;
+        if (!canBuildNow) {
+            const queueResult = QUEUE.CanDo();
+            canBuildNow = queueResult.error === false;
+        }
+        
+        // Check if building is in inventory
+        if (InventoryManager.buildingStorageCount(buildingType) > 0) {
+            canBuildNow = true;
+        }
+        
+        if (canBuildNow) {
+            const canBuildResult = BASE.CanBuild(buildingType, forceCheck);
+            if (!canBuildResult.error) {
+                BASE.BuildingDeselect();
+                BASE.ShowFootprints();
+                GLOBAL._newBuilding = BASE.addBuildingC(buildingType);
+                if (GLOBAL._newBuilding) {
+                    GLOBAL._newBuilding._mc.alpha = 0.5;
+                    GLOBAL._newBuilding.FollowMouse();
+                } else {
+                    BASE.BuildingDeselect();
+                }
+                return GLOBAL._newBuilding;
+            }
+            GLOBAL.Message(canBuildResult.errorMessage);
+        } else {
+            POPUPS.DisplayWorker(0, buildingType);
+        }
+        return null;
+    }
 }
+

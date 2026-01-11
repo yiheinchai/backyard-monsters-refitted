@@ -2,13 +2,13 @@ import BitmapData from "openfl/display/BitmapData";
 import Point from "openfl/geom/Point";
 
 import { ITargetable } from "../../../interfaces/ITargetable";
-import { MonsterBase } from "../../../MonsterBase";
+import { MonsterBase } from "../../MonsterBase";
 import { AOEHealOnDeath } from "../../../components/abilities/AOEHealOnDeath";
 import { CreepBase } from "../CreepBase";
 import { ProjectileUtils } from "../../../projectiles/ProjectileUtils";
 import { Projectilev2 } from "../../../projectiles/Projectilev2";
 
-import { BFOUNDATION } from "../../../../../../BFOUNDATION";
+import { BFOUNDATION } from "../../../../../BFOUNDATION";
 import { SPRITES } from "../../../../../../SPRITES";
 import { SOUNDS } from "../../../../../../SOUNDS";
 import { LoanShark } from "org/kissmyas/utils/loanshark/LoanShark";

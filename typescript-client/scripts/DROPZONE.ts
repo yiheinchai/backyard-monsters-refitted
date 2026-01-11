@@ -2,6 +2,7 @@ import { ResourceBombs } from './com/monsters/effects/ResourceBombs';
 import Event from 'openfl/events/Event';
 import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
+import Sprite from 'openfl/display/Sprite';
 import { ATTACK } from './ATTACK';
 import { BASE } from './BASE';
 import { BFOUNDATION } from './BFOUNDATION';
@@ -16,7 +17,7 @@ import { UI2 } from './UI2';
  * DROPZONE - Drop Zone Manager
  * Handles targeting zones for spawning creatures and siege weapons
  */
-export class DROPZONE {
+export class DROPZONE extends Sprite {
     public static readonly GROUND: number = 1;
     public static readonly BUILDINGS: number = 2;
     public static readonly MONSTERS: number = 3;
@@ -29,11 +30,10 @@ export class DROPZONE {
     public _middle: Point;
     public _dropTarget: number = 1;
     private _targetedBuildings: BFOUNDATION[] = [];
-    public x: number = 0;
-    public y: number = 0;
     public ring1: any;
 
     constructor(size: number = 32, dropTarget: number = 1) {
+        super();
         this._middle = new Point(0, 0);
         this._targetedBuildings = [];
         this._size = size;

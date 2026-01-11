@@ -860,4 +860,28 @@ export class UI_TOP extends UI_TOP_CLIP {
         }
         return valid;
     }
+
+    /**
+     * Shows an overcharge warning popup at the specified resource row
+     * @param row The resource row number to show the warning at
+     */
+    public OverchargeShow(row: number): void {
+        if (!this._popupWarning) {
+            this._popupWarning = this.addChild(new bubblepopup4()) as bubblepopup4;
+        }
+        this._popupWarning.tA.htmlText = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("inf_ui_needmoreroom") : KEYS.Get("ui_needmoreroom");
+        this._popupWarning.x = 150;
+        this._popupWarning.y = 20 + 41 * row;
+        this._popupWarning.Wobble();
+    }
+
+    /**
+     * Hides the overcharge warning popup
+     */
+    public OverchargeHide(): void {
+        if (this._popupWarning) {
+            this.removeChild(this._popupWarning);
+            this._popupWarning = null;
+        }
+    }
 }

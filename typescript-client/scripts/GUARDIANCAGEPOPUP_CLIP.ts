@@ -49,7 +49,7 @@ export class GUARDIANCAGEPOPUP_CLIP extends MovieClip {
     public p3_tTimeleft: TextField;
     public p3_tHP: TextField;
     public b1: ButtonBrown_CLIP;
-    public mcInstant: MovieClip;
+    public mcInstant: any; // Dynamic MovieClip with bAction, tDescription, gCoin
     public p3_bTimeleft: meterBar_rounded_blue_CLIP;
     public b2: ButtonBrown_CLIP;
     public tTitle: TextField;

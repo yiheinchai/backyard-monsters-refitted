@@ -3,6 +3,7 @@ import { creatureBar } from './creatureBar';
 import { Button_CLIP } from './Button_CLIP';
 import { frame_CLIP } from './frame_CLIP';
 import { Embed } from "./core/Embed";
+import MovieClip from "openfl/display/MovieClip";
 //    [Embed(source="/_assets/assets.swf", symbol="ACADEMYPOPUP_CLIP")]
 
 /**
@@ -11,7 +12,7 @@ import { Embed } from "./core/Embed";
  * Converted from ActionScript to TypeScript
  */
 @Embed({ source: "/_assets/assets.swf", symbol: "ACADEMYPOPUP_CLIP" })
-export class ACADEMYPOPUP_CLIP {
+export class ACADEMYPOPUP_CLIP extends MovieClip {
     public bNext!: BUILDINGSARROW;
     public tResourceA: any; // TextField
     public bDamageA!: creatureBar;
@@ -55,28 +56,11 @@ export class ACADEMYPOPUP_CLIP {
     public speed_txt: any; // TextField
     
     constructor() {
+        super();
         this.frame1();
     }
     
     protected frame1(): void {
         this.stop();
-    }
-    
-    // MovieClip-like methods
-    public stop(): void {
-        // Implementation for stopping animation
-    }
-    
-    public gotoAndStop(frame: number | string): void {
-        // Implementation for going to frame
-    }
-    
-    public addChild(child: any): any {
-        // Implementation for adding child
-        return child;
-    }
-    
-    public removeChild(child: any): void {
-        // Implementation for removing child
     }
 }

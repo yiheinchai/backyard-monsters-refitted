@@ -1,11 +1,11 @@
 import Point from "openfl/geom/Point";
 
-import { MonsterBase } from "../../MonsterBase";
+import { MonsterBase } from "../MonsterBase";
 import { AOEDamageOnAttackOncePerTarget } from "../../components/abilities/AOEDamageOnAttackOncePerTarget";
-import { Targeting } from "../../Targeting";
+import { Targeting } from "../../../../Targeting";
 import { CreepBase } from "./CreepBase";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
+import { BFOUNDATION } from "../../../../BFOUNDATION";
 
 /**
  * Wormzer - creep with AOE damage on attack when powered up.

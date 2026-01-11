@@ -9,7 +9,7 @@ import { Embed } from "./core/Embed";
 @Embed({ source: "/_assets/assets.swf", symbol: "UI_MISSIONMENU_CLIP" })
 export class UI_MISSIONMENU_CLIP extends MovieClip {
     public footer: MovieClip;
-    public frame: MovieClip;
+    public frame: any; // Dynamic MovieClip with tTitle, border, header, mcScreen, mcMask, arrowUp, arrowDown, mcToggle
 
     constructor() {
         super();

@@ -831,6 +831,24 @@ export class GLOBAL {
         return result;
     }
 
+    /**
+     * Formats an array into a string, using only the second element of each item.
+     * Joins with commas and "and" for the last two items.
+     */
+    public static Array2StringB(arr: any[]): string {
+        let result = "";
+        for (let i = 0; i < arr.length; i++) {
+            result += arr[i][1];
+            if (i < arr.length - 2) {
+                result += ", ";
+            }
+            if (i === arr.length - 2) {
+                result += " and ";
+            }
+        }
+        return result;
+    }
+
     public static getShinyCostFromResourceAmt(amount: number): number {
         return Math.ceil(Math.pow(Math.sqrt(amount / 2), 0.75));
     }
@@ -1111,5 +1129,84 @@ export class GLOBAL {
 
     public static get StageHeight(): number {
         return GLOBAL._ROOT.stage.stageHeight;
+    }
+
+    /**
+     * Calls an external JavaScript function via ExternalInterface.
+     * @param funcName The name of the JavaScript function to call
+     * @param args Optional array of arguments to pass
+     * @param exitFS Whether to exit fullscreen (unused in web context)
+     */
+    public static CallJS(funcName: string, args: Array<any> = null, exitFS: boolean = true): void {
+        if (GLOBAL.debugLogJSCalls) {
+            console.log("CallJS> func: " + funcName + " \n     args: " + JSON.stringify(args) + " \n     exitFS: " + exitFS);
+        }
+        if (GLOBAL._local) {
+            return;
+        }
+        // In web context, call window function if available
+        if (typeof (window as any).callFunc === 'function') {
+            if (args === null) {
+                (window as any).callFunc(funcName);
+            } else {
+                (window as any).callFunc(funcName, args);
+            }
+        }
+    }
+
+    /**
+     * Calls a JavaScript function with a client callback.
+     * @param funcName The name of the JavaScript function to call
+     * @param callbackName A string identifier for the callback
+     * @param args Optional array of arguments to pass
+     * @param exitFS Whether to exit fullscreen (unused in web context)
+     */
+    public static CallJSWithClient(funcName: string, callbackName: string = "", args: Array<any> = null, exitFS: boolean = true): void {
+        if (GLOBAL.debugLogJSCalls) {
+            console.log("CallJS> func: " + funcName + " \n     args: " + JSON.stringify(args) + " \n     exitFS: " + exitFS);
+        }
+        if (GLOBAL._local) {
+            return;
+        }
+        // In web context, call window function if available
+        if (typeof (window as any).clientCallWithCallback === 'function') {
+            if (args === null) {
+                (window as any).clientCallWithCallback(funcName, callbackName);
+            } else {
+                (window as any).clientCallWithCallback(funcName, callbackName, args);
+            }
+        }
+    }
+
+    /**
+     * Get the player's guardian index.
+     * Returns 0 if no guardian is active.
+     */
+    public static getPlayerGuardianIndex(): number {
+        // TODO: Implement guardian logic when guardian system is ported
+        return 0;
+    }
+
+    /**
+     * Get the required town hall level for a building.
+     * @param buildingProps The building properties object
+     * @returns The required town hall level
+     */
+    public static GetBuildingTownHallLevel(buildingProps: any): number {
+        if (GLOBAL._bTownhall) {
+            if (buildingProps.costs?.[0]?.re?.[0]) {
+                // Check if requirement is for Underhall
+                if (buildingProps.costs[0].re[0][0] === INFERNOQUAKETOWER.UNDERHALL_ID) {
+                    if (MAPROOM_DESCENT.DescentPassed) {
+                        return GLOBAL.StatGet(BUILDING14.UNDERHALL_LEVEL);
+                    } else {
+                        return buildingProps.rewarded ? 9 : 0;
+                    }
+                }
+                return GLOBAL._bTownhall._lvl.Get();
+            }
+            return GLOBAL._bTownhall._lvl.Get();
+        }
+        return 0;
     }
 }

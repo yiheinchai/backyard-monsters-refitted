@@ -7,7 +7,7 @@ import { CreepBase } from "../../creeps/CreepBase";
 import { Projectilev2 } from "../../../projectiles/Projectilev2";
 import { RangedAttack } from "./RangedAttack";
 import { Zombiefy } from "./Zombiefy";
-import { Targeting } from "../../Targeting";
+import { Targeting } from "../../../../../Targeting";
 
 import { MAP } from "../../../../../MAP";
 import { CREATURES } from "../../../../../CREATURES";

@@ -4,7 +4,7 @@ import { IAttackable } from "../../../interfaces/IAttackable";
 import { ITargetable } from "../../../interfaces/ITargetable";
 import { Component } from "../Component";
 import { IAttackingComponent } from "../IAttackingComponent";
-import { Targeting } from "../../Targeting";
+import { Targeting } from "../../../../../Targeting";
 
 import { BFOUNDATION } from "../../../../../BFOUNDATION";
 

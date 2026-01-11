@@ -20,19 +20,19 @@ export class SIEGEBUILDINGPOPUP_CLIP extends MovieClip {
     public stat2_bar: creatureBarAdv;
     public tab_siegelab: ButtonBrown_CLIP;
     public bMap: Button_CLIP;
-    public videoCanvas_mc: MovieClip;
+    public videoCanvas_mc: any; // Dynamic MovieClip with container
     public tNotice: TextField;
     public scroller: MovieClip;
     public weaponContainer_mc: MovieClip;
     public stat1_label: TextField;
-    public mcInstant: MovieClip;
+    public mcInstant: any; // Dynamic MovieClip with bAction, tDescription, gCoin
     public title_siegefactory: TextField;
     public bCancel: Button_CLIP;
     public tDesc: TextField;
     public tTitle: TextField;
     public mcTime: creatureBarAdv;
     public stat3_label: TextField;
-    public mcResources: MovieClip;
+    public mcResources: any; // Dynamic MovieClip with bAction, mcR1, mcR2, mcR3, mcTime
     public stat2_label: TextField;
     public stat2_bartxt: TextField;
     public stat3_bartxt: TextField;

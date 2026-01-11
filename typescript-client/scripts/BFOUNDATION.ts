@@ -1500,7 +1500,7 @@ export class BFOUNDATION extends GameObject {
         }
     }
 
-    public Place = (e: MouseEvent = null): void => {
+    public Place(e: MouseEvent = null): void {
         let BragBiggulp: Function;
         let BragTotem: Function;
         let tmpBuildTime: number = 0;
@@ -1866,11 +1866,11 @@ export class BFOUNDATION extends GameObject {
         }
     }
 
-    public Over = (e: MouseEvent): void => {
+    public Over(e: MouseEvent): void {
         GLOBAL._buildingMousedOver = this;
     }
 
-    public Out = (e: MouseEvent): void => {
+    public Out(e: MouseEvent): void {
         // Stub
     }
 
@@ -2319,7 +2319,7 @@ export class BFOUNDATION extends GameObject {
         GLOBAL.eventDispatcher.dispatchEvent(new BuildingEvent(BuildingEvent.ATTEMPT_RECYCLE, this));
     }
 
-    public RecycleB = (e: MouseEvent = null): void => {
+    public RecycleB(e: MouseEvent = null): void {
         let cost: any = null;
         let isInferno: boolean = false;
         BUILDINGOPTIONS.Hide();
@@ -2340,7 +2340,7 @@ export class BFOUNDATION extends GameObject {
         }
     }
 
-    public RecycleC = (e: MouseEvent = null): void => {
+    public RecycleC(e: MouseEvent = null): void {
         this.GridCost(false);
         try {
             if (MAP._BUILDINGFOOTPRINTS.contains(this._mcBase)) {
@@ -2634,6 +2634,16 @@ export class BFOUNDATION extends GameObject {
                 this.Render(BFOUNDATION.k_STATE_DEFAULT);
             }
         }
+    }
+
+    /**
+     * Calculate loot amount for a given resource type.
+     * Base implementation just returns the input; derived classes override this.
+     * @param amount The base loot amount
+     * @returns The actual loot amount
+     */
+    public Loot(amount: number): number {
+        return amount;
     }
 
     public Constructed(): void {

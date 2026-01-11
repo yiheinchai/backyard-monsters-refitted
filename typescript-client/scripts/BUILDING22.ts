@@ -24,7 +24,8 @@ import { MAP } from './MAP';
 import { POPUPS } from './POPUPS';
 import { SOUNDS } from './SOUNDS';
 import { Targeting } from './Targeting';
-import { TweenLite, Expo } from './gs/TweenLite';
+import { TweenLite } from './gs/TweenLite';
+import { Expo } from './gs/easing';
 
 /**
  * BUILDING22 - Monster Bunker

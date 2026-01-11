@@ -12,7 +12,7 @@ import { Embed } from "./core/Embed";
 export class STREAMLINESPEEDUP_CLIP extends MovieClip {
     public mcBG: frame_CLIP;
     public mcStoreIcon: MovieClip;
-    public mcInstant: MovieClip;
+    public mcInstant: any; // Dynamic MovieClip with bAction, tDescription, gCoin
     public tTitle: TextField;
     public tDescription: TextField;
 

@@ -10,9 +10,9 @@ import Timer from "openfl/utils/Timer";
 import { MapRoom } from "../maproom_advanced/MapRoom";
 import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { FriendPicker } from "./FriendPicker";
-import { Message_CLIPB } from "./Message_CLIPB";
-import { URLLoaderApi } from "../URLLoaderApi";
-import { frame } from "../frame";
+import { Message_CLIPB } from "../../../Message_CLIPB";
+import { URLLoaderApi } from "../../../URLLoaderApi";
+import { frame } from "../../../frame";
 
 import { GLOBAL } from "../../../GLOBAL";
 import { KEYS } from "../../../KEYS";

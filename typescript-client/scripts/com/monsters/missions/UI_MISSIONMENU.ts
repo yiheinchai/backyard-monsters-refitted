@@ -9,7 +9,7 @@ import { ScrollSet } from "../display/ScrollSet";
 import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { UI_BOTTOM } from "../ui/UI_BOTTOM";
 import { MISSIONS_ITEM } from "./MISSIONS_ITEM";
-import { UI_MISSIONMENU_CLIP } from "./UI_MISSIONMENU_CLIP";
+import { UI_MISSIONMENU_CLIP } from "../../../UI_MISSIONMENU_CLIP";
 
 import { BASE } from "../../../BASE";
 import { GLOBAL } from "../../../GLOBAL";

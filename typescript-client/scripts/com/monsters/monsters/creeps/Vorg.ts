@@ -1,11 +1,11 @@
 import Point from "openfl/geom/Point";
 
 import { ITargetable } from "../../interfaces/ITargetable";
-import { MonsterBase } from "../../MonsterBase";
-import { Targeting } from "../../Targeting";
+import { MonsterBase } from "../MonsterBase";
+import { Targeting } from "../../../../Targeting";
 import { CreepBase } from "./CreepBase";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
+import { BFOUNDATION } from "../../../../BFOUNDATION";
 import { SPRITES } from "../../../../../SPRITES";
 import { SOUNDS } from "../../../../../SOUNDS";
 import { FIREBALLS } from "../../../../../FIREBALLS";

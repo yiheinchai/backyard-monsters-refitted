@@ -1,3 +1,4 @@
+import MovieClip from 'openfl/display/MovieClip';
 import { Button_CLIP } from './Button_CLIP';
 import { HousingPopupMonster_CLIP } from './HousingPopupMonster_CLIP';
 import { frame_CLIP } from './frame_CLIP';
@@ -9,7 +10,7 @@ import { Embed } from "./core/Embed";
  * Converted from ActionScript to TypeScript
  */
 @Embed({ source: "/_assets/assets.swf", symbol: "AIATTACKPOPUP_CLIP" })
-export class AIATTACKPOPUP_CLIP {
+export class AIATTACKPOPUP_CLIP extends MovieClip {
     public waitBtn!: Button_CLIP;
     public name_txt: any; // TextField
     public title_txt: any; // TextField
@@ -21,23 +22,6 @@ export class AIATTACKPOPUP_CLIP {
     public mcFrame!: frame_CLIP;
     
     constructor() {
-        // Empty constructor
-    }
-    
-    // MovieClip-like methods
-    public stop(): void {
-        // Implementation for stopping animation
-    }
-    
-    public gotoAndStop(frame: number | string): void {
-        // Implementation for going to frame
-    }
-    
-    public addChild(child: any): any {
-        return child;
-    }
-    
-    public removeChild(child: any): void {
-        // Implementation for removing child
+        super();
     }
 }

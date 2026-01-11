@@ -14,6 +14,7 @@ export class popup_attack_log extends MovieClip {
     public b2: Button_CLIP;
     public mcFrame: frame_CLIP;
     public bAction: Button_CLIP;
+    public Resize: (() => void) | null = null;
 
     constructor() {
         super();

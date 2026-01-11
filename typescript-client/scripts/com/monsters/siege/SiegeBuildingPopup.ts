@@ -17,10 +17,10 @@ import { ImageCache } from "../display/ImageCache";
 import { ScrollSet } from "../display/ScrollSet";
 import { SiegeWeapon } from "./weapons/SiegeWeapon";
 import { SiegeBuilding } from "./SiegeBuilding";
-import { SiegeBuildingPopup_ListItem_CLIP } from "./SiegeBuildingPopup_ListItem_CLIP";
+import { SiegeBuildingPopup_ListItem_CLIP } from "../../../SiegeBuildingPopup_ListItem_CLIP";
 import { SiegeWeaponProperty } from "./SiegeWeaponProperty";
 import { SiegeWeapons } from "./SiegeWeapons";
-import { SIEGEBUILDINGPOPUP_CLIP } from "./SIEGEBUILDINGPOPUP_CLIP";
+import { SIEGEBUILDINGPOPUP_CLIP } from "../../../SIEGEBUILDINGPOPUP_CLIP";
 
 import { BASE } from "../../../BASE";
 import { creatureBarAdv } from "../../../creatureBarAdv";

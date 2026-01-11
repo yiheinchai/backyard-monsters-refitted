@@ -1,7 +1,7 @@
 import Point from "openfl/geom/Point";
 
 import { ParticleText } from "./ParticleText";
-import { ParticleDamageItem_CLIP } from "./ParticleDamageItem_CLIP";
+import { ParticleDamageItem_CLIP } from "../../../../ParticleDamageItem_CLIP";
 
 import { GLOBAL } from "../../../../GLOBAL";
 import { MAP } from "../../../../MAP";

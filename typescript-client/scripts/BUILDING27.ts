@@ -116,7 +116,7 @@ export class BUILDING27 extends BFOUNDATION {
             if (!this._clicked) {
                 CUSTOMATTACKS._started = true;
                 this._clicked = true;
-                const mc: MovieClip = new (GLOBAL as any).popup_horse();
+                const mc: any = new (GLOBAL as any).popup_horse();
                 mc.tA.htmlText = `<b>${KEYS.Get("ai_trojan_headline")}</b>`;
                 mc.tName.htmlText = KEYS.Get("ai_trojan_letter", { v1: LOGIN._playerName });
                 mc.bA.SetupKey("ai_trojan_sendback_btn");

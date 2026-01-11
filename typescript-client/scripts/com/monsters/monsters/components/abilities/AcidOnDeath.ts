@@ -9,7 +9,7 @@ import { IComponentOwner } from "../../IComponentOwner";
 import { MonsterBase } from "../../MonsterBase";
 import { Component } from "../Component";
 import { AcidStatusEffect } from "../statusEffects/AcidStatusEffect";
-import { Targeting } from "../../Targeting";
+import { Targeting } from "../../../../../Targeting";
 
 import { GLOBAL } from "../../../../../GLOBAL";
 import { MAP } from "../../../../../MAP";

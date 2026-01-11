@@ -1,11 +1,11 @@
 import Point from "openfl/geom/Point";
 
-import { MonsterBase } from "../../MonsterBase";
+import { MonsterBase } from "../MonsterBase";
 import { AOEDamageOnAttack } from "../../components/abilities/AOEDamageOnAttack";
-import { Targeting } from "../../Targeting";
+import { Targeting } from "../../../../Targeting";
 import { CreepBase } from "./CreepBase";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
+import { BFOUNDATION } from "../../../../BFOUNDATION";
 
 /**
  * Fink - creep with AOE damage on attack ability when powered up.

@@ -1,11 +1,11 @@
 import Point from "openfl/geom/Point";
 
 import { ITargetable } from "../../interfaces/ITargetable";
-import { MonsterBase } from "../../MonsterBase";
+import { MonsterBase } from "../MonsterBase";
 import { GlavesOnAttack } from "../../components/abilities/GlavesOnAttack";
 import { CreepBase } from "./CreepBase";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
+import { BFOUNDATION } from "../../../../BFOUNDATION";
 import { SPRITES } from "../../../../../SPRITES";
 import { FIREBALLS } from "../../../../../FIREBALLS";
 

@@ -3,7 +3,7 @@ import Point from "openfl/geom/Point";
 import { MonsterBase } from "../../MonsterBase";
 import { Component } from "../Component";
 import { Enrage } from "./Enrage";
-import { Targeting } from "../../Targeting";
+import { Targeting } from "../../../../../Targeting";
 
 /**
  * AOE Enrage - enrages nearby friendly units, boosting speed and armor.

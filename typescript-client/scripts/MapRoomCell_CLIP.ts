@@ -9,7 +9,7 @@ import { Embed } from "./core/Embed";
  */
 @Embed({ source: "/_assets/assets.swf", symbol: "MapRoomCell_CLIP" })
 export class MapRoomCell_CLIP extends MovieClip {
-    public mc: MovieClip;
+    public mc: any; // Dynamic MovieClip with mcHit, mcPlayer, mcGlow, mcEdges, mcPrompt, mcWater
 
     constructor() {
         super();

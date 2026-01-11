@@ -97,7 +97,7 @@ export class RasterData {
         RasterData.s_debugData.length = 0;
     }
 
-    public static clearAll(dispose: boolean = false): void {
+    public static clear(dispose: boolean = false): void {
         for (const rd of RasterData.s_rasterData) {
             rd.clear(dispose);
         }

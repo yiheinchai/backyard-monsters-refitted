@@ -9,7 +9,7 @@ import getTimer from "openfl/utils/getTimer";
 import { SecNum } from "../../../cc/utils/SecNum";
 import { AllyInfo } from "../alliances/AllyInfo";
 import { IMapRoomCell } from "../maproom_manager/IMapRoomCell";
-import { MapRoomCell_CLIP } from "./MapRoomCell_CLIP";
+import { MapRoomCell_CLIP } from "../../../MapRoomCell_CLIP";
 import { MapRoom } from "./MapRoom";
 
 import { ALLIANCES } from "../../../ALLIANCES";

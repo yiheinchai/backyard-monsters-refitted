@@ -5,7 +5,7 @@ import { KeywordMessage } from "../KeywordMessage";
 import { GLOBAL } from "../../../../../GLOBAL";
 import { POPUPS } from "../../../../../POPUPS";
 import { PLANNER } from "../../../../../PLANNER";
-import { Button } from "../../../../Button";
+import { Button } from "../../../../../Button";
 
 /**
  * News 05 - Yard Planner 2 news message.

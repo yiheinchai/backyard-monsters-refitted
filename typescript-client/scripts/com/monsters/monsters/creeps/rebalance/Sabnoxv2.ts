@@ -1,12 +1,12 @@
 import Point from "openfl/geom/Point";
 
 import { ITargetable } from "../../../interfaces/ITargetable";
-import { MonsterBase } from "../../../MonsterBase";
+import { MonsterBase } from "../../MonsterBase";
 import { CreepBase } from "../CreepBase";
 import { ProjectileUtils } from "../../../projectiles/ProjectileUtils";
 import { Projectilev2 } from "../../../projectiles/Projectilev2";
 
-import { BFOUNDATION } from "../../../../../../BFOUNDATION";
+import { BFOUNDATION } from "../../../../../BFOUNDATION";
 import { LoanShark } from "org/kissmyas/utils/loanshark/LoanShark";
 
 /**

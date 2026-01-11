@@ -2,7 +2,7 @@ import DisplayObject from "openfl/display/DisplayObject";
 import MovieClip from "openfl/display/MovieClip";
 
 import { IAttackable } from "../../../interfaces/IAttackable";
-import { Targeting } from "../../Targeting";
+import { Targeting } from "../../../../../Targeting";
 import { AOEDamageOnDeath } from "./AOEDamageOnDeath";
 
 import { MAP } from "../../../../../MAP";

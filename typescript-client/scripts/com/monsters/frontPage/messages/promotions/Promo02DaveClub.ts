@@ -2,7 +2,7 @@ import { KeywordMessage } from "../KeywordMessage";
 import { SubscriptionHandler } from "../../../subscriptions/SubscriptionHandler";
 
 import { POPUPS } from "../../../../../POPUPS";
-import { Button } from "../../../../Button";
+import { Button } from "../../../../../Button";
 
 /**
  * Promo 02 - Dave Club v2 promotional message.

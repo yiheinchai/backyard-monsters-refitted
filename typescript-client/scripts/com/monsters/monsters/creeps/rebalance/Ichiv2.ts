@@ -1,10 +1,10 @@
 import Point from "openfl/geom/Point";
 
-import { MonsterBase } from "../../../MonsterBase";
+import { MonsterBase } from "../../MonsterBase";
 import { TowerTaunt } from "../../../components/abilities/TowerTaunt";
 import { CreepBase } from "../CreepBase";
 
-import { BFOUNDATION } from "../../../../../../BFOUNDATION";
+import { BFOUNDATION } from "../../../../../BFOUNDATION";
 
 /**
  * Ichiv2 - rebalanced ichi creep with tower taunt ability.

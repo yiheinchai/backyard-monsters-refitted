@@ -1,9 +1,9 @@
 import Point from "openfl/geom/Point";
 
-import { MonsterBase } from "../../../MonsterBase";
+import { MonsterBase } from "../../MonsterBase";
 import { CreepBase } from "../CreepBase";
 
-import { BFOUNDATION } from "../../../../../../BFOUNDATION";
+import { BFOUNDATION } from "../../../../../BFOUNDATION";
 import { EFFECTS } from "../../../../../../EFFECTS";
 
 /**

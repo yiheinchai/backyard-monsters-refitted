@@ -1,10 +1,10 @@
 import Point from "openfl/geom/Point";
 
-import { MonsterBase } from "../../../MonsterBase";
-import { Targeting } from "../../../Targeting";
+import { MonsterBase } from "../../MonsterBase";
+import { Targeting } from "../../../../../Targeting";
 import { CreepBase } from "../CreepBase";
 
-import { BFOUNDATION } from "../../../../../../BFOUNDATION";
+import { BFOUNDATION } from "../../../../../BFOUNDATION";
 
 /**
  * Balthazar - inferno creep that modifies its defense flags and targeting when powered up.

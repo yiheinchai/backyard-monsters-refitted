@@ -14,7 +14,7 @@ import { ImageCache } from "../../../display/ImageCache";
 import { MonsterMadness } from "../../attacking/monsterMadness/MonsterMadness";
 import { VideoUtils } from "../../../utils/VideoUtils";
 import { MonsterMadnessPopup } from "./MonsterMadnessPopup";
-import { Button } from "../../../../Button";
+import { Button } from "../../../../../Button";
 
 import { BASE } from "../../../../../BASE";
 import { BFOUNDATION } from "../../../../../BFOUNDATION";

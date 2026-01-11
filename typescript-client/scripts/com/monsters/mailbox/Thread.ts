@@ -17,7 +17,7 @@ import { MapRoom } from "../maproom_advanced/MapRoom";
 import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { MailBox } from "./MailBox";
 import { Message } from "./Message";
-import { Thread_CLIP } from "./Thread_CLIP";
+import { Thread_CLIP } from "../../../Thread_CLIP";
 import { ThreadMember } from "./ThreadMember";
 
 import { frame } from "../../../frame";

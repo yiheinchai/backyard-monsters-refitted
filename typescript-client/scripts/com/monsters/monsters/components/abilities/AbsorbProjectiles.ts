@@ -6,7 +6,7 @@ import { ITargetable } from "../../../interfaces/ITargetable";
 import { MonsterBase } from "../../MonsterBase";
 import { Component } from "../Component";
 import { IDefendingComponent } from "../IDefendingComponent";
-import { Targeting } from "../../Targeting";
+import { Targeting } from "../../../../../Targeting";
 
 import { PROJECTILE } from "../../../../../PROJECTILE";
 import { PROJECTILES } from "../../../../../PROJECTILES";

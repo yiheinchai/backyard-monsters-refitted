@@ -4,7 +4,7 @@ import { ITargetable } from "../../../interfaces/ITargetable";
 import { Component } from "../Component";
 import { ProjectileUtils } from "../../../projectiles/ProjectileUtils";
 import { Projectilev2 } from "../../../projectiles/Projectilev2";
-import { Targeting } from "../../Targeting";
+import { Targeting } from "../../../../../Targeting";
 
 import { GLOBAL } from "../../../../../GLOBAL";
 import { LoanShark } from "org/kissmyas/utils/loanshark/LoanShark";

@@ -19,7 +19,7 @@ import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { CellData } from "./CellData";
 import { MapRoom } from "./MapRoom";
 import { MapRoomCell } from "./MapRoomCell";
-import { PopupInfoEnemy_CLIP } from "./PopupInfoEnemy_CLIP";
+import { PopupInfoEnemy_CLIP } from "../../../PopupInfoEnemy_CLIP";
 import { PopupTakeover } from "./PopupTakeover";
 import { bubblepopupRight } from "./bubblepopupRight";
 import { frame } from "../../../frame";

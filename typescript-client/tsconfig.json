@@ -12,7 +12,8 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "openfl/*": ["node_modules/openfl/lib/openfl/*"]
+      "openfl/*": ["node_modules/openfl/lib/openfl/*"],
+      "gs/*": ["scripts/gs/*"]
     }
   },
   "include": ["scripts/**/*"],

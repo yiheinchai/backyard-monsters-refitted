@@ -3,7 +3,7 @@ import MouseEvent from "openfl/events/MouseEvent";
 
 import { MonsterMadnessPopupInfo } from "./MonsterMadnessPopupInfo";
 
-import { Button } from "../../../../Button";
+import { Button } from "../../../../../Button";
 import { KEYS } from "../../../../../KEYS";
 
 /**

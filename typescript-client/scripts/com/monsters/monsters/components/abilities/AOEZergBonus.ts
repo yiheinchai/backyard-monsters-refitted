@@ -2,7 +2,7 @@ import Point from "openfl/geom/Point";
 
 import { MonsterBase } from "../../MonsterBase";
 import { Component } from "../Component";
-import { Targeting } from "../../Targeting";
+import { Targeting } from "../../../../../Targeting";
 import { MultiplicationPropertyModifier } from "../modifiers/MultiplicationPropertyModifier";
 import { ArmorPropertyModifier } from "../modifiers/ArmorPropertyModifier";
 

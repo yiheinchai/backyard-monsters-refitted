@@ -8,7 +8,7 @@ import Keyboard from "openfl/ui/Keyboard";
 import { BaseTemplate } from "../../../BaseTemplate";
 import { SubscriptionHandler } from "../../../../subscriptions/SubscriptionHandler";
 import { BasePlannerTransferPopup } from "./BasePlannerTransferPopup";
-import { BasePlannerTransferRow_CLIP } from "./BasePlannerTransferRow_CLIP";
+import { BasePlannerTransferRow_CLIP } from "../../../../../BasePlannerTransferRow_CLIP";
 
 import { KEYS } from "../../../../../KEYS";
 
