@@ -42,7 +42,6 @@ export class PATHING {
     private static _resetRequested: boolean = false;
 
     constructor() {
-        super();
     }
 
     public static Setup(): void {

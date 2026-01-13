@@ -211,9 +211,8 @@ export class ImageCache {
         l.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, (param1: IOErrorEvent) => {
             this.onError(l);
         });
-        l.loader.contentLoaderInfo.addEventListener(IOErrorEvent.NETWORK_ERROR, (param1: IOErrorEvent) => {
-            this.onError(l);
-        });
+        // Note: IOErrorEvent.NETWORK_ERROR from Flash doesn't exist in OpenFL
+        // IO_ERROR will catch all network-related errors
         ImageCache.load.push(l);
     }
 

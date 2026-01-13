@@ -67,8 +67,8 @@ export class AbstractChatBox extends MovieClip {
         for (const chat of this._chats) {
             fullText += chat + "<br>";
         }
-        this.background._output.htmlText = fullText;
-        this.background._output.autoSize = TextFieldAutoSize.LEFT;
+        (this.background as any)._output.htmlText = fullText;
+        (this.background as any)._output.autoSize = TextFieldAutoSize.LEFT;
     }
 
     public get inputText(): string {

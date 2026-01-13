@@ -12,7 +12,7 @@ export interface IMapRoom {
     readonly flingerInRange: boolean;
     readonly viewOnly: boolean;
     readonly playerOwnedCells: Array<IMapRoomCell>;
-    readonly allianceDataById: Map<string, any>;
+    readonly allianceDataById: Map<any, any> | null;
 
     Setup(): void;
     ReadyToShow(): boolean;
