@@ -118,7 +118,7 @@ export class MAPROOM_DESCENT {
     }
 
     private static DescentDataLoaded(param1: Event = null): void {
-        INFERNOAPI.removeEventListener(INFERNOAPI.EVENT_DESCENTLOADED, MAPROOM_DESCENT.DescentDataLoaded);
+        INFERNOAPI.removeEventListenerStatic(INFERNOAPI.EVENT_DESCENTLOADED, MAPROOM_DESCENT.DescentDataLoaded);
         MAPROOM_DESCENT._initialized = true;
         MAPROOM_DESCENT._initing = false;
         if (MAPROOM_DESCENT.DescentLevel >= MAPROOM_DESCENT._descentLvlMax && MAPROOM_DESCENT.DescentPassed) {

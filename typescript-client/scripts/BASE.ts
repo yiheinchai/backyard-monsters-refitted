@@ -1762,5 +1762,22 @@ export class BASE {
             }
         }
     }
+
+    /**
+     * Calculate the squared edge distance of an ellipse at a given angle.
+     * @param angle The angle in radians
+     * @param semiMajorAxis The semi-major axis (horizontal radius)
+     * @param semiMinorAxis The semi-minor axis (vertical radius)
+     * @returns The squared distance from the center to the edge of the ellipse
+     */
+    public static EllipseEdgeDistanceSqrd(angle: number, semiMajorAxis: number, semiMinorAxis: number): number {
+        let x: number = Math.pow(Math.pow(semiMajorAxis / 2, -2) + Math.pow(Math.tan(angle), 2) * Math.pow(semiMinorAxis / 2, -2), -0.5);
+        const angleDegrees: number = angle * 180 / Math.PI;
+        if (angleDegrees < -90 || angleDegrees > 90) {
+            x *= -1;
+        }
+        const y: number = Math.tan(angle) * x;
+        return x * x + y * y;
+    }
 }
 
