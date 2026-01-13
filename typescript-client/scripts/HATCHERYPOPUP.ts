@@ -103,12 +103,12 @@ export class HATCHERYPOPUP extends HATCHERYPOPUP_CLIP {
             _loc7_++;
         }
         
-        this.mcMonsterInfo.speed_txt.htmlText = "<b>" + KEYS.Get("mon_att_speed") + "</b>";
-        this.mcMonsterInfo.health_txt.htmlText = "<b>" + KEYS.Get("mon_att_health") + "</b>";
-        this.mcMonsterInfo.damage_txt.htmlText = "<b>" + KEYS.Get("mon_att_damage") + "</b>";
-        this.mcMonsterInfo.goo_txt.htmlText = "<b>" + KEYS.Get("mon_att_cost", {"v1": KEYS.Get(BRESOURCE.GetResourceNameKey(3))}) + "</b>";
-        this.mcMonsterInfo.housing_txt.htmlText = "<b>" + KEYS.Get("mon_att_housing") + "</b>";
-        this.mcMonsterInfo.time_txt.htmlText = "<b>" + KEYS.Get("mon_att_time") + "</b>";
+        (this.mcMonsterInfo as any).speed_txt.htmlText = "<b>" + KEYS.Get("mon_att_speed") + "</b>";
+        (this.mcMonsterInfo as any).health_txt.htmlText = "<b>" + KEYS.Get("mon_att_health") + "</b>";
+        (this.mcMonsterInfo as any).damage_txt.htmlText = "<b>" + KEYS.Get("mon_att_damage") + "</b>";
+        (this.mcMonsterInfo as any).goo_txt.htmlText = "<b>" + KEYS.Get("mon_att_cost", {"v1": KEYS.Get(BRESOURCE.GetResourceNameKey(3))}) + "</b>";
+        (this.mcMonsterInfo as any).housing_txt.htmlText = "<b>" + KEYS.Get("mon_att_housing") + "</b>";
+        (this.mcMonsterInfo as any).time_txt.htmlText = "<b>" + KEYS.Get("mon_att_time") + "</b>";
         this.MonsterInfoB(1);
     }
 
@@ -116,9 +116,9 @@ export class HATCHERYPOPUP extends HATCHERYPOPUP_CLIP {
         const _loc4_: Bitmap = new Bitmap(param2);
         _loc4_.smoothing = true;
         if (param3 && param3[0]) {
-            param3[0].mcImage.removeChildAt(0);
-            param3[0].mcImage.addChild(_loc4_);
-            param3[0].mcImage.visible = true;
+            (param3[0] as any).mcImage.removeChildAt(0);
+            (param3[0] as any).mcImage.addChild(_loc4_);
+            (param3[0] as any).mcImage.visible = true;
         }
     }
 
@@ -166,65 +166,65 @@ export class HATCHERYPOPUP extends HATCHERYPOPUP_CLIP {
         }
         
         damageShown = CREATURES.GetProperty(creatureStringID, "damage");
-        TweenLite.to(this.mcMonsterInfo.bSpeed.mcBar, 0.4, {
+        TweenLite.to((this.mcMonsterInfo as any).bSpeed.mcBar, 0.4, {
             "width": 100 / speed * CREATURES.GetProperty(creatureStringID, "speed"),
             "ease": Circ.easeInOut,
             "delay": 0
         });
-        TweenLite.to(this.mcMonsterInfo.bHealth.mcBar, 0.4, {
+        TweenLite.to((this.mcMonsterInfo as any).bHealth.mcBar, 0.4, {
             "width": 100 / health * CREATURES.GetProperty(creatureStringID, "health"),
             "ease": Circ.easeInOut,
             "delay": 0.05
         });
-        TweenLite.to(this.mcMonsterInfo.bDamage.mcBar, 0.4, {
+        TweenLite.to((this.mcMonsterInfo as any).bDamage.mcBar, 0.4, {
             "width": 100 / damage * Math.abs(damageShown),
             "ease": Circ.easeInOut,
             "delay": 0.1
         });
-        TweenLite.to(this.mcMonsterInfo.bTime.mcBar, 0.4, {
+        TweenLite.to((this.mcMonsterInfo as any).bTime.mcBar, 0.4, {
             "width": 100 / cTime * CREATURES.GetProperty(creatureStringID, "cTime"),
             "ease": Circ.easeInOut,
             "delay": 0.15
         });
-        TweenLite.to(this.mcMonsterInfo.bResource.mcBar, 0.4, {
+        TweenLite.to((this.mcMonsterInfo as any).bResource.mcBar, 0.4, {
             "width": 100 / cResource * CREATURES.GetProperty(creatureStringID, "cResource"),
             "ease": Circ.easeInOut,
             "delay": 0.2
         });
-        TweenLite.to(this.mcMonsterInfo.bStorage.mcBar, 0.4, {
+        TweenLite.to((this.mcMonsterInfo as any).bStorage.mcBar, 0.4, {
             "width": 100 / cStorage * CREATURES.GetProperty(creatureStringID, "cStorage"),
             "ease": Circ.easeInOut,
             "delay": 0.25
         });
         
-        this.mcMonsterInfo.tSpeed.htmlText = KEYS.Get("mon_statsspeed", {"v1": CREATURES.GetProperty(creatureStringID, "speed")});
-        this.mcMonsterInfo.tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(creatureStringID, "health"));
+        (this.mcMonsterInfo as any).tSpeed.htmlText = KEYS.Get("mon_statsspeed", {"v1": CREATURES.GetProperty(creatureStringID, "speed")});
+        (this.mcMonsterInfo as any).tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(creatureStringID, "health"));
         if (damageShown > 0) {
-            this.mcMonsterInfo.tDamage.htmlText = String(damageShown);
+            (this.mcMonsterInfo as any).tDamage.htmlText = String(damageShown);
         } else {
-            this.mcMonsterInfo.tDamage.htmlText = -damageShown + " (" + KEYS.Get("str_heal") + ")";
+            (this.mcMonsterInfo as any).tDamage.htmlText = -damageShown + " (" + KEYS.Get("str_heal") + ")";
         }
-        this.mcMonsterInfo.tResource.htmlText = KEYS.Get("mon_att_costvalue", {
+        (this.mcMonsterInfo as any).tResource.htmlText = KEYS.Get("mon_att_costvalue", {
             "v1": GLOBAL.FormatNumber(CREATURES.GetProperty(creatureStringID, "cResource")),
             "v2": KEYS.Get(BRESOURCE.GetResourceNameKey(3))
         });
-        this.mcMonsterInfo.tStorage.htmlText = KEYS.Get("mon_att_housingvalue", {"v1": CREATURES.GetProperty(creatureStringID, "cStorage")});
-        this.mcMonsterInfo.tTime.htmlText = GLOBAL.ToTime(CREATURES.GetProperty(creatureStringID, "cTime"), true);
+        (this.mcMonsterInfo as any).tStorage.htmlText = KEYS.Get("mon_att_housingvalue", {"v1": CREATURES.GetProperty(creatureStringID, "cStorage")});
+        (this.mcMonsterInfo as any).tTime.htmlText = GLOBAL.ToTime(CREATURES.GetProperty(creatureStringID, "cTime"), true);
         
         let level: number = 1;
         if (Boolean(GLOBAL.player.m_upgrades[creatureStringID]) && GLOBAL.player.m_upgrades[creatureStringID].level > 1) {
             level = Number(GLOBAL.player.m_upgrades[creatureStringID].level);
         }
-        this.mcMonsterInfo.tDescription.htmlText = "<b>" + KEYS.Get("hatcherypopup_level", {"v1": level}) + " " + KEYS.Get(creature.name) + "</b><br>" + KEYS.Get(creature.description);
+        (this.mcMonsterInfo as any).tDescription.htmlText = "<b>" + KEYS.Get("hatcherypopup_level", {"v1": level}) + " " + KEYS.Get(creature.name) + "</b><br>" + KEYS.Get(creature.description);
         
         if (Boolean(CREATURELOCKER._lockerData[creatureStringID]) && CREATURELOCKER._lockerData[creatureStringID].t == 2) {
-            this.mcMonsterInfo.mcLocked.visible = false;
+            (this.mcMonsterInfo as any).mcLocked.visible = false;
         } else {
-            this.mcMonsterInfo.mcLocked.tText.htmlText = KEYS.Get(BASE.isInfernoMainYardOrOutpost ? "incubator_unlockinlocker" : "hat_unlockinlocker", {
+            (this.mcMonsterInfo as any).mcLocked.tText.htmlText = KEYS.Get(BASE.isInfernoMainYardOrOutpost ? "incubator_unlockinlocker" : "hat_unlockinlocker", {
                 "v1": KEYS.Get(CREATURELOCKER._creatures[creatureStringID].name),
                 "v2": KEYS.Get(GLOBAL._bHatchery._buildingProps.name)
             });
-            this.mcMonsterInfo.mcLocked.visible = true;
+            (this.mcMonsterInfo as any).mcLocked.visible = true;
         }
         this.MonsterInfoShow();
     }
