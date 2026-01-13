@@ -13,37 +13,10 @@ import { GLOBAL } from "../../../GLOBAL";
 import { KEYS } from "../../../KEYS";
 import { POPUPS } from "../../../POPUPS";
 import { QUESTS } from "../../../QUESTS";
-
-// Forward declarations
-declare class MISSIONS_INFO_CLIP extends Sprite {
-    tReward: any;
-    tDescription: any;
-    tHint: any;
-    mcImage: any;
-    R1: any;
-    R2: any;
-    R3: any;
-    R4: any;
-    R5: any;
-    bCollect: any;
-    mcArrow: any;
-    gotoAndStop(frame: number): void;
-}
-
-declare class Button extends Sprite {
-    Enabled: boolean;
-    Highlight: boolean;
-    enabled: boolean;
-}
-
-declare class SpecialRewardInfo extends Sprite {
-    Setup(name: string, count: number, image: string): void;
-}
-
-declare class SiegeWeapon {
-    name: string;
-    rewardImage: string;
-}
+import { MISSIONS_INFO_CLIP } from "../../../MISSIONS_INFO_CLIP";
+import { Button } from "../../../Button";
+import { SpecialRewardInfo } from "../../../SpecialRewardInfo";
+import { SiegeWeapon } from "../siege/weapons/SiegeWeapon";
 
 /**
  * Mission info popup - shows details about a specific mission/quest.

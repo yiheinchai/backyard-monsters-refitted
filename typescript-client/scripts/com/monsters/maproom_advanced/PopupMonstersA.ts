@@ -11,23 +11,8 @@ import { PopupInfoMonster } from "./PopupInfoMonster";
 
 import { GLOBAL } from "../../../GLOBAL";
 import { KEYS } from "../../../KEYS";
-
-// Declare clip class
-declare class PopupMonstersA_CLIP extends Sprite {
-    mMonsters: any;
-    mMonstersMask: any;
-    scroll: any;
-    bCancel: any;
-    bTransfer: any;
-    tDesc: any;
-}
-
-declare class MonsterTransferBar extends MovieClip {
-    r1: any;
-    t1: any;
-    b1a: any;
-    b1b: any;
-}
+import { PopupMonstersA_CLIP } from "../../../PopupMonstersA_CLIP";
+import { MonsterTransferBar } from "../../../MonsterTransferBar";
 
 /**
  * Monster transfer selection popup (step A in transfer flow).

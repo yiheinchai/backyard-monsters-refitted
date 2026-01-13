@@ -11,15 +11,8 @@ import { RasterData } from "../rendering/RasterData";
 
 import { GLOBAL } from "../../../GLOBAL";
 import { MAP } from "../../../MAP";
-
-// Forward declarations
-declare class GameObject {
-    isTargetable: boolean;
-    getRandomPointOnGraphic(): Point;
-}
-declare class CreepBase {
-    invisible: boolean;
-}
+import { GameObject } from "../GameObject";
+import { CreepBase } from "../monsters/creeps/CreepBase";
 
 // Interface for tickable
 interface ITickable {

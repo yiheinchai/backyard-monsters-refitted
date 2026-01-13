@@ -8,33 +8,8 @@ import { GLOBAL } from "../../../GLOBAL";
 import { KEYS } from "../../../KEYS";
 import { LOGIN } from "../../../LOGIN";
 import { POPUPSETTINGS } from "../../../POPUPSETTINGS";
-
-// Declare external clip and component classes
-declare class RADIOSETTINGSPOPUP_CLIP extends Sprite {
-    cbNews: any;
-    cbAttack: any;
-    cbProxy: any;
-    bSave: any;
-    tTitle: any;
-    tNews: any;
-    tAttack: any;
-    tEmail: any;
-    tEmailInput: any;
-    tDesc: any;
-    tProxy: any;
-}
-
-declare class Checkbox extends Sprite {
-    static Replace(cb: any): Checkbox;
-    selected: boolean;
-    fromInt(val: number): void;
-    toInt(): number;
-    deselect(): void;
-    select(): void;
-    Update(): void;
-    onClick(event: MouseEvent): void;
-    onUp(event: MouseEvent): void;
-}
+import { RADIOSETTINGSPOPUP_CLIP } from "../../../RADIOSETTINGSPOPUP_CLIP";
+import { Checkbox } from "../../../Checkbox";
 
 /**
  * Radio settings popup for email notification preferences.

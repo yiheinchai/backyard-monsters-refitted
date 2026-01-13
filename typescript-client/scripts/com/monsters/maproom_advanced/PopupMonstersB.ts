@@ -8,21 +8,8 @@ import { MapRoomCell } from "./MapRoomCell";
 import { PopupInfoMonster } from "./PopupInfoMonster";
 
 import { KEYS } from "../../../KEYS";
-
-// Forward declaration for SecNum
-declare class SecNum {
-    Get(): number;
-}
-
-// Declare clip class
-declare class PopupMonstersB_CLIP extends Sprite {
-    mMonsters: any;
-    mMonstersMask: any;
-    scroll: any;
-    bTransfer: any;
-    bCancel: any;
-    tDesc: any;
-}
+import { SecNum } from "../../cc/utils/SecNum";
+import { PopupMonstersB_CLIP } from "../../../PopupMonstersB_CLIP";
 
 /**
  * Monster transfer confirmation popup (step B in transfer flow).

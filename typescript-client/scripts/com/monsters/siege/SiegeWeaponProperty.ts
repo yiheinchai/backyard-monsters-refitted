@@ -1,9 +1,5 @@
 import { KEYS } from "../../../KEYS";
-
-// Forward declaration
-declare class SiegeWeapon {
-    static readonly MAX_LEVEL: number;
-}
+import { SiegeWeapon } from "./weapons/SiegeWeapon";
 
 /**
  * Siege weapon property - defines a leveled property of siege weapons.

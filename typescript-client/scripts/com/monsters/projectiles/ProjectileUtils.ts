@@ -3,9 +3,7 @@ import MovieClip from "openfl/display/MovieClip";
 import GlowFilter from "openfl/filters/GlowFilter";
 
 import { MovieClipUtils } from "../utils/MovieClipUtils";
-
-// Declare external clip class
-declare class FIREBALL_CLIP extends MovieClip {}
+import { FIREBALL_CLIP } from "../../../FIREBALL_CLIP";
 
 /**
  * Utility functions for projectile graphics creation.

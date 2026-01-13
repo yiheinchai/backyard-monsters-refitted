@@ -11,20 +11,8 @@ import { BASE } from "../../../BASE";
 import { GLOBAL } from "../../../GLOBAL";
 import { KEYS } from "../../../KEYS";
 import { POPUPSETTINGS } from "../../../POPUPSETTINGS";
-
-// Declare external clip class
-declare class MapRoomPopup_Migrate_CLIP extends Sprite {
-    tTitle: any;
-    tDescription: any;
-    mcImage: any;
-    mcInstant: any;
-    mcResources: any;
-}
-
-declare class icon_costs extends MovieClip {
-    tTitle: any;
-    tValue: any;
-}
+import { MapRoomPopup_Migrate_CLIP } from "../../../MapRoomPopup_Migrate_CLIP";
+import { icon_costs } from "../../../icon_costs";
 
 /**
  * Popup for migrating/upgrading the map room.

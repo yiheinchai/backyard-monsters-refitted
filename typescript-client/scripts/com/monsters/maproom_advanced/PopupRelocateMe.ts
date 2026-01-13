@@ -16,19 +16,8 @@ import { LOGGER } from "../../../LOGGER";
 import { PLEASEWAIT } from "../../../PLEASEWAIT";
 import { POPUPS } from "../../../POPUPS";
 import { URLLoaderApi } from "../../../URLLoaderApi";
-
-// Forward declaration
-declare class MapRoomManager {
-    static instance: { BookmarksClear: () => void; Tick: () => void };
-}
-
-// Declare popup clip class
-declare class PopupRelocateMe_CLIP extends Sprite {
-    tTitle: any;
-    tDescription: any;
-    mcInstant: any;
-    mcResources: any;
-}
+import { MapRoomManager } from "../maproom_manager/MapRoomManager";
+import { PopupRelocateMe_CLIP } from "../../../PopupRelocateMe_CLIP";
 
 // JSON declaration
 declare const JSON: { encode(obj: any): string; decode(str: string): any };

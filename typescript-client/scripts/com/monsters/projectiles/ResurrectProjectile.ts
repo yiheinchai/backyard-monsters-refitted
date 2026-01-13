@@ -14,11 +14,7 @@ import { GLOBAL } from "../../../GLOBAL";
 import { MAP } from "../../../MAP";
 import { SPRITES } from "../../../SPRITES";
 import { Targeting } from "../../../Targeting";
-
-// Forward declaration
-declare class GameObject {
-    getRandomPointOnGraphic(): Point;
-}
+import { GameObject } from "../GameObject";
 
 // TweenMax declaration
 declare const TweenMax: any;
