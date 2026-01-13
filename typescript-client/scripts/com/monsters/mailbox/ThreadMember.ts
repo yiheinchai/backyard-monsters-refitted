@@ -7,15 +7,7 @@ import URLRequest from "openfl/net/URLRequest";
 import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
 
 import { Contact } from "./model/Contact";
-
-// Forward declaration
-declare class ThreadMember_CLIP extends Sprite {
-    leftbg_mc: MovieClip;
-    rightbg_mc: MovieClip;
-    placeholder: any;
-    photoRing: any;
-    body_txt: any;
-}
+import { ThreadMember_CLIP } from "../../../ThreadMember_CLIP";
 
 /**
  * Thread member message - displays a single message in a thread.

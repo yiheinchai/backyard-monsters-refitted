@@ -11,20 +11,8 @@ import { LOGGER } from "../../../LOGGER";
 import { PLEASEWAIT } from "../../../PLEASEWAIT";
 import { POPUPS } from "../../../POPUPS";
 import { URLLoaderApi } from "../../../URLLoaderApi";
-
-// Forward declaration
-declare class MapRoomManager {
-    static instance: { BookmarksClear: () => void; ShowDelayed: (flag: boolean) => void };
-}
-
-// Declare popup clip class
-declare class MapRoomPopup_LostMainBase_CLIP extends Sprite {
-    tTitle: any;
-    tDesc: any;
-    tWarning: any;
-    bYes: any;
-    bNo: any;
-}
+import { MapRoomManager } from "../maproom_manager/MapRoomManager";
+import { MapRoomPopup_LostMainBase_CLIP } from "../../../MapRoomPopup_LostMainBase_CLIP";
 
 /**
  * Popup shown when player loses their main base.

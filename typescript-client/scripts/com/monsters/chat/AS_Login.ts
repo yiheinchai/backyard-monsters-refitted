@@ -2,12 +2,7 @@ import { IAuthenticationSystem } from "./IAuthenticationSystem";
 import { UserRecord } from "./UserRecord";
 
 import { md5 } from "../../../md5";
-
-// Forward declaration for SFSObject
-declare class SFSObject {
-    putLong(key: string, value: number): void;
-    putUtfString(key: string, value: string): void;
-}
+import { SFSObject } from "../../smartfoxserver/v2/entities/data/SFSObject";
 
 /**
  * ActionScript-based login authentication for SmartFox server.

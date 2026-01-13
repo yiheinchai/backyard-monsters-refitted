@@ -1,9 +1,5 @@
 import KeyboardEvent from "openfl/events/KeyboardEvent";
-
-// Forward declarations
-declare class screenshot {
-    static Show(): void;
-}
+import { screenshot } from "../../cc/screenshot/screenshot";
 
 /**
  * Singleton lock for singleton pattern

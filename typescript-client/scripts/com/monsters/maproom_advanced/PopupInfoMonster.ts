@@ -8,12 +8,7 @@ import { CHAMPIONCAGE } from "../../../CHAMPIONCAGE";
 import { CREATURELOCKER } from "../../../CREATURELOCKER";
 import { GLOBAL } from "../../../GLOBAL";
 import { KEYS } from "../../../KEYS";
-
-// Declare clip class
-declare class MapRoomPopupInfoMonster_CLIP extends Sprite {
-    mcImage: any;
-    tName: any;
-}
+import { MapRoomPopupInfoMonster_CLIP } from "../../../MapRoomPopupInfoMonster_CLIP";
 
 /**
  * Monster info display for map room popups.

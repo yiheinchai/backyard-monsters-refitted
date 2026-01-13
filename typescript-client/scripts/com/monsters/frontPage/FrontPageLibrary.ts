@@ -1,55 +1,45 @@
 import { Category } from "./categories/Category";
 import { Message } from "./messages/Message";
-
-// Forward declarations for categories
-declare class News extends Category { constructor(); }
-declare class Promotions extends Category { constructor(); }
-declare class WhatsAvailable extends Category { constructor(); }
-declare class UnderusedFeatures extends Category { constructor(); }
-declare class LongTerm extends Category { constructor(); }
-declare class ProTips extends Category { constructor(); }
-declare class ReplayableEventsCategory extends Category { constructor(); }
-
-// Forward declarations for news messages
-declare class News01MagmaTower extends Message { constructor(); }
-declare class News02InfernoYardExpansion extends Message { constructor(); }
-declare class News03Vorg extends Message { constructor(); }
-declare class News04Slimeattikus extends Message { constructor(); }
-declare class News05YardPlanner2 extends Message { constructor(); }
-declare class News06TownHallLevel10 extends Message { constructor(); }
-
-// Forward declarations for promotions
-declare class Maproom3OptInPopup extends Message { constructor(); }
-declare class Promo01DaveClub extends Message { constructor(); }
-declare class Promo02DaveClub extends Message { constructor(); }
-declare class Promo03RecapturedGorgo extends Message { constructor(); }
-declare class Promo04RecapturedDrull extends Message { constructor(); }
-declare class Promo05RecapturedFomor extends Message { constructor(); }
-declare class Promo06RecapturedKorath extends Message { constructor(); }
-
-// Forward declarations for underused features
-declare class Underused01MonsterLocker extends Message { constructor(); }
-declare class Underused02Academy extends Message { constructor(); }
-
-// Forward declarations for build tree messages
-declare class BuildTree_01_SniperCannonTowers extends Message { constructor(); }
-declare class BuildTree_02_RadioTower extends Message { constructor(); }
-declare class BuildTree_03_MonsterLocker extends Message { constructor(); }
-declare class BuildTree_04_BoobyTraps extends Message { constructor(); }
-declare class BuildTree_05_Blocks extends Message { constructor(); }
-declare class BuildTree_06_Catapult extends Message { constructor(); }
-declare class BuildTree_07_StoneBlocks extends Message { constructor(); }
-declare class BuildTree_08_MonsterAcademy extends Message { constructor(); }
-declare class BuildTree_09_HCC extends Message { constructor(); }
-declare class BuildTree_10_YardPlanner extends Message { constructor(); }
-declare class BuildTree_11_MonsterJuicer extends Message { constructor(); }
-declare class BuildTree_12_MonsterBunker extends Message { constructor(); }
-declare class BuildTree_13_MonsterBaiter extends Message { constructor(); }
-declare class BuildTree_14_TeslaTower extends Message { constructor(); }
-declare class BuildTree_15_LaserTower extends Message { constructor(); }
-declare class BuildTree_16_AerialTower extends Message { constructor(); }
-declare class BuildTree_18_MetalBlocks extends Message { constructor(); }
-declare class BuildTree_19_ChampionChamber extends Message { constructor(); }
+import { News } from "./categories/News";
+import { Promotions } from "./categories/Promotions";
+import { WhatsAvailable } from "./categories/WhatsAvailable";
+import { UnderusedFeatures } from "./categories/UnderusedFeatures";
+import { LongTerm } from "./categories/LongTerm";
+import { ProTips } from "./categories/ProTips";
+import { ReplayableEventsCategory } from "./categories/ReplayableEventsCategory";
+import { News01MagmaTower } from "./messages/news/News01MagmaTower";
+import { News02InfernoYardExpansion } from "./messages/news/News02InfernoYardExpansion";
+import { News03Vorg } from "./messages/news/News03Vorg";
+import { News04Slimeattikus } from "./messages/news/News04Slimeattikus";
+import { News05YardPlanner2 } from "./messages/news/News05YardPlanner2";
+import { News06TownHallLevel10 } from "./messages/news/News06TownHallLevel10";
+import { Maproom3OptInPopup } from "./messages/promotions/Maproom3OptInPopup";
+import { Promo01DaveClub } from "./messages/promotions/Promo01DaveClub";
+import { Promo02DaveClub } from "./messages/promotions/Promo02DaveClub";
+import { Promo03RecapturedGorgo } from "./messages/promotions/Promo03RecapturedGorgo";
+import { Promo04RecapturedDrull } from "./messages/promotions/Promo04RecapturedDrull";
+import { Promo05RecapturedFomor } from "./messages/promotions/Promo05RecapturedFomor";
+import { Promo06RecapturedKorath } from "./messages/promotions/Promo06RecapturedKorath";
+import { Underused01MonsterLocker } from "./messages/underusedFeatures/Underused01MonsterLocker";
+import { Underused02Academy } from "./messages/underusedFeatures/Underused02Academy";
+import { BuildTree_01_SniperCannonTowers } from "./messages/buildtree/BuildTree_01_SniperCannonTowers";
+import { BuildTree_02_RadioTower } from "./messages/buildtree/BuildTree_02_RadioTower";
+import { BuildTree_03_MonsterLocker } from "./messages/buildtree/BuildTree_03_MonsterLocker";
+import { BuildTree_04_BoobyTraps } from "./messages/buildtree/BuildTree_04_BoobyTraps";
+import { BuildTree_05_Blocks } from "./messages/buildtree/BuildTree_05_Blocks";
+import { BuildTree_06_Catapult } from "./messages/buildtree/BuildTree_06_Catapult";
+import { BuildTree_07_StoneBlocks } from "./messages/buildtree/BuildTree_07_StoneBlocks";
+import { BuildTree_08_MonsterAcademy } from "./messages/buildtree/BuildTree_08_MonsterAcademy";
+import { BuildTree_09_HCC } from "./messages/buildtree/BuildTree_09_HCC";
+import { BuildTree_10_YardPlanner } from "./messages/buildtree/BuildTree_10_YardPlanner";
+import { BuildTree_11_MonsterJuicer } from "./messages/buildtree/BuildTree_11_MonsterJuicer";
+import { BuildTree_12_MonsterBunker } from "./messages/buildtree/BuildTree_12_MonsterBunker";
+import { BuildTree_13_MonsterBaiter } from "./messages/buildtree/BuildTree_13_MonsterBaiter";
+import { BuildTree_14_TeslaTower } from "./messages/buildtree/BuildTree_14_TeslaTower";
+import { BuildTree_15_LaserTower } from "./messages/buildtree/BuildTree_15_LaserTower";
+import { BuildTree_16_AerialTower } from "./messages/buildtree/BuildTree_16_AerialTower";
+import { BuildTree_18_MetalBlocks } from "./messages/buildtree/BuildTree_18_MetalBlocks";
+import { BuildTree_19_ChampionChamber } from "./messages/buildtree/BuildTree_19_ChampionChamber";
 
 /**
  * Front page library - registry for front page categories and messages.

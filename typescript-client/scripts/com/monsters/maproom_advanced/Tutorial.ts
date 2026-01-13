@@ -11,14 +11,7 @@ import { GLOBAL } from "../../../GLOBAL";
 import { KEYS } from "../../../KEYS";
 import { POPUPSETTINGS } from "../../../POPUPSETTINGS";
 import { SOUNDS } from "../../../SOUNDS";
-
-// Declare popup clip class
-declare class popup_mr2tutorial extends Sprite {
-    tBody: any;
-    bAction: any;
-    mcFrame: any;
-    mcImageContainer: any;
-}
+import { popup_mr2tutorial } from "../../../popup_mr2tutorial";
 
 /**
  * Map Room 2 tutorial system.

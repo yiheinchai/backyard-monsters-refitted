@@ -14,23 +14,8 @@ import { KEYS } from "../../../KEYS";
 import { POPUPSETTINGS } from "../../../POPUPSETTINGS";
 import { SOUNDS } from "../../../SOUNDS";
 import { WMATTACK } from "../../../WMATTACK";
-
-// Declare external clip classes
-declare class popup_infernoemerge_aiattack extends Sprite {
-    mcImage: any;
-    mcFrame: any;
-    bAction: any;
-    tTitle: any;
-    tName: any;
-    c1: any;
-    c2: any;
-    c3: any;
-    c4: any;
-    c5: any;
-}
-declare class bubblepopup3 extends Sprite {
-    Setup: (w: number, h: number, text: string, style: number) => void;
-}
+import { popup_infernoemerge_aiattack } from "../../../popup_infernoemerge_aiattack";
+import { bubblepopup3 } from "../../../bubblepopup3";
 
 /**
  * Popup displayed when Inferno Emergence AI is about to attack.

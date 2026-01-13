@@ -16,15 +16,10 @@ import { GLOBAL } from "../../../GLOBAL";
 import { KEYS } from "../../../KEYS";
 import { MAP } from "../../../MAP";
 import { Embed } from "../../../core/Embed";
-
-// [Embed(source="/_assets/assets.swf", symbol="bmp_healthbarlarge")]
-declare class bmp_healthbarlarge extends BitmapData {}
-// [Embed(source="/_assets/assets.swf", symbol="bmp_healthbarsmall")]
-declare class bmp_healthbarsmall extends BitmapData {}
-// [Embed(source="/_assets/assets.swf", symbol="bmp_progressbarlarge")]
-declare class bmp_progressbarlarge extends BitmapData {}
-// [Embed(source="/_assets/assets.swf", symbol="bmp_overlaytext")]
-declare class bmp_overlaytext extends BitmapData {}
+import { bmp_healthbarlarge } from "../../../bmp_healthbarlarge";
+import { bmp_healthbarsmall } from "../../../bmp_healthbarsmall";
+import { bmp_progressbarlarge } from "../../../bmp_progressbarlarge";
+import { bmp_overlaytext } from "../../../bmp_overlaytext";
 
 interface BuildingOverlayData {
     container: Sprite;

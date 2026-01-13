@@ -14,23 +14,8 @@ import { LOGGER } from "../../../LOGGER";
 import { POPUPS } from "../../../POPUPS";
 import { QUESTS } from "../../../QUESTS";
 import { STORE } from "../../../STORE";
-
-// Forward declaration
-declare class SiegeWeapon {
-    weaponID: string;
-    level: number;
-    quantity: number;
-    name: string;
-    buildCosts: any;
-    instantBuildCost: number;
-    warnPopupImage: string;
-}
-
-declare class popup_siegebrag {
-    tText: any;
-    bAction: any;
-    bSpeedup: any;
-}
+import { SiegeWeapon } from "./weapons/SiegeWeapon";
+import { popup_siegebrag } from "../../../popup_siegebrag";
 
 /**
  * Siege Factory building - builds siege weapons.

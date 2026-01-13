@@ -10,20 +10,8 @@ import { EventStoreDisplayGrid } from "./EventStoreDisplayGrid";
 
 import { KEYS } from "../../../KEYS";
 import { POPUPS } from "../../../POPUPS";
-
-// Forward declarations
-declare class EventStorePopupMC extends Sprite {
-    titleImageHolder: any;
-    tabButton1: any;
-    tabButton2: any;
-    displayContainer: any;
-    experienceDisplay: any;
-}
-
-declare class ButtonBrown extends Sprite {
-    SetupKey(key: string): void;
-    Highlight: boolean;
-}
+import { EventStorePopupMC } from "../../../EventStorePopupMC";
+import { ButtonBrown } from "../../../ButtonBrown";
 
 /**
  * Singleton lock for singleton pattern

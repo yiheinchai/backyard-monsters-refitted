@@ -1,11 +1,12 @@
 import { Console } from "../debug/Console";
 import { Reward } from "./Reward";
+import { UnlockVorgReward } from "./rewards/vorg/UnlockVorgReward";
+import { UnlockSlimeattikusReward } from "./rewards/slimeattikus/UnlockSlimeattikusReward";
+import { UnblockSlimeattikusReward } from "./rewards/slimeattikus/UnblockSlimeattikusReward";
+import { UnblockVorgReward } from "./rewards/vorg/UnblockVorgReward";
+import { UnlockRezghulReward } from "./rewards/rezghul/UnlockRezghulReward";
 
-// Forward declarations for reward types - these will be converted separately
-declare class UnlockVorgReward extends Reward { static ID: string; }
-declare class UnlockSlimeattikusReward extends Reward { static ID: string; }
-declare class UnblockSlimeattikusReward extends Reward { static ID: string; }
-declare class UnblockVorgReward extends Reward { static ID: string; }
+// Forward declarations for reward types that don't have files yet
 declare class UnlockMagmaTowerInOutposts extends Reward { static ID: string; }
 declare class KrallenReward extends Reward { static ID: string; }
 declare class KrallenBuffReward extends Reward { static ID: string; }
@@ -18,7 +19,6 @@ declare class SpurtzCannonReward1 extends Reward { static ID: string; }
 declare class SpurtzCannonReward2 extends Reward { static ID: string; }
 declare class SpurtzCannonReward3 extends Reward { static ID: string; }
 declare class KorathReward extends Reward { static k_REWARD_ID: string; }
-declare class UnlockRezghulReward extends Reward { static k_REWARD_ID: string; }
 
 /**
  * Reward library - registry of all reward types.

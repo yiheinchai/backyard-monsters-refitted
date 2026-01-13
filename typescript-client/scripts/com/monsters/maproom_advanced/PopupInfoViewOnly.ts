@@ -15,26 +15,8 @@ import { MapRoomCell } from "./MapRoomCell";
 import { BASE } from "../../../BASE";
 import { GLOBAL } from "../../../GLOBAL";
 import { KEYS } from "../../../KEYS";
-
-// Declare clip class
-declare class PopupInfoViewOnly_CLIP extends Sprite {
-    bView: any;
-    mcFrame: any;
-    tLabel1: any;
-    tLabel2: any;
-    tName: any;
-    tLocation: any;
-    tHeight: any;
-    tBonus: any;
-    txtButtonInfo: any;
-    mcArrow: any;
-    mcProfilePic: any;
-}
-
-declare class frame extends Sprite {
-    Setup(): void;
-    Clear(): void;
-}
+import { PopupInfoViewOnly_CLIP } from "../../../PopupInfoViewOnly_CLIP";
+import { frame } from "../../../frame";
 
 // JSON declaration
 declare const JSON: { encode(obj: any): string };

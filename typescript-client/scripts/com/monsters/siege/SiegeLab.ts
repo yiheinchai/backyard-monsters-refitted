@@ -8,14 +8,7 @@ import { KEYS } from "../../../KEYS";
 import { LOGGER } from "../../../LOGGER";
 import { QUESTS } from "../../../QUESTS";
 import { STORE } from "../../../STORE";
-
-// Forward declaration
-declare class SiegeWeapon {
-    weaponID: string;
-    level: number;
-    upgradeCosts: any;
-    instantUpgradeCost: number;
-}
+import { SiegeWeapon } from "./weapons/SiegeWeapon";
 
 /**
  * Siege Lab building - upgrades siege weapons.

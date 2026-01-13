@@ -18,23 +18,8 @@ import { GLOBAL } from "../../../GLOBAL";
 import { KEYS } from "../../../KEYS";
 import { MAPROOM_DESCENT } from "../../../MAPROOM_DESCENT";
 import { QUESTS } from "../../../QUESTS";
-
-// Declare popup classes
-declare class popup_aibase_success extends MovieClip {
-    body_txt: any;
-    b1: any;
-    b2: any;
-    title_txt: any;
-    headline_txt: any;
-    Resize: () => void;
-}
-declare class popup_aibase_failure extends MovieClip {
-    body_txt: any;
-    b1: any;
-    title_txt: any;
-    headline_txt: any;
-    Resize: () => void;
-}
+import { popup_aibase_success } from "../../../popup_aibase_success";
+import { popup_aibase_failure } from "../../../popup_aibase_failure";
 
 interface WMBaseData {
     baseid: number;

@@ -22,20 +22,8 @@ import { POPUPS } from "../../../POPUPS";
 import { POPUPSETTINGS } from "../../../POPUPSETTINGS";
 import { POWERUPS } from "../../../POWERUPS";
 import { URLLoaderApi } from "../../../URLLoaderApi";
-
-// Forward declaration
-declare class MapRoomManager {
-    static instance: { Hide: () => void };
-}
-
-// Declare external clip classes
-declare class MapRoomPopup_takeover_CLIP extends Sprite {
-    tTitle: any;
-    tDescription: any;
-    mcImage: any;
-    mcInstant: any;
-    mcResources: any;
-}
+import { MapRoomManager } from "../maproom_manager/MapRoomManager";
+import { MapRoomPopup_takeover_CLIP } from "../../../MapRoomPopup_takeover_CLIP";
 
 // JSON declaration
 declare const JSON: { encode(obj: any): string };
