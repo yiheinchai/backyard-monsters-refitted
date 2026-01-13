@@ -9,8 +9,8 @@ import { Projectilev2 } from "../../../projectiles/Projectilev2";
 import { FaceTargetProjectileComponent } from "../../../projectiles/projectileComponents/FaceTargetProjectileComponent";
 
 import { BFOUNDATION } from "../../../../../BFOUNDATION";
-import { SPRITES } from "../../../../../../SPRITES";
-import { SOUNDS } from "../../../../../../SOUNDS";
+import { SPRITES } from "../../../../SPRITES";
+import { SOUNDS } from "../../../../SOUNDS";
 import { LoanShark } from "org/kissmyas/utils/loanshark/LoanShark";
 
 /**

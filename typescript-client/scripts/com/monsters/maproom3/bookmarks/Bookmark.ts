@@ -1,4 +1,4 @@
-import { EnumYardType } from "../../enums/EnumYardType";
+import { EnumYardType } from "../enums/EnumYardType";
 import { MapRoom3Cell } from "../MapRoom3Cell";
 
 import { KEYS } from "../../../../KEYS";

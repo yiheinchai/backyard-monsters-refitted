@@ -12,7 +12,7 @@ import { RewardLibrary } from "../../../../rewarding/RewardLibrary";
 import { UnblockSlimeattikusReward } from "../../../../rewarding/rewards/slimeattikus/UnblockSlimeattikusReward";
 import { UnlockSlimeattikusReward } from "../../../../rewarding/rewards/slimeattikus/UnlockSlimeattikusReward";
 
-import { GLOBAL } from "../../../../../../GLOBAL";
+import { GLOBAL } from "../../../../../GLOBAL";
 
 /**
  * Monster Blitzkrieg - monster invasion event with wave-based defense.

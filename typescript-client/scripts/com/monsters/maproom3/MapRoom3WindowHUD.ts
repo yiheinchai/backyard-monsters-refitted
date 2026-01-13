@@ -8,7 +8,7 @@ import TextField from "openfl/text/TextField";
 import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
 import TextFormat from "openfl/text/TextFormat";
 import TextFormatAlign from "openfl/text/TextFormatAlign";
-import { ScaleBitmap } from "org/bytearray/display/ScaleBitmap";
+import { ScaleBitmap } from "../../../org/bytearray/display/ScaleBitmap";
 
 import { Chat } from "../chat/Chat";
 import { EnumYardType } from "../enums/EnumYardType";

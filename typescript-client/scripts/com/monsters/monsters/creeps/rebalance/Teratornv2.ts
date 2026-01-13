@@ -10,7 +10,7 @@ import { GlaiveProjectileComponent } from "../../../projectiles/projectileCompon
 import { SetFireProjectileComponent } from "../../../projectiles/projectileComponents/SetFireProjectileComponent";
 
 import { BFOUNDATION } from "../../../../../BFOUNDATION";
-import { SPRITES } from "../../../../../../SPRITES";
+import { SPRITES } from "../../../../SPRITES";
 import { LoanShark } from "org/kissmyas/utils/loanshark/LoanShark";
 
 /**

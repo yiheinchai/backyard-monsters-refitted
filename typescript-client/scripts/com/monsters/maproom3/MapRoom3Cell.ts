@@ -1,4 +1,4 @@
-import { ABTest } from "../../../cc/tests/ABTest";
+import { ABTest } from "../../cc/tests/ABTest";
 import { Console } from "../debug/Console";
 import { EnumBaseRelationship } from "../enums/EnumBaseRelationship";
 import { EnumYardType } from "../enums/EnumYardType";

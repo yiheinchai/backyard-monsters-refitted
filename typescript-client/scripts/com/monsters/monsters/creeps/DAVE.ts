@@ -6,9 +6,9 @@ import { DAVERockets } from "../../components/abilities/DAVERockets";
 import { CreepBase } from "./CreepBase";
 
 import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { FIREBALLS } from "../../../../../FIREBALLS";
-import { FIREBALL } from "../../../../../FIREBALL";
-import { SOUNDS } from "../../../../../SOUNDS";
+import { FIREBALLS } from "../../../../FIREBALLS";
+import { FIREBALL } from "../../../../FIREBALL";
+import { SOUNDS } from "../../../../SOUNDS";
 
 /**
  * DAVE - flying creep with dual rocket attacks.

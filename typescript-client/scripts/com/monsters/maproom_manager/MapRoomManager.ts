@@ -7,7 +7,7 @@ import { MapRoom } from "../maproom_advanced/MapRoom";
 import { CModifiableProperty } from "../monsters/components/CModifiableProperty";
 import { IMapRoom } from "./IMapRoom";
 import { IMapRoomCell } from "./IMapRoomCell";
-import { SingletonLock } from "../../config/singletonlock/SingletonLock";
+import { SingletonLock } from "../../../config/singletonlock/SingletonLock";
 import { URLLoaderApi } from "../../URLLoaderApi";
 
 import { BASE } from "../../../BASE";

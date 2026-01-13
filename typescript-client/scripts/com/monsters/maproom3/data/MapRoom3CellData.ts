@@ -1,4 +1,4 @@
-import { EnumBaseRelationship } from "../../enums/EnumBaseRelationship";
+import { EnumBaseRelationship } from "../enums/EnumBaseRelationship";
 
 /**
  * MapRoom3CellData - compact data structure for a map room 3 cell.

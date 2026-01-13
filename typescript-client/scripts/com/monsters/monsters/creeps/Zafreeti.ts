@@ -7,9 +7,9 @@ import { Targeting } from "../../../../Targeting";
 import { CreepBase } from "./CreepBase";
 
 import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { SPRITES } from "../../../../../SPRITES";
-import { SOUNDS } from "../../../../../SOUNDS";
-import { FIREBALLS } from "../../../../../FIREBALLS";
+import { SPRITES } from "../../../../SPRITES";
+import { SOUNDS } from "../../../../SOUNDS";
+import { FIREBALLS } from "../../../../FIREBALLS";
 
 /**
  * Zafreeti - flying healer creep that targets air units.

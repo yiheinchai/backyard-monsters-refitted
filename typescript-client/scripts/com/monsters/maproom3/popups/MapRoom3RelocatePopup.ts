@@ -1,6 +1,6 @@
 import MouseEvent from "openfl/events/MouseEvent";
 
-import { EnumYardType } from "../../enums/EnumYardType";
+import { EnumYardType } from "../enums/EnumYardType";
 import { MapRoom3FriendData } from "../data/MapRoom3FriendData";
 import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
 import { MapRoom3RelocateMainYardPopup } from "./MapRoom3RelocateMainYardPopup";

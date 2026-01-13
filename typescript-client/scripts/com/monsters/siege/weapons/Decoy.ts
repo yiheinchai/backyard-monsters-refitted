@@ -4,8 +4,8 @@ import Point from "openfl/geom/Point";
 import SoundChannel from "openfl/media/SoundChannel";
 import { TweenLite, Expo } from "gs/TweenLite";
 
-import { SpriteData } from "../../display/SpriteData";
-import { SpriteSheetAnimation } from "../../display/SpriteSheetAnimation";
+import { SpriteData } from "../display/SpriteData";
+import { SpriteSheetAnimation } from "../display/SpriteSheetAnimation";
 import { InstanceManager } from "../../managers/InstanceManager";
 import { ChampionBase } from "../../monsters/champions/ChampionBase";
 import { DecoyEffect } from "../../monsters/components/statusEffects/DecoyEffect";

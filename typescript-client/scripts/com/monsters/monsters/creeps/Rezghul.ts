@@ -17,9 +17,9 @@ import { CreepBase } from "./CreepBase";
 import { Targeting } from "../../../../Targeting";
 
 import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { SPRITES } from "../../../../../SPRITES";
-import { CREATURES } from "../../../../../CREATURES";
-import { MAP } from "../../../../../MAP";
+import { SPRITES } from "../../../../SPRITES";
+import { CREATURES } from "../../../../CREATURES";
+import { MAP } from "../../../../MAP";
 import { LoanShark } from "org/kissmyas/utils/loanshark/LoanShark";
 
 /**

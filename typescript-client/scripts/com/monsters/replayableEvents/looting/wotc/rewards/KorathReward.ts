@@ -2,9 +2,9 @@ import { SecNum } from "../../../../../cc/utils/SecNum";
 import { ChampionBase } from "../../../../monsters/champions/ChampionBase";
 import { Reward } from "../../../../rewarding/Reward";
 
-import { GLOBAL } from "../../../../../../GLOBAL";
+import { GLOBAL } from "../../../../../GLOBAL";
 import { BASE } from "../../../../../../BASE";
-import { CREATURES } from "../../../../../../CREATURES";
+import { CREATURES } from "../../../../../CREATURES";
 import { CHAMPIONCAGE } from "../../../../../../CHAMPIONCAGE";
 
 /**

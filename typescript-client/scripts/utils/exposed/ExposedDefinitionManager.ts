@@ -1,4 +1,4 @@
-import { SingletonLock } from "../../config/singletonlock/SingletonLock";
+import { SingletonLock } from "../../../config/singletonlock/SingletonLock";
 import { ExposedDefinition } from "./ExposedDefinition";
 import { ExposedStructure } from "./ExposedStructure";
 

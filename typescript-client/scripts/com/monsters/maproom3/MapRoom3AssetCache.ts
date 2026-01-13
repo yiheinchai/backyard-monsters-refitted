@@ -4,7 +4,7 @@ import Rectangle from "openfl/geom/Rectangle";
 
 import { ImageCache } from "../display/ImageCache";
 import { SpriteData } from "../display/SpriteData";
-import { SingletonLock } from "../../config/singletonlock/SingletonLock";
+import { SingletonLock } from "../../../config/singletonlock/SingletonLock";
 
 /**
  * MapRoom3AssetCache - caches and manages assets for the MapRoom3 world map.

@@ -1,6 +1,6 @@
 import MouseEvent from "openfl/events/MouseEvent";
 
-import { EnumYardType } from "../../enums/EnumYardType";
+import { EnumYardType } from "../enums/EnumYardType";
 import { MapRoom3Tutorial } from "../MapRoom3Tutorial";
 import { popup_outpost_secured } from "../../../popup_outpost_secured";
 

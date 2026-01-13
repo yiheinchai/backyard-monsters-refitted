@@ -6,8 +6,8 @@ import { GlavesOnAttack } from "../../components/abilities/GlavesOnAttack";
 import { CreepBase } from "./CreepBase";
 
 import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { SPRITES } from "../../../../../SPRITES";
-import { FIREBALLS } from "../../../../../FIREBALLS";
+import { SPRITES } from "../../../../SPRITES";
+import { FIREBALLS } from "../../../../FIREBALLS";
 
 /**
  * Teratorn - flying creep with glave ability when powered up.

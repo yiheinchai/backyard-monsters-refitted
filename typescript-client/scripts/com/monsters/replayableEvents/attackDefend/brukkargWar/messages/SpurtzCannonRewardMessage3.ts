@@ -1,6 +1,6 @@
 import { KeywordMessage } from "../../../../frontPage/messages/KeywordMessage";
 
-import { GLOBAL } from "../../../../../../GLOBAL";
+import { GLOBAL } from "../../../../../GLOBAL";
 
 /**
  * Spurtz cannon reward message 3 - third reward message for Brukkarg War.

@@ -3,7 +3,7 @@ import { SpriteSheetAnimation } from "../../../display/SpriteSheetAnimation";
 import { MonsterBase } from "../../MonsterBase";
 import { CStatusEffect } from "./CStatusEffect";
 
-import { SPRITES } from "../../../../../SPRITES";
+import { SPRITES } from "../../../../SPRITES";
 
 /**
  * Flame effect - fire damage over time.
