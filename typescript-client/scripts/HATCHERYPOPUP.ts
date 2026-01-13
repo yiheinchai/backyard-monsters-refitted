@@ -462,9 +462,9 @@ export class HATCHERYPOPUP extends HATCHERYPOPUP_CLIP {
         } else {
             this.mcMessage.gotoAndStop(2);
         }
-        this.mcMessage.tA.htmlText = _loc2_[1];
+        (this.mcMessage as any).tA.htmlText = _loc2_[1];
         if (GLOBAL._hatcheryOverdrive > 0) {
-            this.mcOverdrive.t.htmlText = "<b>" + KEYS.Get("hat_xoverdrive", {
+            (this.mcOverdrive as any).t.htmlText = "<b>" + KEYS.Get("hat_xoverdrive", {
                 "v1": GLOBAL._hatcheryOverdrivePower.Get(),
                 "v2": GLOBAL.ToTime(GLOBAL._hatcheryOverdrive)
             }) + "</b>";

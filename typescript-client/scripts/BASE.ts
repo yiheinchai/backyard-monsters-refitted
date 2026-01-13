@@ -1050,6 +1050,12 @@ export class BASE {
         return BASE.s_eventBases.indexOf(baseId) !== -1;
     }
     
+    public static addEventBaseException(baseId: number): void {
+        if (BASE.s_eventBases.indexOf(baseId) === -1) {
+            BASE.s_eventBases.push(baseId);
+        }
+    }
+    
     public static addBuildingC(buildingType: number): BFOUNDATION | null {
         // Create and add a building of the specified type
         // Returns the created building foundation

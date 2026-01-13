@@ -1259,4 +1259,26 @@ export class GLOBAL {
         LOGGER.Log("log", message);
         Console.warning(message, true);
     }
+
+    /**
+     * Post to social feed (bragging)
+     */
+    public static Brag(title: string, body: string, caption: string, url: string): void {
+        GLOBAL.CallJS("sendFeed", [title, KEYS.Get(body), KEYS.Get(caption), url]);
+    }
+
+    /**
+     * Get the AB test modifier for healing time shiny
+     */
+    public static ABTestHealingTimeShinyMod(): number {
+        let mod: number = 1;
+        if (ABTest.isInTestGroup("healcosts", 84)) {
+            mod = 0.8625;
+        } else if (ABTest.isInTestGroup("healcosts", 168)) {
+            mod = 1.4375;
+        } else if (ABTest.isInTestGroup("healcosts", 256)) {
+            mod = 1.15;
+        }
+        return mod;
+    }
 }

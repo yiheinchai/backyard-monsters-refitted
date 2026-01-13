@@ -907,4 +907,23 @@ export class UI_TOP extends UI_TOP_CLIP {
             this._creatureButtons[i].Update();
         }
     }
+
+    /**
+     * Add a resource bar to the UI
+     */
+    public addResourceBar(bar: DisplayObject): void {
+        let targetMC: MovieClip | null = null;
+        if (this.mc && GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && !BASE.isInfernoMainYardOrOutpost) {
+            if (MapRoomManager.instance.isInMapRoom2) {
+                targetMC = (this.mc as any).mcOutposts;
+            } else {
+                targetMC = (this.mc as any).mcR4;
+            }
+            if (targetMC) {
+                bar.x = -4;
+                bar.y = targetMC.y + 37;
+                targetMC.addChild(bar);
+            }
+        }
+    }
 }

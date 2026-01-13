@@ -38,7 +38,7 @@ export class HousingPersistentMonsterBar extends HousingPersistentMonsterBar_CLI
     }
 
     public getResourceCostInShiny(): number {
-        if (this.currentFrame == HousingPersistentMonsterBar.k_HealFrame || this.m_healthBar.mcBar.width == HousingPersistentMonsterBar.k_monsterBarDisplayBarWidth) {
+        if (this.currentFrame == HousingPersistentMonsterBar.k_HealFrame || (this.m_healthBar as any).mcBar.width == HousingPersistentMonsterBar.k_monsterBarDisplayBarWidth) {
             return 0;
         }
         return GLOBAL.player.getResourceCostInShinyByID(this.m_creatureID);
