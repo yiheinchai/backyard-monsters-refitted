@@ -23,7 +23,7 @@ import { popup_truce_sent } from "./popup_truce_sent";
 import { JSON } from "./JSON";
 
 export class MAPROOM_INFERNO {
-    public static _mc: MapRoom;
+    public static _mc: InfernoMapRoom;
     public static _open: boolean;
     public static _lastView: number = 0;
     public static _lastSort: number = 3;
@@ -103,7 +103,7 @@ export class MAPROOM_INFERNO {
             SOUNDS.Play("click1");
             MAPROOM_INFERNO._open = true;
             if (MAPROOM_INFERNO.loadState != 2 && MAPROOM_INFERNO.loadState != 1) {
-                MAPROOM_INFERNO._mc = new MapRoom();
+                MAPROOM_INFERNO._mc = new InfernoMapRoom();
                 MAPROOM_INFERNO._mc.init(MAPROOM_INFERNO.bridge_obj);
                 GLOBAL._layerTop.addChild(MAPROOM_INFERNO._mc);
             } else if (MAPROOM_INFERNO.loadState == 2) {

@@ -7,6 +7,7 @@ import { WMBASE } from './com/monsters/ai/WMBASE';
 import { URLLoaderApi } from './URLLoaderApi';
 import { BASE } from './BASE';
 import { GLOBAL } from './GLOBAL';
+import { KEYS } from './KEYS';
 import { LOGGER } from './LOGGER';
 import { MAPROOM_DESCENT } from './MAPROOM_DESCENT';
 import { PLEASEWAIT } from './PLEASEWAIT';

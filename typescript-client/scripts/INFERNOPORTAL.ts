@@ -10,13 +10,12 @@ import { BASE } from './BASE';
 import { BFOUNDATION } from './BFOUNDATION';
 import { CREATURES } from './CREATURES';
 import { GLOBAL } from './GLOBAL';
-import { GRIDKEYS } from './KEYS';
+import { KEYS } from './KEYS';
 import { LOGGER } from './LOGGER';
 import { MAPROOM_DESCENT } from './MAPROOM_DESCENT';
 import { PLEASEWAIT } from './PLEASEWAIT';
 import { SOUNDS } from './SOUNDS';
 import { URLLoaderApi } from './URLLoaderApi';
-import { KEYS } from './KEYS';
 
 /**
  * INFERNOPORTAL - Inferno Portal Building
@@ -73,9 +72,9 @@ export class INFERNOPORTAL extends BFOUNDATION {
             INFERNOPORTAL._ogAscensionData = {};
             for (const monster in serverData.imonsters) {
                 if (monster.substr(0, 2) === "IC") {
-                    const val = serverData.imonsters[monster] instanceof Number 
-                        ? serverData.imonsters[monster] 
-                        : INFERNOPORTAL.numHealthyCreeps(monster, serverData.imonsters[monster]);
+                    const val = typeof serverData.imonsters[monster] === 'number'
+                        ? serverData.imonsters[monster] as number
+                        : INFERNOPORTAL.numHealthyCreeps(monster, serverData.imonsters[monster] as number);
                     INFERNOPORTAL._ascensionData![monster] = new SecNum(val);
                     INFERNOPORTAL._ogAscensionData![monster] = INFERNOPORTAL._ascensionData![monster].Get();
                 }
