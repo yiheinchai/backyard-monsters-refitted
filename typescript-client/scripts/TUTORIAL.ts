@@ -695,7 +695,7 @@ export class TUTORIAL {
 
     private static ConditionFlingerAdd15(): void {
         let total = 0;
-        for (const count of ATTACK._flingerBucket) {
+        for (const count of Object.values(ATTACK._flingerBucket)) {
             total += count.Get();
         }
         if (total >= 15) {

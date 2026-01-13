@@ -307,7 +307,7 @@ export class PersistentMonsterBunker extends MonsterBunkerPopup_Persistent_CLIP 
 
         if (GLOBAL.player.monsterListByID(param1) && _loc4_ <= this.m_bunker._capacity - this.m_bunker._used) {
             _loc5_ = null;
-            for (_loc6_ of CREATURES._creatures) {
+            for (_loc6_ of Object.values(CREATURES._creatures)) {
                 if (_loc6_._creatureID == param1 && (_loc6_._behaviour == "housing" || _loc6_._behaviour == "pen")) {
                     _loc5_ = _loc6_;
                     break;
