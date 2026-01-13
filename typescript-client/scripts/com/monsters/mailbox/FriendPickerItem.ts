@@ -9,15 +9,7 @@ import LoaderContext from "openfl/system/LoaderContext";
 import { Contact } from "./model/Contact";
 
 import { KEYS } from "../../../KEYS";
-
-// Forward declaration
-declare class FriendPickerItem_CLIP extends Sprite {
-    name_txt: any;
-    userid_txt: any;
-    background: any;
-    placeholder: any;
-    photoRing: any;
-}
+import { FriendPickerItem_CLIP } from "../../../FriendPickerItem_CLIP";
 
 /**
  * Friend picker item - represents a single friend in the friend picker list.

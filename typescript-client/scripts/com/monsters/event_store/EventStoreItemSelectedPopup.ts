@@ -12,17 +12,7 @@ import { GLOBAL } from "../../../GLOBAL";
 import { KEYS } from "../../../KEYS";
 import { POPUPS } from "../../../POPUPS";
 import { POPUPSETTINGS } from "../../../POPUPSETTINGS";
-
-// Forward declaration
-declare class EventStoreItemSelectedPopupMC extends Sprite {
-    titleImageHolder: any;
-    previewImageHolder: any;
-    prizeNameText: any;
-    descriptionText: any;
-    experienceDisplay: any;
-    xpCostText: any;
-    purchaseButton: any;
-}
+import { EventStoreItemSelectedPopupMC } from "../../../EventStoreItemSelectedPopupMC";
 
 /**
  * Singleton lock for singleton pattern

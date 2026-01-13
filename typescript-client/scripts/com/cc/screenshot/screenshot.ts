@@ -9,16 +9,12 @@ import Matrix from "openfl/geom/Matrix";
 import Point from "openfl/geom/Point";
 import { ColorMatrix } from "../../gskinner/geom/ColorMatrix";
 import { Embed } from "../../../core/Embed";
+import { screenshot_border1 } from "../../../screenshot_border1";
+import { screenshot_border2 } from "../../../screenshot_border2";
+import { screenshot_border3 } from "../../../screenshot_border3";
 
 declare var GLOBAL: any;
 declare var POPUPS: any;
-
-// [Embed(source="/_assets/assets.swf", symbol="screenshot_border1")]
-declare class screenshot_border1 extends BitmapData { constructor(w: number, h: number); }
-// [Embed(source="/_assets/assets.swf", symbol="screenshot_border2")]
-declare class screenshot_border2 extends BitmapData { constructor(w: number, h: number); }
-// [Embed(source="/_assets/assets.swf", symbol="screenshot_border3")]
-declare class screenshot_border3 extends BitmapData { constructor(w: number, h: number); }
 
 /**
  * screenshot - Screenshot capture and processing utility.

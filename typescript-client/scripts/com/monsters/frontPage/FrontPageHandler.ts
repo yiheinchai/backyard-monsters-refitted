@@ -15,9 +15,7 @@ import { INFERNO_EMERGENCE_EVENT } from "../../../INFERNO_EMERGENCE_EVENT";
 import { LOGGER } from "../../../LOGGER";
 import { POPUPS } from "../../../POPUPS";
 import { TUTORIAL } from "../../../TUTORIAL";
-
-// Forward declaration
-declare class News extends Category {}
+import { News } from "./categories/News";
 
 /**
  * Front page handler - manages front page popup display and navigation.

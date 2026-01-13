@@ -11,18 +11,7 @@ import { RewardLibrary } from "../rewarding/RewardLibrary";
 import { EventStoreItemSelectedPopup } from "./EventStoreItemSelectedPopup";
 
 import { KEYS } from "../../../KEYS";
-
-// Forward declaration
-declare class EventStoreDisplayItem extends Sprite {
-    nameText: any;
-    imageHolder: any;
-    xpText: any;
-    xpBarBlue: any;
-    xpBarGreen: any;
-    xpBarYellow: any;
-    lockIcon: any;
-    tickIcon: any;
-}
+import { EventStoreDisplayItem } from "../../../EventStoreDisplayItem";
 
 /**
  * Event store prize - represents a single prize in the event store.

@@ -13,27 +13,9 @@ import { FrontPageEvent } from "./events/FrontPageEvent";
 import { Message } from "./messages/Message";
 
 import { KEYS } from "../../../KEYS";
-
-// Forward declarations
-declare class popup_frontpage_CLIP extends Sprite {
-    bNext: any;
-    bPrev: any;
-    mcNew: any;
-    mcCarousel: any;
-    mcContainer: any;
-}
-
-declare class frontpage_featuredItem_CLIP extends Sprite {
-    tTitle: any;
-    tBody: any;
-    mcImage: any;
-    bAction: any;
-}
-
-declare class CarouselCategoryButton2 extends Sprite {
-    tLabel: any;
-    mcBar: any;
-}
+import { popup_frontpage_CLIP } from "../../../popup_frontpage_CLIP";
+import { frontpage_featuredItem_CLIP } from "../../../frontpage_featuredItem_CLIP";
+import { CarouselCategoryButton2 } from "../../../CarouselCategoryButton2";
 
 declare class TweenLite {
     static to(target: any, duration: number, vars: any): void;

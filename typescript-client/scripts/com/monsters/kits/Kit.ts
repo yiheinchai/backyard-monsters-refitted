@@ -1,8 +1,4 @@
-// Forward declaration
-declare class popup_prefab {
-    static getResourceCostFromBuild(build: any): number;
-    static getShinyWorthFromResources(resources: number): number;
-}
+import { popup_prefab } from "../../../popup_prefab";
 
 /**
  * Kit - represents a building kit with resource and shiny costs.

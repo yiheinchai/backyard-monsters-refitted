@@ -12,9 +12,7 @@ import { LOGIN } from "../../../LOGIN";
 import { MAILBOX } from "../../../MAILBOX";
 import { SOUNDS } from "../../../SOUNDS";
 import { URLLoaderApi } from "../../../URLLoaderApi";
-
-// Forward declaration
-declare class system_message {}
+import { system_message } from "../../../system_message";
 
 /**
  * MailBox - main mailbox system for player communication.
