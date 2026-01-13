@@ -6,6 +6,6 @@ export class UI_WARNING extends UI_WARNING_CLIP {
     }
 
     public Update(param1: string): void {
-        this.mc.tText.htmlText = param1;
+        (this.mc as any).tText.htmlText = param1;
     }
 }

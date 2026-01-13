@@ -540,7 +540,7 @@ export class STORE {
             STORE._items = null;
         }
         
-        STORE._items = STORE._mc.window.content.addChild(new MovieClip());
+        STORE._items = (STORE._mc.window as any).content.addChild(new MovieClip());
         STORE._items.x = 5;
         STORE._items.y = 8;
         
@@ -572,9 +572,9 @@ export class STORE {
         // Create store items
         STORE.createStoreItems(groupArray);
         
-        STORE._mc.window.content.mask = STORE._mc.window.msk;
+        (STORE._mc.window as any).content.mask = (STORE._mc.window as any).msk;
         if (STORE._scrollUpdate) {
-            STORE._scroller.Init(STORE._mc.window.content as Sprite, STORE._mc.window.msk as MovieClip, 0, 0, 391, 30);
+            STORE._scroller.Init((STORE._mc.window as any).content as Sprite, (STORE._mc.window as any).msk as MovieClip, 0, 0, 391, 30);
             if (STORE._scrollPosUpdate) {
                 STORE._scroller.ScrollTo(0, false);
             }

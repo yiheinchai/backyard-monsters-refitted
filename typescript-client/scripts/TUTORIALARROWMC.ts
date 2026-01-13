@@ -93,9 +93,9 @@ export class TUTORIALARROWMC extends TUTORIALARROWMC_CLIP {
         if (this.ResizeParams && this.ResizeParams[3] && typeof this.ResizeParams[3] === 'number') {
             this.mcArrow.rotation = this.ResizeParams[3];
             if (this.mcArrow.rotation >= 0) {
-                this.mcArrow.mcArrow.gotoAndStop(1);
+                (this.mcArrow as any).mcArrow.gotoAndStop(1);
             } else {
-                this.mcArrow.mcArrow.gotoAndStop(2);
+                (this.mcArrow as any).mcArrow.gotoAndStop(2);
             }
         } else {
             if (this.y < GLOBAL._ROOT.stage.stageHeight / 2) {
@@ -104,9 +104,9 @@ export class TUTORIALARROWMC extends TUTORIALARROWMC_CLIP {
                 this.mcArrow.rotation = (0 - this.x) / (6 / GLOBAL._SCREENINIT.width * GLOBAL._ROOT.stage.stageWidth) + 45;
             }
             if (this.x < GLOBAL._ROOT.stage.stageWidth / 2) {
-                this.mcArrow.mcArrow.gotoAndStop(1);
+                (this.mcArrow as any).mcArrow.gotoAndStop(1);
             } else {
-                this.mcArrow.mcArrow.gotoAndStop(2);
+                (this.mcArrow as any).mcArrow.gotoAndStop(2);
             }
         }
     }
@@ -114,8 +114,8 @@ export class TUTORIALARROWMC extends TUTORIALARROWMC_CLIP {
     public Wobble(param1: Event): void {
         if (this.wobbleCountdown == 0) {
             this.wobbleCountdown = 80;
-            this.mcArrow.mcArrow.y = -60;
-            TweenLite.to(this.mcArrow.mcArrow, 0.6, {
+            (this.mcArrow as any).mcArrow.y = -60;
+            TweenLite.to((this.mcArrow as any).mcArrow, 0.6, {
                 "y": -70,
                 "ease": Expo.easeInOut,
                 "onComplete": this.WobbleB.bind(this)
@@ -125,7 +125,7 @@ export class TUTORIALARROWMC extends TUTORIALARROWMC_CLIP {
     }
 
     public WobbleB(): void {
-        TweenLite.to(this.mcArrow.mcArrow, 0.6, {
+        TweenLite.to((this.mcArrow as any).mcArrow, 0.6, {
             "y": -60,
             "ease": Bounce.easeOut
         });
