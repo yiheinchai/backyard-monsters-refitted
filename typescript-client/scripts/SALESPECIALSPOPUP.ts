@@ -44,6 +44,7 @@ export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
     private _sevenElevenBigGulpTutorialProps: any;
 
     constructor(param1: string = "text") {
+        super();
         this._textProps = {
             "tTitleX": -150, "tTitleY": -100, "tTitleW": 300, "tTitleH": 70,
             "tDescX": -150, "tDescY": -50, "tDescW": 300, "tDescH": 100,
@@ -137,7 +138,6 @@ export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
             "bActionText": KEYS.Get("special_goldenbiggulp"),
             "bActionText2": KEYS.Get("special_hatcheryod")
         };
-        super();
         SALESPECIALSPOPUP._page = param1;
         this.Switch(SALESPECIALSPOPUP._page);
     }
@@ -351,17 +351,17 @@ export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
             this.bAction3.y = SALESPECIALSPOPUP._props.bActionY;
             this.bAction3.width = SALESPECIALSPOPUP._props.bActionW;
             this.bAction3.height = SALESPECIALSPOPUP._props.bActionH;
-            this.bAction3.txt.htmlText = SALESPECIALSPOPUP._props.bActionText;
+            (this.bAction3 as any).txt.htmlText = SALESPECIALSPOPUP._props.bActionText;
             this.bAction3.visible = true;
             this.bAction4.x = SALESPECIALSPOPUP._props.bAction2X;
             this.bAction4.y = SALESPECIALSPOPUP._props.bAction2Y;
             this.bAction4.width = SALESPECIALSPOPUP._props.bAction2W;
             this.bAction4.height = SALESPECIALSPOPUP._props.bAction2H;
-            this.bAction4.txt.htmlText = SALESPECIALSPOPUP._props.bActionText2;
+            (this.bAction4 as any).txt.htmlText = SALESPECIALSPOPUP._props.bActionText2;
             if (TUTORIAL._stage < 200) {
                 if (this.bAction3) {
                     this.bAction3.visible = true;
-                    this.bAction3.txt.htmlText = KEYS.Get("tut_continue");
+                    (this.bAction3 as any).txt.htmlText = KEYS.Get("tut_continue");
                 }
                 if (this.bAction4) {
                     this.bAction4.visible = false;
