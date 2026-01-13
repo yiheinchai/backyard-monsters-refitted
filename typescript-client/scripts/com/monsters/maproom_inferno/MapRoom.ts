@@ -3,7 +3,7 @@ import Sprite from "openfl/display/Sprite";
 import Event from "openfl/events/Event";
 import MouseEvent from "openfl/events/MouseEvent";
 
-import { old_maproom } from "./old_maproom";
+import { old_maproom } from "../../../old_maproom";
 import { ListView } from "./views/ListView";
 import { MapView } from "./views/MapView";
 import { MiniMap } from "./MiniMap";

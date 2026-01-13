@@ -12,7 +12,7 @@ import { IMapRoomCell } from "../maproom_manager/IMapRoomCell";
 import { MapRoomCell_CLIP } from "../../../MapRoomCell_CLIP";
 import { MapRoom } from "./MapRoom";
 
-import { ALLIANCES } from "../../alliances/ALLIANCES";
+import { ALLIANCES } from "../alliances/ALLIANCES";
 import { BUILDING5 } from "../../../BUILDING5";
 import { CREATURES } from "../../../CREATURES";
 import { GLOBAL } from "../../../GLOBAL";

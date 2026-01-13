@@ -12,7 +12,7 @@ import { DescentMapRoom } from "./DescentMapRoom";
 import { DescentMonsterBase } from "./DescentMonsterBase";
 import { ForeignBase } from "./ForeignBase";
 import { MapRoom } from "./MapRoom";
-import { MapViewDescent_Fog_Shroud } from "./MapViewDescent_Fog_Shroud";
+import { MapViewDescent_Fog_Shroud } from "../../../MapViewDescent_Fog_Shroud";
 import { MiniMap } from "./MiniMap";
 import { Obstruction } from "./Obstruction";
 import { PlayerBase } from "./PlayerBase";

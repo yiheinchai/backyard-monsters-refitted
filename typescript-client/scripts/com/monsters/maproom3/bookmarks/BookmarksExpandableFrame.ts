@@ -1,7 +1,7 @@
 import Sprite from "openfl/display/Sprite";
 import MouseEvent from "openfl/events/MouseEvent";
 
-import { MapRoom3ExpandableFrame } from "./MapRoom3ExpandableFrame";
+import { MapRoom3ExpandableFrame } from "../../../../MapRoom3ExpandableFrame";
 
 import { BASE } from "../../../../BASE";
 import { TweenLite } from "gs/TweenLite";

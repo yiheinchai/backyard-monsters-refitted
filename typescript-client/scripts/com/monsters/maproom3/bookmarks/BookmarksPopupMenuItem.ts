@@ -4,7 +4,7 @@ import MouseEvent from "openfl/events/MouseEvent";
 import { MapRoom3 } from "../MapRoom3";
 import { Bookmark } from "./Bookmark";
 import { BookmarksManager } from "./BookmarksManager";
-import { MapRoom3BookmarksPopupItemDisplay } from "./MapRoom3BookmarksPopupItemDisplay";
+import { MapRoom3BookmarksPopupItemDisplay } from "../../../../MapRoom3BookmarksPopupItemDisplay";
 
 import { KEYS } from "../../../../KEYS";
 

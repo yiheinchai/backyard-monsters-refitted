@@ -6,7 +6,7 @@ import Rectangle from "openfl/geom/Rectangle";
 import { TweenLite } from "../../../gs/TweenLite";
 
 import { DescentMonsterBase } from "./DescentMonsterBase";
-import { ForeignBase } from "./views/ForeignBase";
+import { ForeignBase } from "./ForeignBase";
 import { MapRoom } from "./MapRoom";
 import { PlayerLayer } from "./PlayerLayer";
 import { Ring } from "./Ring";

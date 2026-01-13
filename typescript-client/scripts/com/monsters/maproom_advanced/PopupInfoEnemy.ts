@@ -25,7 +25,7 @@ import { bubblepopupRight } from "../../../bubblepopupRight";
 import { frame } from "../../../frame";
 import { URLLoaderApi } from "../../../URLLoaderApi";
 
-import { ALLIANCES } from "../../alliances/ALLIANCES";
+import { ALLIANCES } from "../alliances/ALLIANCES";
 import { BASE } from "../../../BASE";
 import { GLOBAL } from "../../../GLOBAL";
 import { JSON } from "../../../JSON";

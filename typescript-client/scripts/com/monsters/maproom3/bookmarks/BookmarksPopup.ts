@@ -1,4 +1,4 @@
-import { MapRoom3BookmarksPopup } from "./MapRoom3BookmarksPopup";
+import { MapRoom3BookmarksPopup } from "../../../../MapRoom3BookmarksPopup";
 import { BookmarksDisplayList } from "./BookmarksDisplayList";
 import { BookmarksPopupMenuItem } from "./BookmarksPopupMenuItem";
 import { Bookmark } from "./Bookmark";

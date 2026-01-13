@@ -22,7 +22,7 @@ import { BookmarksPopup } from "./bookmarks/BookmarksPopup";
 import { MapRoom3 } from "./MapRoom3";
 import { MapRoom3AssetCache } from "./MapRoom3AssetCache";
 import { MapRoom3Cell } from "./MapRoom3Cell";
-import { MapRoom3ResourcesDisplay } from "./MapRoom3ResourcesDisplay";
+import { MapRoom3ResourcesDisplay } from "../../../MapRoom3ResourcesDisplay";
 import { Maproom3JumpPopup } from "./popups/Maproom3JumpPopup";
 
 import { BASE } from "../../../BASE";

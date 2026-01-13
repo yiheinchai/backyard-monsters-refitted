@@ -15,7 +15,7 @@ import { BaseObject } from "./model/BaseObject";
 import { MapBasePopup } from "./views/MapBasePopup";
 import { PlayerHandler } from "./PlayerHandler";
 import { PushPin } from "./PushPin";
-import { WildMonsterBaseInferno_CLIP } from "./WildMonsterBaseInferno_CLIP";
+import { WildMonsterBaseInferno_CLIP } from "../../../WildMonsterBaseInferno_CLIP";
 import { Button } from "../../../Button";
 
 import { KEYS } from "../../../KEYS";
