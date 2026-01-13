@@ -28,22 +28,22 @@ class InfernoBattleReportPopup extends popup_infernodescent_battle_report {
             const _loc6_ = this.getChildByName(_loc5_) as MovieClip;
             switch (_loc4_) {
                 case 0:
-                    _loc6_.tTitle.htmlText = "<b>" + KEYS.Get("#r_bone#") + "</b>";
+                    (_loc6_ as any).tTitle.htmlText = "<b>" + KEYS.Get("#r_bone#") + "</b>";
                     break;
                 case 1:
-                    _loc6_.tTitle.htmlText = "<b>" + KEYS.Get("#r_coal#") + "</b>";
+                    (_loc6_ as any).tTitle.htmlText = "<b>" + KEYS.Get("#r_coal#") + "</b>";
                     break;
                 case 2:
-                    _loc6_.tTitle.htmlText = "<b>" + KEYS.Get("#r_sulfur#") + "</b>";
+                    (_loc6_ as any).tTitle.htmlText = "<b>" + KEYS.Get("#r_sulfur#") + "</b>";
                     break;
                 case 3:
-                    _loc6_.tTitle.htmlText = "<b>" + KEYS.Get("#r_magma#") + "</b>";
+                    (_loc6_ as any).tTitle.htmlText = "<b>" + KEYS.Get("#r_magma#") + "</b>";
                     break;
                 case 4:
-                    _loc6_.tTitle.htmlText = "<b>" + KEYS.Get("#r_shiny#") + "</b>";
+                    (_loc6_ as any).tTitle.htmlText = "<b>" + KEYS.Get("#r_shiny#") + "</b>";
                     break;
             }
-            _loc6_.tValue.htmlText = "<b>" + Math.floor(param3[_loc4_]).toString() + "</b>";
+            (_loc6_ as any).tValue.htmlText = "<b>" + Math.floor(param3[_loc4_]).toString() + "</b>";
             _loc6_.stop();
         }
     }

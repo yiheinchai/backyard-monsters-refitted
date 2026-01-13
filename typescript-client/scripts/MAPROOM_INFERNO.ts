@@ -167,17 +167,17 @@ export class MAPROOM_INFERNO {
                     LOGGER.Log("err", "MAPROOM.RequestTruce: " + JSON.encode(param1));
                 }
             };
-            new URLLoaderApi().load(GLOBAL._apiURL + "player/requesttruce", [["baseid", baseid], ["duration", 1209600], ["message", mc.bMessage.text]], handleLoadSuccessful);
+            new URLLoaderApi().load(GLOBAL._apiURL + "player/requesttruce", [["baseid", baseid], ["duration", 1209600], ["message", (mc as any).bMessage.text]], handleLoadSuccessful);
             POPUPS.Next();
-            MAPROOM_INFERNO.TruceSent(name, mc.bMessage.text);
+            MAPROOM_INFERNO.TruceSent(name, (mc as any).bMessage.text);
         };
         
         mc = new popup_truce();
-        mc.tA.htmlText = "<b>" + KEYS.Get("map_trucerequest") + " " + name + ".</b>";
-        mc.tB.htmlText = KEYS.Get("map_trucerequest_desc");
-        mc.bSend.SetupKey("map_trucereq_btn");
-        mc.bSend.addEventListener(MouseEvent.CLICK, Truce);
-        mc.bMessage.htmlText = "";
+        (mc as any).tA.htmlText = "<b>" + KEYS.Get("map_trucerequest") + " " + name + ".</b>";
+        (mc as any).tB.htmlText = KEYS.Get("map_trucerequest_desc");
+        (mc as any).bSend.SetupKey("map_trucereq_btn");
+        (mc as any).bSend.addEventListener(MouseEvent.CLICK, Truce);
+        (mc as any).bMessage.htmlText = "";
         POPUPS.Push(mc);
     }
 
@@ -211,10 +211,10 @@ export class MAPROOM_INFERNO {
         };
         
         mc = new popup_truce_accept();
-        mc.bShare.SetupKey("btn_share");
-        mc.bShare.addEventListener(MouseEvent.CLICK, Share);
-        mc.bShare.Highlight = true;
-        mc.tTitle.htmlText = KEYS.Get("popup_desc_truceaccept");
+        (mc as any).bShare.SetupKey("btn_share");
+        (mc as any).bShare.addEventListener(MouseEvent.CLICK, Share);
+        (mc as any).bShare.Highlight = true;
+        (mc as any).tTitle.htmlText = KEYS.Get("popup_desc_truceaccept");
         i = 1;
         while (i < 4) {
             mc["mcIcon" + i].buttonMode = true;
@@ -256,10 +256,10 @@ export class MAPROOM_INFERNO {
         };
         
         mc = new popup_truce_sent();
-        mc.bShare.SetupKey("btn_share");
-        mc.bShare.addEventListener(MouseEvent.CLICK, Share);
-        mc.bShare.Highlight = true;
-        mc.tTitle.htmlText = KEYS.Get("popup_desc_trucesent");
+        (mc as any).bShare.SetupKey("btn_share");
+        (mc as any).bShare.addEventListener(MouseEvent.CLICK, Share);
+        (mc as any).bShare.Highlight = true;
+        (mc as any).tTitle.htmlText = KEYS.Get("popup_desc_trucesent");
         i = 1;
         while (i < 4) {
             mc["mcIcon" + i].buttonMode = true;
@@ -301,10 +301,10 @@ export class MAPROOM_INFERNO {
         };
         
         mc = new popup_truce_sent();
-        mc.bShare.SetupKey("btn_share");
-        mc.bShare.addEventListener(MouseEvent.CLICK, Share);
-        mc.bShare.Highlight = true;
-        mc.tTitle.htmlText = KEYS.Get("popup_desc_trucesent");
+        (mc as any).bShare.SetupKey("btn_share");
+        (mc as any).bShare.addEventListener(MouseEvent.CLICK, Share);
+        (mc as any).bShare.Highlight = true;
+        (mc as any).tTitle.htmlText = KEYS.Get("popup_desc_trucesent");
         i = 1;
         while (i < 4) {
             mc["mcIcon" + i].buttonMode = true;
