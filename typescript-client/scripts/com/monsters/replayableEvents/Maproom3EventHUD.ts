@@ -3,14 +3,14 @@ import BitmapData from "openfl/display/BitmapData";
 import DisplayObject from "openfl/display/DisplayObject";
 import MouseEvent from "openfl/events/MouseEvent";
 
-import { Chat } from "../../chat/Chat";
-import { ImageCache } from "../../display/ImageCache";
-import { EventStorePopup } from "../../event_store/EventStorePopup";
-import { MapRoom3 } from "../../maproom3/MapRoom3";
+import { Chat } from "../chat/Chat";
+import { ImageCache } from "../display/ImageCache";
+import { EventStorePopup } from "../event_store/EventStorePopup";
+import { MapRoom3 } from "../maproom3/MapRoom3";
 import { IReplayableEventUI } from "./IReplayableEventUI";
 import { ReplayableEvent } from "./ReplayableEvent";
 import { ReplayableEventHandler } from "./ReplayableEventHandler";
-import { MR3EventHUD_CLIP } from "./MR3EventHUD_CLIP";
+import { MR3EventHUD_CLIP } from "../../../MR3EventHUD_CLIP";
 
 import { GLOBAL } from "../../../GLOBAL";
 import { KEYS } from "../../../KEYS";

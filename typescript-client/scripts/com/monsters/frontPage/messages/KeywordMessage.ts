@@ -9,7 +9,6 @@ export class KeywordMessage extends Message {
     protected _keyword: string;
 
     constructor(keyword: string, buttonCopy: string | null = null, imageURL: string | null = null) {
-        this._keyword = keyword;
         const finalImageURL = imageURL ? imageURL : KeywordMessage.PREFIX + keyword + ".jpg";
         super(
             KeywordMessage.PREFIX + keyword + "_title",
@@ -18,6 +17,7 @@ export class KeywordMessage extends Message {
             buttonCopy,
             undefined
         );
+        this._keyword = keyword;
         this.name = this._keyword;
     }
 

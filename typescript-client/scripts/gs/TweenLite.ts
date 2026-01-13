@@ -4,6 +4,17 @@ import Event from "openfl/events/Event";
 import { TweenPlugin } from "./plugins/TweenPlugin";
 import { TweenInfo } from "./utils/tween/TweenInfo";
 
+// Re-export easing classes for convenience
+export { Elastic } from "./easing/Elastic";
+export { Sine } from "./easing/Sine";
+export { Circ } from "./easing/Circ";
+export { Expo } from "./easing/Expo";
+export { Bounce } from "./easing/Bounce";
+export { Back } from "./easing/Back";
+export { Linear } from "./easing/Linear";
+export { Quad } from "./easing/Quad";
+export { Cubic } from "./easing/Cubic";
+
 /**
  * TweenLite - Lightweight, high-performance tweening engine.
  */

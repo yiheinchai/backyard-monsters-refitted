@@ -6,7 +6,8 @@ import { Embed } from "../core/Embed";
 export class chat_window_box_10 extends MovieClip {
     constructor() {
         super();
-        this.addFrameScript(0, this.frame1.bind(this), 4, this.frame5.bind(this));
+        this.addFrameScript(0, this.frame1.bind(this));
+        this.addFrameScript(4, this.frame5.bind(this));
     }
 
     private frame1(): void {

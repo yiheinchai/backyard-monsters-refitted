@@ -30,7 +30,8 @@ export class SALESPECIALSPOPUP_CLIP extends MovieClip {
         this.mcFrame = new frame_CLIP();
         this.bAction = new Button_CLIP();
         this.bAction4 = new MovieClip();
-        this.addFrameScript(0, this.frame1.bind(this), 1, this.frame2.bind(this));
+        this.addFrameScript(0, this.frame1.bind(this));
+        this.addFrameScript(1, this.frame2.bind(this));
     }
 
     private frame1(): void {

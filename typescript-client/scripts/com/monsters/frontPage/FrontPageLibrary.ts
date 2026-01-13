@@ -2,54 +2,54 @@ import { Category } from "./categories/Category";
 import { Message } from "./messages/Message";
 
 // Forward declarations for categories
-declare class News extends Category {}
-declare class Promotions extends Category {}
-declare class WhatsAvailable extends Category {}
-declare class UnderusedFeatures extends Category {}
-declare class LongTerm extends Category {}
-declare class ProTips extends Category {}
-declare class ReplayableEventsCategory extends Category {}
+declare class News extends Category { constructor(); }
+declare class Promotions extends Category { constructor(); }
+declare class WhatsAvailable extends Category { constructor(); }
+declare class UnderusedFeatures extends Category { constructor(); }
+declare class LongTerm extends Category { constructor(); }
+declare class ProTips extends Category { constructor(); }
+declare class ReplayableEventsCategory extends Category { constructor(); }
 
 // Forward declarations for news messages
-declare class News01MagmaTower extends Message {}
-declare class News02InfernoYardExpansion extends Message {}
-declare class News03Vorg extends Message {}
-declare class News04Slimeattikus extends Message {}
-declare class News05YardPlanner2 extends Message {}
-declare class News06TownHallLevel10 extends Message {}
+declare class News01MagmaTower extends Message { constructor(); }
+declare class News02InfernoYardExpansion extends Message { constructor(); }
+declare class News03Vorg extends Message { constructor(); }
+declare class News04Slimeattikus extends Message { constructor(); }
+declare class News05YardPlanner2 extends Message { constructor(); }
+declare class News06TownHallLevel10 extends Message { constructor(); }
 
 // Forward declarations for promotions
-declare class Maproom3OptInPopup extends Message {}
-declare class Promo01DaveClub extends Message {}
-declare class Promo02DaveClub extends Message {}
-declare class Promo03RecapturedGorgo extends Message {}
-declare class Promo04RecapturedDrull extends Message {}
-declare class Promo05RecapturedFomor extends Message {}
-declare class Promo06RecapturedKorath extends Message {}
+declare class Maproom3OptInPopup extends Message { constructor(); }
+declare class Promo01DaveClub extends Message { constructor(); }
+declare class Promo02DaveClub extends Message { constructor(); }
+declare class Promo03RecapturedGorgo extends Message { constructor(); }
+declare class Promo04RecapturedDrull extends Message { constructor(); }
+declare class Promo05RecapturedFomor extends Message { constructor(); }
+declare class Promo06RecapturedKorath extends Message { constructor(); }
 
 // Forward declarations for underused features
-declare class Underused01MonsterLocker extends Message {}
-declare class Underused02Academy extends Message {}
+declare class Underused01MonsterLocker extends Message { constructor(); }
+declare class Underused02Academy extends Message { constructor(); }
 
 // Forward declarations for build tree messages
-declare class BuildTree_01_SniperCannonTowers extends Message {}
-declare class BuildTree_02_RadioTower extends Message {}
-declare class BuildTree_03_MonsterLocker extends Message {}
-declare class BuildTree_04_BoobyTraps extends Message {}
-declare class BuildTree_05_Blocks extends Message {}
-declare class BuildTree_06_Catapult extends Message {}
-declare class BuildTree_07_StoneBlocks extends Message {}
-declare class BuildTree_08_MonsterAcademy extends Message {}
-declare class BuildTree_09_HCC extends Message {}
-declare class BuildTree_10_YardPlanner extends Message {}
-declare class BuildTree_11_MonsterJuicer extends Message {}
-declare class BuildTree_12_MonsterBunker extends Message {}
-declare class BuildTree_13_MonsterBaiter extends Message {}
-declare class BuildTree_14_TeslaTower extends Message {}
-declare class BuildTree_15_LaserTower extends Message {}
-declare class BuildTree_16_AerialTower extends Message {}
-declare class BuildTree_18_MetalBlocks extends Message {}
-declare class BuildTree_19_ChampionChamber extends Message {}
+declare class BuildTree_01_SniperCannonTowers extends Message { constructor(); }
+declare class BuildTree_02_RadioTower extends Message { constructor(); }
+declare class BuildTree_03_MonsterLocker extends Message { constructor(); }
+declare class BuildTree_04_BoobyTraps extends Message { constructor(); }
+declare class BuildTree_05_Blocks extends Message { constructor(); }
+declare class BuildTree_06_Catapult extends Message { constructor(); }
+declare class BuildTree_07_StoneBlocks extends Message { constructor(); }
+declare class BuildTree_08_MonsterAcademy extends Message { constructor(); }
+declare class BuildTree_09_HCC extends Message { constructor(); }
+declare class BuildTree_10_YardPlanner extends Message { constructor(); }
+declare class BuildTree_11_MonsterJuicer extends Message { constructor(); }
+declare class BuildTree_12_MonsterBunker extends Message { constructor(); }
+declare class BuildTree_13_MonsterBaiter extends Message { constructor(); }
+declare class BuildTree_14_TeslaTower extends Message { constructor(); }
+declare class BuildTree_15_LaserTower extends Message { constructor(); }
+declare class BuildTree_16_AerialTower extends Message { constructor(); }
+declare class BuildTree_18_MetalBlocks extends Message { constructor(); }
+declare class BuildTree_19_ChampionChamber extends Message { constructor(); }
 
 /**
  * Front page library - registry for front page categories and messages.

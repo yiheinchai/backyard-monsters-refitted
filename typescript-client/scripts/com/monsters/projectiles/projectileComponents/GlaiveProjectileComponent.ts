@@ -4,7 +4,7 @@ import { IAttackable } from "../../interfaces/IAttackable";
 import { ITargetable } from "../../interfaces/ITargetable";
 import { Projectilev2 } from "../Projectilev2";
 import { ProjectileComponent } from "./ProjectileComponent";
-import { Targeting } from "../../monsters/Targeting";
+import { Targeting } from "../../../../Targeting";
 
 /**
  * Glaive projectile component - chains projectile to additional targets.

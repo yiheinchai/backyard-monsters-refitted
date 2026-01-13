@@ -1182,9 +1182,13 @@ export class GLOBAL {
      * Get the player's guardian index.
      * Returns 0 if no guardian is active.
      */
-    public static getPlayerGuardianIndex(): number {
-        // TODO: Implement guardian logic when guardian system is ported
-        return 0;
+    public static getPlayerGuardianIndex(guardianType: number): number {
+        for (let i = 0; i < GLOBAL._playerGuardianData.length; i++) {
+            if (GLOBAL._playerGuardianData[i].t === guardianType) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**
@@ -1254,5 +1258,51 @@ export class GLOBAL {
         const message = "Error loading: " + event.text;
         LOGGER.Log("log", message);
         Console.warning(message, true);
+    }
+
+    /**
+     * Post to social feed (bragging)
+     */
+    public static Brag(title: string, body: string, caption: string, url: string): void {
+        GLOBAL.CallJS("sendFeed", [title, KEYS.Get(body), KEYS.Get(caption), url]);
+    }
+
+    /**
+     * Get the AB test modifier for healing time shiny
+     */
+    public static ABTestHealingTimeShinyMod(): number {
+        let mod: number = 1;
+        if (ABTest.isInTestGroup("healcosts", 84)) {
+            mod = 0.8625;
+        } else if (ABTest.isInTestGroup("healcosts", 168)) {
+            mod = 1.4375;
+        } else if (ABTest.isInTestGroup("healcosts", 256)) {
+            mod = 1.15;
+        }
+        return mod;
+    }
+
+    public static ValidateMushroomPick(param1: BFOUNDATION): void {
+        const rndm: Rndm = new Rndm(Math.floor(param1.x * param1.y));
+        if (Math.floor(rndm.random() * 16) >> 2) {
+            LOGGER.Log("log", "Invalid shinyshroom");
+            GLOBAL.ErrorMessage("GLOBAL mushroom hack 1");
+            GLOBAL._shinyShroomValid = false;
+            return;
+        }
+        const len: number = Math.floor(GLOBAL._shinyShrooms.length);
+        for (let i: number = 0; i < len; i++) {
+            if (param1.x == GLOBAL._shinyShrooms[i].x && param1.y == GLOBAL._shinyShrooms[i].y) {
+                LOGGER.Log("log", "Shinyshroom multi-pick");
+                GLOBAL.ErrorMessage("GLOBAL mushroom hack 2");
+                GLOBAL._shinyShroomValid = false;
+                return;
+            }
+        }
+        GLOBAL._shinyShrooms.push({
+            "x": param1.x,
+            "y": param1.y
+        });
+        GLOBAL._shinyShroomValid = true;
     }
 }

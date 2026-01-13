@@ -8,8 +8,7 @@ import TimerEvent from 'openfl/events/TimerEvent';
 import Video from 'openfl/media/Video';
 import NetStream from 'openfl/net/NetStream';
 import Timer from 'openfl/utils/Timer';
-import { TweenLite } from 'gsap';
-import { Circ } from 'gsap/easing';
+import { TweenLite, Circ } from './gs';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { KOTHHandler } from './com/monsters/kingOfTheHill/KOTHHandler';
 import { ChampionBase } from './com/monsters/monsters/champions/ChampionBase';
@@ -387,7 +386,7 @@ export class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP {
         const _loc1_: Video = new Video(this._PREVIEW_WIDTH, this._PREVIEW_HEIGHT);
         this._videoStream = VideoUtils.getVideoStream(_loc1_, this._kothVideoURL);
         VideoUtils.loopStream(this._videoStream);
-        this.p3_mcImage.videoCanvas.addChild(_loc1_);
+        (this.p3_mcImage as any).videoCanvas.addChild(_loc1_);
         _loc1_.x = 25;
         _loc1_.y = -20;
     }
@@ -397,9 +396,9 @@ export class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP {
             if (!this._DOES_PLAY_VIDEO) {
                 if (this._currentPreviewUrl != this._kothPreviewURL) {
                     this._currentPreviewUrl = this._kothPreviewURL;
-                    this.p3_mcImage.videoCanvas.visible = false;
-                    this.p3_mcImage.imageCanvas.visible = true;
-                    ImageCache.GetImageWithCallBack(this._kothPreviewURL, this.onPreviewImageLoaded.bind(this), true, 1, "", [this.p3_mcImage.imageCanvas]);
+                    (this.p3_mcImage as any).videoCanvas.visible = false;
+                    (this.p3_mcImage as any).imageCanvas.visible = true;
+                    ImageCache.GetImageWithCallBack(this._kothPreviewURL, this.onPreviewImageLoaded.bind(this), true, 1, "", [(this.p3_mcImage as any).imageCanvas]);
                 }
             }
             this.UpdateStats();
@@ -510,7 +509,7 @@ export class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP {
             TweenLite.to(this.bSpeed.mcBar, 0.4, { "width": 100 / CHAMPIONCAGEPOPUP._maxSpeed * _loc3_, "ease": Circ.easeInOut });
             TweenLite.to(this.bBuff.mcBar, 0.4, { "width": 100 / CHAMPIONCAGEPOPUP._maxBuff * _loc4_, "ease": Circ.easeInOut });
             
-            this.barHP.mcBar.width = 100 / this.guard.maxHealth * Math.max(1, this.guard.health);
+            (this.barHP as any).mcBar.width = 100 / this.guard.maxHealth * Math.max(1, this.guard.health);
         }
     }
 
@@ -521,7 +520,7 @@ export class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP {
             if (CHAMPIONCAGEPOPUP._page == 1) this.Switch(1);
             this.tNextFeedTitle.htmlText = "<b>" + KEYS.Get("gcage_hungry") + "</b>";
             this.tNextFeed.htmlText = GLOBAL.ToTime(_loc1_ + CHAMPIONCAGE.STARVETIMER - GLOBAL.Timestamp());
-            this.bFeedTimer.mcBar.width = 0;
+            (this.bFeedTimer as any).mcBar.width = 0;
         } else {
             this.tNextFeedTitle.htmlText = "<b>" + KEYS.Get("gcage_nextFeedIn") + "</b>";
             this.tNextFeed.htmlText = GLOBAL.ToTime(CREATURES._guardian._feedTime.Get() - GLOBAL.Timestamp());

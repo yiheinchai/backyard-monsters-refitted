@@ -12,7 +12,7 @@ import { DescentMapRoom } from "./DescentMapRoom";
 import { DescentMonsterBase } from "./DescentMonsterBase";
 import { ForeignBase } from "./ForeignBase";
 import { MapRoom } from "./MapRoom";
-import { MapViewDescent_Fog_Shroud } from "./MapViewDescent_Fog_Shroud";
+import { MapViewDescent_Fog_Shroud } from "../../../MapViewDescent_Fog_Shroud";
 import { MiniMap } from "./MiniMap";
 import { Obstruction } from "./Obstruction";
 import { PlayerBase } from "./PlayerBase";
@@ -57,6 +57,7 @@ export class DescentLayer extends Sprite {
     public faked: boolean = false;
 
     constructor() {
+        super();
         this.descentBaseProps = {
             "0": { "x": 150, "y": 10 },
             "1": { "x": 350, "y": 260 },
@@ -73,7 +74,6 @@ export class DescentLayer extends Sprite {
             "12": { "x": 540, "y": 1360 },
             "13": { "x": 350, "y": 1765 }
         };
-        super();
         this.basesForeign = [];
         this.baseData = [];
         this.basesAll = [];

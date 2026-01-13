@@ -9,7 +9,7 @@ import TimerEvent from "openfl/events/TimerEvent";
 import Point from "openfl/geom/Point";
 import Timer from "openfl/utils/Timer";
 
-import { SecNum } from "../../../cc/utils/SecNum";
+import { SecNum } from "../../cc/utils/SecNum";
 import { ALLIANCES } from "../alliances/ALLIANCES";
 import { Chat } from "../chat/Chat";
 import { Smoke } from "../effects/smoke/Smoke";
@@ -24,8 +24,8 @@ import { UI_BOTTOM } from "../ui/UI_BOTTOM";
 import { MapRoomCell } from "./MapRoomCell";
 import { MapRoomPopup } from "./MapRoomPopup";
 import { PopupRelocateMe } from "./PopupRelocateMe";
-import { bubble_acceptInvite } from "./bubble_acceptInvite";
-import { bubble_selecttarget } from "./bubble_selecttarget";
+import { bubble_acceptInvite } from "../../../bubble_acceptInvite";
+import { bubble_selecttarget } from "../../../bubble_selecttarget";
 import { objZone } from "./objZone";
 import { URLLoaderApi } from "../../../URLLoaderApi";
 

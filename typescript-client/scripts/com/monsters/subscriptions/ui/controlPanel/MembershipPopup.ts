@@ -1,9 +1,9 @@
 import Event from "openfl/events/Event";
 import MouseEvent from "openfl/events/MouseEvent";
 
-import { SubscriptionHandler } from "../../../SubscriptionHandler";
+import { SubscriptionHandler } from "../../SubscriptionHandler";
 import { SubscriptionCancelPopup } from "./SubscriptionCancelPopup";
-import { subscriptions_membership_popup } from "../../../../subscriptions_membership_popup";
+import { subscriptions_membership_popup } from "../../../../../subscriptions_membership_popup";
 
 import { KEYS } from "../../../../../KEYS";
 import { POPUPS } from "../../../../../POPUPS";

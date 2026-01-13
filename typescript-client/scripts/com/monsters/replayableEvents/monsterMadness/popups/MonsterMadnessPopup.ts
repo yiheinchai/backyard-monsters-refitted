@@ -18,7 +18,7 @@ import { MonsterMadnessPopupInfoGoal2Complete } from "./MonsterMadnessPopupInfoG
 import { MonsterMadnessPopupInfoGoal3 } from "./MonsterMadnessPopupInfoGoal3";
 import { MonsterMadnessPopupInfoGoal3Complete } from "./MonsterMadnessPopupInfoGoal3Complete";
 import { MonsterMadnessPopupInfoEventComplete } from "./MonsterMadnessPopupInfoEventComplete";
-import { MonsterMadnessPopup_CLIP } from "./MonsterMadnessPopup_CLIP";
+import { MonsterMadnessPopup_CLIP } from "../../../../../MonsterMadnessPopup_CLIP";
 
 import { GLOBAL } from "../../../../../GLOBAL";
 import { KEYS } from "../../../../../KEYS";

@@ -3,7 +3,7 @@ import MouseEvent from "openfl/events/MouseEvent";
 
 import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
 import { popup_attackend_CLIP } from "../../../../popup_attackend_CLIP";
-import { SingletonLock } from "config/singletonlock/SingletonLock";
+import { SingletonLock } from "../../../../config/singletonlock/SingletonLock";
 
 import { KEYS } from "../../../../KEYS";
 import { BASE } from "../../../../BASE";

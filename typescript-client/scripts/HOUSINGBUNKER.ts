@@ -35,6 +35,10 @@ export class HOUSINGBUNKER extends Bunker {
     public _tickNumber: number;
     public _isLogged: boolean;
     private _radiusGraphic: Shape;
+    
+    // Properties for compatibility with BUILDING15
+    public _space: number = 0;
+    public _housing: Record<string, any> = {};
 
     constructor() {
         super();

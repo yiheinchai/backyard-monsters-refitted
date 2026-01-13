@@ -3,8 +3,8 @@ import MouseEvent from "openfl/events/MouseEvent";
 import TimerEvent from "openfl/events/TimerEvent";
 import Timer from "openfl/utils/Timer";
 
-import { descentDebuff_info_CLIP } from "./descentDebuff_info_CLIP";
-import { bubblepopupUpBuff_CLIP } from "../../bubblepopupUpBuff_CLIP";
+import { descentDebuff_info_CLIP } from "../../../../descentDebuff_info_CLIP";
+import { bubblepopupUpBuff_CLIP } from "../../../../bubblepopupUpBuff_CLIP";
 
 import { GLOBAL } from "../../../../GLOBAL";
 import { KEYS } from "../../../../KEYS";

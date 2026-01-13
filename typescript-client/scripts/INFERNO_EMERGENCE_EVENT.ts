@@ -1,7 +1,7 @@
-import { InstanceManager } from "com.monsters.managers.InstanceManager";
+import { InstanceManager } from "./com/monsters/managers/InstanceManager";
 import Sprite from "openfl/display/Sprite";
 import Event from "openfl/events/Event";
-import { TweenLite } from "gs";
+import { TweenLite } from "./gs";
 import { GLOBAL } from "./GLOBAL";
 import { INFERNOPORTAL } from "./INFERNOPORTAL";
 import { MAPROOM_DESCENT } from "./MAPROOM_DESCENT";

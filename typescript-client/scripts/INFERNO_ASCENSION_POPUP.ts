@@ -102,9 +102,9 @@ export class INFERNO_ASCENSION_POPUP extends InfernoTransferPopup_CLIP {
         }
         const storedRatio = HOUSING._housingUsed.Get() / HOUSING._housingCapacity.Get();
         const queuedRatio = this._newHousingUsed.Get() / HOUSING._housingCapacity.Get();
-        this.mcStorage.mcBar.width = this._storageWidth * storedRatio;
-        this.mcStorage.mcBarB.x = this._storageWidth * storedRatio;
-        this.mcStorage.mcBarB.width = this._storageWidth * (queuedRatio - storedRatio);
+        (this.mcStorage as any).mcBar.width = this._storageWidth * storedRatio;
+        (this.mcStorage as any).mcBarB.x = this._storageWidth * storedRatio;
+        (this.mcStorage as any).mcBarB.width = this._storageWidth * (queuedRatio - storedRatio);
         this.tStorage.htmlText = "<b>" + GLOBAL.FormatNumber(this._newHousingUsed.Get()) + " / " + GLOBAL.FormatNumber(HOUSING._housingCapacity.Get()) + " (" + Math.floor(queuedRatio * 100) + "%)</b>";
     }
 

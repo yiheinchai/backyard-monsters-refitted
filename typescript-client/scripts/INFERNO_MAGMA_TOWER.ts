@@ -1,6 +1,6 @@
-import { IAttackable } from "com.monsters.interfaces.IAttackable";
-import { MonsterBase } from "com.monsters.monsters.MonsterBase";
-import { FlameEffect } from "com.monsters.monsters.components.statusEffects.FlameEffect";
+import { IAttackable } from "./com/monsters/interfaces/IAttackable";
+import { MonsterBase } from "./com/monsters/monsters/MonsterBase";
+import { FlameEffect } from "./com/monsters/monsters/components/statusEffects/FlameEffect";
 import BitmapData from "openfl/display/BitmapData";
 import MovieClip from "openfl/display/MovieClip";
 import Event from "openfl/events/Event";

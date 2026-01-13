@@ -4,7 +4,7 @@ import Event from "openfl/events/Event";
 import MouseEvent from "openfl/events/MouseEvent";
 import Rectangle from "openfl/geom/Rectangle";
 
-import { TweenLite } from "gsap/TweenLite";
+import { TweenLite } from "../../../gs/TweenLite";
 import { GLOBAL } from "../../../GLOBAL";
 import { Embed } from "../../../core/Embed";
 

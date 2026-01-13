@@ -5,7 +5,7 @@ import IOErrorEvent from "openfl/events/IOErrorEvent";
 import URLRequest from "openfl/net/URLRequest";
 import LoaderContext from "openfl/system/LoaderContext";
 
-import { SecNum } from "../../../../cc/utils/SecNum";
+import { SecNum } from "../../../cc/utils/SecNum";
 
 /**
  * BaseObject - data model for a player/wild monster base on the map.

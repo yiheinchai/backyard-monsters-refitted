@@ -1,12 +1,12 @@
-import { ImageCache } from "com.monsters.display.ImageCache";
-import { ScrollSet } from "com.monsters.display.ScrollSet";
+import { ImageCache } from "./com/monsters/display/ImageCache";
+import { ScrollSet } from "./com/monsters/display/ScrollSet";
 import Bitmap from "openfl/display/Bitmap";
 import BitmapData from "openfl/display/BitmapData";
 import MovieClip from "openfl/display/MovieClip";
 import Sprite from "openfl/display/Sprite";
 import MouseEvent from "openfl/events/MouseEvent";
 import TextField from "openfl/text/TextField";
-import { TweenLite } from "gs/TweenLite";
+import { TweenLite } from "./gs/TweenLite";
 import { MONSTERLABPOPUP_CLIP } from "./MONSTERLABPOPUP_CLIP";
 import { MONSTERLAB } from "./MONSTERLAB";
 import { MONSTERLABITEM_CLIP } from "./MONSTERLABITEM_CLIP";
@@ -128,24 +128,24 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
         const self = this;
 
         const UpdatePortraitIcon = function(param1: string, param2: BitmapData): void {
-            self.mcPortraitIcon.mcImage.addChild(new Bitmap(param2));
-            self.mcPortraitIcon.loading.visible = false;
+            (self.mcPortraitIcon as any).mcImage.addChild(new Bitmap(param2));
+            (self.mcPortraitIcon as any).loading.visible = false;
         };
 
         const UpdateStatusIcon = function(param1: string, param2: BitmapData): void {
-            self.icon_status.mcImage.addChild(new Bitmap(param2));
-            self.icon_status.loading.visible = false;
+            (self.icon_status as any).mcImage.addChild(new Bitmap(param2));
+            (self.icon_status as any).loading.visible = false;
         };
 
-        this._portraitImage = this.mcPortraitIcon.mcImage;
-        this._statusImage = this.icon_status.mcImage;
+        this._portraitImage = (this.mcPortraitIcon as any).mcImage;
+        this._statusImage = (this.icon_status as any).mcImage;
 
-        if (this.mcPortraitIcon.mcImage) {
+        if ((this.mcPortraitIcon as any).mcImage) {
             while (this._portraitImage.numChildren) {
                 this._portraitImage.removeChildAt(0);
             }
         }
-        if (this.icon_status.mcImage) {
+        if ((this.icon_status as any).mcImage) {
             while (this._statusImage.numChildren) {
                 this._statusImage.removeChildAt(0);
             }
@@ -445,8 +445,8 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
         while (i < this._abilityUpgradesList.length) {
             const UpdateItemIcon = function(param1: string, param2: BitmapData): void {
                 const _loc3_: MONSTERLABITEM_CLIP = MONSTERLABPOPUP._labItems[param1];
-                _loc3_.mcIcon.mcImage.addChild(new Bitmap(param2));
-                _loc3_.mcIcon.loading.visible = false;
+                (_loc3_.mcIcon as any).mcImage.addChild(new Bitmap(param2));
+                (_loc3_.mcIcon as any).loading.visible = false;
             };
 
             abilityUpgrade = this._abilityUpgradesList[i];
@@ -458,18 +458,18 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
             offset += 60;
             str = "<b>" + KEYS.Get(CREATURELOCKER._creatures[cr].name) + "</b><br>" + KEYS.Get(abilityUpgrade.name);
             item.tLabel.htmlText = str;
-            item.addEventListener(MouseEvent.MOUSE_DOWN, this.Show(cr));
+            item.addEventListener(MouseEvent.MOUSE_DOWN, this.Show(cr) as (arg0: unknown) => void);
             item.buttonMode = true;
             item.mouseChildren = false;
             item.mouseEnabled = true;
 
             if (Boolean(GLOBAL.player.m_upgrades[cr]) && Boolean(GLOBAL.player.m_upgrades[cr].powerup)) {
-                item.mcLevel.tLevel.htmlText = "" + GLOBAL.player.m_upgrades[cr].powerup + "";
+                (item.mcLevel as any).tLevel.htmlText = "" + GLOBAL.player.m_upgrades[cr].powerup + "";
             } else {
                 item.mcLevel.visible = false;
             }
 
-            itemIconImage = item.mcIcon.mcImage;
+            itemIconImage = (item.mcIcon as any).mcImage;
             if (itemIconImage) {
                 while (itemIconImage.numChildren) {
                     itemIconImage.removeChildAt(0);

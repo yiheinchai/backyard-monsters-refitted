@@ -7,9 +7,9 @@ import { Targeting } from "../../../../Targeting";
 import { CreepBase } from "./CreepBase";
 
 import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { SPRITES } from "../../../../../SPRITES";
-import { SOUNDS } from "../../../../../SOUNDS";
-import { FIREBALLS } from "../../../../../FIREBALLS";
+import { SPRITES } from "../../../../SPRITES";
+import { SOUNDS } from "../../../../SOUNDS";
+import { FIREBALLS } from "../../../../FIREBALLS";
 
 /**
  * Zafreeti - flying healer creep that targets air units.
@@ -29,8 +29,8 @@ export class Zafreeti extends CreepBase {
         flipped: boolean = false,
         parent: MonsterBase | null = null
     ) {
-        this._graphic = new BitmapData(56, 70, true, 0);
         super(id, type, startPos, velocity, startFrame, endFrame, targetPos, ownedByAttacker, building, scale, flipped, parent);
+        this._graphic = new BitmapData(56, 70, true, 0);
         SPRITES.SetupSprite("bigshadow");
         this.attackFlags = Targeting.getOldStyleTargets(1);
     }

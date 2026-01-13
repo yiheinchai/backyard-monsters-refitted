@@ -1,8 +1,8 @@
-import { PROCESS7 } from "com.monsters.ai.PROCESS7";
-import { TRIBES } from "com.monsters.ai.TRIBES";
-import { WMBASE } from "com.monsters.ai.WMBASE";
-import { Message } from "com.monsters.mailbox.Message";
-import { DescentMapRoom } from "com.monsters.maproom_inferno.DescentMapRoom";
+import { PROCESS7 } from "./com/monsters/ai/PROCESS7";
+import { TRIBES } from "./com/monsters/ai/TRIBES";
+import { WMBASE } from "./com/monsters/ai/WMBASE";
+import { Message } from "./com/monsters/mailbox/Message";
+import { DescentMapRoom } from "./com/monsters/maproom_inferno/DescentMapRoom";
 import MovieClip from "openfl/display/MovieClip";
 import Event from "openfl/events/Event";
 import MouseEvent from "openfl/events/MouseEvent";
@@ -113,12 +113,12 @@ export class MAPROOM_DESCENT {
                 MAPROOM_DESCENT.loadThenShow = true;
             }
             INFERNOAPI.LoadInfernoData(GLOBAL._infBaseURL, 0, 0, "idescent");
-            INFERNOAPI.addEventListener(INFERNOAPI.EVENT_DESCENTLOADED, MAPROOM_DESCENT.DescentDataLoaded, false, 0, true);
+            INFERNOAPI.addEventListenerStatic(INFERNOAPI.EVENT_DESCENTLOADED, MAPROOM_DESCENT.DescentDataLoaded, false, 0, true);
         }
     }
 
     private static DescentDataLoaded(param1: Event = null): void {
-        INFERNOAPI.removeEventListener(INFERNOAPI.EVENT_DESCENTLOADED, MAPROOM_DESCENT.DescentDataLoaded);
+        INFERNOAPI.removeEventListenerStatic(INFERNOAPI.EVENT_DESCENTLOADED, MAPROOM_DESCENT.DescentDataLoaded);
         MAPROOM_DESCENT._initialized = true;
         MAPROOM_DESCENT._initing = false;
         if (MAPROOM_DESCENT.DescentLevel >= MAPROOM_DESCENT._descentLvlMax && MAPROOM_DESCENT.DescentPassed) {
@@ -226,17 +226,17 @@ export class MAPROOM_DESCENT {
                     LOGGER.Log("err", "MAPROOM.RequestTruce: " + JSON.encode(param1));
                 }
             };
-            new URLLoaderApi().load(GLOBAL._apiURL + "player/requesttruce", [["baseid", baseid], ["duration", 1209600], ["message", mc.bMessage.text]], handleLoadSuccessful);
+            new URLLoaderApi().load(GLOBAL._apiURL + "player/requesttruce", [["baseid", baseid], ["duration", 1209600], ["message", (mc as any).bMessage.text]], handleLoadSuccessful);
             POPUPS.Next();
-            MAPROOM_DESCENT.TruceSent(name, mc.bMessage.text);
+            MAPROOM_DESCENT.TruceSent(name, (mc as any).bMessage.text);
         };
         
         mc = new popup_truce();
-        mc.tA.htmlText = "<b>" + KEYS.Get("map_trucerequest") + " " + name + ".</b>";
-        mc.tB.htmlText = KEYS.Get("map_trucerequest_desc");
-        mc.bSend.SetupKey("map_trucereq_btn");
-        mc.bSend.addEventListener(MouseEvent.CLICK, Truce);
-        mc.bMessage.htmlText = "";
+        (mc as any).tA.htmlText = "<b>" + KEYS.Get("map_trucerequest") + " " + name + ".</b>";
+        (mc as any).tB.htmlText = KEYS.Get("map_trucerequest_desc");
+        (mc as any).bSend.SetupKey("map_trucereq_btn");
+        (mc as any).bSend.addEventListener(MouseEvent.CLICK, Truce);
+        (mc as any).bMessage.htmlText = "";
         POPUPS.Push(mc);
     }
 
@@ -270,10 +270,10 @@ export class MAPROOM_DESCENT {
         };
         
         mc = new popup_truce_accept();
-        mc.bShare.SetupKey("btn_share");
-        mc.bShare.addEventListener(MouseEvent.CLICK, Share);
-        mc.bShare.Highlight = true;
-        mc.tTitle.htmlText = KEYS.Get("popup_desc_truceaccept");
+        (mc as any).bShare.SetupKey("btn_share");
+        (mc as any).bShare.addEventListener(MouseEvent.CLICK, Share);
+        (mc as any).bShare.Highlight = true;
+        (mc as any).tTitle.htmlText = KEYS.Get("popup_desc_truceaccept");
         i = 1;
         while (i < 4) {
             mc["mcIcon" + i].buttonMode = true;
@@ -315,10 +315,10 @@ export class MAPROOM_DESCENT {
         };
         
         mc = new popup_truce_sent();
-        mc.bShare.SetupKey("btn_share");
-        mc.bShare.addEventListener(MouseEvent.CLICK, Share);
-        mc.bShare.Highlight = true;
-        mc.tTitle.htmlText = KEYS.Get("popup_desc_trucesent");
+        (mc as any).bShare.SetupKey("btn_share");
+        (mc as any).bShare.addEventListener(MouseEvent.CLICK, Share);
+        (mc as any).bShare.Highlight = true;
+        (mc as any).tTitle.htmlText = KEYS.Get("popup_desc_trucesent");
         i = 1;
         while (i < 4) {
             mc["mcIcon" + i].buttonMode = true;
@@ -360,10 +360,10 @@ export class MAPROOM_DESCENT {
         };
         
         mc = new popup_truce_sent();
-        mc.bShare.SetupKey("btn_share");
-        mc.bShare.addEventListener(MouseEvent.CLICK, Share);
-        mc.bShare.Highlight = true;
-        mc.tTitle.htmlText = KEYS.Get("popup_desc_trucesent");
+        (mc as any).bShare.SetupKey("btn_share");
+        (mc as any).bShare.addEventListener(MouseEvent.CLICK, Share);
+        (mc as any).bShare.Highlight = true;
+        (mc as any).tTitle.htmlText = KEYS.Get("popup_desc_trucesent");
         i = 1;
         while (i < 4) {
             mc["mcIcon" + i].buttonMode = true;

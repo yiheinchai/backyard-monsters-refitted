@@ -15,7 +15,7 @@ import { DescentMapRoom } from "./DescentMapRoom";
 import { MapBasePopup } from "./views/MapBasePopup";
 import { PlayerHandler } from "./PlayerHandler";
 import { PushPin } from "./PushPin";
-import { ForeignBaseInferno_CLIP } from "./ForeignBaseInferno_CLIP";
+import { ForeignBaseInferno_CLIP } from "../../../ForeignBaseInferno_CLIP";
 import { Button } from "../../../Button";
 
 import { KEYS } from "../../../KEYS";

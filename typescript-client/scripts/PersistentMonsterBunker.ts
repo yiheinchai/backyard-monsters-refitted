@@ -68,36 +68,36 @@ export class PersistentMonsterBunker extends MonsterBunkerPopup_Persistent_CLIP 
         const _loc4_ = HOUSING._housingCapacity.Get();
         const _loc5_ = Math.floor(_loc3_ * 100 / _loc4_);
         this.tHoused.htmlText = "<b>" + KEYS.Get("bunker_capacity2") + " " + GLOBAL.FormatNumber(_loc3_) + " / " + GLOBAL.FormatNumber(_loc4_) + " (" + _loc5_ + "%)<b>";
-        this.mcHousing.mcBar.width = PersistentMonsterBunker.kBarWidth * (_loc3_ / _loc4_);
-        this.mcHousing.mcBarB.width = 0;
+        (this.mcHousing as any).mcBar.width = PersistentMonsterBunker.kBarWidth * (_loc3_ / _loc4_);
+        (this.mcHousing as any).mcBarB.width = 0;
         this.Update();
     }
 
     public InitTransferBarAListeners(param1: MovieClip): void {
-        param1.bAdd.addEventListener(MouseEvent.CLICK, this.SelectAdd.bind(this));
-        param1.bAdd.Setup(">>");
-        param1.bAdd.buttonMode = true;
+        (param1 as any).bAdd.addEventListener(MouseEvent.CLICK, this.SelectAdd.bind(this));
+        (param1 as any).bAdd.Setup(">>");
+        (param1 as any).bAdd.buttonMode = true;
     }
 
     public InitTransferBarBListeners(param1: MovieClip): void {
-        param1.bRemove.addEventListener(MouseEvent.CLICK, this.ReturnMonsterId.bind(this));
-        param1.bRemove.Setup("&lt;&lt;");
-        param1.bRemove.buttonMode = true;
+        (param1 as any).bRemove.addEventListener(MouseEvent.CLICK, this.ReturnMonsterId.bind(this));
+        (param1 as any).bRemove.Setup("&lt;&lt;");
+        (param1 as any).bRemove.buttonMode = true;
     }
 
     public RemoveTransferBarListeners(param1: MovieClip): void {
         if (param1 instanceof MonsterBunkerPopup_TransferBtnA_CLIP_Persistant) {
-            param1.bAdd.removeEventListener(MouseEvent.CLICK, this.SelectAdd.bind(this));
+            (param1 as any).bAdd.removeEventListener(MouseEvent.CLICK, this.SelectAdd.bind(this));
         } else if (param1 instanceof MonsterBunkerPopup_TransferBtnB_CLIP_Persistant) {
-            param1.bRemove.removeEventListener(MouseEvent.CLICK, this.ReturnMonsterId.bind(this));
+            (param1 as any).bRemove.removeEventListener(MouseEvent.CLICK, this.ReturnMonsterId.bind(this));
         }
     }
 
     public IconLoaded(param1: string, param2: BitmapData, param3: any[] = null): void {
         const _loc4_ = new Bitmap(param2);
         _loc4_.smoothing = true;
-        param3[0].mcImage.addChild(_loc4_);
-        param3[0].mcLoading.visible = false;
+        (param3[0] as any).mcImage.addChild(_loc4_);
+        (param3[0] as any).mcLoading.visible = false;
     }
 
     private CanBunkerFromHousing(param1: string): boolean {
@@ -153,9 +153,9 @@ export class PersistentMonsterBunker extends MonsterBunkerPopup_Persistent_CLIP 
                     _loc21_ = "#m_k_wormzer#";
                 }
                 _loc20_.tName.htmlText = "<b>" + KEYS.Get(_loc21_) + "</b>";
-                _loc20_.id = _loc1_;
-                _loc20_._id = _loc1_.substring(_loc1_.indexOf("C") + 1);
-                _loc20_.index = _loc1_.substring(_loc1_.indexOf("C") + 1);
+                (_loc20_ as any).id = _loc1_;
+                (_loc20_ as any)._id = _loc1_.substring(_loc1_.indexOf("C") + 1);
+                (_loc20_ as any).index = _loc1_.substring(_loc1_.indexOf("C") + 1);
                 _loc10_ = GLOBAL.player.monsterListByID(_loc1_).numHealthyHousedCreeps;
                 if (_loc10_ == 0) {
                     _loc20_.tHoused.htmlText = "<font color=\"#FF0000\">" + KEYS.Get("bunker_housed", { "v1": 0 }) + "</font>";
@@ -191,8 +191,8 @@ export class PersistentMonsterBunker extends MonsterBunkerPopup_Persistent_CLIP 
         }
 
         const _loc19_ = 100 / this._capacity * (_loc4_ + _loc5_);
-        this.mcStorage.mcBar.width = 0;
-        this.mcStorage.mcBarB.width = 535 / this._capacity * (_loc4_ + _loc5_);
+        (this.mcStorage as any).mcBar.width = 0;
+        (this.mcStorage as any).mcBarB.width = 535 / this._capacity * (_loc4_ + _loc5_);
 
         if (_loc4_ + _loc5_ >= this._capacity) {
             if (this.m_bunker._lvl.Get() < 3) {
@@ -211,9 +211,9 @@ export class PersistentMonsterBunker extends MonsterBunkerPopup_Persistent_CLIP 
             if (_loc22_ > 0) {
                 const _loc7_ = CREATURELOCKER._creatures[_loc2_];
                 const _loc23_ = new MonsterBunkerPopup_TransferBtnB_CLIP_Persistant();
-                _loc23_.id = _loc2_;
-                _loc23_._id = _loc2_.substr(1);
-                _loc23_.index = _loc2_.substr(1);
+                (_loc23_ as any).id = _loc2_;
+                (_loc23_ as any)._id = _loc2_.substr(1);
+                (_loc23_ as any).index = _loc2_.substr(1);
                 _loc23_.tName.htmlText = "<b>" + KEYS.Get(CREATURELOCKER._creatures[_loc2_].name) + "</b>";
                 _loc23_.tHoused.htmlText = KEYS.Get("bunker_bunkered", { "v1": _loc22_ });
                 ImageCache.GetImageWithCallBack("monsters/" + _loc2_ + "-medium.jpg", this.IconLoaded.bind(this), true, 1, "", [_loc23_.mcIcon]);
@@ -307,7 +307,7 @@ export class PersistentMonsterBunker extends MonsterBunkerPopup_Persistent_CLIP 
 
         if (GLOBAL.player.monsterListByID(param1) && _loc4_ <= this.m_bunker._capacity - this.m_bunker._used) {
             _loc5_ = null;
-            for (_loc6_ of CREATURES._creatures) {
+            for (_loc6_ of Object.values(CREATURES._creatures)) {
                 if (_loc6_._creatureID == param1 && (_loc6_._behaviour == "housing" || _loc6_._behaviour == "pen")) {
                     _loc5_ = _loc6_;
                     break;

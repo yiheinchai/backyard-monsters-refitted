@@ -1,4 +1,4 @@
-import { SecNum } from "com.cc.utils.SecNum";
+import { SecNum } from "./com/cc/utils/SecNum";
 import Bitmap from "openfl/display/Bitmap";
 import BitmapData from "openfl/display/BitmapData";
 import MovieClip from "openfl/display/MovieClip";
@@ -231,11 +231,11 @@ export class MONSTERLAB extends BFOUNDATION {
                 POPUPS.Next();
             };
             mc = new popup_building();
-            mc.tA.htmlText = "<b>" + KEYS.Get("pop_labbuilt_title") + "</b>";
-            mc.tB.htmlText = KEYS.Get("pop_labbuilt_body");
-            mc.bPost.SetupKey("btn_brag");
-            mc.bPost.addEventListener(MouseEvent.CLICK, Brag);
-            mc.bPost.Highlight = true;
+            (mc as any).tA.htmlText = "<b>" + KEYS.Get("pop_labbuilt_title") + "</b>";
+            (mc as any).tB.htmlText = KEYS.Get("pop_labbuilt_body");
+            (mc as any).bPost.SetupKey("btn_brag");
+            (mc as any).bPost.addEventListener(MouseEvent.CLICK, Brag);
+            (mc as any).bPost.Highlight = true;
             POPUPS.Push(mc, null, null, null, "build.v2.png");
         }
     }

@@ -6,7 +6,7 @@ import Keyboard from "openfl/ui/Keyboard";
 import { EnumYardType } from "../../enums/EnumYardType";
 import { IMapRoomCell } from "../../maproom_manager/IMapRoomCell";
 import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
-import { MapRoomPopupJump } from "./MapRoomPopupJump";
+import { MapRoomPopupJump } from "../../../../MapRoomPopupJump";
 
 import { GLOBAL } from "../../../../GLOBAL";
 import { KEYS } from "../../../../KEYS";

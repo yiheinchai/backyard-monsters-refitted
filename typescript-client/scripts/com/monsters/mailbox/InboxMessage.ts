@@ -7,7 +7,7 @@ import LoaderContext from "openfl/system/LoaderContext";
 
 import { Contact } from "./model/Contact";
 import { ThreadData } from "./model/ThreadData";
-import { InboxMessage_CLIP } from "./InboxMessage_CLIP";
+import { InboxMessage_CLIP } from "../../../InboxMessage_CLIP";
 
 import { GLOBAL } from "../../../GLOBAL";
 import { KEYS } from "../../../KEYS";

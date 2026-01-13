@@ -6,13 +6,13 @@ import MouseEvent from "openfl/events/MouseEvent";
 import Point from "openfl/geom/Point";
 import getTimer from "openfl/utils/getTimer";
 
-import { SecNum } from "../../../cc/utils/SecNum";
+import { SecNum } from "../../cc/utils/SecNum";
 import { AllyInfo } from "../alliances/AllyInfo";
 import { IMapRoomCell } from "../maproom_manager/IMapRoomCell";
 import { MapRoomCell_CLIP } from "../../../MapRoomCell_CLIP";
 import { MapRoom } from "./MapRoom";
 
-import { ALLIANCES } from "../../../ALLIANCES";
+import { ALLIANCES } from "../alliances/ALLIANCES";
 import { BUILDING5 } from "../../../BUILDING5";
 import { CREATURES } from "../../../CREATURES";
 import { GLOBAL } from "../../../GLOBAL";
@@ -80,11 +80,11 @@ export class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
     private testAllianceIDs: Array<number>;
 
     constructor() {
+        super();
         this._inAllianceProps = { "txtNameX": 0, "txtNameY": 1, "txtAllyX": 0, "txtAllyY": 11 };
         this._soloProps = { "txtNameX": 0, "txtNameY": 1, "txtAllyX": 0, "txtAllyY": 11 };
         this._picURLs = { "baseURL": "alliances/", "sizeL": "_large", "sizeM": "_medium", "sizeS": "_small", "sizeXS": "_xsmall", "ally": "A", "friendly": "F", "hostile": "H", "neutral": "N", "ext": ".png" };
         this.testAllianceIDs = [1, 2, 3, 102, 111];
-        super();
         this.mc.mcHit.addEventListener(MouseEvent.MOUSE_OVER, this.Over.bind(this));
         this.mc.mcHit.addEventListener(MouseEvent.MOUSE_OUT, this.Out.bind(this));
         this.mc.mcHit.addEventListener(MouseEvent.MOUSE_UP, this.Click.bind(this));

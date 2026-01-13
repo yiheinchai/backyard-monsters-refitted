@@ -1,7 +1,7 @@
 import Point from "openfl/geom/Point";
 
 import { MonsterBase } from "../MonsterBase";
-import { PoisonOnAttack } from "../../components/abilities/PoisonOnAttack";
+import { PoisonOnAttack } from "../components/abilities/PoisonOnAttack";
 import { CreepBase } from "./CreepBase";
 
 import { BFOUNDATION } from "../../../../BFOUNDATION";

@@ -3,9 +3,9 @@ import MouseEvent from "openfl/events/MouseEvent";
 import { EnumYardType } from "../../enums/EnumYardType";
 import { MapRoom3FriendData } from "../data/MapRoom3FriendData";
 import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
-import { MapRoom3RelocateMainYardPopup } from "./MapRoom3RelocateMainYardPopup";
+import { MapRoom3RelocateMainYardPopup } from "../../../../MapRoom3RelocateMainYardPopup";
 import { MapRoom3RelocatePopupDisplayList } from "./MapRoom3RelocatePopupDisplayList";
-import { URLLoaderApi } from "../../URLLoaderApi";
+import { URLLoaderApi } from "../../../../URLLoaderApi";
 
 import { GLOBAL } from "../../../../GLOBAL";
 import { KEYS } from "../../../../KEYS";

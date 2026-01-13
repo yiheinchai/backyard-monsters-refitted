@@ -8,9 +8,9 @@ import { ProjectileUtils } from "../../../projectiles/ProjectileUtils";
 import { Projectilev2 } from "../../../projectiles/Projectilev2";
 
 import { BFOUNDATION } from "../../../../../BFOUNDATION";
-import { SPRITES } from "../../../../../../SPRITES";
-import { SOUNDS } from "../../../../../../SOUNDS";
-import { LoanShark } from "org/kissmyas/utils/loanshark/LoanShark";
+import { SPRITES } from "../../../../../SPRITES";
+import { SOUNDS } from "../../../../../SOUNDS";
+import { LoanShark } from "../../../../../org/kissmyas/utils/loanshark/LoanShark";
 
 /**
  * Vorg v2 - rebalanced flying creep with projectile pool.

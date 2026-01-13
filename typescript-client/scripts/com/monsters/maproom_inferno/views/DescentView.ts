@@ -7,17 +7,16 @@ import MouseEvent from "openfl/events/MouseEvent";
 import Point from "openfl/geom/Point";
 import Rectangle from "openfl/geom/Rectangle";
 import Timer from "openfl/utils/Timer";
-import { TweenLite } from "../../../TweenLite";
-import { Quad } from "../../../easing/Quad";
+import { TweenLite, Quad } from "gs/TweenLite";
 
 import { ImageCache } from "../../display/ImageCache";
 import { DescentView_CLIP } from "./DescentView_CLIP";
-import { DescentLayer } from "./DescentLayer";
-import { ForeignBase } from "./ForeignBase";
-import { MiniMap } from "./MiniMap";
-import { Obstruction } from "./Obstruction";
-import { map_descent_bg } from "../map_descent_bg";
-import { MapViewDescent_Fog_Shroud } from "../MapViewDescent_Fog_Shroud";
+import { DescentLayer } from "../DescentLayer";
+import { ForeignBase } from "../ForeignBase";
+import { MiniMap } from "../MiniMap";
+import { Obstruction } from "../Obstruction";
+import { map_descent_bg } from "../../../../map_descent_bg";
+import { MapViewDescent_Fog_Shroud } from "../../../../MapViewDescent_Fog_Shroud";
 
 import { TUTORIAL } from "../../../../TUTORIAL";
 

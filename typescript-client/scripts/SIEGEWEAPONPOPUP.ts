@@ -1,12 +1,12 @@
-import { ImageCache } from "com.monsters.display.ImageCache";
-import { ResourceBombs } from "com.monsters.effects.ResourceBombs";
-import { SiegeWeaponProperty } from "com.monsters.siege.SiegeWeaponProperty";
-import { SiegeWeapons } from "com.monsters.siege.SiegeWeapons";
-import { Decoy } from "com.monsters.siege.weapons.Decoy";
-import { IDurable } from "com.monsters.siege.weapons.IDurable";
-import { Jars } from "com.monsters.siege.weapons.Jars";
-import { SiegeWeapon } from "com.monsters.siege.weapons.SiegeWeapon";
-import { Vacuum } from "com.monsters.siege.weapons.Vacuum";
+import { ImageCache } from "./com/monsters/display/ImageCache";
+import { ResourceBombs } from "./com/monsters/effects/ResourceBombs";
+import { SiegeWeaponProperty } from "./com/monsters/siege/SiegeWeaponProperty";
+import { SiegeWeapons } from "./com/monsters/siege/SiegeWeapons";
+import { Decoy } from "./com/monsters/siege/weapons/Decoy";
+import { IDurable } from "./com/monsters/siege/weapons/IDurable";
+import { Jars } from "./com/monsters/siege/weapons/Jars";
+import { SiegeWeapon } from "./com/monsters/siege/weapons/SiegeWeapon";
+import { Vacuum } from "./com/monsters/siege/weapons/Vacuum";
 import Bitmap from "openfl/display/Bitmap";
 import BitmapData from "openfl/display/BitmapData";
 import BlendMode from "openfl/display/BlendMode";
@@ -77,21 +77,21 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
         this._image.mouseChildren = false;
         this._items = [];
         this._bar.alpha = 0;
-        this._bar.timebar.visible = false;
-        this._bar._tB.visible = false;
-        this._bar._tB.htmlText = "";
+        (this._bar as any).timebar.visible = false;
+        (this._bar as any)._tB.visible = false;
+        (this._bar as any)._tB.htmlText = "";
         this.timeLeftMC.mouseEnabled = false;
         this.timeLeftMC.mouseChildren = false;
         this.timeLeftMC.alpha = 0;
         const _loc2_: number = 0;
         const _loc3_: number = 0;
-        this._currentSiegeWeapon = SiegeWeapons.availableWeapon;
+        this._currentSiegeWeapon = SiegeWeapons.availableWeapon as SiegeWeapon;
         if (this._currentSiegeWeapon == null) {
             UI2._top.ClearSiegeWeapon();
             return;
         }
         if (param1) {
-            ImageCache.GetImageWithCallBack(SiegeWeapons.availableWeapon.image, this.onImageLoaded.bind(this));
+            ImageCache.GetImageWithCallBack((SiegeWeapons.availableWeapon as any).image, this.onImageLoaded.bind(this));
             return;
         }
         this._iconbg.buttonMode = true;
@@ -144,23 +144,23 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
             }
             TweenLite.to(this._bar, 0.3, { "autoAlpha": 1, "y": 65, "ease": Bounce.easeOut });
             if (this._currentSiegeWeapon.weaponID == Decoy.ID) {
-                this._bar._tA.htmlText = KEYS.Get("siege_target_ground");
+                (this._bar as any)._tA.htmlText = KEYS.Get("siege_target_ground");
             } else if (this._currentSiegeWeapon.weaponID == Jars.ID) {
-                this._bar._tA.htmlText = KEYS.Get("siege_target_towers");
+                (this._bar as any)._tA.htmlText = KEYS.Get("siege_target_towers");
             } else {
-                this._bar._tA.htmlText = KEYS.Get("siege_target_targets");
+                (this._bar as any)._tA.htmlText = KEYS.Get("siege_target_targets");
             }
-            this._bar._tA.y = 12;
-            this._bar._tB.y = this._bar.timebar.y;
-            this._bar._tB.visible = false;
-            this._bar.timebar.visible = false;
+            (this._bar as any)._tA.y = 12;
+            (this._bar as any)._tB.y = (this._bar as any).timebar.y;
+            (this._bar as any)._tB.visible = false;
+            (this._bar as any).timebar.visible = false;
         } else if (this._state == 2) {
             if (this.DOES_USE_NEW_DISPLAY) {
                 if (SiegeWeapons.activeWeapon) {
                     if (this._currentSiegeWeapon.duration) {
                         this.updateTimeRemaining();
                     }
-                    if (this._currentSiegeWeapon instanceof IDurable) {
+                    if ('durability' in this._currentSiegeWeapon) {
                         this.updateHealth();
                     }
                 } else if (!this._isWeaponFinished) {
@@ -172,23 +172,23 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
                 _loc3_ = _loc2_ * 10 / 10;
                 if (_loc2_ > 0) {
                     TweenLite.to(this._bar, 0.3, { "autoAlpha": 1, "y": 65, "ease": Sine.easeOut });
-                    this._bar._tA.htmlText = this._currentSiegeWeapon.name;
-                    this._bar._tA.y = 4;
+                    (this._bar as any)._tA.htmlText = this._currentSiegeWeapon.name;
+                    (this._bar as any)._tA.y = 4;
                     _loc4_ = this._currentSiegeWeapon.duration;
                     if (_loc4_) {
-                        this._bar.timebar.visible = true;
-                        this._bar.timebar.alpha = 1;
-                        this._bar.timebar.mcBar.width = 100 / _loc4_ * _loc2_;
-                        this._bar._tB.visible = true;
-                        this._bar._tB.htmlText = String(_loc3_);
+                        (this._bar as any).timebar.visible = true;
+                        (this._bar as any).timebar.alpha = 1;
+                        (this._bar as any).timebar.mcBar.width = 100 / _loc4_ * _loc2_;
+                        (this._bar as any)._tB.visible = true;
+                        (this._bar as any)._tB.htmlText = String(_loc3_);
                     } else {
-                        this._bar.timebar.visible = false;
-                        this._bar.timebar.alpha = 0;
+                        (this._bar as any).timebar.visible = false;
+                        (this._bar as any).timebar.alpha = 0;
                     }
                 } else {
                     TweenLite.to(this._bar, 0.3, { "autoAlpha": 0, "y": 23, "ease": Circ.easeOut });
-                    TweenLite.to(this._bar.timebar, 0.3, { "autoAlpha": 0 });
-                    this._bar._tB.visible = false;
+                    TweenLite.to((this._bar as any).timebar, 0.3, { "autoAlpha": 0 });
+                    (this._bar as any)._tB.visible = false;
                 }
             }
             TweenLite.to(this._bar, 0.3, { "autoAlpha": 0, "y": 23, "ease": Circ.easeOut });
@@ -206,7 +206,7 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
             this.timeLeftMC.visible = false;
             TweenLite.killTweensOf(this._mask);
         }
-        if (this._currentSiegeWeapon instanceof IDurable) {
+        if ('durability' in this._currentSiegeWeapon) {
             this._image.removeChild(this._healthBarBitmap);
         }
         this._mask.scaleY = 0;
@@ -233,7 +233,7 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
         const _loc1_: number = SiegeWeapons.getTimeRemaingOnActiveWeapon();
         const _loc2_: number = _loc1_ < 10 ? 16711680 : 255;
         this.timeLeftMC.alpha = 1;
-        this.timeLeftMC.timeLeftText.text = _loc1_ + "s";
+        (this.timeLeftMC as any).timeLeftText.text = _loc1_ + "s";
         this.timeLeftMC.filters = [new GlowFilter(_loc2_)];
     }
 
@@ -274,7 +274,7 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
             this._mask.y = this._bm.height;
             this._image.addChild(this._mask);
             this._imageContainer.mask = this._mask;
-            if (this._currentSiegeWeapon instanceof IDurable) {
+            if ('durability' in this._currentSiegeWeapon) {
                 this._healthBarBitmap = new Bitmap(this._healthBar);
                 this._healthBarBitmap.width = this._image.width;
                 this._healthBarBitmap.y = this._image.height - 6;
@@ -335,8 +335,8 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
             _loc5_++;
         }
         _loc4_ += "</ul>";
-        this._tooltip.tTitle.htmlText = _loc2_;
-        this._tooltip.tBody.htmlText = _loc4_;
+        (this._tooltip as any).tTitle.htmlText = _loc2_;
+        (this._tooltip as any).tBody.htmlText = _loc4_;
         this.addChild(this._tooltip);
     }
 
@@ -384,7 +384,7 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
         let _loc2_: any = undefined;
         for (_loc1_ in ATTACK._flingerBucket) {
             if (ATTACK._flingerBucket[_loc1_].Get() > 0) {
-                ATTACK._curCreaturesAvailable[_loc1_].Add(ATTACK._flingerBucket[_loc1_].Get());
+                (ATTACK._curCreaturesAvailable[_loc1_] as any).Add(ATTACK._flingerBucket[_loc1_].Get());
                 ATTACK._flingerBucket[_loc1_].Set(0);
             }
         }

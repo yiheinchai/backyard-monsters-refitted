@@ -9,7 +9,7 @@ import MouseEvent from "openfl/events/MouseEvent";
 import Point from "openfl/geom/Point";
 import URLRequest from "openfl/net/URLRequest";
 
-import { SecNum } from "../../../cc/utils/SecNum";
+import { SecNum } from "../../cc/utils/SecNum";
 import { AllyInfo } from "../alliances/AllyInfo";
 import { ImageCache } from "../display/ImageCache";
 import { EnumYardType } from "../enums/EnumYardType";
@@ -21,11 +21,11 @@ import { MapRoom } from "./MapRoom";
 import { MapRoomCell } from "./MapRoomCell";
 import { PopupInfoEnemy_CLIP } from "../../../PopupInfoEnemy_CLIP";
 import { PopupTakeover } from "./PopupTakeover";
-import { bubblepopupRight } from "./bubblepopupRight";
+import { bubblepopupRight } from "../../../bubblepopupRight";
 import { frame } from "../../../frame";
 import { URLLoaderApi } from "../../../URLLoaderApi";
 
-import { ALLIANCES } from "../../../ALLIANCES";
+import { ALLIANCES } from "../alliances/ALLIANCES";
 import { BASE } from "../../../BASE";
 import { GLOBAL } from "../../../GLOBAL";
 import { JSON } from "../../../JSON";

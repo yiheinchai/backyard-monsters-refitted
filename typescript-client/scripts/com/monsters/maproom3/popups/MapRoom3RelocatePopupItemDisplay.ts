@@ -5,7 +5,7 @@ import URLRequest from "openfl/net/URLRequest";
 
 import { MapRoom3FriendData } from "../data/MapRoom3FriendData";
 import { MapRoom3RelocatePopup } from "./MapRoom3RelocatePopup";
-import { MapRoom3RelocateMainYardPopupFriendItemDisplay } from "./MapRoom3RelocateMainYardPopupFriendItemDisplay";
+import { MapRoom3RelocateMainYardPopupFriendItemDisplay } from "../../../../MapRoom3RelocateMainYardPopupFriendItemDisplay";
 
 import { KEYS } from "../../../../KEYS";
 

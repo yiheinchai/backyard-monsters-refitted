@@ -1,7 +1,7 @@
 import Point from "openfl/geom/Point";
 
 import { MonsterBase } from "../../MonsterBase";
-import { TowerTaunt } from "../../../components/abilities/TowerTaunt";
+import { TowerTaunt } from "../../components/abilities/TowerTaunt";
 import { CreepBase } from "../CreepBase";
 
 import { BFOUNDATION } from "../../../../../BFOUNDATION";

@@ -3,24 +3,24 @@ import BitmapData from "openfl/display/BitmapData";
 import DisplayObject from "openfl/display/DisplayObject";
 import Point from "openfl/geom/Point";
 
-import { BYMConfig } from "../../../configs/BYMConfig";
-import { CreepSkinManager } from "../../../display/CreepSkinManager";
-import { ITargetable } from "../../../interfaces/ITargetable";
+import { BYMConfig } from "../../configs/BYMConfig";
+import { CreepSkinManager } from "../../display/CreepSkinManager";
+import { ITargetable } from "../../interfaces/ITargetable";
 import { MonsterBase } from "../MonsterBase";
 import { RezghulResurrectAttack } from "../components/abilities/RezghulResurrectAttack";
 import { Zombiefy } from "../components/abilities/Zombiefy";
-import { ProjectileUtils } from "../../../projectiles/ProjectileUtils";
-import { Projectilev2 } from "../../../projectiles/Projectilev2";
-import { ResurrectProjectile } from "../../../projectiles/ResurrectProjectile";
-import { RasterData } from "../../../rendering/RasterData";
+import { ProjectileUtils } from "../../projectiles/ProjectileUtils";
+import { Projectilev2 } from "../../projectiles/Projectilev2";
+import { ResurrectProjectile } from "../../projectiles/ResurrectProjectile";
+import { RasterData } from "../../rendering/RasterData";
 import { CreepBase } from "./CreepBase";
 import { Targeting } from "../../../../Targeting";
 
 import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { SPRITES } from "../../../../../SPRITES";
-import { CREATURES } from "../../../../../CREATURES";
-import { MAP } from "../../../../../MAP";
-import { LoanShark } from "org/kissmyas/utils/loanshark/LoanShark";
+import { SPRITES } from "../../../../SPRITES";
+import { CREATURES } from "../../../../CREATURES";
+import { MAP } from "../../../../MAP";
+import { LoanShark } from "../../../../org/kissmyas/utils/loanshark/LoanShark";
 
 /**
  * Rezghul - creep that can resurrect dead allies as zombies.

@@ -2,13 +2,13 @@ import MovieClip from "openfl/display/MovieClip";
 import Event from "openfl/events/Event";
 import MouseEvent from "openfl/events/MouseEvent";
 
-import { RewardHandler } from "../../rewarding/RewardHandler";
-import { SubscriptionHandler } from "../SubscriptionHandler";
-import { DAVEStatueReward } from "../rewards/DAVEStatueReward";
-import { ExtraTilesReward } from "../rewards/ExtraTilesReward";
-import { GoldenDAVEReward } from "../rewards/GoldenDAVEReward";
+import { RewardHandler } from "../../../rewarding/RewardHandler";
+import { SubscriptionHandler } from "../../SubscriptionHandler";
+import { DAVEStatueReward } from "../../rewards/DAVEStatueReward";
+import { ExtraTilesReward } from "../../rewards/ExtraTilesReward";
+import { GoldenDAVEReward } from "../../rewards/GoldenDAVEReward";
 import { MembershipPopup } from "./MembershipPopup";
-import { subscriptions_controlPanel_popup } from "./subscriptions_controlPanel_popup";
+import { subscriptions_controlPanel_popup } from "../../../../../subscriptions_controlPanel_popup";
 
 import { KEYS } from "../../../../../KEYS";
 import { POPUPS } from "../../../../../POPUPS";

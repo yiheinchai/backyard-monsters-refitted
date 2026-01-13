@@ -257,13 +257,13 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
             _loc13_ = Number(_loc3_.time.Get());
             _loc14_ = 1;
             while (_loc14_ < 5) {
-                _loc15_ = this.mcResources["mcR" + _loc14_];
+                _loc15_ = (this.mcResources as any)["mcR" + _loc14_];
                 _loc16_ = BASE.isInfernoBuilding(this._building._type);
                 _loc17_ = _loc16_ ? BASE._iresources : BASE._resources;
                 _loc18_ = _loc16_ ? GLOBAL.iresourceNames : GLOBAL._resourceNames;
                 _loc15_.gotoAndStop(_loc16_ || BASE.isInfernoMainYardOrOutpost ? _loc14_ + 6 : _loc14_);
-                _loc15_.tTitle.htmlText = "<b>" + KEYS.Get(_loc18_[_loc14_ - 1]) + "</b>";
-                _loc15_.tValue.htmlText = "<b><font color=\"#" + (_loc3_["r" + _loc14_].Get() > _loc17_["r" + _loc14_].Get() && (param1 == "upgrade" || param1 == "build" || param1 == "fortify") ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc3_["r" + _loc14_].Get()) + "</font></b>";
+                (_loc15_ as any).tTitle.htmlText = "<b>" + KEYS.Get(_loc18_[_loc14_ - 1]) + "</b>";
+                (_loc15_ as any).tValue.htmlText = "<b><font color=\"#" + (_loc3_["r" + _loc14_].Get() > _loc17_["r" + _loc14_].Get() && (param1 == "upgrade" || param1 == "build" || param1 == "fortify") ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc3_["r" + _loc14_].Get()) + "</font></b>";
                 if (Boolean(_loc3_["r" + _loc14_].Get()) && _loc3_["r" + _loc14_].Get() > 0) {
                     _loc15_.alpha = 1;
                 } else {
@@ -272,12 +272,12 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
                 _loc14_++;
             }
             
-            _loc15_ = this.mcResources.mcTime;
+            _loc15_ = (this.mcResources as any).mcTime;
             _loc15_.gotoAndStop(BASE.isInfernoBuilding(this._building._type) || BASE.isInfernoMainYardOrOutpost ? 12 : 6);
             if (TUTORIAL._stage >= 200 && _loc3_.time.Get() > 0) {
                 _loc15_.visible = true;
-                _loc15_.tTitle.htmlText = "<b>" + KEYS.Get(_loc18_![5]) + "</b>";
-                _loc15_.tValue.htmlText = "<b>" + GLOBAL.ToTime(_loc13_, true, false) + "</b>";
+                (_loc15_ as any).tTitle.htmlText = "<b>" + KEYS.Get(_loc18_![5]) + "</b>";
+                (_loc15_ as any).tValue.htmlText = "<b>" + GLOBAL.ToTime(_loc13_, true, false) + "</b>";
             } else {
                 _loc15_.visible = false;
             }

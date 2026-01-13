@@ -884,4 +884,165 @@ export class UI_TOP extends UI_TOP_CLIP {
             this._popupWarning = null;
         }
     }
+
+    /**
+     * Deselect bomb/attack mode
+     */
+    public BombDeselect(): void {
+        // Empty implementation - placeholder for bomb deselection
+    }
+
+    /**
+     * Deselect monster selection mode
+     */
+    public MonsterDeselect(): void {
+        for (const key in ATTACK._flingerBucket) {
+            if (ATTACK._flingerBucket[key] && ATTACK._flingerBucket[key].Get() > 0) {
+                ATTACK._curCreaturesAvailable[key].Add(ATTACK._flingerBucket[key].Get());
+                ATTACK._flingerBucket[key].Set(0);
+            }
+        }
+        ATTACK.BucketUpdate();
+        for (let i = 0; i < this._creatureButtons.length; i++) {
+            this._creatureButtons[i].Update();
+        }
+    }
+
+    /**
+     * Add an icon to the UI (e.g., KOTH icon)
+     */
+    public addIcon(icon: DisplayObject): void {
+        if (this.mc && GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+            icon.x = 222;
+            icon.y = 0;
+            this._kothIcon = this.mc.addChild(icon);
+            (this.mc as any).mcR5.x = 284;
+            (this.mc as any).bEarn.x = 415;
+            (this.mc as any).bDealSpot.x = 502;
+            (this.mc as any).bDailyDeal.x = 493;
+        }
+    }
+
+    /**
+     * Remove an icon from the UI
+     */
+    public removeIcon(icon: DisplayObject): void {
+        if (this.mc && this.mc.contains(icon)) {
+            this.mc.removeChild(icon);
+            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+                (this.mc as any).mcR5.x = 227;
+                (this.mc as any).bEarn.x = 358;
+                (this.mc as any).bDailyDeal.x = 436;
+                (this.mc as any).bDealSpot.x = 445;
+            }
+        }
+        if (this._kothIcon) {
+            if (this._kothIcon.parent) {
+                this._kothIcon.parent.removeChild(this._kothIcon);
+            }
+            this._kothIcon = null;
+        }
+    }
+
+    /**
+     * Add a resource bar to the UI
+     */
+    public addResourceBar(bar: DisplayObject): void {
+        let targetMC: MovieClip | null = null;
+        if (this.mc && GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && !BASE.isInfernoMainYardOrOutpost) {
+            if (MapRoomManager.instance.isInMapRoom2) {
+                targetMC = (this.mc as any).mcOutposts;
+            } else {
+                targetMC = (this.mc as any).mcR4;
+            }
+            if (targetMC) {
+                bar.x = -4;
+                bar.y = targetMC.y + 37;
+                targetMC.addChild(bar);
+            }
+        }
+    }
+
+    /**
+     * Clear all event listeners and UI components
+     */
+    public Clear(): void {
+        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+            if ((this.mc as any).mcPoints) {
+                (this.mc as any).mcPoints.removeEventListener(MouseEvent.MOUSE_OVER, this.InfoShow);
+                (this.mc as any).mcPoints.removeEventListener(MouseEvent.MOUSE_OUT, this.InfoHide);
+            }
+            for (let i = 1; i < 5; i++) {
+                const mcR = (this.mc as any)["mcR" + i];
+                if (mcR) {
+                    if (mcR.mcHit) {
+                        mcR.mcHit.removeEventListener(MouseEvent.MOUSE_OVER, this.StatsShow(i, false));
+                        mcR.mcHit.removeEventListener(MouseEvent.MOUSE_OUT, this.StatsHide);
+                    }
+                    if (mcR.bAdd) {
+                        mcR.bAdd.removeEventListener(MouseEvent.CLICK, this.Topup(i));
+                    }
+                }
+            }
+            const mcR5 = (this.mc as any).mcR5;
+            if (mcR5 && mcR5.bAdd) {
+                mcR5.bAdd.removeEventListener(MouseEvent.CLICK, BUY.Show);
+            }
+            const mcOutposts = (this.mc as any).mcOutposts;
+            if (mcOutposts && mcOutposts.mcHit && mcOutposts.bNext) {
+                mcOutposts.mcHit.removeEventListener(MouseEvent.MOUSE_OVER, this.ButtonInfoShow);
+                mcOutposts.mcHit.removeEventListener(MouseEvent.MOUSE_OUT, this.ButtonInfoHide);
+                mcOutposts.bNext.removeEventListener(MouseEvent.CLICK, BASE.LoadNext);
+            }
+            const bInvite = (this.mc as any).bInvite;
+            if (bInvite) {
+                bInvite.removeEventListener(MouseEvent.CLICK, this.ButtonClick("invite"));
+                bInvite.removeEventListener(MouseEvent.MOUSE_OVER, this.ButtonInfoShow);
+                bInvite.removeEventListener(MouseEvent.MOUSE_OUT, this.ButtonInfoHide);
+            }
+        }
+    }
+
+    /**
+     * Setup the UI based on current game mode
+     */
+    public Setup(): void {
+        const mode = GLOBAL.mode;
+        if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD && GLOBAL.mode !== GLOBAL.e_BASE_MODE.IBUILD) {
+            const onImageLoad = (e: Event): void => {
+                (this.mc as any).mcPic.mcBG.addChild(loader);
+                if (GLOBAL._flags.viximo || GLOBAL._flags.kongregate) {
+                    loader.width = loader.height = 50;
+                }
+            };
+            const LoadImageError = (e: IOErrorEvent): void => {
+                // Error loading image
+            };
+            if (BASE._ownerName) {
+                if (BASE._ownerName.toLowerCase().charAt(BASE._ownerName.length - 1) === "s") {
+                    (this.mc as any).mcPoints.tName.htmlText = KEYS.Get("uitop_yardownershort", { v1: BASE._ownerName.toUpperCase() });
+                } else {
+                    (this.mc as any).mcPoints.tName.htmlText = KEYS.Get("uitop_yardownerlong", { v1: BASE._ownerName.toUpperCase() });
+                }
+            } else if (GLOBAL.mode === GLOBAL._loadmode) {
+                (this.mc as any).mcPoints.tName.htmlText = KEYS.Get("uitop_backyardmonsters");
+            } else {
+                (this.mc as any).mcPoints.tName.htmlText = KEYS.Get("uitop_backyardmonstersinferno");
+            }
+            const loader = new Loader();
+            loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, LoadImageError, false, 0, true);
+            loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoad);
+            if (GLOBAL._loadmode === "wmattack" || GLOBAL._loadmode === "wmview" || GLOBAL._loadmode === "iwmattack" || GLOBAL._loadmode === "iwmview") {
+                loader.load(new URLRequest(GLOBAL._storageURL + BASE._ownerPic));
+            } else if (!GLOBAL._flags.viximo || !GLOBAL._flags.kongregate) {
+                loader.load(new URLRequest(BASE._ownerPic));
+            } else {
+                loader.load(new URLRequest("http://graph.facebook.com/" + BASE._loadedFBID + "/picture"));
+            }
+        } else if (GLOBAL.mode === GLOBAL._loadmode) {
+            (this.mc as any).mcPoints.tName.htmlText = KEYS.Get("uitop_backyardmonsters");
+        } else {
+            (this.mc as any).mcPoints.tName.htmlText = KEYS.Get("uitop_backyardmonstersinferno");
+        }
+    }
 }

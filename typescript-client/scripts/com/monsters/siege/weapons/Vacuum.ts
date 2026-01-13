@@ -1,5 +1,9 @@
 import Event from "openfl/events/Event";
-import getQualifiedClassName from "openfl/Lib/getQualifiedClassName";
+
+// getQualifiedClassName equivalent
+function getQualifiedClassName(cls: any): string {
+    return cls?.name || cls?.constructor?.name || "";
+}
 
 import { SiegeWeaponProperty } from "../SiegeWeaponProperty";
 import { SiegeWeapons } from "../SiegeWeapons";

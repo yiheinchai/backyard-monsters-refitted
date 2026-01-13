@@ -5,14 +5,14 @@ import IOErrorEvent from "openfl/events/IOErrorEvent";
 import KeyboardEvent from "openfl/events/KeyboardEvent";
 import MouseEvent from "openfl/events/MouseEvent";
 import URLRequest from "openfl/net/URLRequest";
-import { TweenLite } from "../../TweenLite";
+import { TweenLite } from "../../../gs/TweenLite";
 
 import { ScrollSet } from "../display/ScrollSet";
 import { Contact } from "./model/Contact";
-import { FriendPicker_CLIP } from "./FriendPicker_CLIP";
+import { FriendPicker_CLIP } from "../../../FriendPicker_CLIP";
 import { FriendPickerItem } from "./FriendPickerItem";
-import { URLLoaderApi } from "../URLLoaderApi";
-import { system_message } from "../../system_message";
+import { URLLoaderApi } from "../../../URLLoaderApi";
+import { system_message } from "../../../system_message";
 
 import { GLOBAL } from "../../../GLOBAL";
 import { LOGIN } from "../../../LOGIN";

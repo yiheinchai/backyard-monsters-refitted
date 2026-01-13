@@ -1,4 +1,4 @@
-import { SecNum } from "../../../../cc/utils/SecNum";
+import { SecNum } from "../../../cc/utils/SecNum";
 import { Console } from "../../debug/Console";
 import { ChampionBase } from "../../monsters/champions/ChampionBase";
 import { Krallen } from "../../monsters/champions/Krallen";

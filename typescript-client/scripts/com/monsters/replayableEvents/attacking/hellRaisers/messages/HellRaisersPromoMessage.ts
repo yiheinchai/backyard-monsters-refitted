@@ -1,9 +1,9 @@
 import URLRequest from "openfl/net/URLRequest";
 
-import { FrontPageGraphic } from "../../../../FrontPageGraphic";
-import { KeywordMessage } from "../../../../messages/KeywordMessage";
-import { Message } from "../../../../messages/Message";
-import { Maproom3OptInPopup } from "../../../../messages/promotions/Maproom3OptInPopup";
+import { FrontPageGraphic } from "../../../../frontPage/FrontPageGraphic";
+import { KeywordMessage } from "../../../../frontPage/messages/KeywordMessage";
+import { Message } from "../../../../frontPage/messages/Message";
+import { Maproom3OptInPopup } from "../../../../frontPage/messages/promotions/Maproom3OptInPopup";
 import { MapRoomManager } from "../../../../maproom_manager/MapRoomManager";
 import { HellRaisers } from "../HellRaisers";
 

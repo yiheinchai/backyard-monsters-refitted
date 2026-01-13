@@ -616,4 +616,33 @@ export class Player {
             }
         }
     }
+
+    /**
+     * Get the number of monsters that can be healed with a specific resource cost
+     * @param resourceType The resource type (e.g., "B1" for building-based or monster ID)
+     * @param resourceAmount The amount of resource available
+     * @returns Object with num (monsters healed) and resoLeft (remaining resource)
+     */
+    public getNumToHealByResourceCost(resourceType: string, resourceAmount: number): { num: number; resoLeft: number } {
+        const result = { num: 0, resoLeft: resourceAmount };
+        const list = this.monsterList;
+        
+        if (resourceType.substr(0, 1) === "B") {
+            const len = list.length;
+            const buildingType = parseInt(resourceType.substr(1));
+            for (let i = 0; i < len && result.resoLeft > 0; i++) {
+                const healResult = list[i].getNumCreepsCanHealWithSpecificResourceAmount(result.resoLeft, buildingType);
+                result.num += healResult.num;
+                result.resoLeft = healResult.resoLeft;
+            }
+        } else {
+            const monsterData = this.monsterListByID(resourceType);
+            if (monsterData) {
+                const healResult = monsterData.getNumCreepsCanHealWithSpecificResourceAmount(resourceAmount);
+                result.num = healResult.num;
+                result.resoLeft = healResult.resoLeft;
+            }
+        }
+        return result;
+    }
 }

@@ -6,7 +6,7 @@ import MouseEvent from "openfl/events/MouseEvent";
 
 import { ImageCache } from "../../../../display/ImageCache";
 import { MapRoomManager } from "../../../../maproom_manager/MapRoomManager";
-import { HellRaisersBattleSummary_CLIP } from "./HellRaisersBattleSummary_CLIP";
+import { HellRaisersBattleSummary_CLIP } from "../../../../../../HellRaisersBattleSummary_CLIP";
 
 import { KEYS } from "../../../../../../KEYS";
 

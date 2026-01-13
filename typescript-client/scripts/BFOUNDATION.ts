@@ -2585,6 +2585,15 @@ export class BFOUNDATION extends GameObject {
         this.onMove();
     }
 
+    public SetGiftingProps(threadid: number, subject: string, senderid: number, senderName: string, senderPic: string): void {
+        this._threadid = threadid;
+        this._subject = subject;
+        this._senderid = senderid;
+        this._senderName = senderName;
+        this._senderPic = senderPic;
+        UPDATES.Create(["BT", this._id, this._threadid, this._subject, this._senderid, this._senderName, this._senderPic]);
+    }
+
     public Click(e: MouseEvent = null): void {
         if (GLOBAL._openBase || TUTORIAL._stage >= 2 && TUTORIAL._stage != 90) {
             this.Description();

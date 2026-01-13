@@ -5,7 +5,7 @@ import MouseEvent from "openfl/events/MouseEvent";
 import { MapRoom3 } from "../MapRoom3";
 import { MapRoom3AssetCache } from "../MapRoom3AssetCache";
 import { Bookmark } from "./Bookmark";
-import { MapRoom3BookmarkDisplay } from "./MapRoom3BookmarkDisplay";
+import { MapRoom3BookmarkDisplay } from "../../../../MapRoom3BookmarkDisplay";
 
 import { KEYS } from "../../../../KEYS";
 

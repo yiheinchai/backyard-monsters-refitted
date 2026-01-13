@@ -1022,10 +1022,15 @@ export class BASE {
         BASE._shakeCountdown = intensity;
     }
     
-    private static ShakeB(): void {
+    public static ShakeB(): void {
         if (BASE._shakeCountdown > 0) {
             BASE._shakeCountdown--;
-            // Apply shake effect to map
+            const offsetX: number = Math.floor(BASE._shakeCountdown / 10 - Math.random() * (BASE._shakeCountdown / 5));
+            const offsetY: number = Math.floor(BASE._shakeCountdown / 10 - Math.random() * (BASE._shakeCountdown / 5));
+            if (MAP._GROUND) {
+                MAP._GROUND.x += offsetX;
+                MAP._GROUND.y += offsetY;
+            }
         }
     }
     
@@ -1043,6 +1048,12 @@ export class BASE {
     
     public static isEventBaseId(baseId: number): boolean {
         return BASE.s_eventBases.indexOf(baseId) !== -1;
+    }
+    
+    public static addEventBaseException(baseId: number): void {
+        if (BASE.s_eventBases.indexOf(baseId) === -1) {
+            BASE.s_eventBases.push(baseId);
+        }
     }
     
     public static addBuildingC(buildingType: number): BFOUNDATION | null {
@@ -1655,6 +1666,201 @@ export class BASE {
      */
     public static isBuildingIgnoredInYardPlannerSave(building: BFOUNDATION): boolean {
         return building._class === "enemy";
+    }
+
+    /**
+     * Calculate the edge distance of an ellipse at a given angle.
+     * @param angle The angle in radians
+     * @param semiMajorAxis The semi-major axis (horizontal radius)
+     * @param semiMinorAxis The semi-minor axis (vertical radius)
+     * @returns The distance from the center to the edge of the ellipse
+     */
+    public static EllipseEdgeDistance(angle: number, semiMajorAxis: number, semiMinorAxis: number): number {
+        let x: number = Math.pow(Math.pow(semiMajorAxis / 2, -2) + Math.pow(Math.tan(angle), 2) * Math.pow(semiMinorAxis / 2, -2), -0.5);
+        const angleDegrees: number = angle * 180 / Math.PI;
+        if (angleDegrees < -90 || angleDegrees > 90) {
+            x *= -1;
+        }
+        const y: number = Math.tan(angle) * x;
+        return Math.sqrt(x * x + y * y);
+    }
+
+    /**
+     * Check if a building would overlap with existing buildings at a given position.
+     * @param position The position to check
+     * @param size The size of the building to place
+     * @param ignoreTraps Whether to ignore trap buildings
+     * @param ignoreDestroyed Whether to ignore destroyed buildings
+     * @param ignoreDecorations Whether to ignore decoration buildings
+     * @param ignoreImmovableAndEnemy Whether to ignore immovable and enemy buildings
+     * @returns True if there is an overlap
+     */
+    public static BuildingOverlap(position: Point, size: number, ignoreTraps: boolean, ignoreDestroyed: boolean = false, ignoreDecorations: boolean = false, ignoreImmovableAndEnemy: boolean = false): boolean {
+        const buildings: Object[] = InstanceManager.getInstancesByClass(BFOUNDATION);
+        for (const building of buildings) {
+            const bf = building as BFOUNDATION;
+            // Skip mushrooms
+            if (bf._class === "mushroom") {
+                continue;
+            }
+            const buildingPos: Point = new Point(bf._mc.x, bf._mc.y + bf._middle);
+            
+            // Check exclusion conditions
+            if (ignoreTraps && bf._class === "trap") {
+                continue;
+            }
+            if (ignoreDestroyed && bf.health <= 0) {
+                continue;
+            }
+            if (ignoreDecorations && bf._class === "decoration") {
+                continue;
+            }
+            if (ignoreImmovableAndEnemy && (bf._class === "immovable" || bf._class === "enemy")) {
+                continue;
+            }
+            
+            // Calculate edge distances for elliptical overlap check
+            let angle: number = Math.atan2(position.y - buildingPos.y, position.x - buildingPos.x);
+            const edgeDist1: number = BASE.EllipseEdgeDistance(angle, size, size * BASE._angle);
+            angle = Math.atan2(buildingPos.y - position.y, buildingPos.x - position.x);
+            const edgeDist2: number = BASE.EllipseEdgeDistance(angle, bf._size * 0.5, bf._size * 0.5 * BASE._angle);
+            
+            const dx: number = position.x - buildingPos.x;
+            const dy: number = position.y - buildingPos.y;
+            const distance: number = Math.floor(Math.sqrt(dx * dx + dy * dy));
+            
+            if (distance < edgeDist1 + edgeDist2) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get all buildings that overlap with a given position and size.
+     * @param x The x position
+     * @param y The y position  
+     * @param size The size of the area to check
+     * @param outBuildings Array to populate with overlapping buildings
+     */
+    public static GetBuildingOverlap(x: number, y: number, size: number, outBuildings: BFOUNDATION[]): void {
+        const position: Point = new Point(x, y);
+        const buildings: Object[] = InstanceManager.getInstancesByClass(BFOUNDATION);
+        for (const building of buildings) {
+            const bf = building as BFOUNDATION;
+            // Skip mushrooms
+            if (bf._class === "mushroom") {
+                continue;
+            }
+            const buildingPos: Point = new Point(bf._mc.x, bf._mc.y + bf._middle);
+            
+            let angle: number = Math.atan2(position.y - buildingPos.y, position.x - buildingPos.x);
+            const edgeDist1: number = BASE.EllipseEdgeDistance(angle, size, size * BASE._angle);
+            angle = Math.atan2(buildingPos.y - position.y, buildingPos.x - position.x);
+            const edgeDist2: number = BASE.EllipseEdgeDistance(angle, bf._size * 0.5, bf._size * 0.5 * BASE._angle);
+            
+            const dx: number = position.x - buildingPos.x;
+            const dy: number = position.y - buildingPos.y;
+            const distance: number = Math.floor(Math.sqrt(dx * dx + dy * dy));
+            
+            if (distance < edgeDist1 + edgeDist2) {
+                outBuildings.push(bf);
+            }
+        }
+    }
+
+    /**
+     * Calculate the squared edge distance of an ellipse at a given angle.
+     * @param angle The angle in radians
+     * @param semiMajorAxis The semi-major axis (horizontal radius)
+     * @param semiMinorAxis The semi-minor axis (vertical radius)
+     * @returns The squared distance from the center to the edge of the ellipse
+     */
+    public static EllipseEdgeDistanceSqrd(angle: number, semiMajorAxis: number, semiMinorAxis: number): number {
+        let x: number = Math.pow(Math.pow(semiMajorAxis / 2, -2) + Math.pow(Math.tan(angle), 2) * Math.pow(semiMinorAxis / 2, -2), -0.5);
+        const angleDegrees: number = angle * 180 / Math.PI;
+        if (angleDegrees < -90 || angleDegrees > 90) {
+            x *= -1;
+        }
+        const y: number = Math.tan(angle) * x;
+        return x * x + y * y;
+    }
+
+    /**
+     * Load the next outpost in the list
+     * @param event Optional mouse event
+     */
+    public static LoadNext(event: MouseEvent | null = null): void {
+        if (BASE._saving || BASE._loading || BASE._saveCounterA !== BASE._saveCounterB) {
+            GLOBAL._nextOutpostWaiting = 1;
+            return;
+        }
+        if (MapRoomManager.instance.isInMapRoom2) {
+            if (BASE.isMainYard && !GLOBAL._bMap._canFunction) {
+                GLOBAL.Message(KEYS.Get("map_msg_damaged"));
+                return;
+            }
+            if (GLOBAL._mapOutpostIDs && GLOBAL._mapOutpostIDs.length > 0) {
+                if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === "ibuild") {
+                    if (BASE.isMainYardOrInfernoMainYard) {
+                        BASE._currentCellLoc = GLOBAL._mapOutpost[0];
+                        GLOBAL._currentCell = null;
+                        BASE._needCurrentCell = true;
+                        MapRoomManager.instance.LoadCell(GLOBAL._mapOutpost[0].x, GLOBAL._mapOutpost[0].y, true);
+                        PLEASEWAIT.Show(KEYS.Get("process_outpost"));
+                    } else {
+                        for (let i = 0; i < GLOBAL._mapOutpostIDs.length; i++) {
+                            if (GLOBAL._mapOutpostIDs[i] === BASE._loadedBaseID) {
+                                if (i < GLOBAL._mapOutpostIDs.length - 1) {
+                                    BASE._currentCellLoc = GLOBAL._mapOutpost[i + 1];
+                                    GLOBAL._currentCell = null;
+                                    BASE._needCurrentCell = true;
+                                    MapRoomManager.instance.LoadCell(GLOBAL._mapOutpost[i + 1].x, GLOBAL._mapOutpost[i + 1].y, true);
+                                    PLEASEWAIT.Show(KEYS.Get("process_outpost"));
+                                    break;
+                                }
+                                BASE._needCurrentCell = false;
+                                GLOBAL._currentCell = null;
+                                BASE.LoadBase(null, 0, GLOBAL._homeBaseID, GLOBAL.e_BASE_MODE.BUILD, false, EnumYardType.MAIN_YARD);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Get empire resources per hour for a given resource type
+     * @param resourceType The resource type (1-4)
+     * @returns The resource production rate per hour
+     */
+    public static getEmpireResources(resourceType: number): number {
+        let multiplier: number = 1;
+        if (GLOBAL._harvesterOverdrive >= GLOBAL.Timestamp() && GLOBAL._harvesterOverdrivePower.Get() > 0) {
+            multiplier = GLOBAL._harvesterOverdrivePower.Get();
+        }
+        return (BASE._GIP as any)["r" + resourceType].Get() * 360 * multiplier;
+    }
+
+    /**
+     * Get the number of housing heals per tick
+     * @returns The number of heals per tick
+     */
+    public static getNumHousingHealsPerTick(): number {
+        let count: number = 0;
+        const buildings: Object[] = InstanceManager.getInstancesByClass(BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15);
+        if (BASE.isInfernoMainYardOrOutpost) {
+            if (buildings[0]) {
+                count = Math.min(4, (buildings[0] as BFOUNDATION)._lvl.Get());
+            }
+        } else {
+            for (const building of buildings) {
+                count++;
+            }
+        }
+        return count;
     }
 }
 

@@ -15,13 +15,13 @@ import { AllyInfo } from "../alliances/AllyInfo";
 import { ImageCache } from "../display/ImageCache";
 import { EnumYardType } from "../enums/EnumYardType";
 import { MapRoomManager } from "../maproom_manager/MapRoomManager";
-import { bubblepopup3 } from "./bubblepopup3";
-import { bubblepopupBuff } from "./bubblepopupBuff";
+import { bubblepopup3 } from "../../../bubblepopup3";
+import { bubblepopupBuff } from "../../../bubblepopupBuff";
 import { CellData } from "./CellData";
 import { MapRoom } from "./MapRoom";
-import { MapRoomBookmark } from "./MapRoomBookmark";
+import { MapRoomBookmark } from "../../../MapRoomBookmark";
 import { MapRoomCell } from "./MapRoomCell";
-import { MapRoomPopupJump } from "./MapRoomPopupJump";
+import { MapRoomPopupJump } from "../../../MapRoomPopupJump";
 import { MapRoomPopup_CLIP } from "../../../MapRoomPopup_CLIP";
 import { PopupAttackA } from "./PopupAttackA";
 import { PopupInfoEnemy } from "./PopupInfoEnemy";
@@ -29,9 +29,9 @@ import { PopupInfoMine } from "./PopupInfoMine";
 import { PopupInfoViewOnly } from "./PopupInfoViewOnly";
 import { PopupMonstersA } from "./PopupMonstersA";
 import { PopupMonstersB } from "./PopupMonstersB";
-import { PopupNewBookmark } from "./PopupNewBookmark";
+import { PopupNewBookmark } from "../../../PopupNewBookmark";
 import { PopupRelocateMe } from "./PopupRelocateMe";
-import { ui_buffIcon_CLIP } from "./ui_buffIcon_CLIP";
+import { ui_buffIcon_CLIP } from "../../../ui_buffIcon_CLIP";
 
 import { BASE } from "../../../BASE";
 import { GLOBAL } from "../../../GLOBAL";
@@ -76,8 +76,8 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
     public static get instance(): MapRoomPopup { return MapRoomPopup.s_Instance = MapRoomPopup.s_Instance || new MapRoomPopup(); }
 
     constructor() {
-        this._sortArray = [];
         super();
+        this._sortArray = [];
         let w = GLOBAL._ROOT.stage.stageWidth;
         let h = GLOBAL.GetGameHeight();
         if (w > 1024) w = 1024;

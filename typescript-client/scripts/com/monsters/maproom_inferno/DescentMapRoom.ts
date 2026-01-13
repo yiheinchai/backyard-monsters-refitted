@@ -3,12 +3,12 @@ import Sprite from "openfl/display/Sprite";
 import Event from "openfl/events/Event";
 import MouseEvent from "openfl/events/MouseEvent";
 
-import { DescentLayer } from "./views/DescentLayer";
+import { DescentLayer } from "./DescentLayer";
 import { DescentView } from "./views/DescentView";
-import { MiniMap } from "./views/MiniMap";
-import { Obstruction } from "./views/Obstruction";
-import { PushPin } from "./views/PushPin";
-import { MapRoomPopup_InfernoDescent } from "./MapRoomPopup_InfernoDescent";
+import { MiniMap } from "./MiniMap";
+import { Obstruction } from "./Obstruction";
+import { PushPin } from "./PushPin";
+import { MapRoomPopup_InfernoDescent } from "../../../MapRoomPopup_InfernoDescent";
 
 import { GLOBAL } from "../../../GLOBAL";
 import { SOUNDS } from "../../../SOUNDS";

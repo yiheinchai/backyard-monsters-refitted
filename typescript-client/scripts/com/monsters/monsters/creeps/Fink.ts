@@ -1,7 +1,7 @@
 import Point from "openfl/geom/Point";
 
 import { MonsterBase } from "../MonsterBase";
-import { AOEDamageOnAttack } from "../../components/abilities/AOEDamageOnAttack";
+import { AOEDamageOnAttack } from "../components/abilities/AOEDamageOnAttack";
 import { Targeting } from "../../../../Targeting";
 import { CreepBase } from "./CreepBase";
 

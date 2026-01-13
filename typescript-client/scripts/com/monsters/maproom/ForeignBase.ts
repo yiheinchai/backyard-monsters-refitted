@@ -16,7 +16,7 @@ import { ForeignBase_CLIP } from "./ForeignBase_CLIP";
 import { MapRoom } from "./MapRoom";
 import { PlayerHandler } from "./PlayerHandler";
 import { PushPin } from "./PushPin";
-import { Button } from "../../Button";
+import { Button } from "../../../Button";
 
 import { KEYS } from "../../../KEYS";
 

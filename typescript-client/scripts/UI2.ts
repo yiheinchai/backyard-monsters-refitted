@@ -1,6 +1,6 @@
 import MovieClip from "openfl/display/MovieClip";
 import StageDisplayState from "openfl/display/StageDisplayState";
-import TextField from "openfl/display/TextField";
+import TextField from "openfl/text/TextField";
 import Event from "openfl/events/Event";
 import MouseEvent from "openfl/events/MouseEvent";
 import Rectangle from "openfl/geom/Rectangle";
@@ -14,7 +14,7 @@ import { TweenLite, Back, Elastic } from "./gs";
 import { UI_TOP } from "./UI_TOP";
 import { UI_VISITOR } from "./UI_VISITOR";
 import { UI_WARNING } from "./UI_WARNING";
-import { UI_BOTTOM } from "./UI_BOTTOM";
+import { UI_BOTTOM } from "./com/monsters/ui/UI_BOTTOM";
 import { UI_WORKERS } from "./UI_WORKERS";
 import { UI_BAITERSCAREAWAY } from "./UI_BAITERSCAREAWAY";
 import { UI_WILDMONSTERBAR } from "./UI_WILDMONSTERBAR";

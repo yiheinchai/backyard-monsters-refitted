@@ -5,13 +5,13 @@ import Shape from "openfl/display/Shape";
 import Sprite from "openfl/display/Sprite";
 import Event from "openfl/events/Event";
 import MouseEvent from "openfl/events/MouseEvent";
-import { TweenLite } from "../../TweenLite";
+import { TweenLite } from "../../../gs/TweenLite";
 
 import { Chat } from "../chat/Chat";
 import { ImageCache } from "../display/ImageCache";
-import { EventRewardRibbon } from "./EventRewardRibbon";
+import { EventRewardRibbon } from "../../../EventRewardRibbon";
 import { IReplayableEventUI } from "./IReplayableEventUI";
-import { MultiRewardEventsBar } from "./MultiRewardEventsBar";
+import { MultiRewardEventsBar } from "../../../MultiRewardEventsBar";
 import { ReplayableEvent } from "./ReplayableEvent";
 import { ReplayableEventQuota } from "./ReplayableEventQuota";
 

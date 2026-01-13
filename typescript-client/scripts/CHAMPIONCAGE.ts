@@ -1,7 +1,7 @@
 import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
-import { TweenLite, Quad } from 'gsap';
+import { TweenLite, Quad } from './gs';
 import { SecNum } from './com/cc/utils/SecNum';
 import { BYMConfig } from './com/monsters/configs/BYMConfig';
 import { ITargetable } from './com/monsters/interfaces/ITargetable';
@@ -695,7 +695,7 @@ export class CHAMPIONCAGE extends BFOUNDATION {
                     _loc12_ = InstanceManager.getInstancesByClass(BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15);
                     for (_loc14_ in _loc6_) {
                         GLOBAL.player.monsterListByID(_loc14_).add(-_loc6_[_loc14_]);
-                        for (_loc11_ of CREATURES._creatures) {
+                        for (_loc11_ of Object.values(CREATURES._creatures)) {
                             if (_loc6_[_loc14_] > 0) {
                                 if (_loc11_._creatureID == _loc14_ && _loc11_._behaviour != "feed" && _loc11_._behaviour != "juice") {
                                     _loc11_.changeModeFeed();
@@ -775,7 +775,7 @@ export class CHAMPIONCAGE extends BFOUNDATION {
                 _loc12_ = InstanceManager.getInstancesByClass(BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15);
                 for (_loc14_ in _loc6_) {
                     GLOBAL.player.monsterListByID(_loc14_).add(-_loc6_[_loc14_]);
-                    for (_loc11_ of CREATURES._creatures) {
+                    for (_loc11_ of Object.values(CREATURES._creatures)) {
                         if (_loc6_[_loc14_] > 0) {
                             if (_loc11_._creatureID == _loc14_ && _loc11_._behaviour != "feed" && _loc11_._behaviour != "juice") {
                                 _loc11_.changeModeFeed();

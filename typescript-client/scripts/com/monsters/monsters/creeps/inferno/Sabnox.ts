@@ -5,7 +5,7 @@ import { MonsterBase } from "../../MonsterBase";
 import { CreepBase } from "../CreepBase";
 
 import { BFOUNDATION } from "../../../../../BFOUNDATION";
-import { FIREBALLS } from "../../../../../../FIREBALLS";
+import { FIREBALLS } from "../../../../../FIREBALLS";
 
 /**
  * Sabnox - inferno creep with ranged magma attack that deals double damage to towers.

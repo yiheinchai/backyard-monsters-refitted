@@ -9,7 +9,7 @@ import { Chat } from "../chat/Chat";
 import { ImageCache } from "../display/ImageCache";
 import { IReplayableEventUI } from "./IReplayableEventUI";
 import { ReplayableEvent } from "./ReplayableEvent";
-import { EventsBar_CLIP } from "./EventsBar_CLIP";
+import { EventsBar_CLIP } from "../../../EventsBar_CLIP";
 
 import { BASE } from "../../../BASE";
 import { GLOBAL } from "../../../GLOBAL";

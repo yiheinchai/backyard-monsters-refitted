@@ -2,7 +2,7 @@ import Bitmap from "openfl/display/Bitmap";
 import BitmapData from "openfl/display/BitmapData";
 import Point from "openfl/geom/Point";
 
-import { SecNum } from "../../../../cc/utils/SecNum";
+import { SecNum } from "../../../cc/utils/SecNum";
 import { BYMConfig } from "../../configs/BYMConfig";
 import { ILootable } from "../../interfaces/ILootable";
 import { InstanceManager } from "../../managers/InstanceManager";

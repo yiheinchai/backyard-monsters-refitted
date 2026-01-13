@@ -106,9 +106,9 @@ export class HousingPersistentPopup extends HousingPersistentPopup_CLIP {
                 ImageCache.GetImageWithCallBack("monsters/bunker-medium.jpg", this.iconLoaded.bind(this), true, 1, "", [_loc11_.mcIcon]);
                 _loc11_.tName.htmlText = "<b>" + KEYS.Get("#b_monsterbunker#") + "</b>";
             }
-            _loc11_.m_healthBar.mcBar.width = HousingPersistentMonsterBar.k_monsterBarDisplayBarWidth * GLOBAL.player.curHealthByID(_loc10_) / GLOBAL.player.totalHealthByID(_loc10_);
-            _loc11_.m_capacityBar.mcBar.width = HousingPersistentMonsterBar.k_monsterBarDisplayBarWidth * GLOBAL.player.getStorageByID(_loc10_) / HOUSING._housingCapacity.Get();
-            _loc11_.m_capacityBar.mcBarGrey.width = _loc11_.m_capacityBar.mcBar.width;
+            (_loc11_.m_healthBar as any).mcBar.width = HousingPersistentMonsterBar.k_monsterBarDisplayBarWidth * GLOBAL.player.curHealthByID(_loc10_) / GLOBAL.player.totalHealthByID(_loc10_);
+            (_loc11_.m_capacityBar as any).mcBar.width = HousingPersistentMonsterBar.k_monsterBarDisplayBarWidth * GLOBAL.player.getStorageByID(_loc10_) / HOUSING._housingCapacity.Get();
+            (_loc11_.m_capacityBar as any).mcBarGrey.width = (_loc11_.m_capacityBar as any).mcBar.width;
             _loc11_.tCapacityText.htmlText = "<b>" + GLOBAL.player.getStorageByID(_loc10_) + "</b>";
             _loc11_.tHealStatusText.htmlText = "";
             if (GLOBAL.player.checkQueued(_loc10_)) {
@@ -131,7 +131,7 @@ export class HousingPersistentPopup extends HousingPersistentPopup_CLIP {
         this.monsterContainer.addChild(this.tTitleBunkers);
         this.m_line.visible = false;
         this.monsterContainer.addChild(this.m_line);
-        this.mcStorage.mcBarB.width = 535 / HOUSING._housingCapacity.Get() * HOUSING._housingUsed.Get();
+        (this.mcStorage as any).mcBarB.width = 535 / HOUSING._housingCapacity.Get() * HOUSING._housingUsed.Get();
         this._scroller = new ScrollSet();
         this._scroller.x = 310;
         this._scroller.y = -145;
@@ -294,7 +294,7 @@ export class HousingPersistentPopup extends HousingPersistentPopup_CLIP {
     private setNormalMode(param1: HousingPersistentMonsterBar): void {
         param1.gotoAndStop(HousingPersistentMonsterBar.k_NormalFrame);
         param1.bHeal.SetupKey("btn_mh_heal");
-        if (param1.m_healthBar.mcBar.width == HousingPersistentMonsterBar.k_monsterBarDisplayBarWidth) {
+        if ((param1.m_healthBar as any).mcBar.width == HousingPersistentMonsterBar.k_monsterBarDisplayBarWidth) {
             param1.bHeal.buttonMode = false;
             param1.bHeal.Enabled = false;
         } else {
@@ -388,7 +388,7 @@ export class HousingPersistentPopup extends HousingPersistentPopup_CLIP {
     public tickVisualHeal(): void {
         const _loc1_ = GLOBAL.player.healQueue.length ? GLOBAL.player.healQueue[0] : "";
         for (const _loc2_ in this.m_monsterBarList) {
-            this.m_monsterBarList[_loc2_].m_healthBar.mcBar.width = HousingPersistentMonsterBar.k_monsterBarDisplayBarWidth * GLOBAL.player.curHealthByID(_loc2_) / GLOBAL.player.totalHealthByID(_loc2_);
+            (this.m_monsterBarList[_loc2_].m_healthBar as any).mcBar.width = HousingPersistentMonsterBar.k_monsterBarDisplayBarWidth * GLOBAL.player.curHealthByID(_loc2_) / GLOBAL.player.totalHealthByID(_loc2_);
             if (_loc2_ == _loc1_) {
                 this.m_monsterBarList[_loc2_].updateTimer();
             }
@@ -432,7 +432,7 @@ export class HousingPersistentPopup extends HousingPersistentPopup_CLIP {
         }
         HOUSING._housingUsed.Add(-_loc3_);
         const _loc6_ = Math.round(100 / HOUSING._housingCapacity.Get() * HOUSING._housingUsed.Get());
-        this.mcStorage.mcBar.width = 535 / HOUSING._housingCapacity.Get() * HOUSING._housingUsed.Get();
+        (this.mcStorage as any).mcBar.width = 535 / HOUSING._housingCapacity.Get() * HOUSING._housingUsed.Get();
         this.tStorage.htmlText = "<b>" + GLOBAL.FormatNumber(HOUSING._housingUsed.Get()) + " / " + GLOBAL.FormatNumber(HOUSING._housingCapacity.Get()) + " (" + _loc6_ + "%)</b>";
 
         if (GLOBAL._bJuicer) {
@@ -516,7 +516,7 @@ export class HousingPersistentPopup extends HousingPersistentPopup_CLIP {
                     }
                 }
                 const _loc4_ = GLOBAL.player.monsterListByID(_loc3_).numHousedCreeps - (this._juiceList[_loc3_] || 0);
-                _loc2_.m_capacityBar.mcBar.width = HousingPersistentMonsterBar.k_monsterBarDisplayBarWidth * (_loc4_ * CREATURES.GetProperty(_loc3_, "cStorage")) / HOUSING._housingCapacity.Get();
+                (_loc2_.m_capacityBar as any).mcBar.width = HousingPersistentMonsterBar.k_monsterBarDisplayBarWidth * (_loc4_ * CREATURES.GetProperty(_loc3_, "cStorage")) / HOUSING._housingCapacity.Get();
                 if (!_loc4_) {
                     _loc2_.bJuice.Enabled = false;
                     _loc2_.bJuice.buttonMode = false;
@@ -602,7 +602,7 @@ export class HousingPersistentPopup extends HousingPersistentPopup_CLIP {
                 --this._juiceList[_loc2_];
             }
         }
-        this.mcStorage.mcBarB.width = this.mcStorage.mcBar.width;
+        (this.mcStorage as any).mcBarB.width = (this.mcStorage as any).mcBar.width;
         this.updateCapacityBars();
         this.tickVisualHeal();
         this.reorganize();
@@ -624,8 +624,8 @@ export class HousingPersistentPopup extends HousingPersistentPopup_CLIP {
                 _loc2_.bJuice.Enabled = true;
                 _loc2_.bJuice.buttonMode = true;
             }
-            _loc2_.m_capacityBar.mcBar.width = HousingPersistentMonsterBar.k_monsterBarDisplayBarWidth * GLOBAL.player.getStorageByID(_loc3_) / HOUSING._housingCapacity.Get();
-            _loc2_.m_capacityBar.mcBarGrey.width = _loc2_.m_capacityBar.mcBar.width;
+            (_loc2_.m_capacityBar as any).mcBar.width = HousingPersistentMonsterBar.k_monsterBarDisplayBarWidth * GLOBAL.player.getStorageByID(_loc3_) / HOUSING._housingCapacity.Get();
+            (_loc2_.m_capacityBar as any).mcBarGrey.width = (_loc2_.m_capacityBar as any).mcBar.width;
             _loc2_.tCapacityText.htmlText = "<b>" + GLOBAL.player.getStorageByID(_loc3_) + "</b>";
         }
     }
@@ -712,7 +712,7 @@ export class HousingPersistentPopup extends HousingPersistentPopup_CLIP {
         this.m_nJuiceAmount = 0;
         this.m_bShownPopup = false;
         const _loc2_ = GLOBAL.player.monsterListByID(param1).numHousedCreeps - this._juiceList[param1];
-        this.m_monsterBarList[param1].m_capacityBar.mcBar.width = HousingPersistentMonsterBar.k_monsterBarDisplayBarWidth * (_loc2_ * CREATURES.GetProperty(param1, "cStorage")) / HOUSING._housingCapacity.Get();
+        (this.m_monsterBarList[param1].m_capacityBar as any).mcBar.width = HousingPersistentMonsterBar.k_monsterBarDisplayBarWidth * (_loc2_ * CREATURES.GetProperty(param1, "cStorage")) / HOUSING._housingCapacity.Get();
         this.m_monsterBarList[param1].bJuice.Enabled = false;
         this.m_monsterBarList[param1].bJuice.buttonMode = false;
     }

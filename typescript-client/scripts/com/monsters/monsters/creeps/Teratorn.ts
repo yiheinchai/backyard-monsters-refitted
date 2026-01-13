@@ -2,12 +2,12 @@ import Point from "openfl/geom/Point";
 
 import { ITargetable } from "../../interfaces/ITargetable";
 import { MonsterBase } from "../MonsterBase";
-import { GlavesOnAttack } from "../../components/abilities/GlavesOnAttack";
+import { GlavesOnAttack } from "../components/abilities/GlavesOnAttack";
 import { CreepBase } from "./CreepBase";
 
 import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { SPRITES } from "../../../../../SPRITES";
-import { FIREBALLS } from "../../../../../FIREBALLS";
+import { SPRITES } from "../../../../SPRITES";
+import { FIREBALLS } from "../../../../FIREBALLS";
 
 /**
  * Teratorn - flying creep with glave ability when powered up.

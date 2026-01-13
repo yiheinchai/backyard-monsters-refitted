@@ -1,7 +1,7 @@
 import Sprite from "openfl/display/Sprite";
 import Event from "openfl/events/Event";
 
-import { ScrollSetV } from "../../../display/ScrollSetV";
+import { ScrollSetV } from "../../display/ScrollSetV";
 import { MapRoom3 } from "../MapRoom3";
 import { Bookmark } from "./Bookmark";
 

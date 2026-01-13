@@ -1,4 +1,4 @@
-import { ExposedObject } from "../../../../utils/exposed/ExposedObject";
+import { ExposedObject } from "../../../utils/exposed/ExposedObject";
 import { CreepProps } from "./CreepProps";
 import { CreepTypeManager } from "./CreepTypeManager";
 import { CreepUpgrade } from "./CreepUpgrade";

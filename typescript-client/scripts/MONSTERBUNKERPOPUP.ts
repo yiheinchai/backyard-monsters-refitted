@@ -1,9 +1,9 @@
-import { SecNum } from "com.cc.utils.SecNum";
-import { ImageCache } from "com.monsters.display.ImageCache";
-import { ScrollSet } from "com.monsters.display.ScrollSet";
-import { InstanceManager } from "com.monsters.managers.InstanceManager";
-import { MonsterBase } from "com.monsters.monsters.MonsterBase";
-import { CreepBase } from "com.monsters.monsters.creeps.CreepBase";
+import { SecNum } from "./com/cc/utils/SecNum";
+import { ImageCache } from "./com/monsters/display/ImageCache";
+import { ScrollSet } from "./com/monsters/display/ScrollSet";
+import { InstanceManager } from "./com/monsters/managers/InstanceManager";
+import { MonsterBase } from "./com/monsters/monsters/MonsterBase";
+import { CreepBase } from "./com/monsters/monsters/creeps/CreepBase";
 import Bitmap from "openfl/display/Bitmap";
 import BitmapData from "openfl/display/BitmapData";
 import MovieClip from "openfl/display/MovieClip";
@@ -103,37 +103,37 @@ export class MONSTERBUNKERPOPUP extends MONSTERBUNKERPOPUP_CLIP {
     }
 
     public InitTransferBarAListeners(param1: MovieClip): void {
-        param1.bAdd.addEventListener(MouseEvent.CLICK, this.SelectAdd.bind(this));
-        param1.bAdd.Setup("+");
-        param1.bAdd.buttonMode = true;
-        param1.bRemove.addEventListener(MouseEvent.CLICK, this.SelectRemove.bind(this));
-        param1.bRemove.Setup("-");
-        param1.bRemove.buttonMode = true;
+        (param1 as any).bAdd.addEventListener(MouseEvent.CLICK, this.SelectAdd.bind(this));
+        (param1 as any).bAdd.Setup("+");
+        (param1 as any).bAdd.buttonMode = true;
+        (param1 as any).bRemove.addEventListener(MouseEvent.CLICK, this.SelectRemove.bind(this));
+        (param1 as any).bRemove.Setup("-");
+        (param1 as any).bRemove.buttonMode = true;
     }
 
     public InitTransferBarBListeners(param1: MovieClip): void {
-        param1.bRemove.addEventListener(MouseEvent.CLICK, this.BunkerJuiceID.bind(this));
-        const _loc2_: boolean = param1.id.substring(0, 2) == "IC";
+        (param1 as any).bRemove.addEventListener(MouseEvent.CLICK, this.BunkerJuiceID.bind(this));
+        const _loc2_: boolean = (param1 as any).id.substring(0, 2) == "IC";
         if (Boolean(GLOBAL._bJuicer) && !_loc2_) {
-            param1.bRemove.SetupKey("bunker_btn_juice");
+            (param1 as any).bRemove.SetupKey("bunker_btn_juice");
         } else {
-            param1.bRemove.SetupKey("bunker_btn_remove");
+            (param1 as any).bRemove.SetupKey("bunker_btn_remove");
         }
-        param1.bRemove.buttonMode = true;
+        (param1 as any).bRemove.buttonMode = true;
     }
 
     public RemoveTransferBarListeners(param1: MovieClip): void {
         if (param1 instanceof MonsterBunkerPopup_TransferBtnA_CLIP) {
-            param1.bAdd.removeEventListener(MouseEvent.CLICK, this.SelectAdd.bind(this));
-            param1.bRemove.removeEventListener(MouseEvent.CLICK, this.SelectRemove.bind(this));
+            (param1 as any).bAdd.removeEventListener(MouseEvent.CLICK, this.SelectAdd.bind(this));
+            (param1 as any).bRemove.removeEventListener(MouseEvent.CLICK, this.SelectRemove.bind(this));
         } else if (param1 instanceof MonsterBunkerPopup_TransferBtnB_CLIP) {
-            param1.bRemove.removeEventListener(MouseEvent.CLICK, this.BunkerJuiceID.bind(this));
+            (param1 as any).bRemove.removeEventListener(MouseEvent.CLICK, this.BunkerJuiceID.bind(this));
         }
     }
 
     public RemoveTransferBarBListeners(param1: MovieClip): void {
-        param1.bAdd.removeEventListener(MouseEvent.CLICK, this.SelectAdd.bind(this));
-        param1.bRemove.removeEventListener(MouseEvent.CLICK, this.SelectRemove.bind(this));
+        (param1 as any).bAdd.removeEventListener(MouseEvent.CLICK, this.SelectAdd.bind(this));
+        (param1 as any).bRemove.removeEventListener(MouseEvent.CLICK, this.SelectRemove.bind(this));
     }
 
     public IconLoaded(param1: string, param2: BitmapData, param3: Array<any> = null): void {
@@ -375,8 +375,8 @@ export class MONSTERBUNKERPOPUP extends MONSTERBUNKERPOPUP_CLIP {
         }
 
         p = 100 / this._capacity * (usedA + usedB);
-        this.mcStorage.mcBar.width = 535 / this._capacity * usedA;
-        this.mcStorage.mcBarB.width = 535 / this._capacity * (usedA + usedB);
+        (this.mcStorage as any).mcBar.width = 535 / this._capacity * usedA;
+        (this.mcStorage as any).mcBarB.width = 535 / this._capacity * (usedA + usedB);
 
         if (usedA + usedB >= this._capacity) {
             if (this._bunker._lvl.Get() < 3) {
@@ -627,7 +627,7 @@ export class MONSTERBUNKERPOPUP extends MONSTERBUNKERPOPUP_CLIP {
         _loc4_ = Number(CREATURELOCKER._creatures[param1].props.cStorage);
         if (Boolean(GLOBAL.player.monsterListByID(param1)) && _loc4_ <= this._bunker._capacity - this._bunker._used) {
             _loc5_ = null;
-            for (const monster of CREATURES._creatures) {
+            for (const monster of Object.values(CREATURES._creatures)) {
                 _loc6_ = monster as MonsterBase;
                 if (_loc6_._creatureID == param1 && (_loc6_._behaviour == "housing" || _loc6_._behaviour == "pen")) {
                     _loc5_ = _loc6_ as CreepBase;
@@ -680,7 +680,7 @@ export class MONSTERBUNKERPOPUP extends MONSTERBUNKERPOPUP_CLIP {
                 if (GLOBAL._bJuicer.health > GLOBAL._bJuicer.maxHealth * 0.5) {
                     if (this._bunker._monsters[param1]) {
                         _loc3_ = false;
-                        for (const monster of CREATURES._creatures) {
+                        for (const monster of Object.values(CREATURES._creatures)) {
                             _loc4_ = monster as MonsterBase;
                             if (_loc4_._creatureID == param1 && _loc4_._behaviour == "bunker") {
                                 _loc4_.changeModeJuice();

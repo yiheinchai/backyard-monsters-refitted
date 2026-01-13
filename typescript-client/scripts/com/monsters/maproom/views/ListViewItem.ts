@@ -5,9 +5,9 @@ import IOErrorEvent from "openfl/events/IOErrorEvent";
 import URLRequest from "openfl/net/URLRequest";
 import LoaderContext from "openfl/system/LoaderContext";
 
-import { MapRoom } from "../../MapRoom";
-import { PlayerHandler } from "../../PlayerHandler";
-import { BaseObject } from "../../model/BaseObject";
+import { MapRoom } from "../MapRoom";
+import { PlayerHandler } from "../PlayerHandler";
+import { BaseObject } from "../model/BaseObject";
 import { ListViewItem_CLIP } from "./ListViewItem_CLIP";
 
 import { KEYS } from "../../../../KEYS";

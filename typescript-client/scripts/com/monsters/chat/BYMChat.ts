@@ -6,7 +6,7 @@ import TimerEvent from "openfl/events/TimerEvent";
 import Rectangle from "openfl/geom/Rectangle";
 import Keyboard from "openfl/ui/Keyboard";
 import Timer from "openfl/utils/Timer";
-import { TweenLite } from "gs/TweenLite";
+import { TweenLite } from "../../../gs/TweenLite";
 
 import { ChatBox } from "./ui/ChatBox";
 import { Channel } from "./Channel";
@@ -16,7 +16,9 @@ import { CS_SmartFoxServer2X } from "./CS_SmartFoxServer2X";
 import { AS_Login } from "./AS_Login";
 import { UserRecord } from "./UserRecord";
 import { ProfanityFilter } from "./ProfanityFilter";
-import { User, Room, SFSObject } from "../../smartfoxserver/v2/entities";
+import { User } from "../../smartfoxserver/v2/entities/User";
+import { Room } from "../../smartfoxserver/v2/entities/Room";
+import { SFSObject } from "../../smartfoxserver/v2/entities/data/SFSObject";
 
 import { BASE } from "../../../BASE";
 import { GLOBAL } from "../../../GLOBAL";
@@ -69,8 +71,8 @@ export class BYMChat extends Sprite {
     private messageQueueLastCheck: Date | null = null;
 
     constructor(chatBox: ChatBox, host: string) {
-        this.messageQueue = [];
         super();
+        this.messageQueue = [];
         this.chatBox = chatBox;
         this.addChild(chatBox as MovieClip);
         chatBox.addEventListener(KeyboardEvent.KEY_DOWN, this.keyboardEventHandler.bind(this));

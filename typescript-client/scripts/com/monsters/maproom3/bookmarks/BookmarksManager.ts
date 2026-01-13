@@ -5,8 +5,8 @@ import { MapRoom3Cell } from "../MapRoom3Cell";
 import { MapRoom3Data } from "../data/MapRoom3Data";
 import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
 import { Bookmark } from "./Bookmark";
-import { SingletonLock } from "../../../config/singletonlock/SingletonLock";
-import { URLLoaderApi } from "../../../URLLoaderApi";
+import { SingletonLock } from "../../../../config/singletonlock/SingletonLock";
+import { URLLoaderApi } from "../../../../URLLoaderApi";
 
 import { GLOBAL } from "../../../../GLOBAL";
 import { KEYS } from "../../../../KEYS";

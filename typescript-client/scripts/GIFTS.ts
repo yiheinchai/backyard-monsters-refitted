@@ -79,16 +79,16 @@ export class GIFTS {
     public static Show(resourceID: number, giftID: string, giftFromName: string, giftFromID: string, profilePic: string, giftValue: number): void {
         GIFTS._mc = new (GLOBAL as any).popup_gift();
         GIFTS._mc!.gotoAndStop(resourceID);
-        GIFTS._mc!.tA.htmlText = KEYS.Get("pop_gift_title", { v1: giftFromName });
-        GIFTS._mc!.tB.htmlText = "<b>" + GLOBAL.FormatNumber(giftValue) + " " + KEYS.Get(GLOBAL._resourceNames[resourceID - 1]) + "</b>";
-        GIFTS._mc!.bReturn.SetupKey("pop_giftback_btn");
-        GIFTS._mc!.bReturn.Highlight = true;
-        GIFTS._mc!.bReturn.addEventListener(MouseEvent.CLICK, GIFTS.SendGift);
-        GIFTS._mc!.bReturn.visible = true;
-        GIFTS._mc!.bReturn.mouseEnabled = true;
-        GIFTS._mc!.bThanks.SetupKey("pop_saythanks_btn");
-        GIFTS._mc!.bThanks.Highlight = true;
-        GIFTS._mc!.bThanks.addEventListener(MouseEvent.CLICK, GIFTS.GiveThanks(resourceID, giftFromID, giftValue));
+        (GIFTS._mc as any).tA.htmlText = KEYS.Get("pop_gift_title", { v1: giftFromName });
+        (GIFTS._mc as any).tB.htmlText = "<b>" + GLOBAL.FormatNumber(giftValue) + " " + KEYS.Get(GLOBAL._resourceNames[resourceID - 1]) + "</b>";
+        (GIFTS._mc as any).bReturn.SetupKey("pop_giftback_btn");
+        (GIFTS._mc as any).bReturn.Highlight = true;
+        (GIFTS._mc as any).bReturn.addEventListener(MouseEvent.CLICK, GIFTS.SendGift);
+        (GIFTS._mc as any).bReturn.visible = true;
+        (GIFTS._mc as any).bReturn.mouseEnabled = true;
+        (GIFTS._mc as any).bThanks.SetupKey("pop_saythanks_btn");
+        (GIFTS._mc as any).bThanks.Highlight = true;
+        (GIFTS._mc as any).bThanks.addEventListener(MouseEvent.CLICK, GIFTS.GiveThanks(resourceID, giftFromID, giftValue));
 
         if (profilePic) {
             try {
@@ -97,7 +97,7 @@ export class GIFTS {
                 loader.contentLoaderInfo.addEventListener(Event.COMPLETE, () => {
                     loader.width = loader.height = 50;
                 });
-                GIFTS._mc!.mcPic.mcBG.addChild(loader);
+                (GIFTS._mc as any).mcPic.mcBG.addChild(loader);
                 loader.load(new URLRequest(profilePic));
             } catch (e) {}
         }
@@ -119,19 +119,19 @@ export class GIFTS {
 
     public static ShowSentGift(resourceID: number, giftID: string, giftFromName: string, giftFromID: string, profilePic: string, giftValue: number): void {
         const lvlInfo = BASE.BaseLevel();
-        let onePctNextLevelXP = Math.floor(lvlInfo.upper * 0.01);
+        let onePctNextLevelXP = Math.floor((lvlInfo as any).upper * 0.01);
         onePctNextLevelXP = onePctNextLevelXP > GIFTS._maxXPReward ? GIFTS._maxXPReward : onePctNextLevelXP;
 
         GIFTS._mc = new (GLOBAL as any).popup_gift();
-        GIFTS._mc!.tA.htmlText = KEYS.Get("pop_sentgift_title", { v1: giftFromName });
-        GIFTS._mc!.tB.htmlText = "<b>" + GLOBAL.FormatNumber(onePctNextLevelXP) + " " + KEYS.Get("#r_points#") + "</b>";
-        GIFTS._mc!.bReturn.SetupKey("btn_close");
-        GIFTS._mc!.bReturn.Highlight = true;
-        GIFTS._mc!.bReturn.visible = false;
-        GIFTS._mc!.bReturn.mouseEnabled = false;
-        GIFTS._mc!.bThanks.SetupKey("btn_close");
-        GIFTS._mc!.bThanks.Highlight = true;
-        GIFTS._mc!.bThanks.addEventListener(MouseEvent.CLICK, GIFTS.ClosePopup);
+        (GIFTS._mc as any).tA.htmlText = KEYS.Get("pop_sentgift_title", { v1: giftFromName });
+        (GIFTS._mc as any).tB.htmlText = "<b>" + GLOBAL.FormatNumber(onePctNextLevelXP) + " " + KEYS.Get("#r_points#") + "</b>";
+        (GIFTS._mc as any).bReturn.SetupKey("btn_close");
+        (GIFTS._mc as any).bReturn.Highlight = true;
+        (GIFTS._mc as any).bReturn.visible = false;
+        (GIFTS._mc as any).bReturn.mouseEnabled = false;
+        (GIFTS._mc as any).bThanks.SetupKey("btn_close");
+        (GIFTS._mc as any).bThanks.Highlight = true;
+        (GIFTS._mc as any).bThanks.addEventListener(MouseEvent.CLICK, GIFTS.ClosePopup);
 
         if (profilePic) {
             try {
@@ -140,7 +140,7 @@ export class GIFTS {
                 loader.contentLoaderInfo.addEventListener(Event.COMPLETE, () => {
                     loader.width = loader.height = 50;
                 });
-                GIFTS._mc!.mcPic.mcBG.addChild(loader);
+                (GIFTS._mc as any).mcPic.mcBG.addChild(loader);
                 loader.load(new URLRequest(profilePic));
             } catch (e) {}
         }
@@ -150,20 +150,20 @@ export class GIFTS {
 
     public static ShowSentInvite(resourceID: number, giftID: string, giftFromName: string, giftFromID: string, profilePic: string, giftValue: number): void {
         const lvlInfo = BASE.BaseLevel();
-        let onePctNextLevelXP = Math.floor(lvlInfo.upper * 0.01);
+        let onePctNextLevelXP = Math.floor((lvlInfo as any).upper * 0.01);
         onePctNextLevelXP = onePctNextLevelXP > GIFTS._maxXPReward ? GIFTS._maxXPReward : onePctNextLevelXP;
 
         GIFTS._mc = new (GLOBAL as any).popup_gift();
-        GIFTS._mc!.tA.htmlText = KEYS.Get("pop_sentinvite_title", { v1: giftFromName });
-        GIFTS._mc!.tB.htmlText = "<b>" + GLOBAL.FormatNumber(onePctNextLevelXP) + " " + KEYS.Get("#r_points#") + "</b>";
-        GIFTS._mc!.bReturn.SetupKey("pop_sentinvite_gift");
-        GIFTS._mc!.bReturn.Highlight = true;
-        GIFTS._mc!.bReturn.addEventListener(MouseEvent.CLICK, GIFTS.SendGift);
-        GIFTS._mc!.bReturn.visible = true;
-        GIFTS._mc!.bReturn.mouseEnabled = true;
-        GIFTS._mc!.bThanks.SetupKey("pop_sentinvite_visit");
-        GIFTS._mc!.bThanks.Highlight = true;
-        GIFTS._mc!.bThanks.addEventListener(MouseEvent.CLICK, GIFTS.HelpFriend(giftFromID));
+        (GIFTS._mc as any).tA.htmlText = KEYS.Get("pop_sentinvite_title", { v1: giftFromName });
+        (GIFTS._mc as any).tB.htmlText = "<b>" + GLOBAL.FormatNumber(onePctNextLevelXP) + " " + KEYS.Get("#r_points#") + "</b>";
+        (GIFTS._mc as any).bReturn.SetupKey("pop_sentinvite_gift");
+        (GIFTS._mc as any).bReturn.Highlight = true;
+        (GIFTS._mc as any).bReturn.addEventListener(MouseEvent.CLICK, GIFTS.SendGift);
+        (GIFTS._mc as any).bReturn.visible = true;
+        (GIFTS._mc as any).bReturn.mouseEnabled = true;
+        (GIFTS._mc as any).bThanks.SetupKey("pop_sentinvite_visit");
+        (GIFTS._mc as any).bThanks.Highlight = true;
+        (GIFTS._mc as any).bThanks.addEventListener(MouseEvent.CLICK, GIFTS.HelpFriend(giftFromID));
 
         if (profilePic) {
             try {
@@ -172,7 +172,7 @@ export class GIFTS {
                 loader.contentLoaderInfo.addEventListener(Event.COMPLETE, () => {
                     loader.width = loader.height = 50;
                 });
-                GIFTS._mc!.mcPic.mcBG.addChild(loader);
+                (GIFTS._mc as any).mcPic.mcBG.addChild(loader);
                 loader.load(new URLRequest(profilePic));
             } catch (e) {}
         }
