@@ -1,4 +1,6 @@
 import BitmapData from "openfl/display/BitmapData";
+import BlendMode from "openfl/display/BlendMode";
+import GradientType from "openfl/display/GradientType";
 import Sprite from "openfl/display/Sprite";
 import BlurFilter from "openfl/filters/BlurFilter";
 import ColorMatrixFilter from "openfl/filters/ColorMatrixFilter";
@@ -72,7 +74,7 @@ export class screenshot {
                 90 / (180 / Math.PI), 0, blurred.height * ((centerPos - blurHeight) / 100));
             
             const maskSprite = new Sprite();
-            maskSprite.graphics.beginGradientFill("linear", [0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF],
+            maskSprite.graphics.beginGradientFill(GradientType.LINEAR, [0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF],
                 [0, 1, 1, 0], [0, 85, 170, 255], gradMatrix);
             maskSprite.graphics.drawRect(0, 0, blurred.width, blurred.height);
             
@@ -87,9 +89,9 @@ export class screenshot {
             const noiseBmp = screenshot._rawImage.clone();
             noiseBmp.noise(1, 0, 255, 7, true);
             let ct = new ColorTransform(1, 1, 1, noise * 10 / 100);
-            screenshot._processedImage.draw(noiseBmp, null, ct, "multiply");
+            screenshot._processedImage.draw(noiseBmp, null, ct, BlendMode.MULTIPLY);
             ct = new ColorTransform(1, 1, 1, noise * 5 / 100);
-            screenshot._processedImage.draw(noiseBmp, null, ct, "screen");
+            screenshot._processedImage.draw(noiseBmp, null, ct, BlendMode.SCREEN);
         }
 
         if (border) {

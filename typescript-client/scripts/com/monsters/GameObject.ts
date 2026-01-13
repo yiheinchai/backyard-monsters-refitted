@@ -170,12 +170,12 @@ export class GameObject extends EventDispatcher implements IAttackable {
         return 0;
     }
 
-    public override addChild(child: DisplayObject): DisplayObject {
+    public addChild(child: DisplayObject): DisplayObject {
         if (!BYMConfig.instance.RENDERER_ON) {
             return this.graphic.addChild(child);
         }
         
-        if (!(child instanceof Object) && !(child instanceof SpriteSheetAnimation)) {
+        if (!(child instanceof Object) && !(child as any instanceof SpriteSheetAnimation)) {
             return child;
         }
         
@@ -189,7 +189,7 @@ export class GameObject extends EventDispatcher implements IAttackable {
         return child;
     }
 
-    public override removeChild(child: DisplayObject): DisplayObject {
+    public removeChild(child: DisplayObject): DisplayObject {
         if (!BYMConfig.instance.RENDERER_ON) {
             return this.graphic.removeChild(child);
         }
@@ -204,14 +204,14 @@ export class GameObject extends EventDispatcher implements IAttackable {
         return child;
     }
 
-    public override getChildAt(index: number): DisplayObject {
+    public getChildAt(index: number): DisplayObject {
         if (!BYMConfig.instance.RENDERER_ON) {
             return this.graphic.getChildAt(index);
         }
         return this.m_children[index].m_source as DisplayObject;
     }
 
-    public override setChildIndex(child: DisplayObject, index: number): void {
+    public setChildIndex(child: DisplayObject, index: number): void {
         if (!BYMConfig.instance.RENDERER_ON) {
             this.graphic.setChildIndex(child, index);
         } else {
