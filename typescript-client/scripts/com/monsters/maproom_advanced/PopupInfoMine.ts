@@ -221,7 +221,7 @@ export class PopupInfoMine extends PopupInfoMine_CLIP {
         const onFail = (error: Error): void => {
             this.Hide();
             GLOBAL.Message(KEYS.Get("msg_err_revoke") + error.message);
-            LOGGER.Log("err", "PopupInfoMine.RevokeInvitation HTTP ", error.message);
+            LOGGER.Log("err", "PopupInfoMine.RevokeInvitation HTTP " + error.message);
         };
         if (!this._cell!._updated) {
             return;

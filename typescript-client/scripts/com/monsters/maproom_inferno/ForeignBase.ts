@@ -92,7 +92,7 @@ export class ForeignBase extends ForeignBaseInferno_CLIP {
         this.name_txt.x = this.name_txt.textWidth * -0.5;
         const boxWidth = this.name_txt.textWidth + 2 * 7;
         this.box_mc.width = boxWidth < 51 ? 51 : boxWidth;
-        this.level.lv_txt.htmlText = "<b>" + baseData.level.Get();
+        (this.level as any).lv_txt.htmlText = "<b>" + baseData.level.Get();
         this.attackBtn!.Setup(KEYS.Get("map_attack_btn"));
         this.helpBtn!.Setup(KEYS.Get("map_help_btn"));
         this.truceBtn!.Setup(KEYS.Get("map_truce_btn"));

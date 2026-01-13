@@ -66,8 +66,8 @@ export class MiniMap extends MovieClip {
         if (this._mc === null) {
             return;
         }
-        this.background = this._mc.background_mc;
-        const scale = this._mc.background_mc.width / this.mapSize!.width;
+        this.background = (this._mc as any).background_mc;
+        const scale = (this._mc as any).background_mc.width / this.mapSize!.width;
         this.players = new Sprite();
         this._mc.addChild(this.players);
         this.ai = new Sprite();
@@ -85,9 +85,9 @@ export class MiniMap extends MovieClip {
         this._mc.addChild(this.selector);
         this.selector.addEventListener(MouseEvent.MOUSE_DOWN, this.selectorDown.bind(this));
         this.addEventListener(MouseEvent.MOUSE_DOWN, this.mapDown.bind(this));
-        if (this._mc.fow_mc) {
+        if ((this._mc as any).fow_mc) {
             const fowLevel = Math.min(Math.max(MAPROOM_DESCENT._descentLvl - 1, 0), MAPROOM_DESCENT._descentLvlMax);
-            this._mc.fow_mc.y = this.fowCoordMap[fowLevel];
+            (this._mc as any).fow_mc.y = this.fowCoordMap[fowLevel];
         }
     }
 
