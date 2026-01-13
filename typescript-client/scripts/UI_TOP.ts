@@ -898,7 +898,7 @@ export class UI_TOP extends UI_TOP_CLIP {
     public MonsterDeselect(): void {
         for (const key in ATTACK._flingerBucket) {
             if (ATTACK._flingerBucket[key] && ATTACK._flingerBucket[key].Get() > 0) {
-                ATTACK._curCreaturesAvailable[key].Add(ATTACK._flingerBucket[key].Get());
+                (ATTACK._curCreaturesAvailable[key] as any).Add(ATTACK._flingerBucket[key].Get());
                 ATTACK._flingerBucket[key].Set(0);
             }
         }

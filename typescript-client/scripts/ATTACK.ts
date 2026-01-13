@@ -982,7 +982,7 @@ export class ATTACK {
         const buildings = InstanceManager.getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
         for (const building of buildings) {
             if (building._class !== "wall" && 
-                !(building._class === "trap" && building._class === "enemy" && building._fired) &&
+                !((building._class as any) === "trap" && (building._class as any) === "enemy" && building._fired) &&
                 !(building._type === 53 && building._expireTime < GLOBAL.Timestamp())) {
                 currentHealth += building.health;
                 maxHealth += building.maxHealth;
@@ -1185,7 +1185,7 @@ export class ATTACK {
         
         for (const building of buildings) {
             if (building._class !== "wall" && 
-                !(building._class === "trap" && building._class === "enemy" && building._fired) &&
+                !((building._class as any) === "trap" && (building._class as any) === "enemy" && building._fired) &&
                 !(building._type === 53 && building._expireTime < GLOBAL.Timestamp())) {
                 currentHealth += building.health;
                 maxHealth += building.maxHealth;
