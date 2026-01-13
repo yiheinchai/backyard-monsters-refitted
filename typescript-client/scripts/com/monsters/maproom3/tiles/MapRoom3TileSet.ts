@@ -1,4 +1,4 @@
-import { ImageCache } from "../../../display/ImageCache";
+import { ImageCache } from "../../display/ImageCache";
 import { MapRoom3Cell } from "../MapRoom3Cell";
 import { MapRoom3TileSetRange } from "./MapRoom3TileSetRange";
 

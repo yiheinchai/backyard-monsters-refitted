@@ -21,7 +21,7 @@ import { SiegeWeapon } from "../siege/weapons/SiegeWeapon";
 import { CellData } from "./CellData";
 import { MapRoom } from "./MapRoom";
 import { MapRoomCell } from "./MapRoomCell";
-import { PopupAttackA_CLIP } from "./PopupAttackA_CLIP";
+import { PopupAttackA_CLIP } from "../../../PopupAttackA_CLIP";
 import { PopupInfoMonster } from "./PopupInfoMonster";
 
 import { ATTACK } from "../../../ATTACK";

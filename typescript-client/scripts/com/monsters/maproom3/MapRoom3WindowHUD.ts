@@ -11,7 +11,7 @@ import TextFormatAlign from "openfl/text/TextFormatAlign";
 import { ScaleBitmap } from "../../../org/bytearray/display/ScaleBitmap";
 
 import { Chat } from "../chat/Chat";
-import { EnumYardType } from "../../enums/EnumYardType";
+import { EnumYardType } from "../enums/EnumYardType";
 import { UI_BOTTOM } from "../ui/UI_BOTTOM";
 import { Bookmark } from "./bookmarks/Bookmark";
 import { BookmarkDisplay } from "./bookmarks/BookmarkDisplay";

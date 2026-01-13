@@ -1,7 +1,7 @@
 import MouseEvent from "openfl/events/MouseEvent";
 
 import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
-import { popup_new_map_confirm } from "../../../popup_new_map_confirm";
+import { popup_new_map_confirm } from "../../../../popup_new_map_confirm";
 import { SingletonLock } from "../../../../config/singletonlock/SingletonLock";
 
 import { GLOBAL } from "../../../../GLOBAL";

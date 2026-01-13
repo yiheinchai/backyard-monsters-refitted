@@ -6,7 +6,7 @@ import URLRequest from "openfl/net/URLRequest";
 import LoaderContext from "openfl/system/LoaderContext";
 
 import { MapRoom } from "../MapRoom";
-import { PlayerHandler } from "../../PlayerHandler";
+import { PlayerHandler } from "../PlayerHandler";
 import { BaseObject } from "../model/BaseObject";
 import { ListViewItem_CLIP } from "./ListViewItem_CLIP";
 

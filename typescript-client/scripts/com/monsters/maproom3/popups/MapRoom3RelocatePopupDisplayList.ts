@@ -1,6 +1,6 @@
 import Sprite from "openfl/display/Sprite";
 
-import { ScrollSetV } from "../../../display/ScrollSetV";
+import { ScrollSetV } from "../../display/ScrollSetV";
 import { MapRoom3FriendData } from "../data/MapRoom3FriendData";
 import { MapRoom3RelocatePopupItemDisplay } from "./MapRoom3RelocatePopupItemDisplay";
 

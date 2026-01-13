@@ -21,7 +21,7 @@ import { MapRoom } from "./MapRoom";
 import { MapRoomCell } from "./MapRoomCell";
 import { PopupInfoEnemy_CLIP } from "../../../PopupInfoEnemy_CLIP";
 import { PopupTakeover } from "./PopupTakeover";
-import { bubblepopupRight } from "./bubblepopupRight";
+import { bubblepopupRight } from "../../../bubblepopupRight";
 import { frame } from "../../../frame";
 import { URLLoaderApi } from "../../../URLLoaderApi";
 

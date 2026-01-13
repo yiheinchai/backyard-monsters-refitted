@@ -1,7 +1,7 @@
 import { ABTest } from "../../cc/tests/ABTest";
 import { Console } from "../debug/Console";
-import { EnumBaseRelationship } from "../../enums/EnumBaseRelationship";
-import { EnumYardType } from "../../enums/EnumYardType";
+import { EnumBaseRelationship } from "../enums/EnumBaseRelationship";
+import { EnumYardType } from "../enums/EnumYardType";
 import { MapRoom3AllianceData } from "./data/MapRoom3AllianceData";
 import { MapRoom3CellData } from "./data/MapRoom3CellData";
 import { MapRoom3Data } from "./data/MapRoom3Data";

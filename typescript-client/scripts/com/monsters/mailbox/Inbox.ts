@@ -6,7 +6,7 @@ import MouseEvent from "openfl/events/MouseEvent";
 import { TweenLite } from "gs/TweenLite";
 
 import { ThreadData } from "./model/ThreadData";
-import { Inbox_CLIP } from "./Inbox_CLIP";
+import { Inbox_CLIP } from "../../../Inbox_CLIP";
 import { InboxMessage } from "./InboxMessage";
 import { MailBox } from "./MailBox";
 import { Message } from "./Message";

@@ -1,4 +1,4 @@
-import { KrallenHUD_CLIP } from "./KrallenHUD_CLIP";
+import { KrallenHUD_CLIP } from "../../../../KrallenHUD_CLIP";
 
 /**
  * KOTH HUD graphic - King of the Hill HUD display.

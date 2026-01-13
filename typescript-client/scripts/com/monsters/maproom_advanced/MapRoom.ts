@@ -24,8 +24,8 @@ import { UI_BOTTOM } from "../ui/UI_BOTTOM";
 import { MapRoomCell } from "./MapRoomCell";
 import { MapRoomPopup } from "./MapRoomPopup";
 import { PopupRelocateMe } from "./PopupRelocateMe";
-import { bubble_acceptInvite } from "./bubble_acceptInvite";
-import { bubble_selecttarget } from "./bubble_selecttarget";
+import { bubble_acceptInvite } from "../../../bubble_acceptInvite";
+import { bubble_selecttarget } from "../../../bubble_selecttarget";
 import { objZone } from "./objZone";
 import { URLLoaderApi } from "../../../URLLoaderApi";
 
