@@ -4,7 +4,7 @@ import { MonsterBase } from "../../MonsterBase";
 import { CreepBase } from "../CreepBase";
 
 import { BFOUNDATION } from "../../../../../BFOUNDATION";
-import { EFFECTS } from "../../../../EFFECTS";
+import { EFFECTS } from "../../../../../EFFECTS";
 
 /**
  * Spurtz - inferno creep that burns on death.

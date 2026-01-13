@@ -1,7 +1,7 @@
 import Point from "openfl/geom/Point";
 
 import { MonsterBase } from "../MonsterBase";
-import { Invisibility } from "../../components/abilities/Invisibility";
+import { Invisibility } from "../components/abilities/Invisibility";
 import { CreepBase } from "./CreepBase";
 
 import { BFOUNDATION } from "../../../../BFOUNDATION";

@@ -8,7 +8,7 @@ import { CModifiableProperty } from "../monsters/components/CModifiableProperty"
 import { IMapRoom } from "./IMapRoom";
 import { IMapRoomCell } from "./IMapRoomCell";
 import { SingletonLock } from "../../../config/singletonlock/SingletonLock";
-import { URLLoaderApi } from "../../URLLoaderApi";
+import { URLLoaderApi } from "../../../URLLoaderApi";
 
 import { BASE } from "../../../BASE";
 import { GLOBAL } from "../../../GLOBAL";

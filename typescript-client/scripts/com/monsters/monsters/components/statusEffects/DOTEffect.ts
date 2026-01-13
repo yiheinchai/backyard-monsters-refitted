@@ -3,7 +3,7 @@ import { SpriteSheetAnimation } from "../../../display/SpriteSheetAnimation";
 import { MonsterBase } from "../../MonsterBase";
 import { CStatusEffect } from "./CStatusEffect";
 
-import { SPRITES } from "../../../../SPRITES";
+import { SPRITES } from "../../../../../SPRITES";
 
 /**
  * DOT effect - damage over time status effect with stacking/renewal options.

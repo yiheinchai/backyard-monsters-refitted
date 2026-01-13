@@ -9,7 +9,7 @@ import TimerEvent from "openfl/events/TimerEvent";
 import Timer from "openfl/utils/Timer";
 
 import { BaseObject } from "./model/BaseObject";
-import { DescentBaseInfo } from "./views/DescentBaseInfo";
+import { DescentBaseInfo } from "./DescentBaseInfo";
 import { DescentBasePopup } from "./views/DescentBasePopup";
 import { DescentView } from "./views/DescentView";
 import { DescentMapRoom } from "./DescentMapRoom";

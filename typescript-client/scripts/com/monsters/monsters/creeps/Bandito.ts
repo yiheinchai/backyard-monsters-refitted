@@ -1,7 +1,7 @@
 import Point from "openfl/geom/Point";
 
 import { MonsterBase } from "../MonsterBase";
-import { BanditoAOEDamageSpin } from "../../components/abilities/BanditoAOEDamageSpin";
+import { BanditoAOEDamageSpin } from "../components/abilities/BanditoAOEDamageSpin";
 import { Targeting } from "../../../../Targeting";
 import { CreepBase } from "./CreepBase";
 

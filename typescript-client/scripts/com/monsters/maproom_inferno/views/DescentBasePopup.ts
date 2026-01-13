@@ -1,6 +1,5 @@
 import { Timer, TimerEvent } from "openfl/utils/Timer";
-import { TweenLite } from "../../../gs/TweenLite";
-import { Elastic } from "../../../easing/Elastic";
+import { TweenLite, Elastic } from "gs/TweenLite";
 
 import { DescentBasePopup_CLIP } from "./DescentBasePopup_CLIP";
 

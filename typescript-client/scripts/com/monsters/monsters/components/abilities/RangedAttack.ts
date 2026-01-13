@@ -7,7 +7,7 @@ import { Projectilev2 } from "../../../projectiles/Projectilev2";
 import { Targeting } from "../../../../../Targeting";
 
 import { GLOBAL } from "../../../../../GLOBAL";
-import { LoanShark } from "org/kissmyas/utils/loanshark/LoanShark";
+import { LoanShark } from "../../../../../org/kissmyas/utils/loanshark/LoanShark";
 
 /**
  * Ranged attack - fires projectiles at targets within range.
