@@ -7,12 +7,7 @@ import Rectangle from "openfl/geom/Rectangle";
 import { TweenLite } from "../../../gs/TweenLite";
 import { GLOBAL } from "../../../GLOBAL";
 import { Embed } from "../../../core/Embed";
-
-// [Embed(source="/_assets/assets.swf", symbol="ScrollSet_CLIP")]
-declare class ScrollSet_CLIP extends MovieClip {
-    mcScroller: MovieClip;
-    mcBG: MovieClip;
-}
+import { ScrollSet_CLIP } from "../../../ScrollSet_CLIP";
 
 /**
  * Scrollable container with scroll bar UI.

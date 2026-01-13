@@ -10,12 +10,7 @@ import { LOGIN } from "../../../LOGIN";
 import { PLEASEWAIT } from "../../../PLEASEWAIT";
 import { POPUPS } from "../../../POPUPS";
 import { URLLoaderApi } from "../../../URLLoaderApi";
-
-// Forward declaration for MapRoomCell
-declare class MapRoomCell {
-    allianceID: number;
-    alliance: AllyInfo | null;
-}
+import { MapRoomCell } from "../maproom_advanced/MapRoomCell";
 
 /**
  * Alliance management system - handles player alliances and relationships.

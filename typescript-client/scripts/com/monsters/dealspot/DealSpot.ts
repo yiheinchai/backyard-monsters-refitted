@@ -9,16 +9,11 @@ import Security from "openfl/system/Security";
 
 import { GLOBAL } from "../../../GLOBAL";
 import { KEYS } from "../../../KEYS";
+import { UI_TOP } from "../../../UI_TOP";
 
 // Forward declaration
 declare class ExternalInterface {
     static available: boolean;
-}
-
-declare class UI_TOP extends MovieClip {
-    _bubbleDo: boolean;
-    BubbleHide(): void;
-    BubbleShow(x: number, y: number, text: string): void;
 }
 
 /**

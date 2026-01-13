@@ -14,22 +14,8 @@ import { KEYS } from "../../../KEYS";
 import { POPUPSETTINGS } from "../../../POPUPSETTINGS";
 import { SOUNDS } from "../../../SOUNDS";
 import { WMATTACK } from "../../../WMATTACK";
-
-// Declare external clip classes
-declare class AIATTACKPOPUP_CLIP extends Sprite {
-    mcImage: any;
-    mcFrame: any;
-    sendNow: any;
-    waitBtn: any;
-    title_txt: any;
-    name_txt: any;
-    c1: any;
-    c2: any;
-    c3: any;
-}
-declare class bubblepopup3 extends Sprite {
-    Setup: (w: number, h: number, text: string, style: number) => void;
-}
+import { AIATTACKPOPUP_CLIP } from "../../../AIATTACKPOPUP_CLIP";
+import { bubblepopup3 } from "../../../bubblepopup3";
 
 /**
  * Popup displayed when AI is about to attack player's base.

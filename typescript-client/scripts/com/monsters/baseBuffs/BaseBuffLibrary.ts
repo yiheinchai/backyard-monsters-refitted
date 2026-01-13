@@ -1,17 +1,21 @@
 import { BaseBuff } from "./BaseBuff";
+import { TowerDamageBuff } from "./buffs/TowerDamageBuff";
+import { BuildingDefenseBuff } from "./buffs/BuildingDefenseBuff";
+import { MonsterDamageBuff } from "./buffs/monsterDamageBuffs/MonsterDamageBuff";
+import { MonsterAttackDamageBuff } from "./buffs/monsterDamageBuffs/MonsterAttackDamageBuff";
+import { MonsterDefenseDamageBuff } from "./buffs/monsterDamageBuffs/MonsterDefenseDamageBuff";
+import { AllianceArmamentBuff } from "./buffs/AllianceArmamentBuff";
+import { AllianceConquestBuff } from "./buffs/AllianceConquestBuff";
+import { ResourceCapacityBaseBuff } from "./buffs/ResourceCapacityBaseBuff";
+import { AutoBankBaseBuff } from "./buffs/AutoBankBaseBuff";
+import { AllianceDeclareWarBuff } from "./buffs/AllianceDeclareWarBuff";
 
-// Forward declarations for buff types
-declare class TowerDamageBuff extends BaseBuff { static ID: number; }
-declare class BuildingDefenseBuff extends BaseBuff { static ID: number; }
-declare class MonsterDamageBuff extends BaseBuff { static ID: number; }
-declare class MonsterAttackDamageBuff extends BaseBuff { static ID: number; }
-declare class MonsterDefenseDamageBuff extends BaseBuff { static ID: number; }
-declare class AllianceArmamentBuff extends BaseBuff { static ID: number; }
-declare class AllianceConquestBuff extends BaseBuff { static ID: number; }
-declare class ResourceCapacityBaseBuff extends BaseBuff { static ID: number; }
-declare class AutoBankBaseBuff extends BaseBuff { static ID: number; }
-declare class AllianceDeclareWarBuff extends BaseBuff { static ID: number; }
-declare class Console { static print(msg: string): void; }
+// Console for logging
+class Console {
+    static print(msg: string): void {
+        console.log(msg);
+    }
+}
 
 /**
  * Buff data - wrapper for buff type and state.
