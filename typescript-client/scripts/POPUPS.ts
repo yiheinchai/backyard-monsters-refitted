@@ -532,4 +532,35 @@ export class POPUPS {
         }
         return dialogueMC;
     }
+
+    /**
+     * Callback for gift popup
+     */
+    public static CallbackGift(response: string): void {
+        POPUPS.RemoveBG();
+        if (GLOBAL._halt) {
+            GLOBAL.CallJS("reloadPage");
+        }
+    }
+
+    /**
+     * Callback for shiny (credits purchase) popup
+     */
+    public static CallbackShiny(response: string): void {
+        POPUPS.RemoveBG();
+        POPUPS.Next();
+        try {
+            if (response) {
+                const obj = JSON.parse(response);
+                BASE._credits.Set(parseInt(obj.credits));
+                BASE._hpCredits = parseInt(obj.credits);
+                GLOBAL._credits.Set(parseInt(obj.credits));
+            }
+        } catch (e: any) {
+            LOGGER.Log("err", "POPUPS.CallbackShiny " + response + " | " + e.message);
+        }
+        if (GLOBAL._halt) {
+            GLOBAL.CallJS("reloadPage");
+        }
+    }
 }

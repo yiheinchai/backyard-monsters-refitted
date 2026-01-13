@@ -884,4 +884,27 @@ export class UI_TOP extends UI_TOP_CLIP {
             this._popupWarning = null;
         }
     }
+
+    /**
+     * Deselect bomb/attack mode
+     */
+    public BombDeselect(): void {
+        // Empty implementation - placeholder for bomb deselection
+    }
+
+    /**
+     * Deselect monster selection mode
+     */
+    public MonsterDeselect(): void {
+        for (const key in ATTACK._flingerBucket) {
+            if (ATTACK._flingerBucket[key] && ATTACK._flingerBucket[key].Get() > 0) {
+                ATTACK._curCreaturesAvailable[key].Add(ATTACK._flingerBucket[key].Get());
+                ATTACK._flingerBucket[key].Set(0);
+            }
+        }
+        ATTACK.BucketUpdate();
+        for (let i = 0; i < this._creatureButtons.length; i++) {
+            this._creatureButtons[i].Update();
+        }
+    }
 }

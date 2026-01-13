@@ -3,12 +3,13 @@ import Point from 'openfl/geom/Point';
 import { GIBLETS } from './GIBLETS';
 import { SOUNDS } from './SOUNDS';
 import { TweenLite, Sine } from './gs/TweenLite';
+import { GIBLET_CLIP } from './GIBLET_CLIP';
 
 /**
  * GIBLET - Individual Giblet Particle
  * Represents a flying meat particle from monster deaths
  */
-export class GIBLET {
+export class GIBLET extends GIBLET_CLIP {
     private _frame: number = 0;
     private _id: number = 0;
     private _targetPoint: Point | null = null;
@@ -18,16 +19,10 @@ export class GIBLET {
     private yd: number = 0;
     private _targetRotation: number = 0;
     private _speed: number = 0;
-    public x: number = 0;
-    public y: number = 0;
-    public scaleX: number = 1;
-    public scaleY: number = 1;
-    public visible: boolean = true;
-    public cacheAsBitmap: boolean = false;
-    public parent: any = null;
-    public mcDot: any = { y: 0 };
 
-    constructor() {}
+    constructor() {
+        super();
+    }
 
     public init(id: number, startPos: Point, targetPos: Point, distance: number, delay: number, scale: number): void {
         this._id = id;
