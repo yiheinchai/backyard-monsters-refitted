@@ -93,7 +93,7 @@ export class Fomor extends ChampionBase {
         let findNewTarget = false;
         this._targetCreeps = Targeting.getCreepsInRange(1500, this._tmpPoint, Targeting.getOldStyleTargets(1), this);
         if (this._targetCreeps.length > 0) {
-            this._targetCreeps.sortOn(["dist"], Array.NUMERIC);
+            this._targetCreeps.sort((a: any, b: any) => a.dist - b.dist);
             if (!(Boolean(this._targetCreep) && this._targetCreep!.health > 0 && this._targetCreep!.health < this._targetCreep!.maxHealth)) {
                 findNewTarget = true;
                 while (this._targetCreeps.length > 0 && (this._targetCreeps[0].creep._behaviour === "heal" || this._targetCreeps[0].creep.health === this._targetCreeps[0].creep.maxHealth)) {

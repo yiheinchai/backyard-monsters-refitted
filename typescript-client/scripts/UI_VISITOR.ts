@@ -87,7 +87,7 @@ export class UI_VISITOR extends UI_VISITOR_CLIP {
         return UI_VISITOR.s_mc;
     }
 
-    public static Focus(building: BFOUNDATION): Function {
+    public static Focus(building: BFOUNDATION): (event?: MouseEvent) => void {
         return (param1: MouseEvent = null): void => {
             MAP.FocusTo(building._mc.x, building._mc.y, 0.6);
             BASE.BuildingSelect(building, true);

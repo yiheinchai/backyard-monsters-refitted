@@ -623,7 +623,7 @@ export class CreepBase extends MonsterBase {
         
         this._targetCreeps = Targeting.getCreepsInRange(600, this._tmpPoint, this.attackFlags, this);
         if (this._targetCreeps.length > 0) {
-            this._targetCreeps.sortOn(["dist"], Array.NUMERIC);
+            this._targetCreeps.sort((a: any, b: any) => a.dist - b.dist);
             if (!(this._targetCreep && this._targetCreep.health > 0 && this._targetCreep.health < this._targetCreep.maxHealth)) {
                 while (this._targetCreeps.length > 0 && 
                        (this._targetCreeps[0].creep._creatureID.substring(0, 1) === "C" && 
@@ -674,7 +674,7 @@ export class CreepBase extends MonsterBase {
     public findDefenseTargets(): void {
         this._targetCreeps = Targeting.getCreepsInRange(200, this._tmpPoint, Targeting.getOldStyleTargets(this.targetMode));
         if (this._targetCreeps.length) {
-            this._targetCreeps.sortOn(["dist"], Array.NUMERIC);
+            this._targetCreeps.sort((a: any, b: any) => a.dist - b.dist);
             while (this._targetCreeps.length > 0 && this._targetCreeps[0].creep._behaviour === MonsterBase.k_sBHVR_RETREAT) {
                 this._targetCreeps.splice(0, 1);
             }

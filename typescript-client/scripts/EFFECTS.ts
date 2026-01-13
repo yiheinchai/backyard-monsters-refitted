@@ -2,6 +2,7 @@ import { LASERS } from './com/monsters/effects/LASERS';
 import { ResourceBombs } from './com/monsters/effects/ResourceBombs';
 import { Particles } from './com/monsters/effects/particles/Particles';
 import BitmapData from 'openfl/display/BitmapData';
+import BlendMode from 'openfl/display/BlendMode';
 import DisplayObject from 'openfl/display/DisplayObject';
 import DisplayObjectContainer from 'openfl/display/DisplayObjectContainer';
 import Shape from 'openfl/display/Shape';
@@ -117,7 +118,7 @@ export class EFFECTS {
             lightning.filters = [new GlowFilter(color, 1, 4, 4, 2, 1, false, false)];
         }
         lightning.graphics.lineTo(x2 - 5 + Math.random() * 10, y2 - Math.random() * 10);
-        lightning.blendMode = "add";
+        lightning.blendMode = BlendMode.ADD;
         EFFECTS._trash["i" + EFFECTS._itemCount] = {
             counter: 0,
             container: container,

@@ -18,6 +18,8 @@ export class subscriptions_promo_popup extends MovieClip {
     public tDescription2: TextField;
     public mcImageBG: MovieClip;
     public mcArrowRight: MovieClip;
+    public bJoin: MovieClip;
+    public mcArrowLeft: MovieClip;
 
     constructor() {
         super();

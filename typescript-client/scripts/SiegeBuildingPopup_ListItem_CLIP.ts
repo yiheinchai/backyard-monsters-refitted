@@ -1,6 +1,7 @@
 import MovieClip from 'openfl/display/MovieClip';
 import TextField from 'openfl/text/TextField';
 import { creatureBar } from './creatureBar';
+import { SiegeWeapon } from './com/monsters/siege/weapons/SiegeWeapon';
 import { Embed } from "./core/Embed";
 //    [Embed(source="/_assets/assets.swf", symbol="SiegeBuildingPopup_ListItem_CLIP")]
 
@@ -26,6 +27,8 @@ export class SiegeBuildingPopup_ListItem_CLIP extends MovieClip {
     public mcImage: MovieClip;
     public tDescription: TextField;
     public star10: MovieClip;
+    // Dynamic property for siege weapon reference
+    public siegeWeapon: SiegeWeapon | null = null;
 
     constructor() {
         super();

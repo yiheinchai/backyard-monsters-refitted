@@ -480,7 +480,7 @@ export class ChampionBase extends MonsterBase {
         this.getTargetCreeps();
         
         if (this._targetCreeps.length > 0) {
-            this._targetCreeps.sortOn(["dist"], Array.NUMERIC);
+            this._targetCreeps.sort((a: any, b: any) => a.dist - b.dist);
             while (this._targetCreeps.length > 0 && 
                    (this._targetCreeps[0].creep._behaviour === "retreat" || 
                     (this._movement !== "fly" && this._targetCreeps[0].creep._creatureID === "C5"))) {

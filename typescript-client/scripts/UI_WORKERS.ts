@@ -71,7 +71,7 @@ export class UI_WORKERS {
         }
     }
 
-    private static MouseOver(i: number): Function {
+    private static MouseOver(i: number): (event?: MouseEvent) => void {
         return (param1: MouseEvent = null): void => {
             let _loc3_: string;
             const _loc2_ = UI_WORKERS._workers[i];
@@ -92,7 +92,7 @@ export class UI_WORKERS {
         UI_WORKERS.PopupHide();
     }
 
-    private static MouseClicked(i: number): Function {
+    private static MouseClicked(i: number): (event?: MouseEvent) => void {
         return (param1: MouseEvent = null): void => {
             if (UI_WORKERS._workers[i]) {
                 if (UI_WORKERS._workers[i].purchased) {

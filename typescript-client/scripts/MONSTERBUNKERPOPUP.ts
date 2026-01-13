@@ -143,7 +143,7 @@ export class MONSTERBUNKERPOPUP extends MONSTERBUNKERPOPUP_CLIP {
         param3[0].mcLoading.visible = false;
     }
 
-    private Switch(param1: string): Function {
+    private Switch(param1: string): (event: MouseEvent) => void {
         const mode: string = param1;
         const self = this;
         return function(param1: MouseEvent): void {

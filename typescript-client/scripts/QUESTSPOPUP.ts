@@ -166,7 +166,7 @@ export class QUESTSPOPUP extends QUESTSPOPUP_CLIP {
         }
     }
 
-    public ShowQuest(questID: string): Function {
+    public ShowQuest(questID: string): (event: MouseEvent) => void {
         return (param1: MouseEvent): void => {
             this.ShowQuestB(questID);
         };
@@ -272,7 +272,7 @@ export class QUESTSPOPUP extends QUESTSPOPUP_CLIP {
         }
     }
 
-    public Collect(questID: string): Function {
+    public Collect(questID: string): (event?: MouseEvent) => void {
         return (param1: MouseEvent = null): void => {
             this._infoMC.bCollect.enabled = false;
             QUESTS.CollectB(questID);

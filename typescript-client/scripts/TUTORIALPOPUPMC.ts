@@ -2,6 +2,7 @@ import MovieClip from 'openfl/display/MovieClip';
 import Event from 'openfl/events/Event';
 import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
+import TextFieldAutoSize from 'openfl/text/TextFieldAutoSize';
 import { TUTORIALPOPUPMC_CLIP } from './TUTORIALPOPUPMC_CLIP';
 import { TUTORIAL } from './TUTORIAL';
 import { GLOBAL } from './GLOBAL';
@@ -25,7 +26,7 @@ export class TUTORIALPOPUPMC extends TUTORIALPOPUPMC_CLIP {
         this.mcButton.addEventListener(MouseEvent.CLICK, TUTORIAL.Advance);
         this.mcButton.Highlight = true;
         this.mcBlocker.mouseEnabled = true;
-        this.mcText.autoSize = "left";
+        this.mcText.autoSize = TextFieldAutoSize.LEFT;
         this.posX = param1;
         this.posY = param2;
         this.m_origButtonWidth = this.mcButton.width;

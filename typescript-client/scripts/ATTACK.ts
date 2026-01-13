@@ -1,4 +1,5 @@
 import Point from 'openfl/geom/Point';
+import TextFieldAutoSize from 'openfl/text/TextFieldAutoSize';
 import { SecNum } from './com/cc/utils/SecNum';
 import { ALLIANCES } from './com/monsters/alliances/ALLIANCES';
 import { BYMConfig } from './com/monsters/configs/BYMConfig';
@@ -372,7 +373,7 @@ export class ATTACK {
                 let str = ATTACK.LogRead();
                 str += "<br><br>";
                 ATTACK._attackLog.shell.body_txt.htmlText = str;
-                ATTACK._attackLog.shell.body_txt.autoSize = "left";
+                ATTACK._attackLog.shell.body_txt.autoSize = TextFieldAutoSize.LEFT;
                 
                 const ss = new ScrollSet();
                 ATTACK._attackLog.addChild(ss);
