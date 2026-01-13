@@ -1,6 +1,6 @@
 import { Reward } from "../../../../rewarding/Reward";
 
-import { GLOBAL } from "../../../../../GLOBAL";
+import { GLOBAL } from "../../../../../../GLOBAL";
 import { SpurtzCannon } from "../../../../../../SpurtzCannon";
 
 /**

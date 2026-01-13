@@ -1,7 +1,7 @@
 import { BuildingEvent } from "../../../../events/BuildingEvent";
 import { KeywordMessage } from "../../../../frontPage/messages/KeywordMessage";
 
-import { GLOBAL } from "../../../../../GLOBAL";
+import { GLOBAL } from "../../../../../../GLOBAL";
 import { BASE } from "../../../../../../BASE";
 import { POPUPS } from "../../../../../../POPUPS";
 import { YARD_PROPS } from "../../../../../../YARD_PROPS";

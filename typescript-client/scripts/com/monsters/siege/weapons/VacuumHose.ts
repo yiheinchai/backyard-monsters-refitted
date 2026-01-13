@@ -12,7 +12,7 @@ import { IAttackable } from "../../interfaces/IAttackable";
 import { ITargetable } from "../../interfaces/ITargetable";
 import { ITickable } from "../../interfaces/ITickable";
 import { SiegeWeapons } from "../SiegeWeapons";
-import { ResourceOutpost } from "../../ResourceOutpost";
+import { ResourceOutpost } from "../../../../ResourceOutpost";
 
 import { ATTACK } from "../../../../ATTACK";
 import { BASE } from "../../../../BASE";

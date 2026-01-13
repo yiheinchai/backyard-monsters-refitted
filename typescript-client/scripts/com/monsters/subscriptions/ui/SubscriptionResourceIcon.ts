@@ -1,4 +1,4 @@
-import { daveClubBar } from "../../../daveClubBar";
+import { daveClubBar } from "../../../../daveClubBar";
 
 /**
  * Subscription resource icon - shows subscription status on resource bar.

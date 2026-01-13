@@ -1,7 +1,7 @@
 import DisplayObject from "openfl/display/DisplayObject";
 
 import { MonsterMadnessPopupInfo } from "./MonsterMadnessPopupInfo";
-import { MonsterMadnessPopup } from "../MonsterMadnessPopup";
+import { MonsterMadnessPopup } from "./MonsterMadnessPopup";
 
 import { Button } from "../../../../../Button";
 

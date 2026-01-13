@@ -7,10 +7,10 @@ import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { UI_MISSIONMENU } from "../missions/UI_MISSIONMENU";
 import { MonsterMadness } from "../replayableEvents/attacking/monsterMadness/MonsterMadness";
 import { MonsterMadnessInfoBar } from "../replayableEvents/attacking/monsterMadness/MonsterMadnessInfoBar";
-import { UI_MENU } from "./UI_MENU";
-import { UI_NEXTWAVE } from "./UI_NEXTWAVE";
-import { UI_NEXTWAVE_WM1 } from "./UI_NEXTWAVE_WM1";
-import { popup_prefab_help } from "../popup_prefab_help";
+import { UI_MENU } from "../../../UI_MENU";
+import { UI_NEXTWAVE } from "../../../UI_NEXTWAVE";
+import { UI_NEXTWAVE_WM1 } from "../../../UI_NEXTWAVE_WM1";
+import { popup_prefab_help } from "../../../popup_prefab_help";
 
 import { BASE } from "../../../BASE";
 import { BUILDINGS } from "../../../BUILDINGS";

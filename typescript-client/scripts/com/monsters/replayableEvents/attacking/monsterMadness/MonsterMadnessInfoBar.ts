@@ -6,7 +6,7 @@ import Timer from "openfl/utils/Timer";
 import { Chat } from "../../../chat/Chat";
 import { ImageCache } from "../../../display/ImageCache";
 import { MonsterMadness } from "./MonsterMadness";
-import { MonsterMadnessBar_CLIP } from "./MonsterMadnessBar_CLIP";
+import { MonsterMadnessBar_CLIP } from "../../../../../MonsterMadnessBar_CLIP";
 
 import { BASE } from "../../../../../BASE";
 import { GLOBAL } from "../../../../../GLOBAL";

@@ -4,9 +4,9 @@ import MovieClip from "openfl/display/MovieClip";
 import Event from "openfl/events/Event";
 import MouseEvent from "openfl/events/MouseEvent";
 
-import { ImageCache } from "../../../display/ImageCache";
-import { SubscriptionHandler } from "../../SubscriptionHandler";
-import { subscriptions_promo_popup } from "../../../subscriptions_promo_popup";
+import { ImageCache } from "../../display/ImageCache";
+import { SubscriptionHandler } from "../SubscriptionHandler";
+import { subscriptions_promo_popup } from "../../../../subscriptions_promo_popup";
 
 import { KEYS } from "../../../../KEYS";
 import { GLOBAL } from "../../../../GLOBAL";

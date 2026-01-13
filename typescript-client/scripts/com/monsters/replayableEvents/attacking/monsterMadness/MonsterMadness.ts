@@ -1,13 +1,13 @@
 import Event from "openfl/events/Event";
 
-import { SecNum } from "../../../cc/utils/SecNum";
-import { Console } from "../../debug/Console";
-import { KorathReward } from "../../replayableEvents/looting/wotc/rewards/KorathReward";
-import { MonsterMadnessPopup } from "../monsterMadness/popups/MonsterMadnessPopup";
+import { SecNum } from "../../../../cc/utils/SecNum";
+import { Console } from "../../../debug/Console";
+import { KorathReward } from "../../looting/wotc/rewards/KorathReward";
+import { MonsterMadnessPopup } from "../../monsterMadness/popups/MonsterMadnessPopup";
 import { MonsterMadnessInfoBar } from "./MonsterMadnessInfoBar";
-import { Reward } from "../../rewarding/Reward";
-import { RewardHandler } from "../../rewarding/RewardHandler";
-import { RewardLibrary } from "../../rewarding/RewardLibrary";
+import { Reward } from "../../../rewarding/Reward";
+import { RewardHandler } from "../../../rewarding/RewardHandler";
+import { RewardLibrary } from "../../../rewarding/RewardLibrary";
 
 import { BASE } from "../../../../../BASE";
 import { GLOBAL } from "../../../../../GLOBAL";

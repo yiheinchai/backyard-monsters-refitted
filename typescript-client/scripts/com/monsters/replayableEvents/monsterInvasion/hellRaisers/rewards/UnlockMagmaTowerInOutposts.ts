@@ -1,6 +1,6 @@
 import { Reward } from "../../../../rewarding/Reward";
 
-import { GLOBAL } from "../../../../../GLOBAL";
+import { GLOBAL } from "../../../../../../GLOBAL";
 import { BASE } from "../../../../../../BASE";
 import { INFERNO_MAGMA_TOWER } from "../../../../../../INFERNO_MAGMA_TOWER";
 

@@ -1,16 +1,16 @@
-import { Message } from "../../../../frontPage/messages/Message";
-import { MonsterBlitzkriegPromoMessage1 } from "../../../../frontPage/messages/events/monsterBlitzkrieg/MonsterBlitzkriegPromoMessage1";
-import { MonsterBlitzkriegPromoMessage2 } from "../../../../frontPage/messages/events/monsterBlitzkrieg/MonsterBlitzkriegPromoMessage2";
-import { MonsterBlitzkriegPromoMessage3 } from "../../../../frontPage/messages/events/monsterBlitzkrieg/MonsterBlitzkriegPromoMessage3";
-import { MonsterBlitzkriegStartMessage } from "../../../../frontPage/messages/events/monsterBlitzkrieg/MonsterBlitzkriegStartMessage";
-import { MonsterBlitzkriegEndMessage } from "../../../../frontPage/messages/events/monsterBlitzkrieg/MonsterBlitzkriegEndMessage";
-import { MonsterBlitzkriegRewardMessage } from "../../../../frontPage/messages/events/monsterBlitzkrieg/MonsterBlitzkriegRewardMessage";
+import { Message } from "../../../frontPage/messages/Message";
+import { MonsterBlitzkriegPromoMessage1 } from "../../../frontPage/messages/events/monsterBlitzkrieg/MonsterBlitzkriegPromoMessage1";
+import { MonsterBlitzkriegPromoMessage2 } from "../../../frontPage/messages/events/monsterBlitzkrieg/MonsterBlitzkriegPromoMessage2";
+import { MonsterBlitzkriegPromoMessage3 } from "../../../frontPage/messages/events/monsterBlitzkrieg/MonsterBlitzkriegPromoMessage3";
+import { MonsterBlitzkriegStartMessage } from "../../../frontPage/messages/events/monsterBlitzkrieg/MonsterBlitzkriegStartMessage";
+import { MonsterBlitzkriegEndMessage } from "../../../frontPage/messages/events/monsterBlitzkrieg/MonsterBlitzkriegEndMessage";
+import { MonsterBlitzkriegRewardMessage } from "../../../frontPage/messages/events/monsterBlitzkrieg/MonsterBlitzkriegRewardMessage";
 import { MonsterInvasion } from "../MonsterInvasion";
 import { WaveObj } from "../WaveObj";
-import { RewardHandler } from "../../../../rewarding/RewardHandler";
-import { RewardLibrary } from "../../../../rewarding/RewardLibrary";
-import { UnblockSlimeattikusReward } from "../../../../rewarding/rewards/slimeattikus/UnblockSlimeattikusReward";
-import { UnlockSlimeattikusReward } from "../../../../rewarding/rewards/slimeattikus/UnlockSlimeattikusReward";
+import { RewardHandler } from "../../../rewarding/RewardHandler";
+import { RewardLibrary } from "../../../rewarding/RewardLibrary";
+import { UnblockSlimeattikusReward } from "../../../rewarding/rewards/slimeattikus/UnblockSlimeattikusReward";
+import { UnlockSlimeattikusReward } from "../../../rewarding/rewards/slimeattikus/UnlockSlimeattikusReward";
 
 import { GLOBAL } from "../../../../../GLOBAL";
 

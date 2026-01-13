@@ -3,7 +3,7 @@ import Point from "openfl/geom/Point";
 import { InstanceManager } from "../../../../managers/InstanceManager";
 import { Reward } from "../../../../rewarding/Reward";
 
-import { GLOBAL } from "../../../../../GLOBAL";
+import { GLOBAL } from "../../../../../../GLOBAL";
 import { BASE } from "../../../../../../BASE";
 import { GRID } from "../../../../../../GRID";
 import { BFOUNDATION } from "../../../../../../BFOUNDATION";
