@@ -1,0 +1,11 @@
+import { UI_WARNING_CLIP } from './UI_WARNING_CLIP';
+
+export class UI_WARNING extends UI_WARNING_CLIP {
+    constructor() {
+        super();
+    }
+
+    public Update(param1: string): void {
+        (this.mc as any).tText.htmlText = param1;
+    }
+}

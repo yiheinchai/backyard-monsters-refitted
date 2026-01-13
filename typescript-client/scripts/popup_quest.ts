@@ -1,0 +1,21 @@
+import MovieClip from "openfl/display/MovieClip";
+import TextField from "openfl/text/TextField";
+
+import { Button_CLIP } from "./Button_CLIP";
+import { buttonClose_CLIP } from "./buttonClose_CLIP";
+import { frame_CLIP } from "./frame_CLIP";
+import { Embed } from "./core/Embed";
+
+// [Embed(source="/_assets/assets.swf", symbol="popup_quest")]
+@Embed({ source: "/_assets/assets.swf", symbol: "popup_quest" })
+export class popup_quest extends MovieClip {
+    public mcBG: frame_CLIP;
+    public tA: TextField;
+    public mcImage: MovieClip;
+    public bAction: Button_CLIP;
+    public bClose: buttonClose_CLIP;
+
+    constructor() {
+        super();
+    }
+}
