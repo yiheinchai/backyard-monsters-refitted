@@ -1,4 +1,4 @@
-import { SecNum } from "com.cc.utils.SecNum";
+import { SecNum } from "./com/cc/utils/SecNum";
 import Bitmap from "openfl/display/Bitmap";
 import BitmapData from "openfl/display/BitmapData";
 import MovieClip from "openfl/display/MovieClip";

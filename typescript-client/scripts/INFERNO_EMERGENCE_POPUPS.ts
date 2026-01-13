@@ -1,5 +1,5 @@
-import { INFERNO_EMERGENCE_ATTACKPOPUP } from "com.monsters.ai.INFERNO_EMERGENCE_ATTACKPOPUP";
-import { ImageCache } from "com.monsters.display.ImageCache";
+import { INFERNO_EMERGENCE_ATTACKPOPUP } from "./com/monsters/ai/INFERNO_EMERGENCE_ATTACKPOPUP";
+import { ImageCache } from "./com/monsters/display/ImageCache";
 import Bitmap from "openfl/display/Bitmap";
 import BitmapData from "openfl/display/BitmapData";
 import MovieClip from "openfl/display/MovieClip";

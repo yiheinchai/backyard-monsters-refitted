@@ -1,11 +1,11 @@
-import { BuildingAssetContainer } from "com.monsters.display.BuildingAssetContainer";
+import { BuildingAssetContainer } from "./com/monsters/display/BuildingAssetContainer";
 import DisplayObject from "openfl/display/DisplayObject";
 import MovieClip from "openfl/display/MovieClip";
 import Event from "openfl/events/Event";
 import MouseEvent from "openfl/events/MouseEvent";
 import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
-import { TweenLite } from "gs/TweenLite";
-import { Quad } from "gs/easing/Quad";
+import { TweenLite } from "./gs/TweenLite";
+import { Quad } from "./gs/easing/Quad";
 import { SALESPECIALSPOPUP_CLIP } from "./SALESPECIALSPOPUP_CLIP";
 import { KEYS } from "./KEYS";
 import { GLOBAL } from "./GLOBAL";

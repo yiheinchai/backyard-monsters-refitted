@@ -1,7 +1,7 @@
-import { TRIBES } from "com.monsters.ai.TRIBES";
-import { WMBASE } from "com.monsters.ai.WMBASE";
-import { Message } from "com.monsters.mailbox.Message";
-import { MapRoom } from "com.monsters.maproom_inferno.MapRoom";
+import { TRIBES } from "./com/monsters/ai/TRIBES";
+import { WMBASE } from "./com/monsters/ai/WMBASE";
+import { Message } from "./com/monsters/mailbox/Message";
+import { MapRoom as InfernoMapRoom } from "./com/monsters/maproom_inferno/MapRoom";
 import MovieClip from "openfl/display/MovieClip";
 import MouseEvent from "openfl/events/MouseEvent";
 import ProgressEvent from "openfl/events/ProgressEvent";

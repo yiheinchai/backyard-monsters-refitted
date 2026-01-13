@@ -1,12 +1,12 @@
-import { ImageCache } from "com.monsters.display.ImageCache";
-import { ScrollSet } from "com.monsters.display.ScrollSet";
+import { ImageCache } from "./com/monsters/display/ImageCache";
+import { ScrollSet } from "./com/monsters/display/ScrollSet";
 import Bitmap from "openfl/display/Bitmap";
 import BitmapData from "openfl/display/BitmapData";
 import MovieClip from "openfl/display/MovieClip";
 import Sprite from "openfl/display/Sprite";
 import MouseEvent from "openfl/events/MouseEvent";
 import TextField from "openfl/text/TextField";
-import { TweenLite } from "gs/TweenLite";
+import { TweenLite } from "./gs/TweenLite";
 import { MONSTERLABPOPUP_CLIP } from "./MONSTERLABPOPUP_CLIP";
 import { MONSTERLAB } from "./MONSTERLAB";
 import { MONSTERLABITEM_CLIP } from "./MONSTERLABITEM_CLIP";

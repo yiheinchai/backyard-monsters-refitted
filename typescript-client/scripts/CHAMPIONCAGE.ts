@@ -1,7 +1,7 @@
 import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
-import { TweenLite, Quad } from 'gsap';
+import { TweenLite, Quad } from './gs';
 import { SecNum } from './com/cc/utils/SecNum';
 import { BYMConfig } from './com/monsters/configs/BYMConfig';
 import { ITargetable } from './com/monsters/interfaces/ITargetable';

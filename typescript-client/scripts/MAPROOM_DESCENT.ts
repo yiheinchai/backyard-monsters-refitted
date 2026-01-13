@@ -1,8 +1,8 @@
-import { PROCESS7 } from "com.monsters.ai.PROCESS7";
-import { TRIBES } from "com.monsters.ai.TRIBES";
-import { WMBASE } from "com.monsters.ai.WMBASE";
-import { Message } from "com.monsters.mailbox.Message";
-import { DescentMapRoom } from "com.monsters.maproom_inferno.DescentMapRoom";
+import { PROCESS7 } from "./com/monsters/ai/PROCESS7";
+import { TRIBES } from "./com/monsters/ai/TRIBES";
+import { WMBASE } from "./com/monsters/ai/WMBASE";
+import { Message } from "./com/monsters/mailbox/Message";
+import { DescentMapRoom } from "./com/monsters/maproom_inferno/DescentMapRoom";
 import MovieClip from "openfl/display/MovieClip";
 import Event from "openfl/events/Event";
 import MouseEvent from "openfl/events/MouseEvent";

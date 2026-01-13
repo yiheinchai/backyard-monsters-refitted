@@ -1,9 +1,9 @@
-import { SecNum } from "com.cc.utils.SecNum";
-import { ImageCache } from "com.monsters.display.ImageCache";
-import { ScrollSet } from "com.monsters.display.ScrollSet";
-import { InstanceManager } from "com.monsters.managers.InstanceManager";
-import { MonsterBase } from "com.monsters.monsters.MonsterBase";
-import { CreepBase } from "com.monsters.monsters.creeps.CreepBase";
+import { SecNum } from "./com/cc/utils/SecNum";
+import { ImageCache } from "./com/monsters/display/ImageCache";
+import { ScrollSet } from "./com/monsters/display/ScrollSet";
+import { InstanceManager } from "./com/monsters/managers/InstanceManager";
+import { MonsterBase } from "./com/monsters/monsters/MonsterBase";
+import { CreepBase } from "./com/monsters/monsters/creeps/CreepBase";
 import Bitmap from "openfl/display/Bitmap";
 import BitmapData from "openfl/display/BitmapData";
 import MovieClip from "openfl/display/MovieClip";
