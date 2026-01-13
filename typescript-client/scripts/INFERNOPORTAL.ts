@@ -74,7 +74,7 @@ export class INFERNOPORTAL extends BFOUNDATION {
                 if (monster.substr(0, 2) === "IC") {
                     const val = typeof serverData.imonsters[monster] === 'number'
                         ? serverData.imonsters[monster] as number
-                        : INFERNOPORTAL.numHealthyCreeps(monster, serverData.imonsters[monster] as number);
+                        : INFERNOPORTAL.numHealthyCreeps(monster, serverData.imonsters[monster] as any[]);
                     INFERNOPORTAL._ascensionData![monster] = new SecNum(val);
                     INFERNOPORTAL._ogAscensionData![monster] = INFERNOPORTAL._ascensionData![monster].Get();
                 }

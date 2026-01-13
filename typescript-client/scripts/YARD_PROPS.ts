@@ -101,6 +101,7 @@ export interface BuildingProps {
     repairTime: number[];
     block?: boolean;
     rewarded?: boolean;
+    attackType?: number;
 }
 
 /**

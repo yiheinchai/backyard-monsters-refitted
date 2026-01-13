@@ -1,4 +1,5 @@
 import CapsStyle from "openfl/display/CapsStyle";
+import LineScaleMode from "openfl/display/LineScaleMode";
 import Shape from "openfl/display/Shape";
 import Sprite from "openfl/display/Sprite";
 import Point from "openfl/geom/Point";
@@ -38,7 +39,7 @@ export class DashedLine extends Sprite {
         }
         this.lineWeight = weight;
         this.lineColor = color;
-        this.stroke.graphics.lineStyle(this.lineWeight, this.lineColor, this.lineAlpha, false, "none", CapsStyle.NONE);
+        this.stroke.graphics.lineStyle(this.lineWeight, this.lineColor, this.lineAlpha, false, LineScaleMode.NONE, CapsStyle.NONE);
         this.addChild(this.fill);
         this.addChild(this.stroke);
     }
@@ -114,7 +115,7 @@ export class DashedLine extends Sprite {
 
     public clear(): void {
         this.stroke.graphics.clear();
-        this.stroke.graphics.lineStyle(this.lineWeight, this.lineColor, this.lineAlpha, false, "none", CapsStyle.NONE);
+        this.stroke.graphics.lineStyle(this.lineWeight, this.lineColor, this.lineAlpha, false, LineScaleMode.NONE, CapsStyle.NONE);
         this.fill.graphics.clear();
         this.moveTo(0, 0);
     }
@@ -123,7 +124,7 @@ export class DashedLine extends Sprite {
         this.lineWeight = weight;
         this.lineColor = color;
         this.lineAlpha = alpha;
-        this.stroke.graphics.lineStyle(this.lineWeight, this.lineColor, this.lineAlpha, false, "none", CapsStyle.NONE);
+        this.stroke.graphics.lineStyle(this.lineWeight, this.lineColor, this.lineAlpha, false, LineScaleMode.NONE, CapsStyle.NONE);
     }
 
     public beginFill(color: number, alpha: number = 1): void {
