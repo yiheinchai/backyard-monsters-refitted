@@ -1182,9 +1182,13 @@ export class GLOBAL {
      * Get the player's guardian index.
      * Returns 0 if no guardian is active.
      */
-    public static getPlayerGuardianIndex(): number {
-        // TODO: Implement guardian logic when guardian system is ported
-        return 0;
+    public static getPlayerGuardianIndex(guardianType: number): number {
+        for (let i = 0; i < GLOBAL._playerGuardianData.length; i++) {
+            if (GLOBAL._playerGuardianData[i].t === guardianType) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**

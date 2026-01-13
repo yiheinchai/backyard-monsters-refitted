@@ -10,7 +10,8 @@ import { Embed } from "./core/Embed";
 export class buttonZoom_CLIP extends buttonZoom {
     constructor() {
         super();
-        this.addFrameScript(0, this.frame1.bind(this), 3, this.frame4.bind(this));
+        this.addFrameScript(0, this.frame1.bind(this));
+        this.addFrameScript(3, this.frame4.bind(this));
     }
 
     private frame1(): void {
