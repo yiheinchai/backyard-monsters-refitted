@@ -12,7 +12,7 @@ import { ITargetable } from "../../interfaces/ITargetable";
 import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
 import { MonsterBase } from "../MonsterBase";
 import { Component } from "../components/Component";
-import { IAttackingComponent } from "../components/abilities/IAttackingComponent";
+import { IAttackingComponent } from "../components/IAttackingComponent";
 import { CModifiableProperty } from "../components/CModifiableProperty";
 import { AdditionPropertyModifier } from "../components/modifiers/AdditionPropertyModifier";
 import { PATHING } from "../../pathing/PATHING";

@@ -1,7 +1,7 @@
 import Point from "openfl/geom/Point";
 
 import { MonsterBase } from "../../MonsterBase";
-import { BlinkOnAttack } from "../../../components/abilities/BlinkOnAttack";
+import { BlinkOnAttack } from "../../components/abilities/BlinkOnAttack";
 import { CreepBase } from "../CreepBase";
 
 import { BFOUNDATION } from "../../../../../BFOUNDATION";

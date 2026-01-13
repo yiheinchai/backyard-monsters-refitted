@@ -4,9 +4,9 @@ import { IAttackable } from "../../../interfaces/IAttackable";
 import { ITargetable } from "../../../interfaces/ITargetable";
 import { MonsterBase } from "../../MonsterBase";
 import { Targeting } from "../../../../../Targeting";
-import { AOEDamageOnDeath } from "../../../components/abilities/AOEDamageOnDeath";
-import { AcidOnDeath } from "../../../components/abilities/AcidOnDeath";
-import { AdditionPropertyModifier } from "../../../components/modifiers/AdditionPropertyModifier";
+import { AOEDamageOnDeath } from "../../components/abilities/AOEDamageOnDeath";
+import { AcidOnDeath } from "../../components/abilities/AcidOnDeath";
+import { AdditionPropertyModifier } from "../../components/modifiers/AdditionPropertyModifier";
 import { CreepBase } from "../CreepBase";
 
 import { BFOUNDATION } from "../../../../../BFOUNDATION";

@@ -1,7 +1,7 @@
 import Point from "openfl/geom/Point";
 
 import { MonsterBase } from "../../MonsterBase";
-import { AbsorbProjectiles } from "../../../components/abilities/AbsorbProjectiles";
+import { AbsorbProjectiles } from "../../components/abilities/AbsorbProjectiles";
 import { CreepBase } from "../CreepBase";
 
 import { BFOUNDATION } from "../../../../../BFOUNDATION";

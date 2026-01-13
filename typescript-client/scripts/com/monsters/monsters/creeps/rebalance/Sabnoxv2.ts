@@ -7,7 +7,7 @@ import { ProjectileUtils } from "../../../projectiles/ProjectileUtils";
 import { Projectilev2 } from "../../../projectiles/Projectilev2";
 
 import { BFOUNDATION } from "../../../../../BFOUNDATION";
-import { LoanShark } from "org/kissmyas/utils/loanshark/LoanShark";
+import { LoanShark } from "../../../../../org/kissmyas/utils/loanshark/LoanShark";
 
 /**
  * Sabnox v2 - rebalanced inferno creep with projectile pool.

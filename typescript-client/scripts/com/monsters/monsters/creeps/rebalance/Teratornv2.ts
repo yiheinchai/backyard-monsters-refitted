@@ -10,8 +10,8 @@ import { GlaiveProjectileComponent } from "../../../projectiles/projectileCompon
 import { SetFireProjectileComponent } from "../../../projectiles/projectileComponents/SetFireProjectileComponent";
 
 import { BFOUNDATION } from "../../../../../BFOUNDATION";
-import { SPRITES } from "../../../../SPRITES";
-import { LoanShark } from "org/kissmyas/utils/loanshark/LoanShark";
+import { SPRITES } from "../../../../../SPRITES";
+import { LoanShark } from "../../../../../org/kissmyas/utils/loanshark/LoanShark";
 
 /**
  * Teratorn v2 - rebalanced flying creep with glaive and fire projectiles.
