@@ -752,7 +752,7 @@ export class CreepBase extends MonsterBase {
         for (let i = 0; i < len; i++) {
             const comp: Component = this._attackComponents[i];
             if ((comp as any).onAttack) {
-                (comp as IAttackingComponent).onAttack(target, damage, source);
+                ((comp as unknown) as IAttackingComponent).onAttack(target, damage, source);
             }
         }
     }

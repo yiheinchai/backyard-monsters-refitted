@@ -38,12 +38,12 @@ export class MISSIONS_ITEM extends UI_MISSIONS_ITEM_CLIP {
         let nametxt = KEYS.Get(this._missionObject.name, this._missionObject.keyvars);
         let description = KEYS.Get(this._missionObject.description, this._missionObject.keyvars);
         
-        description = description.replace("#installsgenerated#", BASE._installsGenerated);
-        description = description.replace("#mushroomspicked#", QUESTS._global.mushroomspicked);
-        description = description.replace("#goldmushroomspicked#", QUESTS._global.goldmushroomspicked);
-        description = description.replace("#monstersblended#", QUESTS._global.monstersblended);
-        description = description.replace("#giftssent#", QUESTS._global.bonus_gifts);
-        description = description.replace("#sentgiftsaccepted#", QUESTS._global.gift_accept);
+        description = description.replace("#installsgenerated#", String(BASE._installsGenerated));
+        description = description.replace("#mushroomspicked#", String(QUESTS._global.mushroomspicked));
+        description = description.replace("#goldmushroomspicked#", String(QUESTS._global.goldmushroomspicked));
+        description = description.replace("#monstersblended#", String(QUESTS._global.monstersblended));
+        description = description.replace("#giftssent#", String(QUESTS._global.bonus_gifts));
+        description = description.replace("#sentgiftsaccepted#", String(QUESTS._global.gift_accept));
         
         this.tName.htmlText = "<b>" + nametxt + "</b>";
         

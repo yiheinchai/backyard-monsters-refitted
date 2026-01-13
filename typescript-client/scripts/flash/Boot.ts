@@ -128,7 +128,7 @@ export class Boot extends MovieClip {
     public start(): void {
         const current = Lib.current;
         try {
-            if (current === this && current.stage !== null && current.stage.align === "") {
+            if (current === this && current.stage !== null && (current.stage.align as string) === "") {
                 current.stage.align = "TOP_LEFT" as any;
             }
         } catch (e) {

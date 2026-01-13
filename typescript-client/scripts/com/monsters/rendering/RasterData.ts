@@ -15,7 +15,7 @@ export class RasterData {
     // Static collections
     private static s_rasterData: RasterData[] = [];
     private static s_visibleData: RasterData[] = [];
-    private static s_unsortedData: RasterData[] = [];
+    public static s_unsortedData: RasterData[] = [];
     private static s_debugData: RasterData[] = [];
     public static s_needsSort: boolean = false;
     private static s_id: number = 0;

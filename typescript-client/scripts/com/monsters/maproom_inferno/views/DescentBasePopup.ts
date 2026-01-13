@@ -60,7 +60,7 @@ export class DescentBasePopup extends DescentBasePopup_CLIP {
                 this.depthTxt2 = "";
         }
         const barWidth: number = 100 / this.maxDepth * level;
-        this.depthBar.mcBar.width = Math.max(barWidth, 1);
+        (this.depthBar as any).mcBar.width = Math.max(barWidth, 1);
         this.DepthCheck();
     }
 

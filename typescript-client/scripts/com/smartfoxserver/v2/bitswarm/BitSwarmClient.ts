@@ -137,7 +137,7 @@ export class BitSwarmClient extends EventDispatcher {
         this._socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this.onSocketSecurityError.bind(this));
         
         this._bbClient = new BBClient();
-        this._bbClient.addEventListener(BBEvent.CONNECT, this.onBBConnect.bind(this));
+        this._bbClient.addEventListener(BBEvent.BB_CONNECT, this.onBBConnect.bind(this));
         this._bbClient.addEventListener(BBEvent.DATA, this.onBBData.bind(this));
         this._bbClient.addEventListener(BBEvent.DISCONNECT, this.onBBDisconnect.bind(this));
         this._bbClient.addEventListener(BBEvent.IO_ERROR, this.onBBError.bind(this));

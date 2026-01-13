@@ -71,12 +71,12 @@ export class MISSIONS_INFO extends MISSIONS_INFO_CLIP {
         this.y = GLOBAL._SCREENCENTER.y;
         
         let description = "<b>" + KEYS.Get(this._missionObject.description, this._missionObject.keyvars) + "</b><br>";
-        description = description.replace("#installsgenerated#", BASE._installsGenerated);
-        description = description.replace("#mushroomspicked#", QUESTS._global.mushroomspicked);
-        description = description.replace("#goldmushroomspicked#", QUESTS._global.goldmushroomspicked);
-        description = description.replace("#monstersblended#", QUESTS._global.monstersblended);
-        description = description.replace("#giftssent#", QUESTS._global.bonus_gifts);
-        description = description.replace("#sentgiftsaccepted#", QUESTS._global.gift_accept);
+        description = description.replace("#installsgenerated#", String(BASE._installsGenerated));
+        description = description.replace("#mushroomspicked#", String(QUESTS._global.mushroomspicked));
+        description = description.replace("#goldmushroomspicked#", String(QUESTS._global.goldmushroomspicked));
+        description = description.replace("#monstersblended#", String(QUESTS._global.monstersblended));
+        description = description.replace("#giftssent#", String(QUESTS._global.bonus_gifts));
+        description = description.replace("#sentgiftsaccepted#", String(QUESTS._global.gift_accept));
         
         if (QUESTS._completed && QUESTS._completed[this._missionKey] === 1) {
             this.tDescription.htmlText = "<b>" + KEYS.Get("q_ui_completed") + "</b><br>" + description;

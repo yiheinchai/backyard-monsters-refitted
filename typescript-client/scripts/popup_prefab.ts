@@ -277,7 +277,7 @@ export class popup_prefab extends popup_prefab_CLIP {
                 foundation.clear();
                 foundation._mc.visible = false;
                 foundation._mc.removeEventListener(Event.ENTER_FRAME, foundation.TickFast);
-                foundation._mcBase.Clear();
+                (foundation._mcBase as any).Clear?.();
                 foundation.topContainer.Clear();
                 foundation.animContainer.Clear();
                 foundation._animBMD = null;
