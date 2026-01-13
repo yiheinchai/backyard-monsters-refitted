@@ -1,4 +1,5 @@
-import { decodeJson, encodeJson } from './com/brokenfunction/json';
+import { decodeJson } from './com/brokenfunction/json/decodeJson';
+import { encodeJson } from './com/brokenfunction/json/encodeJson';
 
 export class JSON {
     constructor() {

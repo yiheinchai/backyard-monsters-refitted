@@ -28,7 +28,6 @@ import { BUILDING22 } from "./BUILDING22";
 import { BUILDING23 } from "./BUILDING23";
 import { BUILDING24 } from "./BUILDING24";
 import { BUILDING25 } from "./BUILDING25";
-import { TOWNHALL } from "./TOWNHALL";
 
 /**
  * Cost structure for building construction/upgrades
