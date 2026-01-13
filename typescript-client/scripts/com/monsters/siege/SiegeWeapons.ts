@@ -4,25 +4,12 @@ import TimerEvent from "openfl/events/TimerEvent";
 import { Decoy } from "./weapons/Decoy";
 import { Vacuum } from "./weapons/Vacuum";
 import { Jars } from "./weapons/Jars";
+import { SiegeWeapon } from "./weapons/SiegeWeapon";
 
 import { ATTACK } from "../../../ATTACK";
 import { LOGGER } from "../../../LOGGER";
 
 import { md5 } from "../../../md5";
-
-// Forward declarations
-declare class SiegeWeapon {
-    weaponID: string;
-    level: number;
-    quantity: number;
-    duration: number;
-    logMessage: string;
-    activate(x: number, y: number): boolean;
-    deactivate(): void;
-    importVariables(data: any): void;
-    exportVariables(): any;
-    getProperty(prop: string): any;
-}
 
 declare const JSON: { encode(obj: any): string };
 
