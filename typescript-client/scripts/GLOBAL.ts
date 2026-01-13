@@ -1281,4 +1281,28 @@ export class GLOBAL {
         }
         return mod;
     }
+
+    public static ValidateMushroomPick(param1: BFOUNDATION): void {
+        const rndm: Rndm = new Rndm(Math.floor(param1.x * param1.y));
+        if (Math.floor(rndm.random() * 16) >> 2) {
+            LOGGER.Log("log", "Invalid shinyshroom");
+            GLOBAL.ErrorMessage("GLOBAL mushroom hack 1");
+            GLOBAL._shinyShroomValid = false;
+            return;
+        }
+        const len: number = Math.floor(GLOBAL._shinyShrooms.length);
+        for (let i: number = 0; i < len; i++) {
+            if (param1.x == GLOBAL._shinyShrooms[i].x && param1.y == GLOBAL._shinyShrooms[i].y) {
+                LOGGER.Log("log", "Shinyshroom multi-pick");
+                GLOBAL.ErrorMessage("GLOBAL mushroom hack 2");
+                GLOBAL._shinyShroomValid = false;
+                return;
+            }
+        }
+        GLOBAL._shinyShrooms.push({
+            "x": param1.x,
+            "y": param1.y
+        });
+        GLOBAL._shinyShroomValid = true;
+    }
 }

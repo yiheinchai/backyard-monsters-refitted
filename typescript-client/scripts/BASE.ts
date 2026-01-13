@@ -1785,5 +1785,82 @@ export class BASE {
         const y: number = Math.tan(angle) * x;
         return x * x + y * y;
     }
+
+    /**
+     * Load the next outpost in the list
+     * @param event Optional mouse event
+     */
+    public static LoadNext(event: MouseEvent | null = null): void {
+        if (BASE._saving || BASE._loading || BASE._saveCounterA !== BASE._saveCounterB) {
+            GLOBAL._nextOutpostWaiting = 1;
+            return;
+        }
+        if (MapRoomManager.instance.isInMapRoom2) {
+            if (BASE.isMainYard && !GLOBAL._bMap._canFunction) {
+                GLOBAL.Message(KEYS.Get("map_msg_damaged"));
+                return;
+            }
+            if (GLOBAL._mapOutpostIDs && GLOBAL._mapOutpostIDs.length > 0) {
+                if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === "ibuild") {
+                    if (BASE.isMainYardOrInfernoMainYard) {
+                        BASE._currentCellLoc = GLOBAL._mapOutpost[0];
+                        GLOBAL._currentCell = null;
+                        BASE._needCurrentCell = true;
+                        MapRoomManager.instance.LoadCell(GLOBAL._mapOutpost[0].x, GLOBAL._mapOutpost[0].y, true);
+                        PLEASEWAIT.Show(KEYS.Get("process_outpost"));
+                    } else {
+                        for (let i = 0; i < GLOBAL._mapOutpostIDs.length; i++) {
+                            if (GLOBAL._mapOutpostIDs[i] === BASE._loadedBaseID) {
+                                if (i < GLOBAL._mapOutpostIDs.length - 1) {
+                                    BASE._currentCellLoc = GLOBAL._mapOutpost[i + 1];
+                                    GLOBAL._currentCell = null;
+                                    BASE._needCurrentCell = true;
+                                    MapRoomManager.instance.LoadCell(GLOBAL._mapOutpost[i + 1].x, GLOBAL._mapOutpost[i + 1].y, true);
+                                    PLEASEWAIT.Show(KEYS.Get("process_outpost"));
+                                    break;
+                                }
+                                BASE._needCurrentCell = false;
+                                GLOBAL._currentCell = null;
+                                BASE.LoadBase(null, 0, GLOBAL._homeBaseID, GLOBAL.e_BASE_MODE.BUILD, false, EnumYardType.MAIN_YARD);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Get empire resources per hour for a given resource type
+     * @param resourceType The resource type (1-4)
+     * @returns The resource production rate per hour
+     */
+    public static getEmpireResources(resourceType: number): number {
+        let multiplier: number = 1;
+        if (GLOBAL._harvesterOverdrive >= GLOBAL.Timestamp() && GLOBAL._harvesterOverdrivePower.Get() > 0) {
+            multiplier = GLOBAL._harvesterOverdrivePower.Get();
+        }
+        return (BASE._GIP as any)["r" + resourceType].Get() * 360 * multiplier;
+    }
+
+    /**
+     * Get the number of housing heals per tick
+     * @returns The number of heals per tick
+     */
+    public static getNumHousingHealsPerTick(): number {
+        let count: number = 0;
+        const buildings: Object[] = InstanceManager.getInstancesByClass(BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15);
+        if (BASE.isInfernoMainYardOrOutpost) {
+            if (buildings[0]) {
+                count = Math.min(4, (buildings[0] as BFOUNDATION)._lvl.Get());
+            }
+        } else {
+            for (const building of buildings) {
+                count++;
+            }
+        }
+        return count;
+    }
 }
 
