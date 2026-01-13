@@ -39,7 +39,7 @@ export class ReplayableEventPromoMessage extends KeywordMessage {
         this._button.y = buttonY;
         this._button.addEventListener(MouseEvent.CLICK, this.clickedButton.bind(this));
         this._button.buttonMode = true;
-        this._button.tLabel.text = this._buttonCopy;
+        (this._button as any).tLabel.text = this._buttonCopy;
         parentContainer.addChild(this._button);
         return null;
     }

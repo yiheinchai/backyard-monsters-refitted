@@ -28,7 +28,7 @@ export class Obstruction {
         return false;
     }
 
-    public static Register(rect: Rectangle, reserved: boolean = false): void {
+    public static Register(rect: any, reserved: boolean = false): void {
         Obstruction.Obstructions.push(rect);
         if (reserved) {
             Obstruction.Reserved.push(rect);

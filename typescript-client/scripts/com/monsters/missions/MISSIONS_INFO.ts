@@ -38,8 +38,6 @@ declare class Button extends Sprite {
 
 declare class SpecialRewardInfo extends Sprite {
     Setup(name: string, count: number, image: string): void;
-    x: number;
-    y: number;
 }
 
 declare class SiegeWeapon {
