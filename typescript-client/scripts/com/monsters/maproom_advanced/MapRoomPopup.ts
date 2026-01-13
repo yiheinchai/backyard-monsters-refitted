@@ -76,8 +76,8 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
     public static get instance(): MapRoomPopup { return MapRoomPopup.s_Instance = MapRoomPopup.s_Instance || new MapRoomPopup(); }
 
     constructor() {
-        this._sortArray = [];
         super();
+        this._sortArray = [];
         let w = GLOBAL._ROOT.stage.stageWidth;
         let h = GLOBAL.GetGameHeight();
         if (w > 1024) w = 1024;

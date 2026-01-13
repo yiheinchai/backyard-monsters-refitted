@@ -35,8 +35,8 @@ export class Zafreetiv2 extends CreepBase {
         flipped: boolean = false,
         parent: MonsterBase | null = null
     ) {
-        this._graphic = new BitmapData(56, 70, true, 0);
         super(id, type, startPos, velocity, startFrame, endFrame, targetPos, ownedByAttacker, building, scale, flipped, parent);
+        this._graphic = new BitmapData(56, 70, true, 0);
         if (this.poweredUp()) {
             this.addComponent(new AOEHealOnDeath());
         }

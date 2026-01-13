@@ -71,8 +71,8 @@ export class BYMChat extends Sprite {
     private messageQueueLastCheck: Date | null = null;
 
     constructor(chatBox: ChatBox, host: string) {
-        this.messageQueue = [];
         super();
+        this.messageQueue = [];
         this.chatBox = chatBox;
         this.addChild(chatBox as MovieClip);
         chatBox.addEventListener(KeyboardEvent.KEY_DOWN, this.keyboardEventHandler.bind(this));

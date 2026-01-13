@@ -8,8 +8,8 @@ export class ReplayableEventsCategory extends Category {
     private m_importedData: any;
 
     constructor() {
-        this.m_importedData = {};
         super();
+        this.m_importedData = {};
         this.priority = 6;
         this.name = "Replayable Events";
         this._doesViewRepeatedly = false;

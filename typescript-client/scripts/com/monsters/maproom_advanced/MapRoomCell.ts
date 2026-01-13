@@ -80,11 +80,11 @@ export class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
     private testAllianceIDs: Array<number>;
 
     constructor() {
+        super();
         this._inAllianceProps = { "txtNameX": 0, "txtNameY": 1, "txtAllyX": 0, "txtAllyY": 11 };
         this._soloProps = { "txtNameX": 0, "txtNameY": 1, "txtAllyX": 0, "txtAllyY": 11 };
         this._picURLs = { "baseURL": "alliances/", "sizeL": "_large", "sizeM": "_medium", "sizeS": "_small", "sizeXS": "_xsmall", "ally": "A", "friendly": "F", "hostile": "H", "neutral": "N", "ext": ".png" };
         this.testAllianceIDs = [1, 2, 3, 102, 111];
-        super();
         this.mc.mcHit.addEventListener(MouseEvent.MOUSE_OVER, this.Over.bind(this));
         this.mc.mcHit.addEventListener(MouseEvent.MOUSE_OUT, this.Out.bind(this));
         this.mc.mcHit.addEventListener(MouseEvent.MOUSE_UP, this.Click.bind(this));

@@ -28,8 +28,8 @@ export class PLANNERPOPUP extends PLANNERPOPUP_CLIP {
     private _guidePage: number = 1;
 
     constructor() {
-        this._windowRect = new Rectangle(35, 65, 565, 425);
         super();
+        this._windowRect = new Rectangle(35, 65, 565, 425);
         this.tName.visible = false;
         this.mcNameBG.visible = false;
         this.tName.autoSize = "left";

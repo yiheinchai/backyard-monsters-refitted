@@ -57,6 +57,7 @@ export class DescentLayer extends Sprite {
     public faked: boolean = false;
 
     constructor() {
+        super();
         this.descentBaseProps = {
             "0": { "x": 150, "y": 10 },
             "1": { "x": 350, "y": 260 },
@@ -73,7 +74,6 @@ export class DescentLayer extends Sprite {
             "12": { "x": 540, "y": 1360 },
             "13": { "x": 350, "y": 1765 }
         };
-        super();
         this.basesForeign = [];
         this.baseData = [];
         this.basesAll = [];
