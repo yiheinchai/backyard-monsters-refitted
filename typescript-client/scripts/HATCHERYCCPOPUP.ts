@@ -53,7 +53,7 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
         
         this.setupSubscriptions(HATCHERYCC.queueLimit > HATCHERYCC.DEFAULT_QUEUE_LIMIT);
         
-        this.bSpeedup.tName.htmlText = "<b>" + KEYS.Get("btn_speedup") + "</b>";
+        (this.bSpeedup as any).tName.htmlText = "<b>" + KEYS.Get("btn_speedup") + "</b>";
         this.bSpeedup.mouseChildren = false;
         
         if (!BASE.isInfernoMainYardOrOutpost) {
@@ -63,12 +63,12 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
         }
         this.bSpeedup.buttonMode = true;
         
-        this.bFinish.tName.htmlText = "<b>" + KEYS.Get("str_finishnow") + "</b>";
+        (this.bFinish as any).tName.htmlText = "<b>" + KEYS.Get("str_finishnow") + "</b>";
         this.bFinish.mouseChildren = false;
         this.bFinish.addEventListener(MouseEvent.CLICK, this.FinishNow.bind(this));
         this.bFinish.buttonMode = true;
         
-        this.bTopup.tName.htmlText = "<b>" + KEYS.Get("btn_topup2") + "</b>";
+        (this.bTopup as any).tName.htmlText = "<b>" + KEYS.Get("btn_topup2") + "</b>";
         this.bTopup.mouseChildren = false;
         
         if (!BASE.isInfernoMainYardOrOutpost) {
@@ -186,7 +186,7 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
             if (HATCHERYCC.doesShowInfernoCreeps) {
                 this.gotoAndStop("v2");
                 this.tMagmaLabel.htmlText = "<b>" + KEYS.Get("hcc_magmausage") + "</b>";
-                this.bTopupMagma.tName.htmlText = "<b>" + KEYS.Get("btn_topup2") + "</b>";
+                (this.bTopupMagma as any).tName.htmlText = "<b>" + KEYS.Get("btn_topup2") + "</b>";
                 this.bTopupMagma.buttonMode = true;
                 this.bTopupMagma.gotoAndStop(1);
                 this.bTopupMagma.addEventListener(MouseEvent.CLICK, STORE.Show(2, 4, ["BR41I", "BR42I", "BR43I"]));
@@ -390,7 +390,7 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
         let _loc4_: any = null;
         let _loc5_: string = null;
         
-        if (!this.bFinish.Enabled) {
+        if (!(this.bFinish as any).Enabled) {
             return;
         }
         
@@ -543,14 +543,14 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
         }
         
         if (_loc7_ > 0) {
-            this.bFinish.Enabled = true;
+            (this.bFinish as any).Enabled = true;
             if (HATCHERYCC.doesShowInfernoCreeps) {
                 this.bFinish.gotoAndStop(3);
             } else {
                 this.bFinish.gotoAndStop(2);
             }
         } else {
-            this.bFinish.Enabled = false;
+            (this.bFinish as any).Enabled = false;
             this.bFinish.gotoAndStop(1);
         }
         
