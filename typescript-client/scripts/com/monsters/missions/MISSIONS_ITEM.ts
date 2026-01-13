@@ -1,10 +1,11 @@
 import Bitmap from "openfl/display/Bitmap";
 import BitmapData from "openfl/display/BitmapData";
-import Sprite from "openfl/display/Sprite";
+import MovieClip from "openfl/display/MovieClip";
 import MouseEvent from "openfl/events/MouseEvent";
 
 import { ImageCache } from "../display/ImageCache";
 import { MISSIONS_INFO } from "./MISSIONS_INFO";
+import { UI_MISSIONS_ITEM_CLIP } from "../../../UI_MISSIONS_ITEM_CLIP";
 
 import { BASE } from "../../../BASE";
 import { GLOBAL } from "../../../GLOBAL";
@@ -13,16 +14,6 @@ import { POPUPS } from "../../../POPUPS";
 import { QUESTS } from "../../../QUESTS";
 import { SOUNDS } from "../../../SOUNDS";
 import { TUTORIAL } from "../../../TUTORIAL";
-
-// Forward declaration
-declare class UI_MISSIONS_ITEM_CLIP extends Sprite {
-    tName: any;
-    tDesc: any;
-    mcImage: any;
-    buttonMode: boolean;
-    useHandCursor: boolean;
-    gotoAndStop(frame: number): void;
-}
 
 /**
  * Mission list item - represents a single mission in the missions menu.

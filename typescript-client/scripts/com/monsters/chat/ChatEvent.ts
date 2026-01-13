@@ -17,25 +17,25 @@ export class ChatEvent extends Event {
     public static readonly USER_ENTER: string = "user_enter";
     public static readonly USER_EXIT: string = "user_exit";
 
-    private map: Map<string, any>;
+    private map: Record<string, any>;
 
-    constructor(type: string, success: boolean = true, data: Map<string, any> | null = null, bubbles: boolean = false, cancelable: boolean = false) {
+    constructor(type: string, success: boolean = true, data: Record<string, any> | null = null, bubbles: boolean = false, cancelable: boolean = false) {
         super(type, bubbles, cancelable);
         
         if (data === null) {
-            this.map = new Map<string, any>();
+            this.map = {};
         } else {
             this.map = data;
         }
-        this.map.set("success", success);
+        this.map["success"] = success;
     }
 
     public get Success(): boolean {
         if (this.map === null) {
             return false;
         }
-        if (this.map.has("success")) {
-            return this.map.get("success");
+        if ("success" in this.map) {
+            return this.map["success"];
         }
         return false;
     }
@@ -44,8 +44,8 @@ export class ChatEvent extends Event {
         if (this.map === null) {
             return null;
         }
-        if (this.map.has(key)) {
-            return this.map.get(key);
+        if (key in this.map) {
+            return this.map[key];
         }
         return null;
     }

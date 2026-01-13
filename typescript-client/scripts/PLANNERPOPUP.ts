@@ -3,6 +3,7 @@ import Event from 'openfl/events/Event';
 import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
+import TextFieldAutoSize from 'openfl/text/TextFieldAutoSize';
 import { InstanceManager } from './com/monsters/managers/InstanceManager';
 import { PLANNERPOPUP_CLIP } from './PLANNERPOPUP_CLIP';
 import { plannerBuilding } from './plannerBuilding';
@@ -32,7 +33,7 @@ export class PLANNERPOPUP extends PLANNERPOPUP_CLIP {
         this._windowRect = new Rectangle(35, 65, 565, 425);
         this.tName.visible = false;
         this.mcNameBG.visible = false;
-        this.tName.autoSize = "left";
+        this.tName.autoSize = TextFieldAutoSize.LEFT;
         this._buildings = this.mcMap.addChild(new MovieClip()) as MovieClip;
         this._ranges = this.mcMap.addChild(new MovieClip()) as MovieClip;
         this._buildings.mouseEnabled = false;

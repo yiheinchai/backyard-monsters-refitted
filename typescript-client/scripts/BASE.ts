@@ -945,20 +945,63 @@ export class BASE {
         BASE._saving = false;
     }
     
-    public static Charge(resourceType: number, amount: number, checkOnly: boolean = false, useInferno: boolean = false): boolean {
-        const resources = useInferno ? BASE._iresources : BASE._resources;
+    public static Charge(resourceType: number, amount: number, checkOnly: boolean = false, useInferno: boolean = false): number {
+        amount = Math.floor(amount);
+        if (useInferno && BASE.isInfernoMainYardOrOutpost) {
+            useInferno = false;
+        }
+        
+        const deltaResources = useInferno ? BASE._ideltaResources : BASE._deltaResources;
+        const resources = (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === "ibuild") 
+            ? (useInferno ? BASE._iresources : BASE._resources) 
+            : GLOBAL._attackersResources;
+        const hpResources = (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === "ibuild") 
+            ? BASE._hpResources 
+            : GLOBAL._hpAttackersResources;
         const resourceKey = "r" + resourceType;
         
-        if (checkOnly) {
-            return resources[resourceKey].Get() >= amount;
+        if (amount <= resources[resourceKey].Get()) {
+            if (!checkOnly) {
+                resources[resourceKey].Add(-amount);
+                if (!useInferno) {
+                    hpResources[resourceKey] -= amount;
+                }
+                if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === "ibuild") {
+                    if (useInferno) {
+                        if (deltaResources[resourceKey]) {
+                            deltaResources[resourceKey].Add(Math.floor(-amount));
+                        } else {
+                            deltaResources[resourceKey] = new SecNum(Math.floor(-amount));
+                        }
+                        deltaResources.dirty = true;
+                        GLOBAL._resources[resourceKey].Add(-amount);
+                        GLOBAL._hpResources[resourceKey] -= amount;
+                    } else {
+                        if (deltaResources[resourceKey]) {
+                            deltaResources[resourceKey].Add(Math.floor(-amount));
+                            BASE._hpDeltaResources[resourceKey] += Math.floor(-amount);
+                        } else {
+                            deltaResources[resourceKey] = new SecNum(Math.floor(-amount));
+                            BASE._hpDeltaResources[resourceKey] = Math.floor(-amount);
+                        }
+                        deltaResources.dirty = true;
+                        BASE._hpDeltaResources.dirty = true;
+                        GLOBAL._resources[resourceKey].Add(-amount);
+                        GLOBAL._hpResources[resourceKey] -= amount;
+                    }
+                } else {
+                    if (GLOBAL._attackersDeltaResources[resourceKey]) {
+                        GLOBAL._attackersDeltaResources[resourceKey].Add(Math.floor(-amount));
+                    } else {
+                        GLOBAL._attackersDeltaResources[resourceKey] = new SecNum(Math.floor(-amount));
+                    }
+                    GLOBAL._attackersDeltaResources.dirty = true;
+                }
+                BASE.CalcResources();
+            }
+            return amount;
         }
-        
-        if (resources[resourceKey].Get() >= amount) {
-            resources[resourceKey].Add(-amount);
-            return true;
-        }
-        
-        return false;
+        return 0;
     }
     
     public static CalcResources(): void {

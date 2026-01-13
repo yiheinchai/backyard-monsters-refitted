@@ -458,12 +458,12 @@ export class CS_SmartFoxServer2X extends EventDispatcher implements IChatSystem 
         this.dispatchEvent(new ChatEvent(ChatEvent.LEAVE, success, params));
     }
 
-    public extension(action: string, data: Map<string, any>): void {
+    public extension(action: string, data: Record<string, any>): void {
         const sfsParams = new SFSObject();
         switch (action) {
             case "add":
-                sfsParams.putInt("n1", data.get("n1") as number);
-                sfsParams.putInt("n2", data.get("n2") as number);
+                sfsParams.putInt("n1", data["n1"] as number);
+                sfsParams.putInt("n2", data["n2"] as number);
                 break;
         }
         const request = new ExtensionRequest(action, sfsParams);
