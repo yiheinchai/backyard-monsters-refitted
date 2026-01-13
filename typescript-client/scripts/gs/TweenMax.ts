@@ -14,7 +14,7 @@ export class TweenMax extends TweenLite implements IEventDispatcher {
 
     public static killTweensOf: Function = TweenLite.killTweensOf;
     public static killDelayedCallsTo: Function = TweenLite.killTweensOf;
-    public static removeTween: Function = TweenLite.removeTween;
+    public static override removeTween: (tween: TweenLite, clear?: boolean) => void = TweenLite.removeTween;
 
     protected static _pausedTweens: Map<TweenMax, TweenMax> = new Map();
     protected static _globalTimeScale: number = 1;

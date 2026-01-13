@@ -4,7 +4,7 @@ import { BaseEvent } from "../core/BaseEvent";
  * BitSwarmEvent - BitSwarm connection events.
  */
 export class BitSwarmEvent extends BaseEvent {
-    public static readonly CONNECT: string = "connect";
+    public static readonly CONNECT: "connect" = "connect";
     public static readonly DISCONNECT: string = "disconnect";
     public static readonly RECONNECTION_TRY: string = "reconnectionTry";
     public static readonly IO_ERROR: string = "ioError";

@@ -15,7 +15,7 @@ export class JoinRoomRequest extends BaseRequest {
     public static readonly KEY_ROOM_TO_LEAVE: string = "rl";
     public static readonly KEY_AS_SPECTATOR: string = "sp";
 
-    private _id: number = -1;
+    private _roomId: number = -1;
     private _name: string | null = null;
     private _pass: string | null;
     private _roomIdToLeave: number;
@@ -26,9 +26,9 @@ export class JoinRoomRequest extends BaseRequest {
         if (typeof roomIdOrName === 'string') {
             this._name = roomIdOrName;
         } else if (typeof roomIdOrName === 'number') {
-            this._id = roomIdOrName;
+            this._roomId = roomIdOrName;
         } else if (roomIdOrName && typeof roomIdOrName === 'object' && 'id' in roomIdOrName) {
-            this._id = (roomIdOrName as Room).id;
+            this._roomId = (roomIdOrName as Room).id;
         }
         this._pass = password;
         this._roomIdToLeave = roomIdToLeave;
@@ -37,7 +37,7 @@ export class JoinRoomRequest extends BaseRequest {
 
     public override validate(sfs: SmartFox): void {
         const errors: Array<string> = [];
-        if (this._id < 0 && this._name === null) {
+        if (this._roomId < 0 && this._name === null) {
             errors.push("Missing Room id or name, you should provide at least one");
         }
         if (errors.length > 0) {
@@ -46,8 +46,8 @@ export class JoinRoomRequest extends BaseRequest {
     }
 
     public override execute(sfs: SmartFox): void {
-        if (this._id > -1) {
-            this._sfso.putInt(JoinRoomRequest.KEY_ROOM_ID, this._id);
+        if (this._roomId > -1) {
+            this._sfso.putInt(JoinRoomRequest.KEY_ROOM_ID, this._roomId);
         } else if (this._name !== null) {
             this._sfso.putUtfString(JoinRoomRequest.KEY_ROOM_NAME, this._name);
         }
