@@ -462,12 +462,12 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
             let newY = this.bBookmarks.y;
             for (let i = 0; i < length; i++) {
                 const menuItem = new MapRoomBookmark();
-                menuItem.mcBG.index = i;
+                (menuItem.mcBG as any).index = i;
                 menuItem.x = this.bBookmarks.x + 115;
                 menuItem.y = newY;
                 newY += menuItem.height;
                 menuItem.tName.mouseEnabled = false;
-                menuItem.bDelete.index = i;
+                (menuItem.bDelete as any).index = i;
                 menuItem.bDelete.addEventListener(MouseEvent.CLICK, (e: MouseEvent) => { this.BookmarkRemove((e.target as any).index); });
                 menuItem.bDelete.buttonMode = true;
                 menuItem.mcBG.addEventListener(MouseEvent.CLICK, (e: MouseEvent) => { this.BookmarkSelect((e.target as any).index); });

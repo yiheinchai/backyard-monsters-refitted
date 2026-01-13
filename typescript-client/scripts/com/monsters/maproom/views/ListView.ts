@@ -64,7 +64,7 @@ export class ListView extends ListView_CLIP {
         this.addChild(this.shell);
         const sortBtns = [this.levelBtn, this.lastSeenBtn, this.statusBtn, this.nameBtn, this.winBtn];
         for (const btn of sortBtns) {
-            btn.sorter_mc.gotoAndStop(1);
+            (btn as any).sorter_mc.gotoAndStop(1);
         }
         this.setChildIndex(this.bPrevious!, this.numChildren - 1);
         this.setChildIndex(this.bNext!, this.numChildren - 1);
@@ -159,7 +159,7 @@ export class ListView extends ListView_CLIP {
 
     private sortHandler(event: MouseEvent): void {
         if (this.currentSorter) {
-            this.currentSorter.sorter_mc.gotoAndStop(1);
+            (this.currentSorter as any).sorter_mc.gotoAndStop(1);
             this.currentSorter.gotoAndStop(1);
         }
         let sortField = "";
@@ -202,9 +202,9 @@ export class ListView extends ListView_CLIP {
             return result;
         });
         if (this.reversed) {
-            (event.target as MovieClip).sorter_mc.gotoAndStop(3);
+            (event.target as any).sorter_mc.gotoAndStop(3);
         } else {
-            (event.target as MovieClip).sorter_mc.gotoAndStop(2);
+            (event.target as any).sorter_mc.gotoAndStop(2);
         }
         this.currentSort = sortField;
         this.currentSorter = event.target as MovieClip;

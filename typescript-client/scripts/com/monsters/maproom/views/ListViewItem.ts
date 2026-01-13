@@ -89,7 +89,7 @@ export class ListViewItem extends ListViewItem_CLIP {
         this.attacks_txt.htmlText = "<font color='" + attackColor + "'>" + MapRoom.BRIDGE.KEYS.Get(battleKey, { "v1": this.attackStarPoints });
         this.status_txt.htmlText = "<font color='" + config.relationColor + "'>" + config.relation;
         this.extraStatus_txt.htmlText = "<b><font color='" + config.extraStatusColor + "'>" + config.extraStatus;
-        this.levelStar.lv_txt.htmlText = "<b>" + this.level;
+        (this.levelStar as any).lv_txt.htmlText = "<b>" + this.level;
     }
 
     private setStars(points: any, thresholds: Array<number>, stars: Array<any>): void {
