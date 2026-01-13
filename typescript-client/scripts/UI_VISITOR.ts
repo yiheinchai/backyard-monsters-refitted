@@ -43,42 +43,42 @@ export class UI_VISITOR extends UI_VISITOR_CLIP {
         super();
         UI_VISITOR.s_mc = this.mc;
         if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK) {
-            this.mc.mcBG.width = 100;
-            this.mc.bReturn.SetupKey("btn_endattack");
-            this.mc.bAttack.visible = false;
+            (this.mc as any).mcBG.width = 100;
+            (this.mc as any).bReturn.SetupKey("btn_endattack");
+            (this.mc as any).bAttack.visible = false;
         } else if (MapRoomManager.instance.isInMapRoom2or3 && !BASE.isInfernoMainYardOrOutpost) {
-            this.mc.bReturn.SetupKey("btn_openmap");
+            (this.mc as any).bReturn.SetupKey("btn_openmap");
             if ((GLOBAL.mode != GLOBAL.e_BASE_MODE.HELP || MapRoomManager.instance.isInMapRoom3) && !MapRoomManager.instance.viewOnly && GLOBAL._currentCell && MapRoomManager.instance.flingerInRange) {
                 if (GLOBAL._currentCell.isDestroyed && GLOBAL._currentCell.baseType != 2) {
-                    this.mc.bAttack.SetupKey("newmap_take_btn");
+                    (this.mc as any).bAttack.SetupKey("newmap_take_btn");
                 } else {
-                    this.mc.bAttack.SetupKey("map_attack_btn");
+                    (this.mc as any).bAttack.SetupKey("map_attack_btn");
                 }
-                this.mc.bAttack.visible = true;
+                (this.mc as any).bAttack.visible = true;
                 if (MapRoomManager.instance.isInMapRoom3) {
-                    this.mc.bAttack.addEventListener(MouseEvent.CLICK, this.AttackMR3.bind(this));
+                    (this.mc as any).bAttack.addEventListener(MouseEvent.CLICK, this.AttackMR3.bind(this));
                 } else {
-                    this.mc.bAttack.addEventListener(MouseEvent.CLICK, this.Attack.bind(this));
+                    (this.mc as any).bAttack.addEventListener(MouseEvent.CLICK, this.Attack.bind(this));
                 }
                 if (GLOBAL._currentCell.isLocked || this.isLevelLimited || !ATTACK.hasCreaturesToAttackWith) {
-                    this.mc.bAttack.Enabled = false;
+                    (this.mc as any).bAttack.Enabled = false;
                 } else {
-                    this.mc.bAttack.Enabled = true;
+                    (this.mc as any).bAttack.Enabled = true;
                 }
             } else {
-                this.mc.bAttack.visible = false;
+                (this.mc as any).bAttack.visible = false;
                 if (GLOBAL.mode != GLOBAL.e_BASE_MODE.HELP || MapRoomManager.instance.isInMapRoom3) {
-                    this.mc.mcBG.width = 100;
+                    (this.mc as any).mcBG.width = 100;
                 }
             }
         } else {
             if (GLOBAL.mode != GLOBAL.e_BASE_MODE.HELP || MapRoomManager.instance.isInMapRoom3) {
-                this.mc.mcBG.width = 100;
+                (this.mc as any).mcBG.width = 100;
             }
-            this.mc.bReturn.SetupKey("btn_returnhome");
-            this.mc.bAttack.visible = false;
+            (this.mc as any).bReturn.SetupKey("btn_returnhome");
+            (this.mc as any).bAttack.visible = false;
         }
-        this.mc.bReturn.addEventListener(MouseEvent.CLICK, this.ReturnCB.bind(this));
+        (this.mc as any).bReturn.addEventListener(MouseEvent.CLICK, this.ReturnCB.bind(this));
         this.mc.gotoAndStop(1);
         this.Update();
     }
@@ -202,7 +202,7 @@ export class UI_VISITOR extends UI_VISITOR_CLIP {
     public Update(): void {
         if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK) {
             if (ATTACK._countdown < 0) {
-                this.mc.bReturn.Highlight = true;
+                (this.mc as any).bReturn.Highlight = true;
             }
         } else if (GLOBAL.mode == GLOBAL.e_BASE_MODE.HELP) {
             if (UI_VISITOR._helpButtons && this.mc.contains(UI_VISITOR._helpButtons)) {
@@ -233,16 +233,16 @@ export class UI_VISITOR extends UI_VISITOR_CLIP {
                     if (!_loc4_) {
                         _loc6_.buttonMode = true;
                         _loc6_.addEventListener(MouseEvent.CLICK, UI_VISITOR.Focus(building));
-                        _loc6_.mcTick.visible = false;
+                        (_loc6_ as any).mcTick.visible = false;
                     }
                     UI_VISITOR._helpButtons.addChild(_loc6_);
                     _loc1_++;
                 }
             }
             if (_loc1_ > 0) {
-                this.mc.mcBG.width = (MapRoomManager.instance.isInMapRoom3 ? 320 : 220) + _loc1_ * 45;
+                (this.mc as any).mcBG.width = (MapRoomManager.instance.isInMapRoom3 ? 320 : 220) + _loc1_ * 45;
             } else {
-                this.mc.mcBG.width = MapRoomManager.instance.isInMapRoom3 ? 210 : 100;
+                (this.mc as any).mcBG.width = MapRoomManager.instance.isInMapRoom3 ? 210 : 100;
                 this.mc.gotoAndStop(1);
             }
         }
@@ -254,14 +254,14 @@ export class UI_VISITOR extends UI_VISITOR_CLIP {
             GLOBAL.RefreshScreen();
             this.m_oldScreen = GLOBAL._SCREEN.clone();
         }
-        this.mc.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - this.mc.mcBG.width - 10;
+        this.mc.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - (this.mc as any).mcBG.width - 10;
         if (GLOBAL._flags.viximo) {
             this.mc.y = GLOBAL._SCREEN.y + GLOBAL._SCREEN.height - (this.mc.height + 10);
         } else {
-            this.mc.y = GLOBAL._SCREENHUD.y - (this.mc.mcBG.height + 10);
+            this.mc.y = GLOBAL._SCREENHUD.y - ((this.mc as any).mcBG.height + 10);
         }
         for (let _loc1_ = 4; _loc1_ > 0; _loc1_--) {
-            const bar = this["m_resourceBar" + _loc1_];
+            const bar = (this as any)["m_resourceBar" + _loc1_];
             if (bar) {
                 bar.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - 10 - bar.width * 0.5;
                 bar.y = GLOBAL._SCREEN.y + _loc1_ * 40;
@@ -276,7 +276,7 @@ export class UI_VISITOR extends UI_VISITOR_CLIP {
         }
         const _loc1_ = _loc2_[0] as BUILDING11;
         if (_loc1_.health < _loc1_.maxHealth / 2) {
-            this.mc.bReturn.SetupKey("btn_returnhome");
+            (this.mc as any).bReturn.SetupKey("btn_returnhome");
         }
     }
 }
