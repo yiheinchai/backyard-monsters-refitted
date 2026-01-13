@@ -17,11 +17,11 @@ import { MapRoom3 } from "../../maproom3/MapRoom3";
 import { Chat } from "../Chat";
 import { AbstractChatBox } from "./AbstractChatBox";
 import { IChatDisplay } from "./IChatDisplay";
-import { bubblepopupRight } from "./bubblepopupRight";
+import { bubblepopupRight } from "../../../../bubblepopupRight";
 import { Button_CLIP } from "../../../../Button_CLIP";
-import { ChatBox_CLIP } from "./ChatBox_CLIP";
-import { ChatBox_msg_CLIP } from "./ChatBox_msg_CLIP";
-import { ChatBox_msg_name_CLIP } from "./ChatBox_msg_name_CLIP";
+import { ChatBox_CLIP } from "../../../../ChatBox_CLIP";
+import { ChatBox_msg_CLIP } from "../../../../ChatBox_msg_CLIP";
+import { ChatBox_msg_name_CLIP } from "../../../../ChatBox_msg_name_CLIP";
 
 import { GLOBAL } from "../../../../GLOBAL";
 import { LOGIN } from "../../../../LOGIN";
@@ -600,7 +600,7 @@ export class ChatBox extends AbstractChatBox implements IChatDisplay {
         this._chatHistory = [];
     }
 
-    public override get background(): MovieClip {
+    public override get background(): any {
         return this._displayAssets.frame;
     }
 

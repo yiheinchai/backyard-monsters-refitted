@@ -1209,4 +1209,50 @@ export class GLOBAL {
         }
         return 0;
     }
+
+    /**
+     * Opens a URL in a new browser window/tab.
+     * @param url The URL to navigate to
+     * @param variables Optional URL variables to append
+     * @param newWindow If true, opens in a new window; if false, opens in parent window
+     * @param statParams Optional array of stats to log
+     */
+    public static gotoURL(url: string, variables: any = null, newWindow: boolean = true, statParams: any[] = null): void {
+        if (url) {
+            let targetUrl = url;
+            if (variables) {
+                const params = new URLSearchParams();
+                for (const key in variables) {
+                    if (Object.prototype.hasOwnProperty.call(variables, key)) {
+                        params.append(key, variables[key]);
+                    }
+                }
+                const queryString = params.toString();
+                if (queryString) {
+                    targetUrl += (url.includes('?') ? '&' : '?') + queryString;
+                }
+            }
+            
+            const target = newWindow ? '_blank' : '_parent';
+            window.open(targetUrl, target);
+            
+            if (statParams) {
+                LOGGER.Stat(statParams);
+            }
+        }
+    }
+
+    /**
+     * Handles IO errors during asset loading.
+     * Removes the error listener and logs the error.
+     * @param event The IOErrorEvent that was dispatched
+     */
+    public static handleLoadError(event: IOErrorEvent): void {
+        if (event.target) {
+            (event.target as any).removeEventListener(IOErrorEvent.IO_ERROR, GLOBAL.handleLoadError);
+        }
+        const message = "Error loading: " + event.text;
+        LOGGER.Log("log", message);
+        Console.warning(message, true);
+    }
 }

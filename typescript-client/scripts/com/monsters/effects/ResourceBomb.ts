@@ -9,12 +9,12 @@ import { TemporaryComponent } from "../monsters/components/abilities/TemporaryCo
 import { PATHING } from "../pathing/PATHING";
 import { ResourceBombParticle } from "./ResourceBombParticle";
 
-import { BASE } from "../../BASE";
-import { BFOUNDATION } from "../../BFOUNDATION";
-import { BTOWER } from "../../BTOWER";
-import { CREEPS } from "../../CREEPS";
-import { MAP } from "../../MAP";
-import { SPRITES } from "../../SPRITES";
+import { BASE } from "../../../BASE";
+import { BFOUNDATION } from "../../../BFOUNDATION";
+import { BTOWER } from "../../../BTOWER";
+import { CREEPS } from "../../../CREEPS";
+import { MAP } from "../../../MAP";
+import { SPRITES } from "../../../SPRITES";
 
 /**
  * Resource bomb - area effect bomb that damages buildings or affects creatures.

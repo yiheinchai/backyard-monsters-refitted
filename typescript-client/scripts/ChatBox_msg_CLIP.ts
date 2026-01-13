@@ -12,6 +12,9 @@ export class ChatBox_msg_CLIP extends MovieClip {
     public ignoreBtn: MovieClip;
     public txt: TextField;
     public bg: MovieClip;
+    // Dynamic properties added at runtime in ChatBox.ts
+    public msgData: any;
+    public isOwnMessage: boolean = false;
 
     constructor() {
         super();

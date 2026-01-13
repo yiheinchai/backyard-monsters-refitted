@@ -2,7 +2,7 @@ import MovieClip from "openfl/display/MovieClip";
 import Point from "openfl/geom/Point";
 
 import { Particles } from "./Particles";
-import { ParticlesObject_CLIP } from "./ParticlesObject_CLIP";
+import { ParticlesObject_CLIP } from "../../../../ParticlesObject_CLIP";
 
 import { TweenLite } from "gs/TweenLite";
 import { Sine } from "gs/easing/Sine";

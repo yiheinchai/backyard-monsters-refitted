@@ -7,7 +7,7 @@ import Rectangle from "openfl/geom/Rectangle";
  * Planner item - base class for items in the yard planner.
  */
 export class PlannerItem extends Sprite {
-    public mc: MovieClip | null = null;
+    public mc: any = null;
     public size: Rectangle | null = null;
 
     constructor() {

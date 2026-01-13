@@ -4,7 +4,7 @@ import GlowFilter from "openfl/filters/GlowFilter";
 import ColorTransform from "openfl/geom/ColorTransform";
 
 import { Console } from "./Console";
-import { SecNum } from "../../../cc/utils/SecNum";
+import { SecNum } from "../../cc/utils/SecNum";
 import { BYMConfig } from "../configs/BYMConfig";
 import { ChampionBase } from "../monsters/champions/ChampionBase";
 import { RasterData } from "../rendering/RasterData";

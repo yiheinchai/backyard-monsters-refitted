@@ -21,7 +21,7 @@ import { PROCESS5 } from "./com/monsters/ai/PROCESS5";
 import { PROCESS7 } from "./com/monsters/ai/PROCESS7";
 import { PROCESS_INFERNO1 } from "./com/monsters/ai/PROCESS_INFERNO1";
 import { INFERNO_EMERGENCE_PROCESS } from "./com/monsters/ai/INFERNO_EMERGENCE_PROCESS";
-import { AIATTACKPOPUP } from "./AIATTACKPOPUP";
+import { AIATTACKPOPUP } from "./com/monsters/ai/AIATTACKPOPUP";
 import { popup_attacksettings } from "./popup_attacksettings";
 import { frame } from "./frame";
 import { GLOBAL } from "./GLOBAL";
@@ -38,8 +38,8 @@ import { ATTACK } from "./ATTACK";
 import { CREEPS } from "./CREEPS";
 import { POPUPS } from "./POPUPS";
 import { SPRITES } from "./SPRITES";
-import { TRIBES } from "./TRIBES";
-import { WMBASE } from "./WMBASE";
+import { TRIBES } from "./com/monsters/ai/TRIBES";
+import { WMBASE } from "./com/monsters/ai/WMBASE";
 import { PLANNER } from "./PLANNER";
 import { STORE } from "./STORE";
 import { HATCHERY } from "./HATCHERY";
@@ -295,7 +295,8 @@ export class WMATTACK {
                     WMATTACK._cleanUpFunc();
                 } else if (GLOBAL.Timestamp() % 10 === 0) {
                     let activeCreeps = 0;
-                    for (const creep of CREEPS._creeps) {
+                    for (const key in CREEPS._creeps) {
+                        const creep = CREEPS._creeps[key];
                         if (creep._behaviour === GLOBAL.e_BASE_MODE.ATTACK || creep._behaviour === "bounce" || 
                             creep._behaviour === "loot" || creep._behaviour === "heal" || 
                             creep._behaviour === "buff" || creep._behaviour === "hunt") {

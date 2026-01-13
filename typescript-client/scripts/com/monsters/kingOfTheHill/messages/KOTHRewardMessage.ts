@@ -1,4 +1,4 @@
-import { KeywordMessage } from "../../../frontPage/messages/KeywordMessage";
+import { KeywordMessage } from "../../frontPage/messages/KeywordMessage";
 
 import { CREEPS } from "../../../../CREEPS";
 import { KEYS } from "../../../../KEYS";

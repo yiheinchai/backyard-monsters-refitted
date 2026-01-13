@@ -36,7 +36,7 @@ export class INFERNO_EMERGENCE_POPUPS {
     }
 
     public static ShowUpgrade(): void {
-        let _loc1_: MovieClip = null;
+        let _loc1_: popup_infernoemerge_upgrade = null;
         _loc1_ = new popup_infernoemerge_upgrade();
         _loc1_.tTitle.htmlText = KEYS.Get("emerge_upgrade_title");
         _loc1_.tBody.htmlText = KEYS.Get("emerge_upgrade_body");
@@ -135,7 +135,7 @@ export class INFERNO_EMERGENCE_POPUPS {
     }
 
     public static ShowRSVP(param1: number): void {
-        let showRSVP: MovieClip;
+        let showRSVP: popup_infernoemerge_dialog;
         let isEventOver: boolean;
         let portrait: string = null;
         let imgOffset: Point = null;
@@ -220,7 +220,7 @@ export class INFERNO_EMERGENCE_POPUPS {
     }
 
     public static ShowStagePassed(param1: number): void {
-        let completeRound: MovieClip = null;
+        let completeRound: popup_infernoemerge_roundover = null;
         const lvl: number = param1;
         
         const imageCompleteRoundDialogue = function(param1: string, param2: BitmapData): void {
@@ -273,7 +273,7 @@ export class INFERNO_EMERGENCE_POPUPS {
     }
 
     public static ShowComplete(): void {
-        let completeEmerge: MovieClip = null;
+        let completeEmerge: popup_infernoemerge_complete = null;
         
         const imageCompleteEmerge = function(param1: string, param2: BitmapData): void {
             const _loc3_: Bitmap = new Bitmap(param2);

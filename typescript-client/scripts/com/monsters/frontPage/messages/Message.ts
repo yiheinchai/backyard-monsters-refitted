@@ -3,7 +3,7 @@ import MouseEvent from "openfl/events/MouseEvent";
 
 import { FrontPageHandler } from "../FrontPageHandler";
 import { Category } from "../categories/Category";
-import { Button } from "../Button";
+import { Button } from "../../../../Button";
 
 import { BASE } from "../../../../BASE";
 import { BFOUNDATION } from "../../../../BFOUNDATION";

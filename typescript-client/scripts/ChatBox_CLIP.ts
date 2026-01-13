@@ -8,8 +8,8 @@ import { Embed } from "./core/Embed";
  */
 @Embed({ source: "/_assets/assets.swf", symbol: "ChatBox_CLIP" })
 export class ChatBox_CLIP extends MovieClip {
-    public input: MovieClip;
-    public frame: MovieClip;
+    public input: any; // Dynamic MovieClip with _input, inputWoodBg, inputTxtBG
+    public frame: any; // Dynamic MovieClip with arrowUp, arrowDown, mcToggle, mcMask, mcScreen, alert, header, border, tTitle, _output
 
     constructor() {
         super();

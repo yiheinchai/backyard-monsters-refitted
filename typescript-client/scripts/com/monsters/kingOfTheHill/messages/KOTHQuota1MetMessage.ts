@@ -1,4 +1,4 @@
-import { KeywordMessage } from "../../../frontPage/messages/KeywordMessage";
+import { KeywordMessage } from "../../frontPage/messages/KeywordMessage";
 import { KOTHHandler } from "../KOTHHandler";
 
 import { KEYS } from "../../../../KEYS";

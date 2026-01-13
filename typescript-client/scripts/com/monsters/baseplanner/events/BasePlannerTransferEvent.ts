@@ -17,6 +17,10 @@ export class BasePlannerTransferEvent extends Event {
         return this._templateName;
     }
 
+    public get name(): string {
+        return this._templateName;
+    }
+
     public get slot(): number {
         return this._slot;
     }

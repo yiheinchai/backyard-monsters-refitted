@@ -10,7 +10,7 @@ import { DashedLine } from "./components/DashedLine";
 import { HitTestBitmap } from "./components/HitTestBitmap";
 import { BasePlannerNodeEvent } from "./events/BasePlannerNodeEvent";
 import { BasePlannerPopup } from "./popups/BasePlannerPopup";
-import { BasePlannerPopup_xSpot } from "./popups/BasePlannerPopup_xSpot";
+import { BasePlannerPopup_xSpot } from "../../../BasePlannerPopup_xSpot";
 import { PlannerNode } from "./PlannerNode";
 
 import { BASE } from "../../../BASE";

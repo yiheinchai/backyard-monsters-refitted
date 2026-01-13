@@ -1,4 +1,4 @@
-import { KeywordMessage } from "../../../frontPage/messages/KeywordMessage";
+import { KeywordMessage } from "../../frontPage/messages/KeywordMessage";
 
 /**
  * Krallen win soon message.

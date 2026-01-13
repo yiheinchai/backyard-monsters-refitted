@@ -1,3 +1,4 @@
+import Point from 'openfl/geom/Point';
 import { SecNum } from './com/cc/utils/SecNum';
 import { ALLIANCES } from './com/monsters/alliances/ALLIANCES';
 import { BYMConfig } from './com/monsters/configs/BYMConfig';
@@ -247,7 +248,7 @@ export class ATTACK {
         }
         
         let hasBombs = false;
-        for (const bomb of ResourceBombs._bombs) {
+        for (const bomb of Object.values(ResourceBombs._bombs)) {
             if (bomb.catapultLevel <= GLOBAL._attackersCatapult) {
                 if (bomb.resource === 3) {
                     if (!bomb.used && creatureCount > 0) {
@@ -538,7 +539,7 @@ export class ATTACK {
                         MAP._BUILDINGTOPS,
                         "bounce",
                         guardianLevel,
-                        spawnPoint,
+                        new Point(spawnPoint.x, spawnPoint.y),
                         Math.random() * 360,
                         GLOBAL._playerGuardianData[guardianIndex].hp.Get(),
                         GLOBAL._playerGuardianData[guardianIndex].fb.Get(),
@@ -562,7 +563,7 @@ export class ATTACK {
                         const dist = Math.random() * radius / 2;
                         const spawnPoint = { x: point.x + Math.sin(angle) * dist, y: point.y + Math.cos(angle) * dist };
                         
-                        const monster = CREEPS.Spawn(creatureID, MAP._BUILDINGTOPS, "bounce", spawnPoint, Math.random() * 360);
+                        const monster = CREEPS.Spawn(creatureID, MAP._BUILDINGTOPS, "bounce", new Point(spawnPoint.x, spawnPoint.y), Math.random() * 360);
                         monster._hitLimit = Number.MAX_SAFE_INTEGER;
                         
                         if (!MapRoomManager.instance.isInMapRoom2or3) {
@@ -775,7 +776,7 @@ export class ATTACK {
             } else {
                 new ParticleLoot(building, amount, particleType);
             }
-            ParticleText.Create({ x: x, y: y - 35 }, amount, particleType);
+            ParticleText.Create(new Point(x, y - 35), amount, particleType);
         }
         
         return amount;
@@ -829,7 +830,7 @@ export class ATTACK {
             particleType = ParticleText.TYPE_HEAL;
         }
         
-        const point = { x: target?.x || 0, y: target?.y || 0 };
+        const point = new Point(target?.x || 0, target?.y || 0);
         if (target && target instanceof MonsterBase) {
             point.y -= (target as MonsterBase)._altitude;
         }
@@ -865,8 +866,8 @@ export class ATTACK {
     }
     
     public static RetreatAll(): void {
-        for (const creep of CREEPS._creeps) {
-            creep.changeModeRetreat();
+        for (const key in CREEPS._creeps) {
+            CREEPS._creeps[key].changeModeRetreat();
         }
         
         if (BASE._saveOver !== 1) {
@@ -929,8 +930,8 @@ export class ATTACK {
             }
         }
         
-        for (const creep of CREEPS._creeps) {
-            creep.changeModeRetreat();
+        for (const key in CREEPS._creeps) {
+            CREEPS._creeps[key].changeModeRetreat();
         }
         
         SiegeWeapons.deactivateWeapon();

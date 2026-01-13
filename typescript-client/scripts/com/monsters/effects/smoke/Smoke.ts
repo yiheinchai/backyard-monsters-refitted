@@ -6,7 +6,7 @@ import Rectangle from "openfl/geom/Rectangle";
 
 import { SmokeParticle } from "./SmokeParticle";
 import { SmokeSystem } from "./SmokeSystem";
-import { smoke1 } from "./smoke1";
+import { smoke1 } from "../../../../smoke1";
 
 import { GLOBAL } from "../../../../GLOBAL";
 import { LOGGER } from "../../../../LOGGER";

@@ -35,26 +35,26 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
     public static _unlockLevel: number = 0;
     public static _maxLevel: number = 3;
 
-    private _portraitImage: MovieClip;
+    private _portraitImage: any; // Dynamic MovieClip
     private _statusImage: MovieClip;
     private tf_title: TextField;
     private tf_statusTitle: TextField;
     private tf_statusDesc: TextField;
     private tf_statusIdle: TextField;
-    private icon_status: MovieClip;
-    private pBar_status: MovieClip;
+    private icon_status: any; // Dynamic MovieClip with mcImage, loading
+    private pBar_status: any; // Dynamic MovieClip with mcBar, mcBar2
     private tf_statusPBarLabel: TextField;
-    private btn_action: MovieClip;
+    private btn_action: any; // Dynamic MovieClip with SetupKey, Highlight, Enabled
     private tf_stats: TextField;
     private tf_statsPBar: TextField;
     private tf_statsPBarLabel: TextField;
     private tf_statsWarning: TextField;
-    private pBar_stats: MovieClip;
-    private btn_resource: MovieClip;
-    private btn_instant: MovieClip;
+    private pBar_stats: any; // Dynamic MovieClip with mcBar, mcBar2
+    private btn_resource: any; // Dynamic MovieClip with bAction, mcR3, mcR4, mcTime
+    private btn_instant: any; // Dynamic MovieClip with bAction, tDescription, gCoin, gArrow
     private _scrollbar: ScrollSet;
     private _shell: Sprite;
-    private list_mc: MovieClip;
+    private list_mc: any; // Dynamic MovieClip with mcContainer, mcMask
     private _listContainer: Sprite;
     public _abilityUpgradesList: Array<any>;
 

@@ -1,4 +1,4 @@
-import { KeywordMessage } from "../../../frontPage/messages/KeywordMessage";
+import { KeywordMessage } from "../../frontPage/messages/KeywordMessage";
 
 /**
  * King of the Hill end message.

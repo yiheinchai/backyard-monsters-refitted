@@ -8,7 +8,7 @@ import { PlannerNode } from "../PlannerNode";
 import { BasePlannerNodeEvent } from "../events/BasePlannerNodeEvent";
 import { PlannerItem } from "./PlannerItem";
 import { Console } from "../../debug/Console";
-import { BasePlannerPopup_DisplayItem_Building } from "../BasePlannerPopup_DisplayItem_Building";
+import { BasePlannerPopup_DisplayItem_Building } from "../../../../BasePlannerPopup_DisplayItem_Building";
 
 import { GLOBAL } from "../../../../GLOBAL";
 import { KEYS } from "../../../../KEYS";

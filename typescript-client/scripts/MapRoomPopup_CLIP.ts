@@ -16,7 +16,7 @@ export class MapRoomPopup_CLIP extends MovieClip {
     public mcFrame2: frame_CLIP;
     public mcR2: any; // Dynamic MovieClip with mcMask, mcBG
     public mcR3: any; // Dynamic MovieClip with mcMask, mcBG
-    public mcMask: MovieClip;
+    public mcMask: any; // Dynamic MovieClip with child mcMask property
     public mcR4: any; // Dynamic MovieClip with mcMask, mcBG
     public bHome: Button_CLIP;
     public bBookmarks: Button_CLIP;

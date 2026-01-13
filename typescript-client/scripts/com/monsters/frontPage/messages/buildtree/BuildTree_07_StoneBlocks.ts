@@ -1,4 +1,4 @@
-import { FrontPageHandler } from "../../../FrontPageHandler";
+import { FrontPageHandler } from "../../FrontPageHandler";
 import { KeywordMessage } from "../KeywordMessage";
 
 import { GLOBAL } from "../../../../../GLOBAL";

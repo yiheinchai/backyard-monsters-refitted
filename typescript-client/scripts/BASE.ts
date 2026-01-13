@@ -87,6 +87,9 @@ import { UPDATES } from './UPDATES';
 import { URLLoaderApi } from './URLLoaderApi';
 import { WMATTACK } from './WMATTACK';
 import { WORKERS } from './WORKERS';
+import { BaseTemplate } from './com/monsters/baseplanner/BaseTemplate';
+import { BaseTemplateNode } from './com/monsters/baseplanner/BaseTemplateNode';
+import { PlannerTemplate } from './com/monsters/baseplanner/PlannerTemplate';
 
 /**
  * BASE - Core game base management class
@@ -1522,6 +1525,136 @@ export class BASE {
             POPUPS.DisplayWorker(0, buildingType);
         }
         return null;
+    }
+
+    /**
+     * Apply a template layout to the base, moving buildings to their template positions.
+     * @param template The base template to apply
+     */
+    public static applyTemplate(template: BaseTemplate): void {
+        for (let i = 0; i < template.nodes.length; i++) {
+            const node = template.nodes[i];
+            const pos = GRID.ToISO(node.x, node.y, 0);
+            const building = BASE.getBuildingFromNode(node);
+            if (building) {
+                building.moveTo(pos.x, pos.y);
+            }
+        }
+        BASE.Save();
+    }
+
+    /**
+     * Get a building from a template node, creating decoration buildings if needed.
+     * @param node The template node
+     * @returns The building foundation or null
+     */
+    private static getBuildingFromNode(node: BaseTemplateNode): BFOUNDATION | null {
+        const pos = GRID.ToISO(node.x, node.y, 0);
+        if (node.id === PlannerTemplate._DECORATION_ID) {
+            const buildingType = node.type;
+            const building = BASE.addBuildingC(buildingType);
+            if (building) {
+                const setupData: any = {
+                    "X": node.x,
+                    "Y": node.y,
+                    "t": buildingType,
+                    "id": BASE._buildingCount++
+                };
+                if (BASE._buildingsStored["bl" + buildingType]) {
+                    setupData.l = BASE._buildingsStored["bl" + buildingType].Get();
+                }
+                building.Setup(setupData);
+                node.id = building._id;
+                BASE._buildingsStored["b" + buildingType].Set(
+                    BASE._buildingsStored["b" + buildingType].Get() - 1
+                );
+            }
+            return building;
+        } else {
+            return BASE.getBuildingByID(node.id);
+        }
+    }
+
+    /**
+     * Get a template of the current base layout.
+     * @returns The base template
+     */
+    public static getTemplate(): BaseTemplate {
+        const template = new BaseTemplate();
+        template.name = BASE._baseName;
+        const buildings = BASE.getYardPlannerBuildings();
+        for (const building of buildings) {
+            const gridPos = GRID.FromISO(building.x, building.y);
+            template.addNode(new BaseTemplateNode(gridPos.x, gridPos.y, building._id, building._type));
+        }
+        return template;
+    }
+
+    /**
+     * Get all buildings that should appear in the yard planner.
+     * @returns Array of building foundations
+     */
+    public static getYardPlannerBuildings(): BFOUNDATION[] {
+        const allBuildings = InstanceManager.getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const plannerBuildings: BFOUNDATION[] = [];
+        for (const building of allBuildings) {
+            if (building._type !== 7) { // Exclude town hall marker or similar
+                plannerBuildings.push(building);
+            }
+        }
+        return plannerBuildings;
+    }
+
+    /**
+     * Get a building by its unique ID.
+     * @param buildingId The building ID
+     * @returns The building foundation or null
+     */
+    public static getBuildingByID(buildingId: number): BFOUNDATION | null {
+        const buildings = InstanceManager.getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        for (const building of buildings) {
+            if (building._id === buildingId) {
+                return building;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get the index of a guardian by type.
+     * @param guardianType The guardian type ID
+     * @returns The index in _guardianData or -1 if not found
+     */
+    public static getGuardianIndex(guardianType: number): number {
+        for (let i = 0; i < BASE._guardianData.length; i++) {
+            if (BASE._guardianData[i].t === guardianType) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Get the number of guardians with normal status.
+     * @returns Number of normal status guardians
+     */
+    public static _guardianDataNumNormal(): number {
+        let count = BASE._guardianData.length;
+        for (let i = BASE._guardianData.length - 1; i >= 0; i--) {
+            if (BASE._guardianData[i].status !== ChampionBase.k_CHAMPION_STATUS_NORMAL) {
+                count--;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Check if a building should be ignored in yard planner save.
+     * @param building The building to check
+     * @returns True if the building should be ignored (enemy buildings)
+     */
+    public static isBuildingIgnoredInYardPlannerSave(building: BFOUNDATION): boolean {
+        return building._class === "enemy";
     }
 }
 

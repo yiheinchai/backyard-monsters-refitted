@@ -2,7 +2,7 @@ import Event from "openfl/events/Event";
 import MouseEvent from "openfl/events/MouseEvent";
 
 import { BasePlannerEvent } from "../../events/BasePlannerEvent";
-import { BasePlannerTransferConfirmation_CLIP } from "./BasePlannerTransferConfirmation_CLIP";
+import { BasePlannerTransferConfirmation_CLIP } from "../../../../../BasePlannerTransferConfirmation_CLIP";
 
 import { KEYS } from "../../../../../KEYS";
 

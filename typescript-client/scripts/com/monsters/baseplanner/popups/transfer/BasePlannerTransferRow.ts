@@ -5,8 +5,8 @@ import ColorTransform from "openfl/geom/ColorTransform";
 import TextFieldType from "openfl/text/TextFieldType";
 import Keyboard from "openfl/ui/Keyboard";
 
-import { BaseTemplate } from "../../../BaseTemplate";
-import { SubscriptionHandler } from "../../../../subscriptions/SubscriptionHandler";
+import { BaseTemplate } from "../../BaseTemplate";
+import { SubscriptionHandler } from "../../../subscriptions/SubscriptionHandler";
 import { BasePlannerTransferPopup } from "./BasePlannerTransferPopup";
 import { BasePlannerTransferRow_CLIP } from "../../../../../BasePlannerTransferRow_CLIP";
 

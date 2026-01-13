@@ -4,7 +4,7 @@ import Event from "openfl/events/Event";
 import { BasePlanner } from "../../BasePlanner";
 import { BaseTemplate } from "../../BaseTemplate";
 import { ScalableFrame } from "../../../display/ScalableFrame";
-import { BasePlannerTransfer_CLIP } from "./BasePlannerTransfer_CLIP";
+import { BasePlannerTransfer_CLIP } from "../../../../../BasePlannerTransfer_CLIP";
 import { BasePlannerTransferRow } from "./BasePlannerTransferRow";
 
 /**

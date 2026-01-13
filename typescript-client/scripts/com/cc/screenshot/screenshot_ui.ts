@@ -6,7 +6,7 @@ import ByteArray from "openfl/utils/ByteArray";
 
 import { JPGEncoder } from "../../adobe/images/JPGEncoder";
 import { screenshot } from "./screenshot";
-import { screenshot_ui_CLIP } from "./screenshot_ui_CLIP";
+import { screenshot_ui_CLIP } from "../../../screenshot_ui_CLIP";
 
 /**
  * screenshot_ui - Screenshot editor UI with brightness, contrast, saturation, tilt and grain controls.
@@ -23,6 +23,7 @@ export class screenshot_ui extends screenshot_ui_CLIP {
     private presets: Array<any>;
 
     constructor() {
+        super();
         this.offsetPoint = new Point(-20, -20);
         this.presets = [
             ["Normal", 0, 0, 0, 0, 0, 0],
@@ -32,7 +33,6 @@ export class screenshot_ui extends screenshot_ui_CLIP {
             ["Toy 2", 10, 30, 20, 60, 0, 2],
             ["Old", 10, 40, -30, 10, 1, 3]
         ];
-        super();
         this.mcImage.addEventListener(MouseEvent.MOUSE_DOWN, this.DragStart.bind(this));
         this.mcImage.addEventListener(MouseEvent.MOUSE_UP, this.DragStop.bind(this));
         this.bBrightnessDown.Setup("-");
