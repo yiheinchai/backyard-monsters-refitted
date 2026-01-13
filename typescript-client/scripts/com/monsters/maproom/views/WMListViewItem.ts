@@ -3,9 +3,9 @@ import BitmapData from "openfl/display/BitmapData";
 import Loader from "openfl/display/Loader";
 
 import { ImageCache } from "../../display/ImageCache";
-import { MapRoom } from "../../MapRoom";
+import { MapRoom } from "../MapRoom";
 import { PlayerHandler } from "../../PlayerHandler";
-import { BaseObject } from "../../model/BaseObject";
+import { BaseObject } from "../model/BaseObject";
 import { WMListViewItem_CLIP } from "./WMListViewItem_CLIP";
 
 /**
