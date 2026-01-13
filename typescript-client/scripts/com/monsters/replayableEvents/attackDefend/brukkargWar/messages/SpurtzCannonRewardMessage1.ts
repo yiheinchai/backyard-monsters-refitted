@@ -18,7 +18,7 @@ export class SpurtzCannonRewardMessage1 extends KeywordMessage {
 
     protected override onButtonClick(): void {
         POPUPS.Next();
-        if (YARD_PROPS._yardProps[SpurtzCannon.TYPE - 1].blocked) {
+        if (YARD_PROPS._yardProps[SpurtzCannon.TYPE - 1].block) {
             return;
         }
         BASE.addBuildingB(SpurtzCannon.TYPE, true);

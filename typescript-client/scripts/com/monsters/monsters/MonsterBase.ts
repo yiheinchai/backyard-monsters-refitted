@@ -294,7 +294,7 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
         for (let i = 0; i < this._components.length; i++) {
             const component = this._components[i];
             if ((component as any).onDefend) {
-                delta = (component as IDefendingComponent).onDefend(this, delta, source);
+                delta = (component as unknown as IDefendingComponent).onDefend(this, delta, source);
             }
         }
         

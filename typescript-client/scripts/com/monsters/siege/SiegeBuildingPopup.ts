@@ -236,7 +236,7 @@ export class SiegeBuildingPopup extends SIEGEBUILDINGPOPUP_CLIP {
                 this._siegeWeaponRows[rowIndex].addEventListener(MouseEvent.CLICK, this.onClickListItem.bind(this));
                 this._siegeWeaponRows[rowIndex].mouseChildren = false;
                 this._siegeWeaponRows[rowIndex].buttonMode = true;
-                this._siegeWeaponRows[rowIndex].enableHandCursor = true;
+                this._siegeWeaponRows[rowIndex].buttonMode = true;
             }
             const row = this._siegeWeaponRows[rowIndex];
             row.tLabel.htmlText = "<b>" + weapons[i].name + "</b>";

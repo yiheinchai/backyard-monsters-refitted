@@ -43,7 +43,7 @@ export class RezghulResurrectAttack extends RangedAttack {
                 targets = [];
             }
             const currentCreep: ITargetable = allDeadCreeps[i].creep;
-            if (currentCreep instanceof CreepBase && RezghulResurrectAttack.k_UNRESURRECTABLE_CREATURES.indexOf((currentCreep as CreepBase)._creatureID) === -1) {
+            if (currentCreep instanceof CreepBase && RezghulResurrectAttack.k_UNRESURRECTABLE_CREATURES.indexOf((currentCreep as unknown as CreepBase)._creatureID) === -1) {
                 targets.push(currentCreep);
             }
         }
@@ -67,8 +67,8 @@ export class RezghulResurrectAttack extends RangedAttack {
         if (deadCreepsInRange) {
             for (let i = 0; i < deadCreepsInRange.length; i++) {
                 const currentCreep: ITargetable = deadCreepsInRange[i];
-                if (currentCreep instanceof CreepBase && RezghulResurrectAttack.k_UNRESURRECTABLE_CREATURES.indexOf((currentCreep as CreepBase)._creatureID) === -1) {
-                    this.resurrect(currentCreep as CreepBase);
+                if (currentCreep instanceof CreepBase && RezghulResurrectAttack.k_UNRESURRECTABLE_CREATURES.indexOf((currentCreep as unknown as CreepBase)._creatureID) === -1) {
+                    this.resurrect(currentCreep as unknown as CreepBase);
                 }
             }
         }

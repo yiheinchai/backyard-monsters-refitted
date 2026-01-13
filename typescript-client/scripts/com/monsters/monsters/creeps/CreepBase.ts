@@ -1,3 +1,4 @@
+import { LOGGER } from "../../../../LOGGER";
 import Bitmap from "openfl/display/Bitmap";
 import BitmapData from "openfl/display/BitmapData";
 import DisplayObject from "openfl/display/DisplayObject";

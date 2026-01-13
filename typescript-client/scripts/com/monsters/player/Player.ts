@@ -612,7 +612,7 @@ export class Player {
     public tick(): void {
         for (const handler of this.handlers) {
             if ((handler as any).tick) {
-                (handler as ITickable).tick();
+                (handler as unknown as ITickable).tick();
             }
         }
     }
