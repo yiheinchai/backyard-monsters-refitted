@@ -136,7 +136,7 @@ export class MapRoom3Tutorial {
             case MapRoom3Tutorial.k_STEP_ATTACKWM:
                 MAP.Focus(-200, 0);
                 MAP.FocusTo(200, 0, 5, 0, 0, false);
-                TUTORIAL.Add(6, TUTORIAL.BOBBOTTOMLEFTLOW, KEYS.Get("tut_NWM_Step_4"), TUTORIAL.POINT_MAP, ["mc", UI_VISITOR.mc.bAttack, new Point(15, 15), -30], false, false, this.attackWMBase.bind(this));
+                TUTORIAL.Add(6, TUTORIAL.BOBBOTTOMLEFTLOW, KEYS.Get("tut_NWM_Step_4"), TUTORIAL.POINT_MAP, ["mc", (UI_VISITOR.mc as any).bAttack, new Point(15, 15), -30], false, false, this.attackWMBase.bind(this));
                 break;
             case MapRoom3Tutorial.k_STEP_HOLD:
                 this.m_target = null;

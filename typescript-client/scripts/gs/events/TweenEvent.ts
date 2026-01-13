@@ -7,7 +7,7 @@ export class TweenEvent extends Event {
     public static readonly version: number = 0.9;
     public static readonly START: string = "start";
     public static readonly UPDATE: string = "update";
-    public static readonly COMPLETE: string = "complete";
+    public static override readonly COMPLETE: "complete" = "complete";
 
     public info: any;
 

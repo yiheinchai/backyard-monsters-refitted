@@ -40,8 +40,8 @@ export class ProjectXv2 extends CreepBase {
         } else {
             targetFlags |= Targeting.k_TARGETS_DEFENDERS;
         }
-        this.m_damageComponent = this.addComponent(new AOEDamageOnDeath(60, targetFlags)) as AOEDamageOnDeath;
-        this.m_acidComponent = this.addComponent(new AcidOnDeath(60, 100, 10)) as AcidOnDeath;
+        this.m_damageComponent = this.addComponent(new AOEDamageOnDeath(60, targetFlags)) as unknown as AOEDamageOnDeath;
+        this.m_acidComponent = this.addComponent(new AcidOnDeath(60, 100, 10)) as unknown as AcidOnDeath;
         this.m_lastingDamageModifier = new AdditionPropertyModifier();
         this.damageProperty.addModifier(this.m_lastingDamageModifier);
     }

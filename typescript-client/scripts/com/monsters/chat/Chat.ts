@@ -2,15 +2,13 @@ import DisplayObjectContainer from "openfl/display/DisplayObjectContainer";
 import StageDisplayState from "openfl/display/StageDisplayState";
 
 import { BYMChat } from "./BYMChat";
+import { ChatBox } from "./ui/ChatBox";
 import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 
 import { BASE } from "../../../BASE";
 import { GLOBAL } from "../../../GLOBAL";
 import { LOGIN } from "../../../LOGIN";
 import { TUTORIAL } from "../../../TUTORIAL";
-
-// Forward declaration
-declare class ChatBox {}
 
 /**
  * Chat system manager - handles chat initialization and connection.

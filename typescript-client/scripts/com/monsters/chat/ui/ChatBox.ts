@@ -181,7 +181,7 @@ export class ChatBox extends AbstractChatBox implements IChatDisplay {
         this._chatHistory = [];
         this._originProps.screenWidth = this.background.mcScreen.width;
         this._originProps.screenHeight = this.background.mcScreen.height;
-        this._skinnedElements = [this.background.border, this.background.header, this.background.mcScreen.canvas, this.inputbar.inputWoodBg, this.inputbar.inputTxtBG.canvas];
+        this._skinnedElements = [this.background.border, this.background.header, this.background.mcScreen.canvas, (this.inputbar as any).inputWoodBg, (this.inputbar as any).inputTxtBG.canvas];
     }
 
     public static PopupShow(x: number, y: number, text: string, parent: MovieClip): void {
@@ -435,9 +435,9 @@ export class ChatBox extends AbstractChatBox implements IChatDisplay {
             this.background.mcMask.width = this._chatWidthDefault.mcMaskW;
             this.background.mcScreen.width = this._chatWidthDefault.mcScreenW;
             this.background._output.width = this._chatWidthDefault.tOutputW;
-            this.inputbar.inputWoodBg.width = this._chatWidthDefault.inputWoodBgW;
+            (this.inputbar as any).inputWoodBg.width = this._chatWidthDefault.inputWoodBgW;
             this.input.width = this._chatWidthDefault.inputTxtW;
-            this.inputbar.inputTxtBG.width = this._chatWidthDefault.inputTxtBgW;
+            (this.inputbar as any).inputTxtBG.width = this._chatWidthDefault.inputTxtBgW;
             this._sendBtn.x = this._chatWidthDefault.sendBtnX;
             this._scrollbar!.x = this._chatWidthDefault.scrollerX;
             this._chatWidth = this._chatWidthDefault.sizeW;
@@ -601,11 +601,11 @@ export class ChatBox extends AbstractChatBox implements IChatDisplay {
     }
 
     public override get background(): any {
-        return this._displayAssets.frame;
+        return (this._displayAssets as any).frame;
     }
 
     public override get input(): TextField {
-        return this._displayAssets.input._input;
+        return (this._displayAssets as any).input._input;
     }
 
     public override get output(): TextField {
@@ -613,7 +613,7 @@ export class ChatBox extends AbstractChatBox implements IChatDisplay {
     }
 
     public get inputbar(): MovieClip {
-        return this._displayAssets.input;
+        return (this._displayAssets as any).input;
     }
 
     public OnMsgMouseOver(event: MouseEvent): void {

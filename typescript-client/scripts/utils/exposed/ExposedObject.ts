@@ -5,7 +5,7 @@ import { Warning } from "../debug/Warning";
  * ExposedObject - An ExposedStructure with an ID for reference resolution.
  */
 export class ExposedObject extends ExposedStructure {
-    private m_Id: string = "";
+    protected m_Id: string = "";
 
     constructor() {
         super();

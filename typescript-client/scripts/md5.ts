@@ -1,4 +1,5 @@
 import ByteArray from "openfl/utils/ByteArray";
+import Endian from "openfl/utils/Endian";
 
 const leadingZeros: string[] = ["", "0", "00", "000", "0000", "00000", "000000", "0000000", "00000000"];
 
@@ -37,7 +38,7 @@ export function md5(param1: any): string {
         _loc2_ = param1 as ByteArray;
     }
 
-    _loc2_.endian = "littleEndian";
+    _loc2_.endian = Endian.LITTLE_ENDIAN;
 
     let _loc9_: number = 1732584193;
     let _loc10_: number = -271733879;

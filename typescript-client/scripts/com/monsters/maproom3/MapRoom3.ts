@@ -39,7 +39,7 @@ export class MapRoom3 implements IMapRoom {
             this.m_HeightMapLoader = new URLLoader(new URLRequest(headerUrl));
             this.m_HeightMapLoader.addEventListener(Event.COMPLETE, this.OnHeightMapLoaded.bind(this), false, 0, true);
             this.m_HeightMapLoader.addEventListener(IOErrorEvent.IO_ERROR, this.OnHeightMapLoadFailed.bind(this), false, 0, true);
-            this.m_HeightMapLoader.addEventListener(IOErrorEvent.NETWORK_ERROR, this.OnHeightMapLoadFailed.bind(this), false, 0, true);
+            // Note: IOErrorEvent.NETWORK_ERROR from Flash doesn't exist in OpenFL
             this.m_HeightMapLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this.OnHeightMapLoadFailed.bind(this), false, 0, true);
         }
     }

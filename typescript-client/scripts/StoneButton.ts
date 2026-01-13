@@ -93,7 +93,7 @@ export class StoneButton extends Sprite {
             }
             this.alertMC.x = this.getButtonWidth() - this.spinnerInset;
             this.alertMC.y = this.spinnerInset;
-            this.alertMC.mcCounter.t.htmlText = param1;
+            (this.alertMC.mcCounter as any).t.htmlText = param1;
         } else if (this.alertMC) {
             this.removeChild(this.alertMC);
             this.alertMC = null;

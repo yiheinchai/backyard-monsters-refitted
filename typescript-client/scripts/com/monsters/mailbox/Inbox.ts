@@ -58,7 +58,7 @@ export class Inbox extends Inbox_CLIP {
             btn.mouseChildren = false;
             btn.buttonMode = true;
             btn.useHandCursor = true;
-            btn.sorter_mc.gotoAndStop(1);
+            (btn as any).sorter_mc.gotoAndStop(1);
             this.removeChild(btn);
         }
         this.noMessages_btn.visible = false;
@@ -77,7 +77,7 @@ export class Inbox extends Inbox_CLIP {
         this.removeChild(this.outBtn);
         this.addEventListener(Event.ADDED_TO_STAGE, this.onAdd.bind(this));
         this.title_txt.htmlText = KEYS.Get("mail_title");
-        this.noMessages_btn.label_txt.htmlText = "<b>" + KEYS.Get("mail_nomessages") + "</b>";
+        (this.noMessages_btn as any).label_txt.htmlText = "<b>" + KEYS.Get("mail_nomessages") + "</b>";
         Inbox._instance = this;
     }
 
@@ -321,7 +321,7 @@ export class Inbox extends Inbox_CLIP {
 
     private sortHandler(event: MouseEvent): void {
         if (this.currentSorter) {
-            this.currentSorter.sorter_mc.gotoAndStop(1);
+            (this.currentSorter as any).sorter_mc.gotoAndStop(1);
             this.currentSorter.gotoAndStop(1);
         }
         let sortField = "";
@@ -361,9 +361,9 @@ export class Inbox extends Inbox_CLIP {
             return result;
         });
         if (this.reversed) {
-            (event.target as MovieClip).sorter_mc.gotoAndStop(3);
+            (event.target as any).sorter_mc.gotoAndStop(3);
         } else {
-            (event.target as MovieClip).sorter_mc.gotoAndStop(2);
+            (event.target as any).sorter_mc.gotoAndStop(2);
         }
         this.currentSort = sortField;
         this.currentSorter = event.target as MovieClip;

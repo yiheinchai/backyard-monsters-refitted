@@ -84,7 +84,7 @@ export class Message extends Message_CLIPB {
 
     private detectFS(event: FullScreenEvent | null = null): void {
         if (Boolean(this.stage) && this.stage.displayState === StageDisplayState.FULL_SCREEN) {
-            this.fsWarning.tBody.htmlText = KEYS.Get("fswarning");
+            (this.fsWarning as any).tBody.htmlText = KEYS.Get("fswarning");
             this.addChild(this.fsWarning);
         } else if (this.contains(this.fsWarning)) {
             this.removeChild(this.fsWarning);

@@ -18,7 +18,7 @@ export class ResourceCapacityBaseBuff extends BaseBuff {
         return "";
     }
 
-    public get value(): number {
+    public override get value(): number {
         return this.getValue();
     }
 

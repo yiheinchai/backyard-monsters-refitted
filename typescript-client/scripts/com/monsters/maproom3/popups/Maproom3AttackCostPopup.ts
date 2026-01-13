@@ -45,10 +45,10 @@ export class Maproom3AttackCostPopup extends EventDispatcher {
         }
         this.m_shinyCost = STORE.GetShinyCostFromTotalResources(totalCost);
         this.m_graphic.tBody.htmlText = KEYS.Get("msg_attackcost", { "v1": this.m_cell.name });
-        this.m_graphic.mcInstant.tDescription.htmlText = KEYS.Get("msg_attackinstant");
-        this.m_graphic.mcInstant.bAction.Setup(KEYS.Get("btn_useshiny", { "v1": this.m_shinyCost }));
-        this.m_graphic.mcInstant.bAction.addEventListener(MouseEvent.CLICK, this.clickedShinyAttack.bind(this), false, 0, true);
-        this.m_graphic.mcResources.bAction.Setup(KEYS.Get("btn_useresources"));
+        (this.m_graphic.mcInstant as any).tDescription.htmlText = KEYS.Get("msg_attackinstant");
+        (this.m_graphic.mcInstant as any).bAction.Setup(KEYS.Get("btn_useshiny", { "v1": this.m_shinyCost }));
+        (this.m_graphic.mcInstant as any).bAction.addEventListener(MouseEvent.CLICK, this.clickedShinyAttack.bind(this), false, 0, true);
+        (this.m_graphic.mcResources as any).bAction.Setup(KEYS.Get("btn_useresources"));
         for (let i = 1; i < 6; i++) {
             const icon = this.m_graphic.mcResources.getChildByName("mcR" + i) as any;
             const costValue: number = costs[i - 1];
@@ -62,8 +62,8 @@ export class Maproom3AttackCostPopup extends EventDispatcher {
                 icon.tTitle.htmlText = "<b>" + KEYS.Get(GLOBAL._resourceNames[i - 1]) + "</b>";
             }
         }
-        this.m_graphic.mcResources.mcTime.visible = false;
-        this.m_graphic.mcResources.bAction.addEventListener(MouseEvent.CLICK, this.clickedResourceAttack.bind(this), false, 0, true);
+        (this.m_graphic.mcResources as any).mcTime.visible = false;
+        (this.m_graphic.mcResources as any).bAction.addEventListener(MouseEvent.CLICK, this.clickedResourceAttack.bind(this), false, 0, true);
     }
 
     protected clickedShinyAttack(event: MouseEvent): void {

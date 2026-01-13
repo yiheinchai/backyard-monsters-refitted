@@ -64,6 +64,41 @@ export class SPECIALEVENT_WM1 {
     public static readonly BONUSWAVE2: number = 32;
     public static readonly EVENTEND: number = 33;
     
+    public static readonly WAVES_DESC: string[] = [
+        "<b>Wave 1</b><br>5 Octo-oozes",
+        "<b>Wave 2</b><br>4 Octo-oozes, 5 Bolts",
+        "<b>Wave 3</b><br>5 Octo-oozes, 5 Pokeys",
+        "<b>Wave 4</b><br>10 Pokeys, 10 Bolts",
+        "<b>Wave 5</b><br>10 Finks",
+        "<b>Wave 6</b><br>5 Octo-oozes, 2 Finks",
+        "<b>Wave 7</b><br>10 Ichis, 50 Bolts",
+        "<b>Wave 8</b><br>40 Pokeys, 8 Finks",
+        "<b>Wave 9</b><br>10 Octo-oozes, 10 Pokeys, 10 Finks, 10 Bolts",
+        "<b>Wave 10</b><br>8 Ichis, 8 Finks",
+        "<b>Wave 11</b><br>10 Finks, 10 Banditos, 10 ??????",
+        "<b>Wave 12</b><br>16 Ichis, 30 Banditos",
+        "<b>Wave 13</b><br>16 Banditos, 30 Ichis",
+        "<b>Wave 14</b><br>20 Ichis, 30 Banditos, 10 Fangs",
+        "<b>Wave 15</b><br>20 Ichis, 15 Fangs",
+        "<b>Wave 16</b><br>20 Banditos, 20 Fangs",
+        "<b>Wave 17</b><br>24 Ichis, 36 Banditos, 15 Fangs",
+        "<b>Wave 18</b><br>50 Banditos, 25 Fangs",
+        "<b>Wave 19</b><br>20 Ichis, 20 Fangs, 30 Banditos",
+        "<b>Wave 20</b><br>10 Eye-ras, 40 Banditos, 10 Project X's, 10 Crabatrons, Drull (L1)",
+        "<b>Wave 21</b><br>30 Wormzers (Level 6, Splash Damage), 15 ??????",
+        "<b>Wave 22</b><br>20 Bolts (L3), 10 Brains (L3, Invisibility), Gorgo (L3)",
+        "<b>Wave 23</b><br>60 Crabatrons (L6), 5 Zafreetis (L5)",
+        "<b>Wave 24</b><br>40 Pokeys (L6), 30 Ichis (L6), 20 Banditos (L6), 10 Crabatrons (L6), 5 D.A.V.E.s (L6)",
+        "<b>Wave 25</b><br>30 Eye-ras (L6, Airburst 3), 30 Bolts (L6, Teleportation 3), 30 Wormzers (L6, Splash Damage 3), 30 Finks (L6, Claws 3), 30 Banditos (L6, Whirlwind 3), 30 Fangs (L6, Venom 3), 30 Brains (L6, Invisibility 3)",
+        "<b>Wave 26</b><br>40 Eye-ras (L6, Airburst 3), 50 ?????? (L6), Drull (L6)",
+        "<b>Wave 27</b><br>30 Teratorns (L6)",
+        "<b>Wave 28</b><br>80 Project Xs (L6, Acid Spores 3), 80 Wormzers (L6, Splash Damage 3)",
+        "<b>Wave 29</b><br>40 D.A.V.E.s (L6, Rockets 3)",
+        "<b>Wave 30</b><br>30 D.A.V.E.s (L6, Rockets 3), 30 Wormzers (L6, Splash Damage 3), 10 Zafreetis (L5), Fomor (L6)",
+        "<b>Bonus Wave</b><br>??????",
+        "<b>Bonus Wave 2</b><br>??????"
+    ];
+    
     // Simplified wave definitions - structure preserved, data abbreviated for brevity
     private static readonly WAVES: any[] = [
         // Wave 1-32 definitions with creep spawn configurations for WM1 event

@@ -12,6 +12,7 @@ export class popup_report extends MovieClip {
     public tDesc: TextField;
     public tTitle: TextField;
     public mcFrame: frame2_CLIP;
+    public Resize: (() => void) | null = null;
 
     constructor() {
         super();

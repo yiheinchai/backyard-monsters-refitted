@@ -297,7 +297,7 @@ export class CS_SmartFoxServer2X extends EventDispatcher implements IChatSystem 
         this.m_login = loginData;
         this.m_user = loginData.User;
         const password = loginData.Password;
-        const sfsParams = loginData.Params;
+        const sfsParams = loginData.Params as any;
         const request = new LoginRequest(this.m_user.Name, password, this.zone!, sfsParams);
         try {
             this.sfs.send(request);

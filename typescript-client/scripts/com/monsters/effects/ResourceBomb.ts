@@ -76,7 +76,7 @@ export class ResourceBomb {
                 this.tempPoint = PATHING.FromISO(new Point(creep.x, creep.y));
                 let sprite: any;
                 if (creep._creatureID.substr(0, 1) === "G") {
-                    sprite = SPRITES._sprites[creep._spriteID];
+                    sprite = SPRITES._sprites[(creep as any)._spriteID];
                 } else {
                     sprite = SPRITES._sprites[creep._creatureID];
                 }

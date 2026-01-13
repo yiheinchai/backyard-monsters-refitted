@@ -26,7 +26,7 @@ export class MapRoom3RelocatePopupItemDisplay extends MapRoom3RelocateMainYardPo
         this.m_ProfilePicture.load(new URLRequest("http://graph.facebook.com/" + this.m_FriendToDisplay.facebookId + "/picture"));
         this.m_ProfilePicture.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, this.OnProfilePictureIOErrorEvent.bind(this), false, 0, true);
         this.imageHolder.addChild(this.m_ProfilePicture);
-        this.levelIcon.lv_txt.htmlText = "<b>" + this.m_FriendToDisplay.level + "</b>";
+        (this.levelIcon as any).lv_txt.htmlText = "<b>" + this.m_FriendToDisplay.level + "</b>";
         this.nameText.htmlText = "<b>" + friendData.name + "</b>";
         this.nameText.mouseEnabled = false;
         const worldDescription: string = friendData.isInPlayersWorld ? KEYS.Get("mr3_relocate_main_yard_same") : KEYS.Get("mr3_relocate_main_yard_world", { "v1": friendData.world });

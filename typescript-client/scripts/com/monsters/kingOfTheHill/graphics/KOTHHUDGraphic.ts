@@ -12,7 +12,7 @@ export class KOTHHUDGraphic extends KrallenHUD_CLIP {
 
     public update(active: boolean, level: number): void {
         this.gotoAndStop(active ? "active" : "inactive");
-        this.mcLevel.tLevel.text = level.toString();
+        (this.mcLevel as any).tLevel.text = level.toString();
         this.mcLevel.visible = Boolean(level);
     }
 }

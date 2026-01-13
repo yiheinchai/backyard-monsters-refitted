@@ -57,7 +57,7 @@ export class DescentDebuffPopup extends descentDebuff_info_CLIP {
                 this.depthDesc2 = "";
         }
         const pct = 100 / this.maxDepth * level;
-        this.depthBar.mcBar.width = Math.max(pct, 1);
+        (this.depthBar as any).mcBar.width = Math.max(pct, 1);
         this.DepthCheck();
     }
 
@@ -89,9 +89,9 @@ export class DescentDebuffPopup extends descentDebuff_info_CLIP {
         this.debuffTip = new bubblepopupUpBuff_CLIP();
         this.debuffTip.x = -10;
         this.debuffTip.y = this.debuffTip.height + 5;
-        this.debuffTip.mcArrow.x = this.debuffTip.width / 2 - 20;
-        this.debuffTip.mcText.htmlText = KEYS.Get("inf_descent_toxicity_help");
-        this.debuffTip.mcTextDuration.htmlText = "";
+        (this.debuffTip as any).mcArrow.x = this.debuffTip.width / 2 - 20;
+        (this.debuffTip as any).mcText.htmlText = KEYS.Get("inf_descent_toxicity_help");
+        (this.debuffTip as any).mcTextDuration.htmlText = "";
         this.addChild(this.debuffTip);
     }
 

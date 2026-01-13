@@ -1,3 +1,4 @@
+import BlendMode from "openfl/display/BlendMode";
 import Bitmap from "openfl/display/Bitmap";
 import BitmapData from "openfl/display/BitmapData";
 import Shape from "openfl/display/Shape";
@@ -51,13 +52,13 @@ export class Renderer {
         const visibleData = RasterData.visibleData;
         this._curCopyIndex = this._curDrawIndex = 0;
         
-        if (RasterData.needsSort) {
+        if (RasterData.s_needsSort) {
             visibleData.sort(this.sortRasterData);
-            RasterData.needsSort = false;
+            RasterData.s_needsSort = false;
         }
         
         this._canvas.lock();
-        this.rasterize((RasterData.unsortedData as RasterData[]).concat(visibleData));
+        this.rasterize((RasterData.s_unsortedData as RasterData[]).concat(visibleData));
         this._canvas.unlock();
     }
 

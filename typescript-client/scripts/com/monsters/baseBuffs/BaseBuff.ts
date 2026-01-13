@@ -2,7 +2,7 @@
  * Base buff - base class for all base buffs.
  */
 export class BaseBuff {
-    public value: number = 0;
+    protected _value: number = 0;
     protected m_id: number = 0;
     protected m_name: string;
     protected m_imageURL: string;
@@ -10,6 +10,14 @@ export class BaseBuff {
     constructor(name: string = "", imageURL: string = "") {
         this.m_name = name;
         this.m_imageURL = imageURL;
+    }
+
+    public get value(): number {
+        return this._value;
+    }
+
+    public set value(val: number) {
+        this._value = val;
     }
 
     public get description(): string {
@@ -41,6 +49,6 @@ export class BaseBuff {
     }
 
     protected getValue(): number {
-        return this.value;
+        return this._value;
     }
 }

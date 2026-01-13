@@ -91,7 +91,7 @@ export class MapRoom implements IMapRoom {
     public static _frame: number = 0;
     public static BRIDGE: any; // Bridge object for cross-context communication
 
-    constructor() { super(); }
+    constructor() { }
 
     public static get homeCell(): IMapRoomCell | null { return MapRoom._homeCell; }
     public static set migrateThread(value: Thread) { MapRoom._migrateThread = value; }

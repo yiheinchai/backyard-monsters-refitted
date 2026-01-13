@@ -4,7 +4,7 @@ import Event from "openfl/events/Event";
  * Chat event for various chat system actions.
  */
 export class ChatEvent extends Event {
-    public static readonly CONNECT: string = "connect";
+    public static readonly CONNECT: "connect" = "connect";
     public static readonly LOGIN: string = "login";
     public static readonly JOIN: string = "join";
     public static readonly LEAVE: string = "leave";

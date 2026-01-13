@@ -18,7 +18,6 @@ interface CreepPropsData {
  * Definition for a type of creep/monster.
  */
 export class CreepType extends ExposedObject {
-    private m_Id: string = "";
     private m_Name: string = "";
     private m_Description: string = "";
     private m_Index: number = 0;

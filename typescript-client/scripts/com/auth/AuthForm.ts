@@ -64,7 +64,7 @@ export class AuthForm extends Sprite {
     private PRIMARY: number = 0x004DE5;
     private SECONDARY: number = 0x00CDB8;
     private checkContentLoadedTimer: Timer | null = null;
-    private languages: Array<string> = [];
+    private languages: any = [];
 
     constructor() {
         super();

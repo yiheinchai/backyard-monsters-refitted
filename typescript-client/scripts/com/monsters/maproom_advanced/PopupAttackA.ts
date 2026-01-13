@@ -72,9 +72,9 @@ export class PopupAttackA extends PopupAttackA_CLIP {
     }
 
     public Hide(event: MouseEvent | null = null): void {
-        let profilePics = this.mcProfilePic.mcBG.numChildren;
+        let profilePics = (this.mcProfilePic as any).mcBG.numChildren;
         while (profilePics--) {
-            this.mcProfilePic.mcBG.removeChildAt(profilePics);
+            (this.mcProfilePic as any).mcBG.removeChildAt(profilePics);
         }
         MapRoom._mc.HideAttack();
     }
@@ -95,7 +95,7 @@ export class PopupAttackA extends PopupAttackA_CLIP {
         this.bAttack.Enabled = false;
         this.ProfilePic();
         if (this._cell._alliance) {
-            this.AlliancePic(AllyInfo._picURLs.sizeM, this.mcAlliancePic.mcImage, this.mcAlliancePic.mcBG, true);
+            this.AlliancePic(AllyInfo._picURLs.sizeM, (this.mcAlliancePic as any).mcImage, (this.mcAlliancePic as any).mcBG, true);
         } else {
             this.mcAlliancePic.visible = false;
         }
@@ -186,7 +186,7 @@ export class PopupAttackA extends PopupAttackA_CLIP {
             };
             let mapRoomCell: MapRoomCell | null = null;
             if (!MapRoomManager.instance.isInMapRoom3) {
-                ATTACK._curCreaturesAvailable = [];
+                ATTACK._curCreaturesAvailable = {} as any;
                 for (const cellData of this._cellsInRange) {
                     mapRoomCell = cellData["cell"] as MapRoomCell;
                     const cellRange = cellData["range"] as number;
@@ -347,7 +347,7 @@ export class PopupAttackA extends PopupAttackA_CLIP {
                 catapultItem = new CATAPULTITEM();
                 catapultItem._props = siegeWeapon;
                 catapultItem._bombid = siegeWeapon.weaponID;
-                catapultItem._txtMC._tA.htmlText = "<b>" + siegeWeapon.name + "</b>";
+                (catapultItem._txtMC as any)._tA.htmlText = "<b>" + siegeWeapon.name + "</b>";
                 catapultItem._image = new MovieClip();
                 catapultItem.addChild(catapultItem._image);
                 catapultItem._popup = new bubblepopup3();
@@ -402,7 +402,7 @@ export class PopupAttackA extends PopupAttackA_CLIP {
         };
         const imageComplete = (path: string, bitmapData: BitmapData): void => {
             this._profileBmp = new Bitmap(bitmapData);
-            this.mcProfilePic.mcBG.addChild(this._profileBmp);
+            (this.mcProfilePic as any).mcBG.addChild(this._profileBmp);
         };
         const LoadImageError = (event: IOErrorEvent): void => {
         };
@@ -418,7 +418,7 @@ export class PopupAttackA extends PopupAttackA_CLIP {
             } else {
                 this._profilePic.load(new URLRequest("http://graph.facebook.com/" + this._cell!._facebookID + "/picture"));
             }
-            this.mcProfilePic.mcBG.addChild(this._profilePic);
+            (this.mcProfilePic as any).mcBG.addChild(this._profilePic);
         } else {
             switch (this._cell!._name) {
                 case "Dreadnought":
@@ -454,9 +454,9 @@ export class PopupAttackA extends PopupAttackA_CLIP {
             return;
         }
         if (this._cell!._base > 1 && Boolean(this._cell!._alliance)) {
-            let k = this.mcAlliancePic.mcImage.numChildren;
+            let k = (this.mcAlliancePic as any).mcImage.numChildren;
             while (k--) {
-                this.mcAlliancePic.mcImage.removeChildAt(k);
+                (this.mcAlliancePic as any).mcImage.removeChildAt(k);
             }
             this.mcAlliancePic.visible = true;
             const allyinfo = this._cell!._alliance;

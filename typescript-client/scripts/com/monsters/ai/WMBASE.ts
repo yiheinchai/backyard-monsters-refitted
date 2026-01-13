@@ -223,7 +223,7 @@ export class WMBASE {
         
         if (creatureId && GLOBAL._bJuicer && GLOBAL._bJuicer.health > 0.5 * GLOBAL._bJuicer.maxHealth) {
             GLOBAL.player.monsterListByID(creatureId).add(-1);
-            for (const creature of CREATURES._creatures) {
+            for (const creature of Object.values(CREATURES._creatures)) {
                 if ((creature as any)._creatureID === creatureId && (creature as any)._behaviour !== "juice") {
                     (creature as any).ModeJuice();
                     return;

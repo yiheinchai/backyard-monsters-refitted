@@ -193,12 +193,12 @@ export class PopupInfoEnemy extends PopupInfoEnemy_CLIP {
             this.ProfilePic();
             if (this._cell._level) {
                 this.mcLevel.visible = true;
-                this.mcLevel.lv_txt.htmlText = "<b>" + this._cell._level + "</b>";
+                (this.mcLevel as any).lv_txt.htmlText = "<b>" + this._cell._level + "</b>";
             } else {
                 this.mcLevel.visible = false;
             }
             if (this._cell._alliance) {
-                this.AlliancePic(AllyInfo._picURLs.sizeM, this.mcAlliancePic.mcImage, this.mcAlliancePic.mcBG, true);
+                this.AlliancePic(AllyInfo._picURLs.sizeM, (this.mcAlliancePic as any).mcImage, (this.mcAlliancePic as any).mcBG, true);
             } else {
                 this.mcAlliancePic.visible = false;
                 this.mcRelations.visible = false;
@@ -221,12 +221,12 @@ export class PopupInfoEnemy extends PopupInfoEnemy_CLIP {
             this.ProfilePic();
             if (this._cell._level) {
                 this.mcLevel.visible = true;
-                this.mcLevel.lv_txt.htmlText = "<b>" + this._cell._level + "</b>";
+                (this.mcLevel as any).lv_txt.htmlText = "<b>" + this._cell._level + "</b>";
             } else {
                 this.mcLevel.visible = false;
             }
             if (this._cell._alliance) {
-                this.AlliancePic(AllyInfo._picURLs.sizeM, this.mcAlliancePic.mcImage, this.mcAlliancePic.mcBG, true);
+                this.AlliancePic(AllyInfo._picURLs.sizeM, (this.mcAlliancePic as any).mcImage, (this.mcAlliancePic as any).mcBG, true);
             } else {
                 this.mcAlliancePic.visible = false;
                 this.mcRelations.visible = false;
@@ -244,12 +244,12 @@ export class PopupInfoEnemy extends PopupInfoEnemy_CLIP {
             this.ProfilePic();
             if (this._cell._level) {
                 this.mcLevel.visible = true;
-                this.mcLevel.lv_txt.htmlText = "<b>" + this._cell._level + "</b>";
+                (this.mcLevel as any).lv_txt.htmlText = "<b>" + this._cell._level + "</b>";
             } else {
                 this.mcLevel.visible = false;
             }
             if (this._cell._alliance) {
-                this.AlliancePic(AllyInfo._picURLs.sizeM, this.mcAlliancePic.mcImage, this.mcAlliancePic.mcBG, false);
+                this.AlliancePic(AllyInfo._picURLs.sizeM, (this.mcAlliancePic as any).mcImage, (this.mcAlliancePic as any).mcBG, false);
             } else {
                 this.mcAlliancePic.visible = false;
                 this.mcRelations.visible = false;
@@ -324,7 +324,7 @@ export class PopupInfoEnemy extends PopupInfoEnemy_CLIP {
         };
         const imageComplete = (name: string, bmd: BitmapData): void => {
             this._profileBmp = new Bitmap(bmd);
-            this.mcProfilePic.mcBG.addChild(this._profileBmp);
+            (this.mcProfilePic as any).mcBG.addChild(this._profileBmp);
         };
         const LoadImageError = (event: IOErrorEvent): void => {
         };
@@ -344,7 +344,7 @@ export class PopupInfoEnemy extends PopupInfoEnemy_CLIP {
                 this._profilePic.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoad);
                 this._profilePic.load(new URLRequest("http://graph.facebook.com/" + this._cell!._facebookID + "/picture"));
             }
-            this.mcProfilePic.mcBG.addChild(this._profilePic);
+            (this.mcProfilePic as any).mcBG.addChild(this._profilePic);
         } else {
             switch (this._cell!._name) {
                 case "Dreadnought":
@@ -370,9 +370,9 @@ export class PopupInfoEnemy extends PopupInfoEnemy_CLIP {
             return;
         }
         if (this._cell!._base > 1 && Boolean(this._cell!._alliance)) {
-            let k = this.mcAlliancePic.mcImage.numChildren;
+            let k = (this.mcAlliancePic as any).mcImage.numChildren;
             while (k--) {
-                this.mcAlliancePic.mcImage.removeChildAt(k);
+                (this.mcAlliancePic as any).mcImage.removeChildAt(k);
             }
             k = this.mcRelations.numChildren;
             while (k--) {

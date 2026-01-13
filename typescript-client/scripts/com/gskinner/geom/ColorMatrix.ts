@@ -63,7 +63,7 @@ export class ColorMatrix extends Array<number> {
         this.multiplyMatrix([lumR + cos * (1 - lumR) + sin * -lumR, lumG + cos * -lumG + sin * -lumG, lumB + cos * -lumB + sin * (1 - lumB), 0, 0, lumR + cos * -lumR + sin * 0.143, lumG + cos * (1 - lumG) + sin * 0.14, lumB + cos * -lumB + sin * -0.283, 0, 0, lumR + cos * -lumR + sin * -(1 - lumR), lumG + cos * -lumG + sin * lumG, lumB + cos * (1 - lumB) + sin * lumB, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1]);
     }
 
-    public concat(matrix: Array<number>): void {
+    public concatMatrix(matrix: Array<number>): void {
         matrix = this.fixMatrix(matrix);
         if (matrix.length !== ColorMatrix.LENGTH) return;
         this.multiplyMatrix(matrix);
