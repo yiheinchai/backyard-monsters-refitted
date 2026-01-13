@@ -12,8 +12,8 @@ import { TweenInfo } from "./utils/tween/TweenInfo";
 export class TweenMax extends TweenLite implements IEventDispatcher {
     public static readonly version: number = 10.12;
 
-    public static killTweensOf: Function = TweenLite.killTweensOf;
-    public static killDelayedCallsTo: Function = TweenLite.killTweensOf;
+    public static override killTweensOf: (target?: any, complete?: boolean) => void = TweenLite.killTweensOf;
+    public static killDelayedCallsTo: (target?: any, complete?: boolean) => void = TweenLite.killTweensOf;
     public static override removeTween: (tween: TweenLite, clear?: boolean) => void = TweenLite.removeTween;
 
     protected static _pausedTweens: Map<TweenMax, TweenMax> = new Map();

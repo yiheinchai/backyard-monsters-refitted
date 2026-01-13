@@ -747,6 +747,16 @@ export class CreepBase extends MonsterBase {
         return PATHING.LineOfSight(this._tmpPoint.x, this._tmpPoint.y, this._targetBuilding._position.x, this._targetBuilding._position.y, this._targetBuilding);
     }
 
+    protected attacked(target: IAttackable, damage: number, source: ITargetable | null = null): void {
+        const len: number = this._attackComponents.length;
+        for (let i = 0; i < len; i++) {
+            const comp: Component = this._attackComponents[i];
+            if ((comp as any).onAttack) {
+                ((comp as unknown) as IAttackingComponent).onAttack(target, damage, source);
+            }
+        }
+    }
+
     // Behavior tick methods (tickBAttack, tickBDefend, tickBHeal, etc.) 
     // and remaining methods continue with same pattern...
     // Due to file length, these are implemented following the same conversion pattern

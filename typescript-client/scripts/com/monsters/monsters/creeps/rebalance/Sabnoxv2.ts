@@ -38,7 +38,7 @@ export class Sabnoxv2 extends CreepBase {
 
     protected override rangedAttack(target: ITargetable): ITargetable {
         const projectile: Projectilev2 = this.m_projectilePool.borrowObject() as Projectilev2;
-        projectile.setup(ProjectileUtils.getFireballBitmapData()(), this.x, this.getDisplayY(), target, Sabnoxv2.k_projectileSpeed, this.damage, this);
+        projectile.setup(ProjectileUtils.getFireballBitmapData(), this.x, this.getDisplayY(), target, Sabnoxv2.k_projectileSpeed, this.damage, this);
         return projectile;
     }
 

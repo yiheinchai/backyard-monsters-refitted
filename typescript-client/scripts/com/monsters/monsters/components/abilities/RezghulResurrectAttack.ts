@@ -77,9 +77,9 @@ export class RezghulResurrectAttack extends RangedAttack {
     private resurrect(monsterToRes: CreepBase): void {
         let newMonster: CreepBase;
         if (this.owner._friendly) {
-            newMonster = CREATURES.Spawn(monsterToRes._creatureID, MAP._BUILDINGTOPS, monsterToRes._behaviour, new Point(monsterToRes.x, monsterToRes.y), monsterToRes._targetRotation, null, monsterToRes._house);
+            newMonster = CREATURES.Spawn(monsterToRes._creatureID, MAP._BUILDINGTOPS, monsterToRes._behaviour, new Point(monsterToRes.x, monsterToRes.y), monsterToRes._targetRotation, null, monsterToRes._house) as CreepBase;
         } else {
-            newMonster = CREEPS.Spawn(monsterToRes._creatureID, MAP._BUILDINGTOPS, monsterToRes._behaviour, new Point(monsterToRes.x, monsterToRes.y), monsterToRes._targetRotation, 1, false, true);
+            newMonster = CREEPS.Spawn(monsterToRes._creatureID, MAP._BUILDINGTOPS, monsterToRes._behaviour, new Point(monsterToRes.x, monsterToRes.y), monsterToRes._targetRotation, 1, false, true) as CreepBase;
         }
         EFFECTS.Dig(Math.floor(newMonster.x), Math.floor(newMonster.y + 20));
         TweenLite.from(newMonster._graphicMC, 0.8, {

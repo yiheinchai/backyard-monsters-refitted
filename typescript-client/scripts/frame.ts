@@ -278,14 +278,14 @@ export class frame extends MovieClip {
 
     private BtnHelp(param1: MouseEvent | null = null): void {
         if (this.parent && "Help" in (this.parent as any)) {
-            (this.parent as MovieClip).Help();
+            (this.parent as any).Help();
         }
     }
 
     private BtnFullScreen(param1: MouseEvent | null = null): void {
         GLOBAL.goFullScreen();
         if (this.parent && "FullScreen" in (this.parent as any)) {
-            (this.parent as MovieClip).FullScreen();
+            (this.parent as any).FullScreen();
         }
     }
 }

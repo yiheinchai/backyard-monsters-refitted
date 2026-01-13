@@ -118,7 +118,7 @@ export class BBClient extends EventDispatcher {
         if (command === this.CMD_CONNECT) {
             this._sessId = payload;
             this._isConnected = true;
-            this.dispatchEvent(new BBEvent(BBEvent.CONNECT, {}));
+            this.dispatchEvent(new BBEvent(BBEvent.BB_CONNECT, {}));
             this.poll();
         } else if (command === this.CMD_POLL) {
             let decodedData: ByteArray | null = null;
@@ -165,7 +165,7 @@ export class BBClient extends EventDispatcher {
         loader.dataFormat = URLLoaderDataFormat.TEXT;
         loader.addEventListener(Event.COMPLETE, this.onHttpResponse.bind(this));
         loader.addEventListener(IOErrorEvent.IO_ERROR, this.onHttpIOError.bind(this));
-        loader.addEventListener(IOErrorEvent.NETWORK_ERROR, this.onHttpIOError.bind(this));
+        loader.addEventListener("ioError", this.onHttpIOError.bind(this)); // NETWORK_ERROR fallback
         return loader;
     }
 

@@ -36,4 +36,5 @@ export interface Room {
     setVariables(variables: Array<RoomVariable>): void;
     containsVariable(name: string): boolean;
     setPasswordProtected(value: boolean): void;
+    merge(room: Room): void;
 }

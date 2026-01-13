@@ -101,7 +101,7 @@ class AcidPool implements ITickable, ITargetable {
         for (let i = 0; i < targets.length; i++) {
             const attackable = targets[i].creep as IAttackable;
             attackable.modifyHealth(this.m_damage, this);
-            if ((attackable as any) instanceof IComponentOwner) {
+            if (typeof (attackable as any).getComponentByType === 'function') {
                 const compOwner = attackable as unknown as IComponentOwner;
                 if (!compOwner.getComponentByType(AcidStatusEffect)) {
                     compOwner.addComponent(new AcidStatusEffect(attackable as MonsterBase, this.m_damage));

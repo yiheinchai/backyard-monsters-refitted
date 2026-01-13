@@ -100,9 +100,9 @@ export class Renderer {
                 if (rd._filter && bmd) {
                     this._bm.bitmapData = bmd;
                     this._bm.filters = [rd._filter];
-                    this._canvas.draw(this._bm, this._matrix, null, rd._blendMode);
+                    this._canvas.draw(this._bm, this._matrix, null, rd._blendMode as BlendMode);
                 } else {
-                    this._canvas.draw(rd._data, this._matrix, null, rd._blendMode);
+                    this._canvas.draw(rd._data, this._matrix, null, rd._blendMode as BlendMode);
                 }
             }
         }

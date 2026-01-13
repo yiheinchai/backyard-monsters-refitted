@@ -60,24 +60,24 @@ export class SubscriptionControlPanelPopup extends subscriptions_controlPanel_po
         this._tiles = [this.mcTile1, this.mcTile2, this.mcTile3, this.mcTile4];
         for (let i = 0; i < this._tiles.length; i++) {
             this._tiles[i].buttonMode = true;
-            this._tiles[i].mcSelect.visible = false;
+            (this._tiles[i] as any).mcSelect.visible = false;
             this._tiles[i].addEventListener(MouseEvent.CLICK, this.clickedBGTileSelect.bind(this));
             switch (i) {
                 case 0:
-                    this._tiles[i].mcTerrain.gotoAndStop("isograss1");
+                    (this._tiles[i] as any).mcTerrain.gotoAndStop("isograss1");
                     break;
                 case 1:
-                    this._tiles[i].mcTerrain.gotoAndStop("rockgrass");
+                    (this._tiles[i] as any).mcTerrain.gotoAndStop("rockgrass");
                     break;
                 case 2:
-                    this._tiles[i].mcTerrain.gotoAndStop("isosand3");
+                    (this._tiles[i] as any).mcTerrain.gotoAndStop("isosand3");
                     break;
                 case 3:
-                    this._tiles[i].mcTerrain.gotoAndStop("isocrater1");
+                    (this._tiles[i] as any).mcTerrain.gotoAndStop("isocrater1");
                     break;
             }
         }
-        this._tiles[this.bgTileSelected].mcSelect.visible = true;
+        (this._tiles[this.bgTileSelected] as any).mcSelect.visible = true;
     }
 
     private setup(): void {
@@ -138,12 +138,12 @@ export class SubscriptionControlPanelPopup extends subscriptions_controlPanel_po
 
     private clickedBGTileSelect(event: MouseEvent | null = null): void {
         for (let i = 0; i < this._tiles.length; i++) {
-            this._tiles[i].mcSelect.visible = false;
+            (this._tiles[i] as any).mcSelect.visible = false;
             if (event!.currentTarget === this._tiles[i]) {
                 this.bgTileSelected = i;
             }
         }
-        (event!.currentTarget as MovieClip).mcSelect.visible = true;
+        (event!.currentTarget as any).mcSelect.visible = true;
     }
 
     public Hide(event: MouseEvent | null = null): void {

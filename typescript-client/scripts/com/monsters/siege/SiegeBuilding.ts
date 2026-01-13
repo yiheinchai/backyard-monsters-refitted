@@ -4,16 +4,12 @@ import Event from "openfl/events/Event";
 import { SecNum } from "../../cc/utils/SecNum";
 import { SiegeBuildingPopup } from "./SiegeBuildingPopup";
 import { SiegeWeapons } from "./SiegeWeapons";
+import { SiegeWeapon } from "./weapons/SiegeWeapon";
 
 import { BFOUNDATION } from "../../../BFOUNDATION";
 import { GLOBAL } from "../../../GLOBAL";
 import { POPUPSETTINGS } from "../../../POPUPSETTINGS";
 import { SOUNDS } from "../../../SOUNDS";
-
-// Forward declaration
-declare class SiegeWeapon {
-    weaponID: string;
-}
 
 /**
  * Base class for siege buildings (factory and lab).

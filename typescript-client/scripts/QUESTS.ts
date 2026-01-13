@@ -28,6 +28,7 @@ interface QuestDef {
     order: number;
     block?: boolean;
     list?: boolean;
+    priority?: number;
     reward: number[];
     id: string;
     group: number;

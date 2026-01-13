@@ -88,8 +88,8 @@ export class PopupRelocateMe extends PopupRelocateMe_CLIP {
         for (let i = 1; i < 5; i++) {
             const resource = this.mcResources["mcR" + i] as MovieClip;
             resource.gotoAndStop(i);
-            resource.tTitle.htmlText = "<b>" + KEYS.Get(GLOBAL._resourceNames[i - 1]) + "</b>";
-            resource.tValue.htmlText = "<b>" + GLOBAL.FormatNumber(this.RESOURCECOST.Get()) + "</b>";
+            (resource as any).tTitle.htmlText = "<b>" + KEYS.Get(GLOBAL._resourceNames[i - 1]) + "</b>";
+            (resource as any).tValue.htmlText = "<b>" + GLOBAL.FormatNumber(this.RESOURCECOST.Get()) + "</b>";
         }
         
         this.mcResources.mcTime.visible = false;

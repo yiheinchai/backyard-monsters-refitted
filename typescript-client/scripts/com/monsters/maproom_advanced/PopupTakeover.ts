@@ -117,7 +117,7 @@ export class PopupTakeover extends MapRoomPopup_takeover_CLIP {
         for (let i = 1; i < 5; i++) {
             const costMC = this.mcResources["mcR" + i] as MovieClip;
             costMC.gotoAndStop(i);
-            costMC.tTitle.htmlText = "<b>" + KEYS.Get(GLOBAL._resourceNames[i - 1]) + "</b>";
+            (costMC as any).tTitle.htmlText = "<b>" + KEYS.Get(GLOBAL._resourceNames[i - 1]) + "</b>";
             
             let colorString = "000000";
             if (GLOBAL._resources["r" + i].Get() <= this._resourceCost.Get()) {
@@ -127,7 +127,7 @@ export class PopupTakeover extends MapRoomPopup_takeover_CLIP {
             }
             
             const displayColor = this._resourceCost.Get() > GLOBAL._resources["r" + i].Get() ? "FF0000" : "000000";
-            costMC.tValue.htmlText = '<b><font color="#' + displayColor + '">' + 
+            (costMC as any).tValue.htmlText = '<b><font color="#' + displayColor + '">' + 
                 GLOBAL.FormatNumber(this._resourceCost.Get()) + '</font></b>';
         }
         

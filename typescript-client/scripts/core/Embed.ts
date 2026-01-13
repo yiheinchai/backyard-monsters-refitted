@@ -30,7 +30,7 @@ export function Embed(options: { source: string; symbol: string }) {
                 super(...args);
                 
                 // Initialize the clip with its asset
-                AssetRegistry.initializeClip(this, options.symbol);
+                AssetRegistry.initializeClip(this as any, options.symbol);
             }
         } as T;
     };

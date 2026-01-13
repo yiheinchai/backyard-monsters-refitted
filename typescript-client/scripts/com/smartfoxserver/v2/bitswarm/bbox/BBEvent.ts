@@ -4,7 +4,7 @@ import { BaseEvent } from "../../core/BaseEvent";
  * BBEvent - BlueBox event class for HTTP tunneling.
  */
 export class BBEvent extends BaseEvent {
-    public static readonly CONNECT: "bb-connect" = "bb-connect";
+    public static readonly BB_CONNECT: string = "bb-connect";
     public static readonly DISCONNECT: string = "bb-disconnect";
     public static readonly DATA: string = "bb-data";
     public static readonly IO_ERROR: string = "bb-ioError";
