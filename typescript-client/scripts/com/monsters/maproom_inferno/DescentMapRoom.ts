@@ -8,7 +8,7 @@ import { DescentView } from "./views/DescentView";
 import { MiniMap } from "./views/MiniMap";
 import { Obstruction } from "./views/Obstruction";
 import { PushPin } from "./views/PushPin";
-import { MapRoomPopup_InfernoDescent } from "./MapRoomPopup_InfernoDescent";
+import { MapRoomPopup_InfernoDescent } from "../../../MapRoomPopup_InfernoDescent";
 
 import { GLOBAL } from "../../../GLOBAL";
 import { SOUNDS } from "../../../SOUNDS";

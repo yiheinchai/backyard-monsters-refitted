@@ -5,26 +5,22 @@ import { GLOBAL } from './GLOBAL';
 import { POPUPSETTINGS } from './POPUPSETTINGS';
 import { SOUNDS } from './SOUNDS';
 import { TweenLite, Elastic } from './gs/TweenLite';
+import { MESSAGE_CLIP } from './MESSAGE_CLIP';
 
 /**
  * MESSAGE - Dialog Message System
  * Handles displaying dialog messages with action buttons
  */
-export class MESSAGE {
+export class MESSAGE extends MESSAGE_CLIP {
     public _mc: MESSAGE | null = null;
     public _action: Function | null = null;
     public _action2: Function | null = null;
     public _args: any[] | null = null;
     public _args2: any[] | null = null;
-    public x: number = 0;
-    public y: number = 0;
-    public parent: any = null;
-    public tMessage: any = { autoSize: "", htmlText: "", height: 0, y: 0 };
-    public mcBG: any = { height: 0, y: 0, Setup: (closeable: boolean) => {} };
-    public bAction: any = { visible: true, y: 0, Setup: (text: string) => {}, addEventListener: (type: string, listener: Function) => {} };
-    public bAction2: any = { visible: true, y: 0, Setup: (text: string) => {}, addEventListener: (type: string, listener: Function) => {} };
 
-    constructor() {}
+    constructor() {
+        super();
+    }
 
     public Show(message: string | null = null, button1Text: string | null = null, action1: Function | null = null, 
                 args1: any[] | null = null, button2Text: string | null = null, action2: Function | null = null, 
