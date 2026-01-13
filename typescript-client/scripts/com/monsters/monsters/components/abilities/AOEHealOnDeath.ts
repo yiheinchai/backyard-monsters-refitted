@@ -20,8 +20,8 @@ export class AOEHealOnDeath extends AOEDamageOnDeath {
     }
 
     protected override dealAOEDamage(damage: number, initialTarget: IAttackable | null = null): void {
-        const radiusX: number = this.radius;
-        const radiusY: number = this.radius;
+        const radiusX: number = this.m_radiusOuter;
+        const radiusY: number = this.m_radiusOuter;
         super.dealAOEDamage(this.m_healAmount, initialTarget);
         for (let i = 0; i < 10; i++) {
             const fireball: MovieClip = new FIREBALL_CLIP();

@@ -618,6 +618,39 @@ export class ChampionBase extends MonsterBase {
         // ... implementation follows AS3 logic
     }
 
+    protected doAttackDamage(): void {
+        let modifier: number = 1;
+        if (this._targetBuilding && this._targetBuilding._fortification.Get() > 0) {
+            ATTACK.Damage(this._tmpPoint.x, this._tmpPoint.y - 5, this.damage * modifier * (100 - (this._targetBuilding._fortification.Get() * 10 + 10)) / 100, this._mc.visible);
+        } else {
+            ATTACK.Damage(this._tmpPoint.x, this._tmpPoint.y - 5, this.damage * modifier, this._mc.visible);
+        }
+        if (this._targetCreep) {
+            this._targetCreep.modifyHealth(-(this.damage * modifier));
+        } else if (this._targetBuilding) {
+            this._targetBuilding.modifyHealth(this.damage * modifier, this);
+            if (this._creatureID === "G5" && typeof (this._targetBuilding as any).Loot === 'function') {
+                if ((this._targetBuilding as any)._looted) {
+                    this.findTarget();
+                }
+            }
+        } else {
+            this.findTarget();
+        }
+    }
+
+    protected doDefenseDamage(): void {
+        let loc1: Point;
+        if (this._creatureID === "G3") {
+            loc1 = Point.interpolate(this._tmpPoint.add(new Point(0, -this._altitude)), this._targetCreep._tmpPoint, 0.8);
+            FIREBALLS.Spawn2(loc1, this._targetCreep._tmpPoint, this._targetCreep, 8, this.damage, 0, FIREBALLS.TYPE_FIREBALL, 1, this);
+            FIREBALLS._fireballs[FIREBALLS._id - 1]._graphic.gotoAndStop(3);
+        } else {
+            ATTACK.Damage(this._tmpPoint.x, this._tmpPoint.y - 5, this.damage, this._mc.visible);
+            this._targetCreep.modifyHealth(-this.damage);
+        }
+    }
+
     public flyerLanded(): void {
         this._altitude = 0;
     }

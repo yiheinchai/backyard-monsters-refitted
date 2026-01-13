@@ -4,7 +4,7 @@ import Rectangle from "openfl/geom/Rectangle";
  * Obstruction (Inferno) - manages blocked areas on the inferno map room.
  */
 export class Obstruction {
-    public static Obstructions: Array<Rectangle> = [];
+    public static Obstructions: Array<any> = [];
     public static Reserved: Array<Rectangle> = [
         new Rectangle(196, 771, 209, 184),
         new Rectangle(605, 478, 186, 174),
@@ -40,7 +40,7 @@ export class Obstruction {
         return false;
     }
 
-    public static Register(rect: Rectangle, reserved: boolean = false): void {
+    public static Register(rect: any, reserved: boolean = false): void {
         Obstruction.Obstructions.push(rect);
         if (reserved) {
             Obstruction.Reserved.push(rect);
