@@ -118,12 +118,12 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
                 _loc10_.y = _loc4_.y + Math.floor(_loc2_ / _loc5_) * ((_loc10_ as any).mcMonster.height + _loc6_);
                 
                 _loc11_ = (_loc10_ as any).mcMonster;
-                _loc11_.addEventListener(MouseEvent.MOUSE_OVER, this.MonsterInfo(_loc7_[_loc9_].id));
+                _loc11_.addEventListener(MouseEvent.MOUSE_OVER, this.MonsterInfo(_loc7_[_loc9_].id) as (arg0: unknown) => void);
                 this.monsterCanvas.addChild(_loc10_);
                 this._monsterSlots.push(_loc10_);
                 
-                _loc11_.addEventListener(MouseEvent.MOUSE_OVER, this.MonsterInfo(_loc7_[_loc9_].id));
-                _loc11_.addEventListener(MouseEvent.MOUSE_DOWN, this.QueueAdd(_loc7_[_loc9_].id));
+                _loc11_.addEventListener(MouseEvent.MOUSE_OVER, this.MonsterInfo(_loc7_[_loc9_].id) as (arg0: unknown) => void);
+                _loc11_.addEventListener(MouseEvent.MOUSE_DOWN, this.QueueAdd(_loc7_[_loc9_].id) as (arg0: unknown) => void);
                 _loc11_.buttonMode = true;
                 
                 ImageCache.GetImageWithCallBack("monsters/" + _loc1_ + "-medium.jpg", this.MonsterIconLoaded.bind(this), true, 1, "", [_loc11_]);

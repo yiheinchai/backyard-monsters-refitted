@@ -138,7 +138,7 @@ export class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP {
                 _loc7_ += "<br><font color=\"#CC0000\">" + KEYS.Get("mon_locked") + "</font>";
             }
             _loc6_.tLabel.htmlText = _loc7_;
-            _loc6_.addEventListener(MouseEvent.MOUSE_DOWN, this.Show(_loc1_));
+            _loc6_.addEventListener(MouseEvent.MOUSE_DOWN, this.Show(_loc1_) as (arg0: unknown) => void);
             _loc6_.buttonMode = true;
             _loc6_.mouseChildren = false;
             _loc6_.mouseEnabled = true;
@@ -383,7 +383,7 @@ export class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP {
             if (creature.stream[1]) {
                 _body = KEYS.Get(creature.stream[1]);
             }
-            mc.bSpeedup.addEventListener(MouseEvent.CLICK, StreamPost(KEYS.Get(creature.stream[0]), _body, img));
+            mc.bSpeedup.addEventListener(MouseEvent.CLICK, StreamPost(KEYS.Get(creature.stream[0]), _body, img) as (arg0: unknown) => void);
             mc.bSpeedup.Highlight = true;
             mc.bAction.visible = false;
             if (CREATURELOCKER._creatures) {
