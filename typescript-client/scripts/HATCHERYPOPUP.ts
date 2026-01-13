@@ -42,7 +42,7 @@ export class HATCHERYPOPUP extends HATCHERYPOPUP_CLIP {
         super();
         this.MONSTERSLOTSIZE = new Rectangle(0, 0, 65, 50);
         this.title_txt.htmlText = KEYS.Get(GLOBAL._bHatchery._buildingProps.name);
-        this.bSpeedup.tName.htmlText = "<b>" + KEYS.Get("btn_speedup") + "</b>";
+        (this.bSpeedup as any).tName.htmlText = "<b>" + KEYS.Get("btn_speedup") + "</b>";
         this.bSpeedup.mouseChildren = false;
         if (!BASE.isInfernoMainYardOrOutpost) {
             this.bSpeedup.addEventListener(MouseEvent.CLICK, STORE.Show(3, 2, ["HOD", "HOD2", "HOD3"]));
@@ -50,7 +50,7 @@ export class HATCHERYPOPUP extends HATCHERYPOPUP_CLIP {
             this.bSpeedup.addEventListener(MouseEvent.CLICK, STORE.Show(3, 2, ["HODI", "HOD2I", "HOD3I"]));
         }
         this.bSpeedup.buttonMode = true;
-        this.bFinish.tName.htmlText = "<b>" + KEYS.Get("str_finishnow") + "</b>";
+        (this.bFinish as any).tName.htmlText = "<b>" + KEYS.Get("str_finishnow") + "</b>";
         this.bFinish.mouseChildren = false;
         this.bFinish.addEventListener(MouseEvent.CLICK, this.FinishNow.bind(this));
         this.bFinish.buttonMode = true;
@@ -352,7 +352,7 @@ export class HATCHERYPOPUP extends HATCHERYPOPUP_CLIP {
         }
         if (this._hatchery._inProduction) {
             this.bFinish.gotoAndStop(2);
-            this.bFinish.Enabled = true;
+            (this.bFinish as any).Enabled = true;
             ImageCache.GetImageWithCallBack("monsters/" + this._hatchery._inProduction + "-medium.jpg", this.IconLoaded.bind(this), true, 1, "", [this.slot0]);
             _loc4_ = CREATURES.GetProperty(this._hatchery._inProduction, "cTime");
             _loc5_ = 100 / _loc4_ * this._hatchery._countdownProduce.Get();
@@ -374,7 +374,7 @@ export class HATCHERYPOPUP extends HATCHERYPOPUP_CLIP {
             }
         } else {
             this.bFinish.gotoAndStop(1);
-            this.bFinish.Enabled = false;
+            (this.bFinish as any).Enabled = false;
             this.slot0.mcImage.visible = false;
             this.slot0.mcLoading.visible = false;
             this.bProgress.visible = false;
@@ -496,7 +496,7 @@ export class HATCHERYPOPUP extends HATCHERYPOPUP_CLIP {
         let _loc3_: string = "";
         let _loc4_: any = null;
         let _loc5_: string = "";
-        if (!this.bFinish.Enabled) {
+        if (!(this.bFinish as any).Enabled) {
             return;
         }
         if (Boolean(this._hatchery) && this._hatchery._finishCost.Get() > 0) {

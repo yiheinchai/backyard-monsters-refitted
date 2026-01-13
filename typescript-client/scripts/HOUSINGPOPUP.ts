@@ -328,7 +328,7 @@ export class HOUSINGPOPUP extends HOUSINGPOPUP_CLIP {
         }
         for (_loc2_ in this._juiceList) {
             GLOBAL.player.monsterListByID(_loc2_).add(-this._juiceList[_loc2_]);
-            for (const _loc5_ of CREATURES._creatures) {
+            for (const _loc5_ of Object.values(CREATURES._creatures)) {
                 if (this._juiceList[_loc2_] > 0) {
                     if (_loc5_._creatureID == _loc2_ && _loc5_._behaviour != "juice") {
                         _loc5_.changeModeJuice();

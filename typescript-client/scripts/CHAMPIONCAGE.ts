@@ -695,7 +695,7 @@ export class CHAMPIONCAGE extends BFOUNDATION {
                     _loc12_ = InstanceManager.getInstancesByClass(BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15);
                     for (_loc14_ in _loc6_) {
                         GLOBAL.player.monsterListByID(_loc14_).add(-_loc6_[_loc14_]);
-                        for (_loc11_ of CREATURES._creatures) {
+                        for (_loc11_ of Object.values(CREATURES._creatures)) {
                             if (_loc6_[_loc14_] > 0) {
                                 if (_loc11_._creatureID == _loc14_ && _loc11_._behaviour != "feed" && _loc11_._behaviour != "juice") {
                                     _loc11_.changeModeFeed();
@@ -775,7 +775,7 @@ export class CHAMPIONCAGE extends BFOUNDATION {
                 _loc12_ = InstanceManager.getInstancesByClass(BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15);
                 for (_loc14_ in _loc6_) {
                     GLOBAL.player.monsterListByID(_loc14_).add(-_loc6_[_loc14_]);
-                    for (_loc11_ of CREATURES._creatures) {
+                    for (_loc11_ of Object.values(CREATURES._creatures)) {
                         if (_loc6_[_loc14_] > 0) {
                             if (_loc11_._creatureID == _loc14_ && _loc11_._behaviour != "feed" && _loc11_._behaviour != "juice") {
                                 _loc11_.changeModeFeed();

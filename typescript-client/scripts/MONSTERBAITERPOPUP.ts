@@ -157,8 +157,8 @@ export class MONSTERBAITERPOPUP extends MONSTERBAITERPOPUP_CLIP {
         if (_loc4_ < 0) {
             _loc4_ = 0;
         }
-        this.mcStorage.mcBar.width = (1 - _loc4_ / MONSTERBAITER._muskLimit) * MONSTERBAITERPOPUP.BAITER_BAR_WIDTH;
-        this.mcStorage.mcBarB.width = 0;
+        (this.mcStorage as any).mcBar.width = (1 - _loc4_ / MONSTERBAITER._muskLimit) * MONSTERBAITERPOPUP.BAITER_BAR_WIDTH;
+        (this.mcStorage as any).mcBarB.width = 0;
         const _loc5_: number = MONSTERBAITER._musk - _loc1_;
         for (const _loc2_ of this.items) {
             _loc2_.Enable(_loc2_._cost <= _loc5_);
