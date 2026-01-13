@@ -6,7 +6,7 @@ import URLRequest from "openfl/net/URLRequest";
 import LoaderContext from "openfl/system/LoaderContext";
 import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
 
-import { SecNum } from "../../../cc/utils/SecNum";
+import { SecNum } from "../../cc/utils/SecNum";
 import { MapRoom } from "./MapRoom";
 import { PushPin } from "./PushPin";
 import { PlayerBase_CLIP } from "./PlayerBase_CLIP";

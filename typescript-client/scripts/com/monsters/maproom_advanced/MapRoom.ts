@@ -9,7 +9,7 @@ import TimerEvent from "openfl/events/TimerEvent";
 import Point from "openfl/geom/Point";
 import Timer from "openfl/utils/Timer";
 
-import { SecNum } from "../../../cc/utils/SecNum";
+import { SecNum } from "../../cc/utils/SecNum";
 import { ALLIANCES } from "../alliances/ALLIANCES";
 import { Chat } from "../chat/Chat";
 import { Smoke } from "../effects/smoke/Smoke";

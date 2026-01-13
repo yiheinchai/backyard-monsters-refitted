@@ -2,7 +2,7 @@ import Event from "openfl/events/Event";
 import EventDispatcher from "openfl/events/EventDispatcher";
 import MouseEvent from "openfl/events/MouseEvent";
 
-import { SecNum } from "../../../../cc/utils/SecNum";
+import { SecNum } from "../../../cc/utils/SecNum";
 import { MapRoom3Cell } from "../MapRoom3Cell";
 import { attackCostPopup } from "../../../attackCostPopup";
 

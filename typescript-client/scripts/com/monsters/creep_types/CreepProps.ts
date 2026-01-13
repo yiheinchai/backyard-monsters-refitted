@@ -1,4 +1,4 @@
-import { ExposedStructure } from "../../../../utils/exposed/ExposedStructure";
+import { ExposedStructure } from "../../../utils/exposed/ExposedStructure";
 
 /**
  * Properties for a creep at a specific upgrade level.

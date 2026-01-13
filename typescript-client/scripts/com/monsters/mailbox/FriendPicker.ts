@@ -5,7 +5,7 @@ import IOErrorEvent from "openfl/events/IOErrorEvent";
 import KeyboardEvent from "openfl/events/KeyboardEvent";
 import MouseEvent from "openfl/events/MouseEvent";
 import URLRequest from "openfl/net/URLRequest";
-import { TweenLite } from "../../TweenLite";
+import { TweenLite } from "../../../gs/TweenLite";
 
 import { ScrollSet } from "../display/ScrollSet";
 import { Contact } from "./model/Contact";

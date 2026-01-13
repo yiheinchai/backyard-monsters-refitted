@@ -9,7 +9,7 @@ import MouseEvent from "openfl/events/MouseEvent";
 import Point from "openfl/geom/Point";
 import URLRequest from "openfl/net/URLRequest";
 
-import { SecNum } from "../../../cc/utils/SecNum";
+import { SecNum } from "../../cc/utils/SecNum";
 import { AllyInfo } from "../alliances/AllyInfo";
 import { ImageCache } from "../display/ImageCache";
 import { EnumYardType } from "../enums/EnumYardType";

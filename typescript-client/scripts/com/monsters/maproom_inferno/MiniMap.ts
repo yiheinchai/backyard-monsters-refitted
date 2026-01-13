@@ -3,7 +3,7 @@ import Sprite from "openfl/display/Sprite";
 import Event from "openfl/events/Event";
 import MouseEvent from "openfl/events/MouseEvent";
 import Rectangle from "openfl/geom/Rectangle";
-import { TweenLite } from "../../TweenLite";
+import { TweenLite } from "../../../gs/TweenLite";
 
 import { DescentMonsterBase } from "./DescentMonsterBase";
 import { ForeignBase } from "./views/ForeignBase";

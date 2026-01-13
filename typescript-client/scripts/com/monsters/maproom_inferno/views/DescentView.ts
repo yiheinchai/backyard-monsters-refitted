@@ -7,7 +7,7 @@ import MouseEvent from "openfl/events/MouseEvent";
 import Point from "openfl/geom/Point";
 import Rectangle from "openfl/geom/Rectangle";
 import Timer from "openfl/utils/Timer";
-import { TweenLite } from "../../../TweenLite";
+import { TweenLite } from "../../../gs/TweenLite";
 import { Quad } from "../../../easing/Quad";
 
 import { ImageCache } from "../../display/ImageCache";

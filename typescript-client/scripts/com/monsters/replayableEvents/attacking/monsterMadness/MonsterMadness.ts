@@ -1,6 +1,6 @@
 import Event from "openfl/events/Event";
 
-import { SecNum } from "../../../../cc/utils/SecNum";
+import { SecNum } from "../../../cc/utils/SecNum";
 import { Console } from "../../debug/Console";
 import { KorathReward } from "../../replayableEvents/looting/wotc/rewards/KorathReward";
 import { MonsterMadnessPopup } from "../monsterMadness/popups/MonsterMadnessPopup";

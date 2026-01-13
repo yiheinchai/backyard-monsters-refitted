@@ -6,7 +6,7 @@ import URLRequest from "openfl/net/URLRequest";
 import LoaderContext from "openfl/system/LoaderContext";
 import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
 
-import { SecNum } from "../../../cc/utils/SecNum";
+import { SecNum } from "../../cc/utils/SecNum";
 import { PlayerBaseInferno_CLIP } from "./PlayerBaseInferno_CLIP";
 
 import { KEYS } from "../../../KEYS";

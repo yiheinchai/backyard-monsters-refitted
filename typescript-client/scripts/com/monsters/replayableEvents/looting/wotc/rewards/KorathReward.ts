@@ -1,4 +1,4 @@
-import { SecNum } from "../../../../../../cc/utils/SecNum";
+import { SecNum } from "../../../../../cc/utils/SecNum";
 import { ChampionBase } from "../../../../monsters/champions/ChampionBase";
 import { Reward } from "../../../../rewarding/Reward";
 
