@@ -354,7 +354,7 @@ export class UPDATES {
         }
     }
 
-    public static GiveThanks(fbid: number, messageA: string, messageB: string, image: string): Function {
+    public static GiveThanks(fbid: number, messageA: string, messageB: string, image: string): (event: MouseEvent) => void {
         return (param1: MouseEvent): void => {
             GLOBAL.CallJS("sendFeed", ["thanks", messageA, messageB, image, fbid]);
             POPUPS.Next();

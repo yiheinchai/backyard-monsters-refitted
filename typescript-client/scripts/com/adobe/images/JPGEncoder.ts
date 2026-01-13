@@ -116,7 +116,7 @@ export class JPGEncoder {
     private writeWord(value: number): void { this.writeByte(value >> 8 & 255); this.writeByte(value & 255); }
 
     private fDCTQuant(data: Array<number>, fdtbl: Array<number>): Array<number> {
-        let d0, d1, d2, d3, d4, d5, d6, d7, tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp10, tmp11, tmp12, tmp13, z1, z2, z3, z4, z5, z11, z13;
+        let d0: number, d1: number, d2: number, d3: number, d4: number, d5: number, d6: number, d7: number, tmp0: number, tmp1: number, tmp2: number, tmp3: number, tmp4: number, tmp5: number, tmp6: number, tmp7: number, tmp10: number, tmp11: number, tmp12: number, tmp13: number, z1: number, z2: number, z3: number, z4: number, z5: number, z11: number, z13: number;
         let dataOff = 0;
         for (let i = 0; i < 8; i++) {
             d0 = data[dataOff]; d1 = data[dataOff + 1]; d2 = data[dataOff + 2]; d3 = data[dataOff + 3]; d4 = data[dataOff + 4]; d5 = data[dataOff + 5]; d6 = data[dataOff + 6]; d7 = data[dataOff + 7];
@@ -131,7 +131,6 @@ export class JPGEncoder {
             data[dataOff + 5] = z13 + z2; data[dataOff + 3] = z13 - z2; data[dataOff + 1] = z11 + z4; data[dataOff + 7] = z11 - z4;
             dataOff += 8;
         }
-        let tmp6: number, tmp7: number;
         dataOff = 0;
         for (let i = 0; i < 8; i++) {
             d0 = data[dataOff]; d1 = data[dataOff + 8]; d2 = data[dataOff + 16]; d3 = data[dataOff + 24]; d4 = data[dataOff + 32]; d5 = data[dataOff + 40]; d6 = data[dataOff + 48]; d7 = data[dataOff + 56];

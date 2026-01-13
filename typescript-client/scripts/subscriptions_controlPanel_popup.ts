@@ -20,6 +20,10 @@ export class subscriptions_controlPanel_popup extends MovieClip {
     public mcTile2: MovieClip;
     public mcTile3: MovieClip;
     public mcTile4: MovieClip;
+    public tTerrainSelect: TextField;
+    public mcTitleBanner: MovieClip;
+    public mcDavesGoldToggle: MovieClip;
+    public tDavesGold_title: TextField;
 
     constructor() {
         super();
