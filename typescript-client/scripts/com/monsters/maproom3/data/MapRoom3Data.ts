@@ -1,7 +1,7 @@
 import Point from "openfl/geom/Point";
 import getTimer from "openfl/utils/getTimer";
 
-import { EnumYardType } from "../enums/EnumYardType";
+import { EnumYardType } from "../../enums/EnumYardType";
 import { MapRoom3 } from "../MapRoom3";
 import { MapRoom3Cell } from "../MapRoom3Cell";
 import { Bookmark } from "../bookmarks/Bookmark";

@@ -4,7 +4,7 @@ import EventDispatcher from "openfl/events/EventDispatcher";
 import Point from "openfl/geom/Point";
 
 import { MailBox } from "../MailBox";
-import { URLLoaderApi } from "../../URLLoaderApi";
+import { URLLoaderApi } from "../../../../URLLoaderApi";
 
 import { GLOBAL } from "../../../../GLOBAL";
 import { LOGGER } from "../../../../LOGGER";

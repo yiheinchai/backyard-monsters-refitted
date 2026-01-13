@@ -12,8 +12,8 @@ import TextFormatAlign from "openfl/text/TextFormatAlign";
 
 import { SpriteData } from "../display/SpriteData";
 import { SpriteSheetAnimation } from "../display/SpriteSheetAnimation";
-import { EnumBaseRelationship } from "../enums/EnumBaseRelationship";
-import { EnumYardType } from "../enums/EnumYardType";
+import { EnumBaseRelationship } from "../../enums/EnumBaseRelationship";
+import { EnumYardType } from "../../enums/EnumYardType";
 import { MapRoom3TileSetManager } from "./tiles/MapRoom3TileSetManager";
 import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { MapRoom3 } from "./MapRoom3";

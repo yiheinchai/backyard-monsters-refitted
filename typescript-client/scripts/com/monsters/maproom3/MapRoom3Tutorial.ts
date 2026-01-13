@@ -6,7 +6,7 @@ import Point from "openfl/geom/Point";
 import { TweenLite } from "gs/TweenLite";
 
 import { ImageCache } from "../display/ImageCache";
-import { EnumYardType } from "../enums/EnumYardType";
+import { EnumYardType } from "../../enums/EnumYardType";
 import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { UI_BOTTOM } from "../ui/UI_BOTTOM";
 import { MapRoom3 } from "./MapRoom3";

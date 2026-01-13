@@ -11,7 +11,7 @@ import { ScrollSet } from "../display/ScrollSet";
 import { Contact } from "./model/Contact";
 import { FriendPicker_CLIP } from "./FriendPicker_CLIP";
 import { FriendPickerItem } from "./FriendPickerItem";
-import { URLLoaderApi } from "../URLLoaderApi";
+import { URLLoaderApi } from "../../../URLLoaderApi";
 import { system_message } from "../../system_message";
 
 import { GLOBAL } from "../../../GLOBAL";
