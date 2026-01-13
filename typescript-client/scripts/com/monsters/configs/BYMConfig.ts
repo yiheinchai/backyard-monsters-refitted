@@ -25,7 +25,7 @@ export class BYMConfig {
 
     protected static _instance: BYMConfig;
 
-    private constructor() {}
+    protected constructor() {}
 
     public static get instance(): BYMConfig {
         if (!BYMConfig._instance) {

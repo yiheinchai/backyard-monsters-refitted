@@ -10,7 +10,7 @@ export class UI_WILDMONSTERBAR extends UI_WILDMONSTERBAR_CLIP {
         this.tA.htmlText = KEYS.Get("ai_monsterbar_title");
         this.info.addEventListener(MouseEvent.MOUSE_OVER, this.infoOver.bind(this));
         this.info.addEventListener(MouseEvent.MOUSE_OUT, this.infoOut.bind(this));
-        this.info.tA.htmlText = "<b>" + KEYS.Get("ai_monsterbar_sendnow_btn") + "</b>";
+        (this.info as any).tA.htmlText = "<b>" + KEYS.Get("ai_monsterbar_sendnow_btn") + "</b>";
         this.info.mouseChildren = false;
         this.info.useHandCursor = true;
     }

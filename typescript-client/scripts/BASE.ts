@@ -1028,14 +1028,19 @@ export class BASE {
         }
     }
     
-    public static BaseLevel(): { level: number; nextLevel: number; progress: number } {
+    public static BaseLevel(): { level: number; nextLevel: number; progress: number; points: number; needed: number; lower: number; upper: number; leveled: boolean } {
         let level = 1;
+        let lower = 0;
+        let upper = 0;
+        const points = BASE._basePoints + Number(BASE._baseValue);
+        let needed = 0;
         
-        for (let i = 0; i < BASE.s_levels.length; i++) {
-            if (BASE._basePoints >= BASE.s_levels[i]) {
+        for (let i = 0; i < BASE.s_levels.length - 1; i++) {
+            if (points >= BASE.s_levels[i]) {
                 level = i + 1;
-            } else {
-                break;
+                lower = BASE.s_levels[i];
+                upper = BASE.s_levels[i + 1];
+                needed = upper - points;
             }
         }
         
@@ -1046,7 +1051,12 @@ export class BASE {
         return {
             level: level,
             nextLevel: nextLevelPoints,
-            progress: progress
+            progress: progress,
+            points: points,
+            needed: needed,
+            lower: lower,
+            upper: upper,
+            leveled: false
         };
     }
     

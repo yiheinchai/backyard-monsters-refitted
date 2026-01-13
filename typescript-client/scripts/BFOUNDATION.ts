@@ -969,7 +969,7 @@ export class BFOUNDATION extends GameObject {
                 if (state === BFOUNDATION.k_STATE_DESTROYED && this._lastLoadedState === BFOUNDATION.k_STATE_DAMAGED) {
                     if (this._type == 14) {
                         SOUNDS.Play("destroytownhall");
-                        if (this._type != 17 && this._type != 18) {
+                        if ((this._type as any) != 17 && (this._type as any) != 18) {
                             Smoke.CreatePoof(new Point(this.x, this.y + middle), middle, 1);
                         }
                     } else {

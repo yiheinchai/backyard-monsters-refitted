@@ -125,7 +125,7 @@ export class SIGNPOPUP extends Sprite {
 
     private detectFS(param1: FullScreenEvent = null): void {
         if (this.stage && this.stage.displayState == StageDisplayState.FULL_SCREEN) {
-            this.fsWarning.tBody.htmlText = KEYS.Get("fswarning");
+            (this.fsWarning as any).tBody.htmlText = KEYS.Get("fswarning");
             this.addChild(this.fsWarning);
         } else if (this.contains(this.fsWarning)) {
             this.removeChild(this.fsWarning);

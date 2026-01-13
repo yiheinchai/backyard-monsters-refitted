@@ -6,6 +6,7 @@ import MovieClip from 'openfl/display/MovieClip';
 import TimerEvent from 'openfl/events/TimerEvent';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
+import TextFieldAutoSize from 'openfl/text/TextFieldAutoSize';
 import Timer from 'openfl/utils/Timer';
 import { TweenLite } from 'gs/TweenLite';
 import { Sine, Bounce } from 'gs/easing';
@@ -37,7 +38,7 @@ export class WORKER extends WORKER_CLIP {
     public _container: DisplayObjectContainer;
     public _graphic: BitmapData;
     public _lastRotation: number = 400;
-    public _messageMC: MovieClip;
+    public _messageMC: workerMessage;
     private frameCount: number;
     public showTimer: Timer;
     public hideTimer: Timer;
@@ -269,9 +270,9 @@ export class WORKER extends WORKER_CLIP {
         if (this._messageMC) {
             MAP._PROJECTILES.removeChild(this._messageMC);
         }
-        this._messageMC = MAP._PROJECTILES.addChild(new workerMessage()) as MovieClip;
+        this._messageMC = MAP._PROJECTILES.addChild(new workerMessage()) as workerMessage;
         this._messageMC.visible = false;
-        this._messageMC.txt.autoSize = "left";
+        this._messageMC.txt.autoSize = TextFieldAutoSize.LEFT;
         this._messageMC.txt.htmlText = param1;
         if (param1.length < 5) {
             this._messageMC.txt.width = 40;

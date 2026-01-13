@@ -273,9 +273,9 @@ export class UI2 {
                             UI2._top.mcProtected.visible = true;
                         }
                         if (BASE._isProtected - GLOBAL.Timestamp() > 86400) {
-                            UI2._top.mcProtected.tCountdown.htmlText = GLOBAL.ToTime(BASE._isProtected - GLOBAL.Timestamp(), true, false);
+                            (UI2._top.mcProtected as any).tCountdown.htmlText = GLOBAL.ToTime(BASE._isProtected - GLOBAL.Timestamp(), true, false);
                         } else {
-                            UI2._top.mcProtected.tCountdown.htmlText = GLOBAL.ToTime(BASE._isProtected - GLOBAL.Timestamp(), true);
+                            (UI2._top.mcProtected as any).tCountdown.htmlText = GLOBAL.ToTime(BASE._isProtected - GLOBAL.Timestamp(), true);
                         }
                     } else if (UI2._top.mcProtected.visible) {
                         UI2._top.mcProtected.visible = false;
@@ -532,7 +532,7 @@ export class UI2 {
         
         if (UI2._visitor) {
             UI2._visitor.Update();
-            UI2._visitor.mc.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - UI2._visitor.mc.mcBG.width - 10;
+            UI2._visitor.mc.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - (UI2._visitor.mc as any).mcBG.width - 10;
             UI2._visitor.mc.y = GLOBAL._SCREENHUD.y - (UI2._visitor.mc.height + 10);
         }
         

@@ -78,7 +78,7 @@ export class TUTORIAL {
     public static _secondWorker: boolean = false;
     public static _freeSpeedup: boolean = true;
     public static _mcBob: TUTORIALPOPUPMC;
-    public static _mcArrow: MovieClip;
+    public static _mcArrow: TUTORIALARROWMC;
 
     constructor() {}
 
@@ -409,8 +409,8 @@ export class TUTORIAL {
             TUTORIAL._mcArrow.x = arrowPos.x;
             TUTORIAL._mcArrow.y = arrowPos.y;
             TUTORIAL._mcArrow.Rotate();
-            TUTORIAL._mcArrow.mcArrow.mcArrow.y = -82;
-            TweenLite.to(TUTORIAL._mcArrow.mcArrow.mcArrow, 0.6, { "y": -72, "ease": Elastic.easeOut });
+            (TUTORIAL._mcArrow.mcArrow as any).mcArrow.y = -82;
+            TweenLite.to((TUTORIAL._mcArrow.mcArrow as any).mcArrow, 0.6, { "y": -72, "ease": Elastic.easeOut });
             TUTORIAL._doArrow = TUTORIAL._container.addChild(TUTORIAL._mcArrow);
         }
         

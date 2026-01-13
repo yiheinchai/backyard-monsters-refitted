@@ -63,15 +63,17 @@ export class INFERNOQUAKETOWER extends BTOWER {
         this.SetProps();
         this.Props();
         this.attackFlags = Targeting.getOldStyleTargets(-1);
+        
+        // Override FollowMouseB
+        const parentFollowMouseB = this.FollowMouseB;
+        this.FollowMouseB = (param1: Event = null): void => {
+            parentFollowMouseB(param1);
+            this._origin = new Point(this._mc.x, this._mc.y);
+        };
     }
 
     public override PlaceB(): void {
         super.PlaceB();
-        this._origin = new Point(this._mc.x, this._mc.y);
-    }
-
-    public override FollowMouseB(param1: Event = null): void {
-        super.FollowMouseB(param1);
         this._origin = new Point(this._mc.x, this._mc.y);
     }
 

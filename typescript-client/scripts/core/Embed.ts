@@ -19,7 +19,7 @@ import { AssetRegistry } from "./AssetRegistry";
  * ```
  */
 export function Embed(options: { source: string; symbol: string }) {
-    return function <T extends { new(...args: any[]): MovieClip }>(constructor: T) {
+    return function <T extends { new(...args: any[]): any }>(constructor: T) {
         // Store the symbol name on the class for reference
         (constructor as any).ASSET_SYMBOL = options.symbol;
         (constructor as any).ASSET_SOURCE = options.source;
