@@ -87,7 +87,7 @@ export class MARKETING {
                 case "overdrive":
                     tmpCountA = 0;
                     tmpCountB = 0;
-                    const buildingInstances = getInstanceManager().getInstancesByClass(BFOUNDATION);
+                    const buildingInstances = getInstanceManager().getInstancesByClass(getBFOUNDATION());
                     for (const building of buildingInstances) {
                         tmpBuilding = building as BFOUNDATION;
                         if (tmpBuilding._type == 13) {
@@ -118,7 +118,7 @@ export class MARKETING {
                 case "planner":
                     break;
                 case "hcc":
-                    const hatCount = getInstanceManager().getInstancesByClass(BUILDING13).length;
+                    const hatCount = getInstanceManager().getInstancesByClass(getBUILDING13()).length;
                     if (!getGLOBAL()._bHatcheryCC && hatCount == 3 && getGLOBAL().Timestamp() - getGLOBAL().StatGet("CM8") > 60 * 60 * 24 * 5) {
                         getGLOBAL().StatSet("CM8", getGLOBAL().Timestamp());
                         pTitle = getKEYS().Get("mkting_hcc_title");
@@ -138,7 +138,7 @@ export class MARKETING {
                     }
                     break;
                 case "storagemore":
-                    const siloCount = getInstanceManager().getInstancesByClass(BUILDING6).length;
+                    const siloCount = getInstanceManager().getInstancesByClass(getBUILDING6()).length;
                     let quantityIndex = getGLOBAL().townHall._lvl.Get() - 1 < getGLOBAL()._buildingProps[5].quantity.length ? getGLOBAL().townHall._lvl.Get() - 1 : getGLOBAL()._buildingProps[5].quantity.length - 1;
                     let canbuild = siloCount < getGLOBAL()._buildingProps[5].quantity[quantityIndex];
                     const tmpr1 = getBASE()._resources.r1.Get() >= 0.8 * getBASE()._resources.r1max;
@@ -164,7 +164,7 @@ export class MARKETING {
                     break;
                 case "storageupgrade":
                     let sc = 0;
-                    const storageInstances = getInstanceManager().getInstancesByClass(BUILDING6);
+                    const storageInstances = getInstanceManager().getInstancesByClass(getBUILDING6());
                     for (const storage of storageInstances) {
                         tmpBuilding = storage as BFOUNDATION;
                         if (!getBASE().CanUpgrade(tmpBuilding).error && !tmpBuilding._repairing && tmpBuilding._countdownUpgrade.Get() == 0) {
@@ -195,7 +195,7 @@ export class MARKETING {
                 case "mushroompick":
                     break;
                 case "laser":
-                    const laser = getInstanceManager().getInstancesByClass(BUILDING23).length > 0;
+                    const laser = getInstanceManager().getInstancesByClass(getBUILDING23()).length > 0;
                     if (getGLOBAL().townHall._lvl.Get() >= 4 && !laser && getGLOBAL().Timestamp() - getGLOBAL().StatGet("CM11") > 60 * 60 * 24 * 5) {
                         getGLOBAL().StatSet("CM11", getGLOBAL().Timestamp());
                         pTitle = getKEYS().Get("mkting_laser_title");
@@ -214,7 +214,7 @@ export class MARKETING {
                     }
                     break;
                 case "tesla":
-                    const tesla = getInstanceManager().getInstancesByClass(BUILDING25).length > 0;
+                    const tesla = getInstanceManager().getInstancesByClass(getBUILDING25()).length > 0;
                     if (getGLOBAL().townHall._lvl.Get() >= 4 && !tesla && getGLOBAL().Timestamp() - getGLOBAL().StatGet("CM12") > 60 * 60 * 24 * 5) {
                         getGLOBAL().StatSet("CM12", getGLOBAL().Timestamp());
                         pTitle = getKEYS().Get("mkting_tesla_title");

@@ -99,7 +99,7 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
         let _loc4_: string = "";
         
         getSOUNDS().Play("click1");
-        const _loc5_: BFOUNDATION[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const _loc5_: BFOUNDATION[] = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         
         if (param1 == "build") {
             this.mcResources.bAction.addEventListener(MouseEvent.CLICK, this.ActionResourceBuild.bind(this));

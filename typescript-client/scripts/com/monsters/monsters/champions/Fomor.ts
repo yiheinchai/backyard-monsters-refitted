@@ -80,7 +80,7 @@ export class Fomor extends ChampionBase {
     }
 
     public findBuffTargets(): void {
-        const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         let hasValidBuilding = false;
         for (const building of buildings) {
             const b = building as BFOUNDATION;

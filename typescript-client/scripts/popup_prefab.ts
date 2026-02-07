@@ -141,7 +141,7 @@ export class popup_prefab extends popup_prefab_CLIP {
 
     public PreBuyOutright(kitID: number, shinyCost: number): (e?: MouseEvent) => void {
         return (e?: MouseEvent): void => {
-            const foundations = getInstanceManager().getInstancesByClass(BFOUNDATION);
+            const foundations = getInstanceManager().getInstancesByClass(getBFOUNDATION());
             if (foundations.length > 1) {
                 getGLOBAL().Message(getKEYS().Get("kit_warning"), getKEYS().Get("btn_build"), this.BuyOutright.bind(this), [kitID, shinyCost]);
             } else {
@@ -170,7 +170,7 @@ export class popup_prefab extends popup_prefab_CLIP {
 
     public PreSelect(kitID: number): (e?: MouseEvent) => void {
         return (e?: MouseEvent): void => {
-            const foundations = getInstanceManager().getInstancesByClass(BFOUNDATION);
+            const foundations = getInstanceManager().getInstancesByClass(getBFOUNDATION());
             if (foundations.length > 1) {
                 getGLOBAL().Message(getKEYS().Get("kit_warning"), getKEYS().Get("btn_build"), this.Select.bind(this), [kitID]);
             } else {
@@ -274,7 +274,7 @@ export class popup_prefab extends popup_prefab_CLIP {
         getCREATURES().Clear();
         getCREEPS().Clear();
         
-        const foundations: BFOUNDATION[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const foundations: BFOUNDATION[] = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const foundation of foundations) {
             if (foundation._type !== 112) {
                 foundation.clear();

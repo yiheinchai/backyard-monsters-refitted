@@ -129,7 +129,7 @@ export class STORE {
         }
         
         if (!isInferno) {
-            const bunkers: any[] = getInstanceManager().getInstancesByClass(Bunker);
+            const bunkers: any[] = getInstanceManager().getInstancesByClass(getBunker());
             for (let i = 0; i < bunkers.length; i++) {
                 const creatureID: string = "B" + bunkers[i]._id;
                 totalCost += STORE.getShinyCostforCreep(creatureID);
@@ -275,7 +275,7 @@ export class STORE {
         STORE._repairCount = 0;
         let repairableCount = 0;
         
-        const buildings: BFOUNDATION[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const buildings: BFOUNDATION[] = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const building of buildings) {
             if (building._repairing) {
                 STORE._repairCount++;
@@ -294,7 +294,7 @@ export class STORE {
     }
 
     private static calculateWallCosts(): void {
-        const walls: BFOUNDATION[] = getInstanceManager().getInstancesByClass(BWALL);
+        const walls: BFOUNDATION[] = getInstanceManager().getInstancesByClass(getBWALL());
         const costLvl2 = 3, costLvl3 = 6, costLvl4 = 10, costLvl5 = 15;
         
         // Level 2 walls
@@ -785,7 +785,7 @@ export class STORE {
         
         if (itemCode.substr(0, 3) === "BLK") {
             const wallLevel = parseInt(itemCode.substr(3, 1));
-            const walls: BFOUNDATION[] = getInstanceManager().getInstancesByClass(BWALL);
+            const walls: BFOUNDATION[] = getInstanceManager().getInstancesByClass(getBWALL());
             for (const wall of walls) {
                 if (wall._countdownBuild.Get() > 0) {
                     wall.Constructed();
@@ -815,7 +815,7 @@ export class STORE {
         }
         
         if (itemCode === "FIX") {
-            const buildings: BFOUNDATION[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
+            const buildings: BFOUNDATION[] = getInstanceManager().getInstancesByClass(getBFOUNDATION());
             for (const building of buildings) {
                 if (building.health < building.maxHealth) {
                     building.setHealth(building.maxHealth);

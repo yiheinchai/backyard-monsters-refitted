@@ -426,7 +426,7 @@ export class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP {
         ++getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID].level;
         getGLOBAL().player.upgradeHealthData(ACADEMYPOPUP._monsterID);
         
-        const buildingInstances: BUILDING26[] = getInstanceManager().getInstancesByClass(BUILDING26) as BUILDING26[];
+        const buildingInstances: BUILDING26[] = getInstanceManager().getInstancesByClass(getBUILDING26()) as BUILDING26[];
         
         for (const building of buildingInstances) {
             if (building._upgrading === ACADEMYPOPUP._monsterID) {

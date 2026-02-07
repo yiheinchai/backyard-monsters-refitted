@@ -56,7 +56,7 @@ export class ResourceBomb {
         this.positionFromISO = getPATHING().FromISO(this.position);
         
         if (this.resourceid !== ResourceBombParticle.k_TYPE_PUTTY) {
-            const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION);
+            const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION());
             for (const building of buildings) {
                 const buildingPoint = new Point(building._mc.x, building._mc.y + building._middle);
                 if (!(building._class === "trap" || building.health <= 0 || building._class === "decoration" || building._class === "enemy" || building._class === "immovable")) {

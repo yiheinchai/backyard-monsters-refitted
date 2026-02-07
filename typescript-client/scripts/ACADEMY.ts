@@ -143,7 +143,7 @@ export class ACADEMY {
         delete getGLOBAL().player.m_upgrades[monsterID].time;
         delete getGLOBAL().player.m_upgrades[monsterID].duration;
         
-        const academyInstances: BUILDING26[] = getInstanceManager().getInstancesByClass(BUILDING26) as BUILDING26[];
+        const academyInstances: BUILDING26[] = getInstanceManager().getInstancesByClass(getBUILDING26()) as BUILDING26[];
         
         for (const academy of academyInstances) {
             if (academy._upgrading === monsterID) {
@@ -171,7 +171,7 @@ export class ACADEMY {
             getLOGGER().KongStat([5, monsterID.substr(1)]);
         }
         
-        const academyInstances: BUILDING26[] = getInstanceManager().getInstancesByClass(BUILDING26) as BUILDING26[];
+        const academyInstances: BUILDING26[] = getInstanceManager().getInstancesByClass(getBUILDING26()) as BUILDING26[];
         
         for (const academy of academyInstances) {
             if (academy._upgrading === monsterID) {

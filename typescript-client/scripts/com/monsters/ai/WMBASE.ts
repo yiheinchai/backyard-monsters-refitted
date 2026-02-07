@@ -58,7 +58,7 @@ export class WMBASE {
         WMBASE._startTime = getGLOBAL().Timestamp();
         WMBASE.repairing = true;
         
-        const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
         for (const building of buildings) {
             if (building.health < building.maxHealth && (building as any)._repairing !== 1) {
                 WMBASE.repairing = false;
@@ -148,7 +148,7 @@ export class WMBASE {
         
         if (!WMBASE.repairing) {
             if (getGLOBAL().Timestamp() > WMBASE._startTime + WMBASE._repairDelay) {
-                buildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+                buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
                 for (const building of buildings) {
                     if (building.health < building.maxHealth && (building as any)._repairing === 0) {
                         building.Repair();
@@ -166,7 +166,7 @@ export class WMBASE {
                 getGLOBAL().townHall.health > 0) {
                 
                 if (!buildings) {
-                    buildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+                    buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
                 }
                 for (const building of buildings) {
                     if ((building as any)._type === 13 && (building as any)._canFunction && (building as any)._inProduction !== "C1") {
@@ -196,7 +196,7 @@ export class WMBASE {
 
     public static JuiceOne(): void {
         const hatcheries: BFOUNDATION[] = [];
-        const buildings = getInstanceManager().getInstancesByClass(BUILDING15) as BFOUNDATION[];
+        const buildings = getInstanceManager().getInstancesByClass(getBUILDING15()) as BFOUNDATION[];
         for (const building of buildings) {
             hatcheries.push(building);
         }
@@ -277,7 +277,7 @@ export class WMBASE {
 
     public static End(): void {
         if (!getGLOBAL()._catchup && getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
-            const townHalls = getInstanceManager().getInstancesByClass(BUILDING14) as BFOUNDATION[];
+            const townHalls = getInstanceManager().getInstancesByClass(getBUILDING14()) as BFOUNDATION[];
             for (const th of townHalls) {
                 if (th.health === 0 && (th as any)._repairing === 0 && getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
                     WMBASE.TownHallDestroyed();

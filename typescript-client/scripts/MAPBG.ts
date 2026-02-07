@@ -12,6 +12,7 @@ function getLOGGER(): any { return require("./LOGGER").LOGGER; }
 /**
  * MAPBG - Map Background Generator
  * Creates procedurally generated terrain tiles for the game map
+ * Uses original isograss embedded image assets for grass tiles
  */
 export class MAPBG {
     constructor() {}
@@ -33,6 +34,7 @@ export class MAPBG {
             };
 
             // Initialize tile textures based on terrain type
+            // Uses original game asset classes (isograss1-7) for grass
             if (texture === "lava") {
                 g = {
                     g1: new BitmapData(200, 100, true, 0xFF330000),
@@ -46,8 +48,8 @@ export class MAPBG {
                     g1: new BitmapData(200, 100, true, 0xFF555555),
                     g2: new BitmapData(200, 100, true, 0xFF666666),
                     g3: new BitmapData(200, 100, true, 0xFF777777),
-                    g4: new BitmapData(200, 100, true, 0xFF888888),
-                    g5: new BitmapData(200, 100, true, 0xFF999999)
+                    g4: new isograss1(0, 0),
+                    g5: new isograss2(0, 0)
                 };
                 tileCount = 5;
             } else if (texture === "sand") {
@@ -59,15 +61,52 @@ export class MAPBG {
                 };
                 tileCount = 4;
             } else if (texture === "grass") {
-                g = {
-                    g1: new BitmapData(200, 100, true, 0xFF228822),
-                    g2: new BitmapData(200, 100, true, 0xFF339933),
-                    g3: new BitmapData(200, 100, true, 0xFF44AA44),
-                    g4: new BitmapData(200, 100, true, 0xFF55BB55),
-                    g5: new BitmapData(200, 100, true, 0xFF66CC66),
-                    g6: new BitmapData(200, 100, true, 0xFF77DD77),
-                    g7: new BitmapData(200, 100, true, 0xFF88EE88)
-                };
+                // Try to use pre-loaded isograss images
+                const preloaded = (typeof window !== 'undefined') ? (window as any).__grassImages : null;
+                if (preloaded && preloaded.length >= 7) {
+                    for (let idx = 0; idx < 7; idx++) {
+                        const img: HTMLImageElement = preloaded[idx];
+                        if (img && img.naturalWidth > 0) {
+                            const bmd = new BitmapData(img.naturalWidth, img.naturalHeight, true, 0);
+                            // Draw the HTML image onto the BitmapData canvas
+                            const canvas = document.createElement('canvas');
+                            canvas.width = img.naturalWidth;
+                            canvas.height = img.naturalHeight;
+                            const ctx = canvas.getContext('2d');
+                            if (ctx) {
+                                ctx.drawImage(img, 0, 0);
+                                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                                // Copy pixel data into BitmapData
+                                for (let y = 0; y < canvas.height; y++) {
+                                    for (let x = 0; x < canvas.width; x++) {
+                                        const i = (y * canvas.width + x) * 4;
+                                        const a = imgData.data[i + 3];
+                                        const r = imgData.data[i];
+                                        const gv = imgData.data[i + 1];
+                                        const b = imgData.data[i + 2];
+                                        const color = (a << 24) | (r << 16) | (gv << 8) | b;
+                                        bmd.setPixel32(x, y, color);
+                                    }
+                                }
+                            }
+                            g["g" + (idx + 1)] = bmd;
+                        } else {
+                            // Fallback: solid green with variation
+                            const greenBase = 0xFF228822 + (idx * 0x00111100);
+                            g["g" + (idx + 1)] = new BitmapData(200, 100, true, greenBase);
+                        }
+                    }
+                } else {
+                    g = {
+                        g1: new BitmapData(200, 100, true, 0xFF228822),
+                        g2: new BitmapData(200, 100, true, 0xFF339933),
+                        g3: new BitmapData(200, 100, true, 0xFF44AA44),
+                        g4: new BitmapData(200, 100, true, 0xFF55BB55),
+                        g5: new BitmapData(200, 100, true, 0xFF66CC66),
+                        g6: new BitmapData(200, 100, true, 0xFF77DD77),
+                        g7: new BitmapData(200, 100, true, 0xFF88EE88)
+                    };
+                }
                 tileCount = 7;
             } else if (texture === "crater") {
                 g = { g1: new BitmapData(200, 100, true, 0xFF443322) };

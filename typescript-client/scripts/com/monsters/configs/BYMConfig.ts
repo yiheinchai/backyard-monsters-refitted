@@ -34,9 +34,14 @@ export class BYMConfig {
         return BYMConfig._instance;
     }
 
+    private _rendererOn: boolean = false;
+
     public get RENDERER_ON(): boolean {
-        // Bitmap rendering approach - more performant
-        return true;
+        return this._rendererOn;
+    }
+
+    public set RENDERER_ON(value: boolean) {
+        this._rendererOn = value;
     }
 
     public get OPTIMIZED_SHADOWS(): boolean {

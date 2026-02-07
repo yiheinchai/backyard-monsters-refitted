@@ -615,7 +615,7 @@ export class TUTORIAL {
     }
 
     private static ConditionPlacedGooFactory(): void {
-        const instances: BUILDING4[] = getInstanceManager().getInstancesByClass(BUILDING4);
+        const instances: BUILDING4[] = getInstanceManager().getInstancesByClass(getBUILDING4());
         if (!instances || instances.length <= 0) {
             return;
         }

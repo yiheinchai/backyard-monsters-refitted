@@ -86,10 +86,10 @@ export class Krallen extends ChampionBase {
     }
 
     public override findTarget(param1: number = 0): void {
-        const buildingsAll = getInstanceManager().getInstancesByClass(BFOUNDATION) as Record<string, any>;
-        const towers = getInstanceManager().getInstancesByClass(BTOWER) as Array<any>;
-        const bunkers = getInstanceManager().getInstancesByClass(Bunker) as Array<any>;
-        const monsterBunkers = getInstanceManager().getInstancesByClass(MONSTERBUNKER) as Array<any>;
+        const buildingsAll = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as Record<string, any>;
+        const towers = getInstanceManager().getInstancesByClass(getBTOWER()) as Array<any>;
+        const bunkers = getInstanceManager().getInstancesByClass(getBunker()) as Array<any>;
+        const monsterBunkers = getInstanceManager().getInstancesByClass(getMONSTERBUNKER()) as Array<any>;
         const candidates: Array<any> = [];
         const lootedBuildings: Map<BFOUNDATION, boolean> = new Map();
         this._looking = true;

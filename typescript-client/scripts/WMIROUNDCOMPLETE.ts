@@ -77,7 +77,7 @@ export class WMIROUNDCOMPLETE extends ROUNDCOMPLETEPOPUP_CLIP {
             }
             this.mcStats.htmlText = "";
             let numDamagedBuildings = 0;
-            const buildingInstances = getInstanceManager().getInstancesByClass(BFOUNDATION);
+            const buildingInstances = getInstanceManager().getInstancesByClass(getBFOUNDATION());
             for (const b of buildingInstances) {
                 if ((b as BFOUNDATION).health < (b as BFOUNDATION).maxHealth) {
                     numDamagedBuildings++;
@@ -106,7 +106,7 @@ export class WMIROUNDCOMPLETE extends ROUNDCOMPLETEPOPUP_CLIP {
             this.mcText.htmlText = getKEYS().Get("wmi_winwave");
             this.mcStats.htmlText = getKEYS().Get("wmi_completedwaves", { "v1": wave });
             let numDamagedBuildings = 0;
-            const buildingInstances = getInstanceManager().getInstancesByClass(BFOUNDATION);
+            const buildingInstances = getInstanceManager().getInstancesByClass(getBFOUNDATION());
             for (const b of buildingInstances) {
                 if ((b as BFOUNDATION).health < (b as BFOUNDATION).maxHealth) {
                     numDamagedBuildings++;
@@ -227,7 +227,7 @@ export class WMIROUNDCOMPLETE extends ROUNDCOMPLETEPOPUP_CLIP {
     }
 
     private StartRepairsClicked(param1: MouseEvent): void {
-        const _loc2_ = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const _loc2_ = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const _loc3_ of _loc2_) {
             const building = _loc3_ as BFOUNDATION;
             if (building.health < building.maxHealth && building._repairing == 0) {

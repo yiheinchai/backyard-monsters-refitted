@@ -31,7 +31,7 @@ export class TowerDamageBuff extends BaseBuff {
     }
 
     public override apply(): void {
-        const towers: Array<any> = getInstanceManager().getInstancesByClass(BTOWER);
+        const towers: Array<any> = getInstanceManager().getInstancesByClass(getBTOWER());
         for (let i = 0; i < towers.length; i++) {
             const tower: BTOWER = towers[i] as BTOWER;
             tower.damageProperty.addModifier(new TowerDamageMultiplier(this.getValue() * 0.01 + 1));
@@ -39,7 +39,7 @@ export class TowerDamageBuff extends BaseBuff {
     }
 
     public override clear(): void {
-        const towers: Array<any> = getInstanceManager().getInstancesByClass(BTOWER);
+        const towers: Array<any> = getInstanceManager().getInstancesByClass(getBTOWER());
         for (let i = 0; i < towers.length; i++) {
             const tower: BTOWER = towers[i] as BTOWER;
             tower.damageProperty.removeModifier(tower.damageProperty.getModifierByType(TowerDamageMultiplier));

@@ -176,7 +176,7 @@ export class Decoy extends SiegeWeapon {
     public override onDeactivation(): void {
         const pos = new Point(this.x, this.y);
         const targets: Array<any> = this.getDefendingCreepsInRange();
-        const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const building of buildings) {
             const b = building as BFOUNDATION;
             if (!(b instanceof getBMUSHROOM()) && getGLOBAL().QuickDistance(pos, new Point(b.x, b.y)) < this.range * 0.65) {

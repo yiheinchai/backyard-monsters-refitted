@@ -51,7 +51,7 @@ export class Underused02Academy extends KeywordMessage {
     }
 
     private hasIdleAcademy(): boolean {
-        const academies: Array<any> = getInstanceManager().getInstancesByClass(BUILDING26);
+        const academies: Array<any> = getInstanceManager().getInstancesByClass(getBUILDING26());
         for (const academy of academies) {
             if (!academy._upgrading) {
                 return true;

@@ -56,7 +56,7 @@ export class MonsterInvasion extends ReplayableEvent {
     protected endWave(): void {
         let totalHealth = 0;
         let totalMaxHealth = 0;
-        const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const bld of buildings) {
             if (!((bld as BFOUNDATION)._class === "trap" && (bld as BFOUNDATION)._fired || (bld as BFOUNDATION)._type === 53 && (bld as BFOUNDATION)._expireTime < getGLOBAL().Timestamp())) {
                 if ((bld as BFOUNDATION)._class !== "wall") {
@@ -190,7 +190,7 @@ export class MonsterInvasion extends ReplayableEvent {
     }
 
     protected StartRepairs(): void {
-        const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const bld of buildings) {
             if ((bld as BFOUNDATION).health < (bld as BFOUNDATION).maxHealth && (bld as BFOUNDATION)._repairing === 0) {
                 (bld as BFOUNDATION).Repair();

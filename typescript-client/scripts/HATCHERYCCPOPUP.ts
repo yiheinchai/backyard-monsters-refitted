@@ -486,7 +486,7 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
         return (param1: MouseEvent = null): void => {
             let _loc4_: any = undefined;
             let _loc2_: number = 1;
-            const _loc3_: any = getInstanceManager().getInstancesByClass(BUILDING13);
+            const _loc3_: any = getInstanceManager().getInstancesByClass(getBUILDING13());
             
             for (_loc4_ of _loc3_) {
                 if (_loc4_._inProduction != "" && _loc2_ == n) {
@@ -531,7 +531,7 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
         
         let _loc6_: string = "<b>" + getGLOBAL().FormatNumber(getHOUSING()._housingUsed.Get()) + " / " + getGLOBAL().FormatNumber(getHOUSING()._housingCapacity.Get()) + "</b>";
         let _loc7_: number = 0;
-        const _loc8_: any = getInstanceManager().getInstancesByClass(BUILDING13);
+        const _loc8_: any = getInstanceManager().getInstancesByClass(getBUILDING13());
         
         for (_loc9_ of _loc8_) {
             if (_loc9_._inProduction) {
@@ -715,7 +715,7 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
             _loc6_++;
         }
         
-        const _loc7_: any = getInstanceManager().getInstancesByClass(BUILDING13);
+        const _loc7_: any = getInstanceManager().getInstancesByClass(getBUILDING13());
         
         for (_loc8_ of _loc7_) {
             _loc4_ = (this as any)["hatchery" + _loc3_];

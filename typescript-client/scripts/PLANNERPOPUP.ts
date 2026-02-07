@@ -52,7 +52,7 @@ export class PLANNERPOPUP extends PLANNERPOPUP_CLIP {
         this.addEventListener(MouseEvent.MOUSE_DOWN, this.DragStart.bind(this));
         this.addEventListener(MouseEvent.MOUSE_UP, this.DragStop.bind(this));
         this.mcMap.scaleX = this.mcMap.scaleY = this._zoom;
-        const _loc3_ = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const _loc3_ = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const _loc4_ of _loc3_) {
             this._buildings.addChild(new plannerBuilding(_loc4_ as BFOUNDATION, this._ranges));
         }

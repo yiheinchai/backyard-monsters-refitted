@@ -413,7 +413,7 @@ export class UPDATES {
     }
 
     public static GetBuilding(param1: number): BFOUNDATION {
-        const _loc2_ = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const _loc2_ = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const _loc3_ of _loc2_) {
             if ((_loc3_ as BFOUNDATION)._id == param1) {
                 return _loc3_ as BFOUNDATION;

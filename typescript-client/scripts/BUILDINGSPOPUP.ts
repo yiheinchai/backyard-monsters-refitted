@@ -198,7 +198,7 @@ export class BUILDINGSPOPUP extends BUILDINGSPOPUP_CLIP {
         let _loc11_: number = 0;
         let _loc12_: string = "";
         
-        const _loc2_: BFOUNDATION[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const _loc2_: BFOUNDATION[] = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         let _loc4_: number = 0;
         
         while (_loc4_ < param1.length) {

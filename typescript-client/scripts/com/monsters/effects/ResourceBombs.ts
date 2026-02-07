@@ -189,7 +189,7 @@ export class ResourceBombs {
                 delete ResourceBombs._activeBombs[key];
                 count--;
                 if (count === 0 && getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
-                    const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION);
+                    const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION());
                     for (const building of buildings) {
                         const b = building as BFOUNDATION;
                         if (b.health < b.maxHealth && b._repairing === 0) {

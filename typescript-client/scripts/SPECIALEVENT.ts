@@ -236,7 +236,7 @@ export class SPECIALEVENT {
         if (getGLOBAL()._aiDesignMode) {
             _loc4_ = 0;
             _loc5_ = 0;
-            _loc7_ = getInstanceManager().getInstancesByClass(BFOUNDATION);
+            _loc7_ = getInstanceManager().getInstancesByClass(getBFOUNDATION());
             
             for (_loc8_ of _loc7_) {
                 if (_loc8_._class != "wall" && (_loc8_._type == 53 && _loc8_._expireTime < getGLOBAL().Timestamp()) === false && (_loc8_._class == "trap" && _loc8_._fired) === false) {
@@ -261,7 +261,7 @@ export class SPECIALEVENT {
     
     private static StartRepairs(): void {
         let _loc2_: BFOUNDATION = null;
-        const _loc1_: any = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const _loc1_: any = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         
         for (_loc2_ of _loc1_) {
             if (_loc2_.health < _loc2_.maxHealth && _loc2_._repairing == 0) {

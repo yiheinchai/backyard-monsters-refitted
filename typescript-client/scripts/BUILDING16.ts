@@ -88,7 +88,7 @@ export class BUILDING16 extends HatcheryBase {
         
         if (this._countdownBuild.Get() === 0 && this.health > 10) {
             this._canFunction = true;
-            const hatcheries: any[] = getInstanceManager().getInstancesByClass(BUILDING13);
+            const hatcheries: any[] = getInstanceManager().getInstancesByClass(getBUILDING13());
             
             for (const hatchery of hatcheries) {
                 if (hatchery._canFunction) {
@@ -159,7 +159,7 @@ export class BUILDING16 extends HatcheryBase {
         if (getBASE()._credits.Get() >= this._finishCost.Get()) {
             const hatcheryList: any[] = [];
             let housingSpace: number = getHOUSING()._housingSpace.Get();
-            const hatcheries: any[] = getInstanceManager().getInstancesByClass(BUILDING13);
+            const hatcheries: any[] = getInstanceManager().getInstancesByClass(getBUILDING13());
             
             for (const hatchery of hatcheries) {
                 if (hatchery._canFunction) {
@@ -199,7 +199,7 @@ export class BUILDING16 extends HatcheryBase {
     public override Constructed(): void {
         super.Constructed();
         getGLOBAL()._bHatcheryCC = this;
-        const hatcheries: any[] = getInstanceManager().getInstancesByClass(BUILDING13);
+        const hatcheries: any[] = getInstanceManager().getInstancesByClass(getBUILDING13());
         for (const hatchery of hatcheries) {
             for (const queueItem of hatchery._monsterQueue) {
                 getBASE().Fund(4, queueItem[1] * getCREATURES().GetProperty(queueItem[0], "cResource"));

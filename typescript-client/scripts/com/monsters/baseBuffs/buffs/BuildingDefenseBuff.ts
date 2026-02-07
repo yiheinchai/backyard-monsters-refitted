@@ -31,7 +31,7 @@ export class BuildingDefenseBuff extends BaseBuff {
     }
 
     public override apply(): void {
-        const buildings: Array<any> = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const buildings: Array<any> = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (let i = 0; i < buildings.length; i++) {
             const building: BFOUNDATION = buildings[i] as BFOUNDATION;
             building.armorProperty.addModifier(new BuildingDefenseMultiplier(this.getValue() * 0.01));
@@ -39,7 +39,7 @@ export class BuildingDefenseBuff extends BaseBuff {
     }
 
     public override clear(): void {
-        const buildings: Array<any> = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const buildings: Array<any> = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (let i = 0; i < buildings.length; i++) {
             const building: BFOUNDATION = buildings[i] as BFOUNDATION;
             building.armorProperty.removeModifier(building.damageProperty.getModifierByType(BuildingDefenseMultiplier));

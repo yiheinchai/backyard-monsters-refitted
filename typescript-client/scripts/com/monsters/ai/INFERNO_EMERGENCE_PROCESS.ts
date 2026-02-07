@@ -56,7 +56,7 @@ export class INFERNO_EMERGENCE_PROCESS implements IPROCESS {
 
     public Process(solution: Solution, callback: Function): void {
         const buildings: { building: BFOUNDATION; distance: number }[] = [];
-        const allBuildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const allBuildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
         
         for (const building of allBuildings) {
             if ((building instanceof getBRESOURCE() || building instanceof getBUILDING6() || building instanceof getBUILDING14()) &&
@@ -144,7 +144,7 @@ export class INFERNO_EMERGENCE_PROCESS implements IPROCESS {
         }
         
         let volume = 0;
-        const allBuildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const allBuildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
         
         for (const building of allBuildings) {
             const buildingClass = (building as any)._class;

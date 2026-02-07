@@ -117,7 +117,7 @@ export class PATHING {
             }
             
             // Recalculate costs for all buildings
-            const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION);
+            const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION());
             for (const building of buildings) {
                 if (building._gridCost && (building.health > 0 || building instanceof getBMUSHROOM())) {
                     for (const gridCost of building._gridCost) {

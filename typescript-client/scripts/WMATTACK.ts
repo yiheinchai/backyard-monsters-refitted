@@ -235,7 +235,7 @@ export class WMATTACK {
             if (WMATTACK.t % 10 === 0) {
                 let towerCount = 0;
                 WMATTACK.baseIsRepairing = false;
-                const buildings: BFOUNDATION[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
+                const buildings: BFOUNDATION[] = getInstanceManager().getInstancesByClass(getBFOUNDATION());
                 
                 for (const building of buildings) {
                     if (!(building instanceof getBTRAP()) && !(building instanceof getBTOWER())) {
@@ -776,7 +776,7 @@ export class WMATTACK {
         
         let currentHealth = 0;
         let maxHealth = 0;
-        const buildings: BFOUNDATION[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const buildings: BFOUNDATION[] = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         
         for (const building of buildings) {
             building.GridCost(true);
@@ -845,7 +845,7 @@ export class WMATTACK {
             getSOUNDS().PlayMusic("musicbuild");
         }
         
-        const buildings: BFOUNDATION[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const buildings: BFOUNDATION[] = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const building of buildings) {
             building.GridCost(true);
             if (building._repairing !== 1) {
@@ -879,7 +879,7 @@ export class WMATTACK {
         
         let currentHealth = 0;
         let maxHealth = 0;
-        const buildings: BFOUNDATION[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const buildings: BFOUNDATION[] = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         
         for (const building of buildings) {
             building.GridCost(true);
@@ -963,7 +963,7 @@ export class WMATTACK {
     public static dpsAtPoint(solution: Solution, point: Point): number {
         const gridPoint = getGRID().FromISO(point.x, point.y);
         let totalDps = 0;
-        const towers: BTOWER[] = getInstanceManager().getInstancesByClass(BTOWER);
+        const towers: BTOWER[] = getInstanceManager().getInstancesByClass(getBTOWER());
         
         for (const tower of towers) {
             if (tower._countdownUpgrade.Get() === 0 && tower._countdownBuild.Get() === 0 && tower._countdownFortify.Get()) {

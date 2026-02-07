@@ -104,7 +104,7 @@ export class BUILDINGINFO {
 
         // Count damaged buildings
         let damagedCount = 0;
-        const instances = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const instances = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const inst of instances) {
             if ((inst as BFOUNDATION).health < (inst as BFOUNDATION).maxHealth) damagedCount++;
         }
@@ -307,7 +307,7 @@ export class BUILDINGINFO {
 
         if (target.labelKey === "btn_bank") building.Bank();
         if (target.labelKey === "btn_bankall") {
-            const resources = getInstanceManager().getInstancesByClass(BRESOURCE);
+            const resources = getInstanceManager().getInstancesByClass(getBRESOURCE());
             for (const res of resources) {
                 const b = res as BFOUNDATION;
                 if (b._class === "resource" && b._countdownUpgrade.Get() === 0 && 

@@ -68,7 +68,7 @@ export class HellRaisers extends ReplayableEvent {
 
     private getBasesWorthInXP(): number {
         let count: number = 0;
-        const buildings: Array<any> = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const buildings: Array<any> = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const building of buildings) {
             count++;
         }

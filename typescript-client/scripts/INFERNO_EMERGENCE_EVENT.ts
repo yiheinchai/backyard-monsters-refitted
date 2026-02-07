@@ -192,7 +192,7 @@ export class INFERNO_EMERGENCE_EVENT {
         let _loc5_: BFOUNDATION = null;
         let _loc6_: number = NaN;
         const _loc1_: boolean = false;
-        const _loc4_: Array<any> = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const _loc4_: Array<any> = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const building of _loc4_) {
             _loc5_ = building as BFOUNDATION;
             _loc2_ += _loc5_.health;

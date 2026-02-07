@@ -51,7 +51,7 @@ export class PROCESS3 implements IPROCESS {
 
     public Process(solution: Solution, callback: Function): void {
         const towers: { building: BFOUNDATION; distance: number }[] = [];
-        const towerInstances = getInstanceManager().getInstancesByClass(BTOWER) as BFOUNDATION[];
+        const towerInstances = getInstanceManager().getInstancesByClass(getBTOWER()) as BFOUNDATION[];
         
         for (const tower of towerInstances) {
             if (tower.health > 0) {
@@ -129,7 +129,7 @@ export class PROCESS3 implements IPROCESS {
             attack[getWMATTACK()._monsterKeys[i]] = 0;
         }
         
-        const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
         let volume = 0;
         
         for (const building of buildings) {

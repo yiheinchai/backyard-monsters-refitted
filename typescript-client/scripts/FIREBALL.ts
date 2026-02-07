@@ -297,7 +297,7 @@ export class FIREBALL extends ProjectileBase {
         const _loc4_: any[] = [];
         _loc1_ = new Point(this._graphic.x, this._graphic.y);
         const _loc6_: number = 100;
-        let _loc7_: any = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        let _loc7_: any = getInstanceManager().getInstancesByClass(getBFOUNDATION());
 
         for (_loc5_ of _loc7_) {
             if (_loc5_.isTargetable && _loc5_._class != "wall" && _loc5_._class != "mushroom" && _loc5_._class != "decoration" && _loc5_._class != "immovable" && _loc5_.health > 0 && _loc5_._class != "enemy" && _loc5_._class != "trap" && !(_loc5_ instanceof getBTOWER() && (_loc5_ as BTOWER).isJard)) {
@@ -315,7 +315,7 @@ export class FIREBALL extends ProjectileBase {
         }
 
         if (_loc4_.length == 0) {
-            _loc7_ = getInstanceManager().getInstancesByClass(BWALL);
+            _loc7_ = getInstanceManager().getInstancesByClass(getBWALL());
             for (_loc5_ of _loc7_) {
                 _loc2_ = new Point(_loc5_._mc.x, _loc5_._mc.y + _loc5_._footprint[0].height / 2);
                 _loc3_ = Point.distance(_loc1_, _loc2_);

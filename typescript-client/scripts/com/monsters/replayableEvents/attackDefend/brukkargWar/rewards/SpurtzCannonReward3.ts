@@ -24,7 +24,7 @@ export class SpurtzCannonReward3 extends Reward {
     }
 
     protected override onApplication(): void {
-        const cannons: Array<any> = getInstanceManager().getInstancesByClass(SpurtzCannon);
+        const cannons: Array<any> = getInstanceManager().getInstancesByClass(getSpurtzCannon());
         for (const cannon of cannons) {
             if ((cannon instanceof BlackSpurtzCannon) === false) {
                 this.swapBuildings(cannon, getBASE().addBuildingC(BlackSpurtzCannon.TYPE));

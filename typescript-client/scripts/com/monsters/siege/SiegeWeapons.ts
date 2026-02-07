@@ -170,4 +170,4 @@ export class SiegeWeapons {
 }
 
 // Call initialize when module loads
-SiegeWeapons.initialize();
+// SiegeWeapons.initialize(); // Deferred - called when needed

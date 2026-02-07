@@ -26,7 +26,7 @@ function getResourceOutpost(): any { return require("../../../../ResourceOutpost
 export class Vacuum extends SiegeWeapon implements IDurable {
     private static readonly k_BUILDINGS_THAT_CAN_BE_SUCKED: Array<string> = [
         getQualifiedClassName(getBUILDING14()),
-        getQualifiedClassName(ResourceOutpost)
+        getQualifiedClassName(getResourceOutpost())
     ];
     public static readonly ID: string = "vacuum";
     public static readonly LOOT_BONUS: string = "siegeWeaponLootBonus";

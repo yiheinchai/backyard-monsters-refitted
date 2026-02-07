@@ -528,7 +528,7 @@ export class ChampionBase extends MonsterBase {
         const loc7 = getPATHING().FromISO(this._tmpPoint);
         
         // Get resource buildings, town halls, silos
-        const foundations = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const foundations = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const building of foundations) {
             if (building.health > 0 && (building._class === "resource" || building._type === 6 || building._type === 14 || building._type === 112)) {
                 const loc8 = getGRID().FromISO(building._mc.x, building._mc.y + building._middle);
@@ -538,7 +538,7 @@ export class ChampionBase extends MonsterBase {
         }
         
         // Get towers
-        const towers = getInstanceManager().getInstancesByClass(BTOWER);
+        const towers = getInstanceManager().getInstancesByClass(getBTOWER());
         for (const building of towers) {
             if (building.health > 0 && !(building as BTOWER).isJard) {
                 const loc8 = getGRID().FromISO(building._mc.x, building._mc.y + building._middle);
@@ -548,7 +548,7 @@ export class ChampionBase extends MonsterBase {
         }
         
         // Get bunkers
-        const bunkers = getInstanceManager().getInstancesByClass(Bunker);
+        const bunkers = getInstanceManager().getInstancesByClass(getBunker());
         for (const building of bunkers) {
             if (building.health > 0 && ((building as any)._used > 0 || (building as any)._monstersDispatchedTotal > 0)) {
                 const loc8 = getGRID().FromISO(building._mc.x, building._mc.y + building._middle);

@@ -163,7 +163,7 @@ export class AutoBankManager {
     public static updateBuildingResources(result: Record<string, any>): Record<string, any> {
         if (getBASE().isOutpost) {
             const resources: Record<string, number> = { "r1": 0, "r2": 0, "r3": 0, "r4": 0 };
-            const buildings = getInstanceManager().getInstancesByClass(BRESOURCE);
+            const buildings = getInstanceManager().getInstancesByClass(getBRESOURCE());
             for (const building of buildings) {
                 const b = building as BFOUNDATION;
                 if (b._type >= 1 && b._type <= 4) {

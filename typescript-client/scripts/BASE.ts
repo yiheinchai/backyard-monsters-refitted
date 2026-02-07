@@ -1018,7 +1018,7 @@ export class BASE {
         }
         
         // Get storage silo buildings (BUILDING6)
-        const silos = getInstanceManager().getInstancesByClass(BUILDING6) as BFOUNDATION[];
+        const silos = getInstanceManager().getInstancesByClass(getBUILDING6()) as BFOUNDATION[];
         for (const silo of silos) {
             if (silo._lvl.Get() >= 1 && BASE.isMainYardOrInfernoMainYard) {
                 const type = silo._type;
@@ -1130,7 +1130,7 @@ export class BASE {
     
     public static repairAllBuildingsToMinimumPercentage(percentage: number): void {
         percentage = Math.max(0, Math.min(1, percentage));
-        const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
         
         for (const building of buildings) {
             const minHealth = building.maxHealth * percentage;
@@ -1535,7 +1535,7 @@ export class BASE {
                 }
             } else {
                 // Check other building requirements
-                const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION);
+                const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION());
                 for (const building of buildings) {
                     if (building._type === req[0] && building._lvl.Get() >= req[2]) {
                         count++;
@@ -1662,7 +1662,7 @@ export class BASE {
      * @returns Array of building foundations
      */
     public static getYardPlannerBuildings(): BFOUNDATION[] {
-        const allBuildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const allBuildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
         const plannerBuildings: BFOUNDATION[] = [];
         for (const building of allBuildings) {
             if (building._type !== 7) { // Exclude town hall marker or similar
@@ -1678,7 +1678,7 @@ export class BASE {
      * @returns The building foundation or null
      */
     public static getBuildingByID(buildingId: number): BFOUNDATION | null {
-        const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
         for (const building of buildings) {
             if (building._id === buildingId) {
                 return building;
@@ -1752,7 +1752,7 @@ export class BASE {
      * @returns True if there is an overlap
      */
     public static BuildingOverlap(position: Point, size: number, ignoreTraps: boolean, ignoreDestroyed: boolean = false, ignoreDecorations: boolean = false, ignoreImmovableAndEnemy: boolean = false): boolean {
-        const buildings: Object[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const buildings: Object[] = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const building of buildings) {
             const bf = building as BFOUNDATION;
             // Skip mushrooms
@@ -1801,7 +1801,7 @@ export class BASE {
      */
     public static GetBuildingOverlap(x: number, y: number, size: number, outBuildings: BFOUNDATION[]): void {
         const position: Point = new Point(x, y);
-        const buildings: Object[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const buildings: Object[] = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const building of buildings) {
             const bf = building as BFOUNDATION;
             // Skip mushrooms

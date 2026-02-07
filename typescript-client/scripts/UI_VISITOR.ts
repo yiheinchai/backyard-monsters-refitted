@@ -215,7 +215,7 @@ export class UI_VISITOR extends UI_VISITOR_CLIP {
             UI_VISITOR._helpButtons.x = getMapRoomManager().instance.isInMapRoom3 ? 310 : 210;
             UI_VISITOR._helpButtons.y = 5;
             let _loc1_ = 0;
-            const _loc2_ = getInstanceManager().getInstancesByClass(BFOUNDATION);
+            const _loc2_ = getInstanceManager().getInstancesByClass(getBFOUNDATION());
             for (const _loc3_ of _loc2_) {
                 const building = _loc3_ as BFOUNDATION;
                 if (building._countdownBuild.Get() + building._countdownUpgrade.Get() + building._countdownFortify.Get() > 0) {
@@ -273,7 +273,7 @@ export class UI_VISITOR extends UI_VISITOR_CLIP {
     }
 
     public checkMapRoomHealth(): void {
-        const _loc2_ = getInstanceManager().getInstancesByClass(BUILDING11);
+        const _loc2_ = getInstanceManager().getInstancesByClass(getBUILDING11());
         if (_loc2_.length === 0) {
             return;
         }

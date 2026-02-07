@@ -277,7 +277,7 @@ export class ATTACK {
         hasCreatures = creatureCount > 0;
         
         let hasBuildings = false;
-        const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
         for (const building of buildings) {
             if (!(building instanceof getBMUSHROOM()) && 
                 building._class !== "wall" && 
@@ -304,7 +304,7 @@ export class ATTACK {
     
     public static ShowLog(delay: number = 0): void {
         let shouldShowTaunt: boolean = getBASE()._isProtected > 0;
-        const townHallInstances = getInstanceManager().getInstancesByClass(BUILDING14) as BUILDING14[];
+        const townHallInstances = getInstanceManager().getInstancesByClass(getBUILDING14()) as BUILDING14[];
         
         for (const townHall of townHallInstances) {
             if (townHall.health === 0) {
@@ -982,7 +982,7 @@ export class ATTACK {
         let currentHealth = 0;
         let maxHealth = 0;
         
-        const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
         for (const building of buildings) {
             if (building._class !== "wall" && 
                 !((building._class as any) === "trap" && (building._class as any) === "enemy" && building._fired) &&
@@ -1016,7 +1016,7 @@ export class ATTACK {
                 }
             }
         } else if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.IWMATTACK) {
-            const townHalls = getInstanceManager().getInstancesByClass(BUILDING14) as BUILDING14[];
+            const townHalls = getInstanceManager().getInstancesByClass(getBUILDING14()) as BUILDING14[];
             
             for (const townHall of townHalls) {
                 if (townHall.health === 0 && townHall._repairing === 0 &&
@@ -1140,7 +1140,7 @@ export class ATTACK {
                 mc.bAction.removeEventListener("click", RepairAll);
                 mc.bAction2.removeEventListener("click", RepairNow);
                 
-                const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+                const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
                 for (const building of buildings) {
                     if (building.health < building.maxHealth && building._repairing === 0) {
                         building.Repair();
@@ -1155,7 +1155,7 @@ export class ATTACK {
                 mc.bAction.removeEventListener("click", RepairAll);
                 mc.bAction2.removeEventListener("click", RepairNow);
                 
-                const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+                const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
                 for (const building of buildings) {
                     if (building.health < building.maxHealth && building._repairing === 0) {
                         building.Repair();
@@ -1184,7 +1184,7 @@ export class ATTACK {
         let maxHealth = 0;
         let currentHealth = 0;
         
-        const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
         
         for (const building of buildings) {
             if (building._class !== "wall" && 

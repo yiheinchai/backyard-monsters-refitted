@@ -49,7 +49,7 @@ export class PROCESS7 implements IPROCESS {
 
     public Process(solution: Solution, callback: Function): void {
         const buildings: { building: BFOUNDATION; distance: number }[] = [];
-        const allBuildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const allBuildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
         
         for (const building of allBuildings) {
             if (building.health > 0 && !(building as any)._looted && 
@@ -123,7 +123,7 @@ export class PROCESS7 implements IPROCESS {
             attack[getWMATTACK()._monsterKeys[i]] = 0;
         }
         
-        const allBuildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const allBuildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
         let volume = 0;
         
         for (const building of allBuildings) {

@@ -612,7 +612,7 @@ export class GLOBAL {
                     GLOBAL.tickables[i].tick();
                 }
                 
-                const foundations = getInstanceManager().getInstancesByClass(BFOUNDATION);
+                const foundations = getInstanceManager().getInstancesByClass(getBFOUNDATION());
                 for (const foundation of foundations) {
                     (foundation as BFOUNDATION).Tick(1);
                 }
@@ -683,17 +683,17 @@ export class GLOBAL {
                         if (getCREEPS()._creepCount > 0 || getSiegeWeapons().activeWeapon) {
                             getCREEPS().Tick();
                             
-                            const towers = getInstanceManager().getInstancesByClass(BTOWER);
+                            const towers = getInstanceManager().getInstancesByClass(getBTOWER());
                             for (const tower of towers) {
                                 (tower as BFOUNDATION).TickAttack();
                             }
                             
-                            const traps = getInstanceManager().getInstancesByClass(BTRAP);
+                            const traps = getInstanceManager().getInstancesByClass(getBTRAP());
                             for (const trap of traps) {
                                 (trap as BTRAP).TickAttack();
                             }
                             
-                            const bunkers = getInstanceManager().getInstancesByClass(Bunker);
+                            const bunkers = getInstanceManager().getInstancesByClass(getBunker());
                             for (const bunker of bunkers) {
                                 (bunker as Bunker).TickAttack();
                             }

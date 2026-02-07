@@ -47,7 +47,7 @@ export class AllianceArmamentBuff extends BaseBuff {
     }
 
     public override apply(): void {
-        const buildings: Array<any> = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const buildings: Array<any> = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (let i = 0; i < buildings.length; i++) {
             const building: BFOUNDATION = buildings[i] as BFOUNDATION;
             if (building instanceof getBTOWER() || building instanceof getBWALL()) {
@@ -56,7 +56,7 @@ export class AllianceArmamentBuff extends BaseBuff {
                 building.maxHealthProperty.updateHealth();
             }
         }
-        const traps: Array<any> = getInstanceManager().getInstancesByClass(BTRAP);
+        const traps: Array<any> = getInstanceManager().getInstancesByClass(getBTRAP());
         for (let i = 0; i < traps.length; i++) {
             const trap: BTRAP = traps[i] as BTRAP;
             trap.damageProperty.addModifier(new ArmamentTrapDamageMultiplier());
@@ -64,7 +64,7 @@ export class AllianceArmamentBuff extends BaseBuff {
     }
 
     public override clear(): void {
-        const buildings: Array<any> = getInstanceManager().getInstancesByClass(BFOUNDATION);
+        const buildings: Array<any> = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (let i = 0; i < buildings.length; i++) {
             const building: BFOUNDATION = buildings[i] as BFOUNDATION;
             if (building instanceof getBTOWER() || building instanceof getBWALL()) {
@@ -73,7 +73,7 @@ export class AllianceArmamentBuff extends BaseBuff {
                 building.maxHealthProperty.updateHealth();
             }
         }
-        const traps: Array<any> = getInstanceManager().getInstancesByClass(BTRAP);
+        const traps: Array<any> = getInstanceManager().getInstancesByClass(getBTRAP());
         for (let i = 0; i < traps.length; i++) {
             const trap: BTRAP = traps[i] as BTRAP;
             trap.damageProperty.removeModifier(trap.damageProperty.getModifierByType(ArmamentTrapDamageMultiplier));

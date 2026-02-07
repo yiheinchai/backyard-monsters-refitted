@@ -305,7 +305,7 @@ export class PersistentMonsterBunker extends MonsterBunkerPopup_Persistent_CLIP 
             _loc2_.push(_loc3_);
         }
 
-        getInstanceManager().getInstancesByClass(HOUSING);
+        getInstanceManager().getInstancesByClass(getHOUSING());
         const _loc4_ = getCREATURELOCKER()._creatures[param1].props.cStorage;
 
         if (getGLOBAL().player.monsterListByID(param1) && _loc4_ <= this.m_bunker._capacity - this.m_bunker._used) {
