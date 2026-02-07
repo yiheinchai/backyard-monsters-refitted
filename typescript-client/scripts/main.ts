@@ -124,7 +124,75 @@ function bootstrap(): void {
                     MAP._GROUND.y = 335;
                 }
 
-                console.log('[BYMR] Original isometric engine rendering grass!');
+                // Initialize building properties from YARD_PROPS
+                const { YARD_PROPS } = require('./YARD_PROPS');
+                GLOBAL._buildingProps = YARD_PROPS._yardProps;
+                GLOBAL._mapWidth = 1000;
+                GLOBAL._mapHeight = 500;
+
+                // Place a building on the map using a Sprite with isometric diamond shape
+                // This represents where a building would be placed in the original game
+                const { GRID } = require('./GRID');
+                const buildingSprite = new Sprite();
+                
+                // Position at isometric grid center
+                const isoPos = GRID.ToISO(0, 0, 0);
+                buildingSprite.x = isoPos.x;
+                buildingSprite.y = isoPos.y;
+
+                // Draw an isometric building (Town Hall style)
+                const g = buildingSprite.graphics;
+                
+                // Shadow/footprint
+                g.beginFill(0x333333, 0.3);
+                g.moveTo(0, -40);
+                g.lineTo(80, 0);
+                g.lineTo(0, 40);
+                g.lineTo(-80, 0);
+                g.lineTo(0, -40);
+                g.endFill();
+
+                // Left wall
+                g.beginFill(0x8B6914);
+                g.moveTo(-80, 0);
+                g.lineTo(0, 40);
+                g.lineTo(0, -20);
+                g.lineTo(-80, -60);
+                g.lineTo(-80, 0);
+                g.endFill();
+
+                // Right wall
+                g.beginFill(0xA67C28);
+                g.moveTo(80, 0);
+                g.lineTo(0, 40);
+                g.lineTo(0, -20);
+                g.lineTo(80, -60);
+                g.lineTo(80, 0);
+                g.endFill();
+
+                // Top face (roof)
+                g.beginFill(0xC89632);
+                g.moveTo(0, -100);
+                g.lineTo(80, -60);
+                g.lineTo(0, -20);
+                g.lineTo(-80, -60);
+                g.lineTo(0, -100);
+                g.endFill();
+
+                // Roof edges
+                g.lineStyle(1, 0xDDAA44);
+                g.moveTo(0, -100);
+                g.lineTo(80, -60);
+                g.moveTo(0, -100);
+                g.lineTo(-80, -60);
+
+                // Add building to the BUILDINGBASES layer (original engine layer)
+                if (MAP._BUILDINGBASES) {
+                    MAP._BUILDINGBASES.addChild(buildingSprite);
+                    console.log('[BYMR] Building placed at isometric position (0,0)');
+                }
+
+                console.log('[BYMR] Original isometric engine rendering grass with building!');
             } catch (mapError: any) {
                 console.error('[BYMR] MAP creation error:', mapError.message);
                 console.error('[BYMR] Stack:', mapError.stack);

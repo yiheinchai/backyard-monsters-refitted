@@ -55,6 +55,8 @@ function getATTACK(): any { return require("./ATTACK").ATTACK; }
 function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
 function getBTOWER(): any { return require("./BTOWER").BTOWER; }
 function getBTRAP(): any { return require("./BTRAP").BTRAP; }
+function getBTOTEM(): any { return require("./BTOTEM").BTOTEM; }
+function getBDECORATION(): any { return require("./BDECORATION").BDECORATION; }
 function getBUILDINGINFO(): any { return require("./BUILDINGINFO").BUILDINGINFO; }
 function getBWALL(): any { return require("./BWALL").BWALL; }
 function getBunker(): any { return require("./Bunker").Bunker; }
@@ -1113,9 +1115,25 @@ export class BASE {
     }
     
     public static addBuildingC(buildingType: number): BFOUNDATION | null {
-        // Create and add a building of the specified type
-        // Returns the created building foundation
-        return null;
+        let buildingFoundation: BFOUNDATION | null = null;
+        const buildingProperties: any = getGLOBAL()._buildingProps ? getGLOBAL()._buildingProps[buildingType - 1] || {} : {};
+
+        if (buildingProperties.type === "decoration") {
+            if (getBTOTEM().IsTotem(buildingType) || getBTOTEM().IsTotem2(buildingType)) {
+                buildingFoundation = new (getBTOTEM())(buildingType);
+            } else {
+                buildingFoundation = new (getBDECORATION())(buildingType);
+            }
+            return buildingFoundation;
+        }
+
+        if (buildingProperties.cls) {
+            return new buildingProperties.cls();
+        }
+
+        // Fallback: create a generic BFOUNDATION
+        buildingFoundation = new BFOUNDATION(buildingType);
+        return buildingFoundation;
     }
     
     public static Page(): void {
