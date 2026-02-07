@@ -3,10 +3,13 @@ import BitmapData from 'openfl/display/BitmapData';
 import MouseEvent from 'openfl/events/MouseEvent';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { DEFENSEEVENTPOPUP_CLIP } from './DEFENSEEVENTPOPUP_CLIP';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { POPUPS } from './POPUPS';
-import { SPECIALEVENT } from './SPECIALEVENT';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSPECIALEVENT(): any { return require("./SPECIALEVENT").SPECIALEVENT; }
+
 
 /**
  * DEFENSEEVENTPOPUP - Defense event popup with banner and RSVP button
@@ -39,12 +42,12 @@ export class DEFENSEEVENTPOPUP extends DEFENSEEVENTPOPUP_CLIP {
         if (popupnum == -1) {
             popupnum = Math.floor(Math.random() * 3) + 1;
         }
-        this.rsvpBtn.Setup(KEYS.Get("wmi_buttonpopup1"), false, 0, 0);
+        this.rsvpBtn.Setup(getKEYS().Get("wmi_buttonpopup1"), false, 0, 0);
         this.rsvpBtn.addEventListener(MouseEvent.CLICK, this.rsvpDown.bind(this));
-        ImageCache.GetImageWithCallBack(SPECIALEVENT.BANNERIMAGE, bannerComplete);
+        ImageCache.GetImageWithCallBack(getSPECIALEVENT().BANNERIMAGE, bannerComplete);
         if (popupnum > 0 && popupnum < 4) {
             ImageCache.GetImageWithCallBack("specialevent/wmi2_" + popupnum + ".jpg", imageComplete);
-            this.mcText.htmlText = KEYS.Get("wmi2_popup" + popupnum);
+            this.mcText.htmlText = getKEYS().Get("wmi2_popup" + popupnum);
         }
         this.mcFrame.Setup(true);
         DEFENSEEVENTPOPUP._open = true;
@@ -56,7 +59,7 @@ export class DEFENSEEVENTPOPUP extends DEFENSEEVENTPOPUP_CLIP {
 
     public rsvpDown(param1: MouseEvent): void {
         this.Hide();
-        GLOBAL.gotoURL("https://backyard-monsters.fandom.com/wiki/Wild_Monster_Invasion_2", null, true, null);
+        getGLOBAL().gotoURL("https://backyard-monsters.fandom.com/wiki/Wild_Monster_Invasion_2", null, true, null);
     }
 
     public startDown(param1: MouseEvent): void {
@@ -65,6 +68,6 @@ export class DEFENSEEVENTPOPUP extends DEFENSEEVENTPOPUP_CLIP {
 
     public Hide(): void {
         DEFENSEEVENTPOPUP._open = false;
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 }

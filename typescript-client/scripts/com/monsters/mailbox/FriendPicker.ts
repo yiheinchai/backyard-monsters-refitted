@@ -11,11 +11,14 @@ import { ScrollSet } from "../display/ScrollSet";
 import { Contact } from "./model/Contact";
 import { FriendPicker_CLIP } from "../../../FriendPicker_CLIP";
 import { FriendPickerItem } from "./FriendPickerItem";
-import { URLLoaderApi } from "../../../URLLoaderApi";
 import { system_message } from "../../../system_message";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { LOGIN } from "../../../LOGIN";
+// Lazy imports to break circular dependency chains
+function getURLLoaderApi(): any { return require("../../../URLLoaderApi").URLLoaderApi; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getLOGIN(): any { return require("../../../LOGIN").LOGIN; }
+
+
 
 /**
  * FriendPicker - selectable dropdown list of friend contacts.
@@ -107,10 +110,10 @@ export class FriendPicker extends FriendPicker_CLIP {
         }
         if (FriendPicker._contacts.length === 0) {
             FriendPicker._contacts = [];
-            const meContact = new Contact(String(LOGIN._playerID), {
+            const meContact = new Contact(String(getLOGIN()._playerID), {
                 "first_name": "Me",
                 "last_name": "",
-                "pic_square": LOGIN._playerPic
+                "pic_square": getLOGIN()._playerPic
             }, true);
             const daveContact = new Contact("0", {
                 "first_name": "D.A.V.E.",
@@ -118,8 +121,8 @@ export class FriendPicker extends FriendPicker_CLIP {
                 "pic_square": ""
             }, true);
             daveContact.picClass = system_message;
-            const loader = new URLLoaderApi();
-            loader.load(GLOBAL._apiURL + "player/getmessagetargets", null, this.onTargetsSuccess.bind(this));
+            const loader = new (getURLLoaderApi())();
+            loader.load(getGLOBAL()._apiURL + "player/getmessagetargets", null, this.onTargetsSuccess.bind(this));
         } else {
             this._openMap2Friends();
         }

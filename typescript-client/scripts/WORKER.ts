@@ -12,15 +12,18 @@ import { TweenLite } from 'gs/TweenLite';
 import { Sine, Bounce } from 'gs/easing';
 import { BYMConfig } from './com/monsters/configs/BYMConfig';
 import { ImageCache } from './com/monsters/display/ImageCache';
-import { PATHING } from './com/monsters/pathing/PATHING';
 import { RasterData } from './com/monsters/rendering/RasterData';
 import { WORKER_CLIP } from './WORKER_CLIP';
 import { workerMessage } from './workerMessage';
-import { BFOUNDATION } from './BFOUNDATION';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { MAP } from './MAP';
-import { SPRITES } from './SPRITES';
+
+// Lazy imports to break circular dependency chains
+function getPATHING(): any { return require("./com/monsters/pathing/PATHING").PATHING; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getSPRITES(): any { return require("./SPRITES").SPRITES; }
+
 
 export class WORKER extends WORKER_CLIP {
     public _behaviour: string;
@@ -66,7 +69,7 @@ export class WORKER extends WORKER_CLIP {
         this.hideTimer.addEventListener("timer", this.sayHide.bind(this));
         this._waypoints = [];
         this._rasterPt = new Point();
-        this._id = GLOBAL.NextCreepID();
+        this._id = getGLOBAL().NextCreepID();
         this._container = param1;
         this._targetPosition = param2;
         this.x = this._targetPosition.x;
@@ -75,12 +78,12 @@ export class WORKER extends WORKER_CLIP {
         this._speed = 0;
         this._size = 10;
         this._frameNumber = Math.floor(Math.random() * 200);
-        if (!BASE.isInfernoMainYardOrOutpost) {
+        if (!getBASE().isInfernoMainYardOrOutpost) {
             this._graphic = new BitmapData(52, 50, true, 16777215);
         } else {
             this._graphic = new BitmapData(64, 55, true, 16777215);
         }
-        SPRITES.SetupSprite("worker");
+        getSPRITES().SetupSprite("worker");
         this._graphicMC = BYMConfig.instance.RENDERER_ON ? new Bitmap(this._graphic) : this.addChild(new Bitmap(this._graphic));
         this._graphicMC.x = -26;
         this._graphicMC.y = -36;
@@ -102,7 +105,7 @@ export class WORKER extends WORKER_CLIP {
         if (!BYMConfig.instance.RENDERER_ON) {
             return;
         }
-        const _loc1_ = MAP.instance.offset;
+        const _loc1_ = getMAP().instance.offset;
         if (this._graphicMC && this._rasterData) {
             let _loc2_ = this.height * 0.5;
             if (this._middle) {
@@ -110,7 +113,7 @@ export class WORKER extends WORKER_CLIP {
             }
             this._rasterPt.x = this.x + this._graphicMC.x - _loc1_.x;
             this._rasterPt.y = this.y + this._graphicMC.y - _loc1_.y;
-            this._rasterData.depth = Math.max(MAP.DEPTH_SHADOW + 1, (this.y - _loc1_.y + _loc2_) * 1000 + this.x - _loc1_.x);
+            this._rasterData.depth = Math.max(getMAP().DEPTH_SHADOW + 1, (this.y - _loc1_.y + _loc2_) * 1000 + this.x - _loc1_.x);
         }
     }
 
@@ -148,18 +151,18 @@ export class WORKER extends WORKER_CLIP {
     public Update(param1: boolean = false): void {
         if (param1 || this._lastRotation != Math.floor(this.mcMarker.rotation / 12)) {
             this._lastRotation = Math.floor(this.mcMarker.rotation / 12);
-            SPRITES.GetSprite(this._graphic, "worker", "walking", this.mcMarker.rotation, this._frameNumber);
+            getSPRITES().GetSprite(this._graphic, "worker", "walking", this.mcMarker.rotation, this._frameNumber);
         }
     }
 
     public Target(param1: Point, param2: BFOUNDATION = null): void {
-        if (!GLOBAL._catchup) {
+        if (!getGLOBAL()._catchup) {
             let _loc3_ = new Rectangle(param1.x, param1.y, 10, 10);
             if (param2) {
                 _loc3_ = new Rectangle(param2._mc.x, param2._mc.y, param2._footprint[0].width, param2._footprint[0].height);
             }
             this._hasPath = false;
-            PATHING.GetPath(new Point(this.x, this.y), _loc3_, this.setWaypoints.bind(this), true, param2);
+            getPATHING().GetPath(new Point(this.x, this.y), _loc3_, this.setWaypoints.bind(this), true, param2);
         } else {
             this._waypoints = [new Point(this.x, this.y)];
         }
@@ -171,7 +174,7 @@ export class WORKER extends WORKER_CLIP {
         if (this._waypoints.length > 0) {
             this._targetPosition = this._waypoints[0];
             if (!this._jumping) {
-                const building = PATHING.GetBuildingFromISO(this._targetPosition);
+                const building = getPATHING().GetBuildingFromISO(this._targetPosition);
                 if (building) {
                     if (building.health > 0) {
                         TweenLite.to(this._graphicMC, 0.4, {
@@ -268,9 +271,9 @@ export class WORKER extends WORKER_CLIP {
         this.hideTimer.stop();
         this.hideTimer.delay = param2;
         if (this._messageMC) {
-            MAP._PROJECTILES.removeChild(this._messageMC);
+            getMAP()._PROJECTILES.removeChild(this._messageMC);
         }
-        this._messageMC = MAP._PROJECTILES.addChild(new workerMessage()) as workerMessage;
+        this._messageMC = getMAP()._PROJECTILES.addChild(new workerMessage()) as workerMessage;
         this._messageMC.visible = false;
         this._messageMC.txt.autoSize = TextFieldAutoSize.LEFT;
         this._messageMC.txt.htmlText = param1;

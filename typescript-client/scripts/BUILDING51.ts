@@ -2,11 +2,14 @@ import { ImageCache } from './com/monsters/display/ImageCache';
 import MovieClip from 'openfl/display/MovieClip';
 import MouseEvent from 'openfl/events/MouseEvent';
 import Rectangle from 'openfl/geom/Rectangle';
-import { BASE } from './BASE';
 import { BFOUNDATION } from './BFOUNDATION';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { POPUPS } from './POPUPS';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+
 
 /**
  * BUILDING51 - Catapult Building
@@ -39,24 +42,24 @@ export class BUILDING51 extends BFOUNDATION {
     }
 
     public override Cancel(): void {
-        GLOBAL._bCatapult = null;
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-            GLOBAL._playerCatapultLevel.Set(0);
+        getGLOBAL()._bCatapult = null;
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+            getGLOBAL()._playerCatapultLevel.Set(0);
         }
         super.Cancel();
     }
 
     public override RecycleC(): void {
-        GLOBAL._bCatapult = null;
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-            GLOBAL._playerCatapultLevel.Set(0);
+        getGLOBAL()._bCatapult = null;
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+            getGLOBAL()._playerCatapultLevel.Set(0);
         }
         super.RecycleC();
     }
 
     public override Description(): void {
         super.Description();
-        this._upgradeDescription = KEYS.Get("bdg_catapult_upgrade");
+        this._upgradeDescription = getKEYS().Get("bdg_catapult_upgrade");
     }
 
     public override Update(force: boolean = false): void {
@@ -65,41 +68,41 @@ export class BUILDING51 extends BFOUNDATION {
 
     public override Constructed(): void {
         super.Constructed();
-        GLOBAL._bCatapult = this;
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && BASE.isMainYard) {
+        getGLOBAL()._bCatapult = this;
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && getBASE().isMainYard) {
             const Brag = (event: MouseEvent): void => {
-                GLOBAL.CallJS("sendFeed", ["build-cat", KEYS.Get("pop_catapultbuilt_streamtitle"), KEYS.Get("pop_catapultbuilt_streambody"), "build-catapult.png"]);
-                POPUPS.Next();
+                getGLOBAL().CallJS("sendFeed", ["build-cat", getKEYS().Get("pop_catapultbuilt_streamtitle"), getKEYS().Get("pop_catapultbuilt_streambody"), "build-catapult.png"]);
+                getPOPUPS().Next();
             };
             this.LoadEffects();
             const mc: MovieClip = new (GLOBAL as any).popup_building();
-            (mc as any).tA.htmlText = "<b>" + KEYS.Get("pop_catapultbuilt_title") + "</b>";
-            (mc as any).tB.htmlText = KEYS.Get("pop_catapultbuilt_body");
+            (mc as any).tA.htmlText = "<b>" + getKEYS().Get("pop_catapultbuilt_title") + "</b>";
+            (mc as any).tB.htmlText = getKEYS().Get("pop_catapultbuilt_body");
             (mc as any).bPost.SetupKey("btn_brag");
             (mc as any).bPost.addEventListener(MouseEvent.CLICK, Brag);
             (mc as any).bPost.Highlight = true;
-            POPUPS.Push(mc, null, null, null, "build.v2.png");
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-                GLOBAL._playerCatapultLevel.Set(this._lvl.Get());
+            getPOPUPS().Push(mc, null, null, null, "build.v2.png");
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+                getGLOBAL()._playerCatapultLevel.Set(this._lvl.Get());
             }
         }
     }
 
     public override Upgraded(): void {
         super.Upgraded();
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
             const Brag = (event: MouseEvent): void => {
-                GLOBAL.CallJS("sendFeed", ["upgrade-cat-" + this._lvl.Get(), KEYS.Get("pop_catapultupgraded" + this._lvl.Get() + "_streamtitle"), KEYS.Get("pop_catapultupgraded" + this._lvl.Get() + "_streambody"), "upgrade-catapult.png"]);
-                POPUPS.Next();
+                getGLOBAL().CallJS("sendFeed", ["upgrade-cat-" + this._lvl.Get(), getKEYS().Get("pop_catapultupgraded" + this._lvl.Get() + "_streamtitle"), getKEYS().Get("pop_catapultupgraded" + this._lvl.Get() + "_streambody"), "upgrade-catapult.png"]);
+                getPOPUPS().Next();
             };
             const mc: MovieClip = new (GLOBAL as any).popup_building();
-            (mc as any).tA.htmlText = "<b>" + KEYS.Get("pop_catapultupgraded_title") + "</b>";
-            (mc as any).tB.htmlText = KEYS.Get("pop_catapultupgraded_body", { v1: this._lvl.Get() });
+            (mc as any).tA.htmlText = "<b>" + getKEYS().Get("pop_catapultupgraded_title") + "</b>";
+            (mc as any).tB.htmlText = getKEYS().Get("pop_catapultupgraded_body", { v1: this._lvl.Get() });
             (mc as any).bPost.SetupKey("btn_brag");
             (mc as any).bPost.addEventListener(MouseEvent.CLICK, Brag);
             (mc as any).bPost.Highlight = true;
-            POPUPS.Push(mc, null, null, null, "build.v2.png");
-            GLOBAL._playerCatapultLevel.Set(this._lvl.Get());
+            getPOPUPS().Push(mc, null, null, null, "build.v2.png");
+            getGLOBAL()._playerCatapultLevel.Set(this._lvl.Get());
         }
     }
 
@@ -113,10 +116,10 @@ export class BUILDING51 extends BFOUNDATION {
         super.Setup(building);
         if (this._countdownBuild.Get() <= 0) {
             this.LoadEffects();
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-                GLOBAL._playerCatapultLevel.Set(this._lvl.Get());
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+                getGLOBAL()._playerCatapultLevel.Set(this._lvl.Get());
             }
-            GLOBAL._bCatapult = this;
+            getGLOBAL()._bCatapult = this;
         }
     }
 }

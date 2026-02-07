@@ -3,12 +3,15 @@ import BitmapData from 'openfl/display/BitmapData';
 import Event from 'openfl/events/Event';
 import MouseEvent from 'openfl/events/MouseEvent';
 import { ImageCache } from './com/monsters/display/ImageCache';
-import { CREATURELOCKER } from './CREATURELOCKER';
-import { CREATURES } from './CREATURES';
-import { KEYS } from './KEYS';
 import { MONSTERBAITER } from './MONSTERBAITER';
 import { MonsterBaiterItem_CLIP } from './MonsterBaiterItem_CLIP';
-import { SOUNDS } from './SOUNDS';
+
+// Lazy imports to break circular dependency chains
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+
 
 /**
  * MonsterBaiterItem - Individual monster item for monster baiter
@@ -30,12 +33,12 @@ export class MonsterBaiterItem extends MonsterBaiterItem_CLIP {
     }
 
     public Setup(param1: string): void {
-        this._configObj = CREATURELOCKER._creatures[param1];
+        this._configObj = getCREATURELOCKER()._creatures[param1];
         this._key = param1;
         ImageCache.GetImageWithCallBack("monsters/" + param1 + "-medium.jpg", this.IconLoaded.bind(this), true, 1, "", [this.mcIcon]);
         this.tInfo.text = "";
-        this.tName.htmlText = "<b>" + KEYS.Get(this._configObj.name) + "</b>";
-        this._cost = CREATURES.GetProperty(param1, "cStorage");
+        this.tName.htmlText = "<b>" + getKEYS().Get(this._configObj.name) + "</b>";
+        this._cost = getCREATURES().GetProperty(param1, "cStorage");
         this.decr_btn.addEventListener(MouseEvent.MOUSE_DOWN, this.decrDown.bind(this));
         this.addEventListener(Event.ADDED_TO_STAGE, this.onAdd.bind(this));
         this.incr_btn.addEventListener(MouseEvent.MOUSE_DOWN, this.incrDownB.bind(this));
@@ -63,7 +66,7 @@ export class MonsterBaiterItem extends MonsterBaiterItem_CLIP {
 
     public Update(): void {
         if (this._count > 0) {
-            this.tInfo.htmlText = KEYS.Get("bait_sending", {"v1": this._count});
+            this.tInfo.htmlText = getKEYS().Get("bait_sending", {"v1": this._count});
         } else {
             this.tInfo.htmlText = "";
         }
@@ -81,7 +84,7 @@ export class MonsterBaiterItem extends MonsterBaiterItem_CLIP {
         this.addEventListener(Event.ENTER_FRAME, this.moreTick.bind(this));
         this.addEventListener(MouseEvent.MOUSE_UP, this.Stop.bind(this));
         MONSTERBAITER._mc.Update();
-        SOUNDS.Play("click1");
+        getSOUNDS().Play("click1");
     }
 
     private incrDownB(param1: MouseEvent): void {
@@ -109,7 +112,7 @@ export class MonsterBaiterItem extends MonsterBaiterItem_CLIP {
             this.tick = 0;
             this.addEventListener(Event.ENTER_FRAME, this.lessTick.bind(this));
             this.addEventListener(MouseEvent.MOUSE_UP, this.Stop.bind(this));
-            SOUNDS.Play("click1");
+            getSOUNDS().Play("click1");
             MONSTERBAITER._mc.Update();
         }
     }

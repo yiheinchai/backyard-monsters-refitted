@@ -7,15 +7,18 @@ import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BFOUNDATION } from './BFOUNDATION';
 import { ACHIEVEMENTS } from './ACHIEVEMENTS';
-import { BASE } from './BASE';
-import { CREATURES } from './CREATURES';
-import { GIBLETS } from './GIBLETS';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { POPUPS } from './POPUPS';
-import { QUESTS } from './QUESTS';
-import { ResourcePackages } from './ResourcePackages';
-import { SOUNDS } from './SOUNDS';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getGIBLETS(): any { return require("./GIBLETS").GIBLETS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getQUESTS(): any { return require("./QUESTS").QUESTS; }
+function getResourcePackages(): any { return require("./ResourcePackages").ResourcePackages; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+
 
 /**
  * BUILDING9 - Monster Juicer
@@ -47,12 +50,12 @@ export class BUILDING9 extends BFOUNDATION {
     }
 
     public Prep(creatureId: string): void {
-        ++QUESTS._global.monstersblended;
-        QUESTS._global.monstersblendedgoo += Math.ceil(CREATURES.GetProperty(creatureId, "cResource") * 0.7);
-        ACHIEVEMENTS.Check("monstersblended", QUESTS._global.monstersblended);
-        QUESTS.Check();
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-            BASE.Save();
+        ++getQUESTS()._global.monstersblended;
+        getQUESTS()._global.monstersblendedgoo += Math.ceil(getCREATURES().GetProperty(creatureId, "cResource") * 0.7);
+        ACHIEVEMENTS.Check("monstersblended", getQUESTS()._global.monstersblended);
+        getQUESTS().Check();
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+            getBASE().Save();
         }
     }
 
@@ -66,9 +69,9 @@ export class BUILDING9 extends BFOUNDATION {
             conversionRate = 1;
         }
         this._guardian = 0;
-        BASE.Fund(4, Math.ceil(CREATURES.GetProperty(creatureId, "cResource") * conversionRate * multiplier), false, null, creatureId.substr(0, 1) === "I" && !BASE.isInfernoMainYardOrOutpost);
+        getBASE().Fund(4, Math.ceil(getCREATURES().GetProperty(creatureId, "cResource") * conversionRate * multiplier), false, null, creatureId.substr(0, 1) === "I" && !getBASE().isInfernoMainYardOrOutpost);
         this._lastType = isInfernoCreature ? 8 : 4;
-        ResourcePackages.Create(this._lastType, this, Math.ceil(CREATURES.GetProperty(creatureId, "cResource") * conversionRate));
+        getResourcePackages().Create(this._lastType, this, Math.ceil(getCREATURES().GetProperty(creatureId, "cResource") * conversionRate));
     }
 
     public BlendGuardian(amount: number): void {
@@ -78,15 +81,15 @@ export class BUILDING9 extends BFOUNDATION {
 
     public override TickFast(event: Event | null = null): void {
         super.TickFast(event);
-        if (this._animLoaded && !GLOBAL._catchup && (this._blend > 0 || this._animTick > 2) && this._frameNumber % 2 === 0) {
+        if (this._animLoaded && !getGLOBAL()._catchup && (this._blend > 0 || this._animTick > 2) && this._frameNumber % 2 === 0) {
             this.AnimFrame();
             if (this._animTick === 1) {
-                SOUNDS.Play("juice");
+                getSOUNDS().Play("juice");
             }
             if (this._animTick === 15) {
                 this._blend = 0;
                 if (!this._guardian) {
-                    ResourcePackages.Create(this._lastType, this, 1);
+                    getResourcePackages().Create(this._lastType, this, 1);
                 }
             }
             if (this._animTick === 52) {
@@ -112,9 +115,9 @@ export class BUILDING9 extends BFOUNDATION {
         }
         if (this._animTick === 15) {
             if (this._guardian === 0) {
-                GIBLETS.Create(this._spoutPoint.add(new Point(this._mc!.x, this._mc!.y)), 0.8, 100, blendAmount, this._spoutHeight);
+                getGIBLETS().Create(this._spoutPoint.add(new Point(this._mc!.x, this._mc!.y)), 0.8, 100, blendAmount, this._spoutHeight);
             } else {
-                GIBLETS.Create(this._spoutPoint.add(new Point(this._mc!.x, this._mc!.y)), 2, 1000, blendAmount, this._spoutHeight);
+                getGIBLETS().Create(this._spoutPoint.add(new Point(this._mc!.x, this._mc!.y)), 2, 1000, blendAmount, this._spoutHeight);
             }
         }
     }
@@ -122,15 +125,15 @@ export class BUILDING9 extends BFOUNDATION {
     public override Description(): void {
         super.Description();
         if (this._lvl.Get() === 1 && this._upgradeCosts !== "") {
-            this._upgradeDescription = KEYS.Get("building_juicer_conversion", { v1: 60, v2: 80 });
+            this._upgradeDescription = getKEYS().Get("building_juicer_conversion", { v1: 60, v2: 80 });
         } else if (this._lvl.Get() === 2 && this._upgradeCosts !== "") {
-            this._upgradeDescription = KEYS.Get("building_juicer_conversion", { v1: 80, v2: 100 });
+            this._upgradeDescription = getKEYS().Get("building_juicer_conversion", { v1: 80, v2: 100 });
         }
     }
 
     public override Constructed(): void {
         super.Constructed();
-        GLOBAL._bJuicer = this;
+        getGLOBAL()._bJuicer = this;
     }
 
     public override Upgraded(): void {
@@ -138,20 +141,20 @@ export class BUILDING9 extends BFOUNDATION {
     }
 
     public override RecycleC(): void {
-        GLOBAL._bJuicer = null;
+        getGLOBAL()._bJuicer = null;
         super.RecycleC();
     }
 
     public override Setup(building: any): void {
         super.Setup(building);
         if (this._countdownBuild.Get() === 0) {
-            GLOBAL._bJuicer = this;
+            getGLOBAL()._bJuicer = this;
         }
         if (building.tjc) {
-            QUESTS._global.monstersblended = building.tjc;
+            getQUESTS()._global.monstersblended = building.tjc;
         }
         if (building.tjg) {
-            QUESTS._global.monstersblendedgoo = building.tjg;
+            getQUESTS()._global.monstersblendedgoo = building.tjg;
         }
         this._animRandomStart = false;
         this._animTick = 2;

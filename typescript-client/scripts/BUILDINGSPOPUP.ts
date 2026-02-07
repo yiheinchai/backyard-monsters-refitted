@@ -1,21 +1,24 @@
 import MovieClip from 'openfl/display/MovieClip';
 import MouseEvent from 'openfl/events/MouseEvent';
-import { InventoryManager } from './com/monsters/inventory/InventoryManager';
-import { InstanceManager } from './com/monsters/managers/InstanceManager';
-import { BASE } from './BASE';
-import { BFOUNDATION } from './BFOUNDATION';
 import { BUILDINGBUTTON } from './BUILDINGBUTTON';
 import { BUILDINGBUTTONSOON } from './BUILDINGBUTTONSOON';
 import { BUILDINGOPTIONSPOPUP } from './BUILDINGOPTIONSPOPUP';
-import { BUILDINGS } from './BUILDINGS';
 import { BUILDINGSPOPUP_CLIP } from './BUILDINGSPOPUP_CLIP';
 import { Button } from './Button';
 import { Button_CLIP } from './Button_CLIP';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
 import { POPUPSETTINGS } from './POPUPSETTINGS';
-import { SOUNDS } from './SOUNDS';
-import { TUTORIAL } from './TUTORIAL';
+
+// Lazy imports to break circular dependency chains
+function getInventoryManager(): any { return require("./com/monsters/inventory/InventoryManager").InventoryManager; }
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBUILDINGS(): any { return require("./BUILDINGS").BUILDINGS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+
 
 /**
  * BUILDINGSPOPUP - Buildings popup for selecting and placing buildings
@@ -35,7 +38,7 @@ export class BUILDINGSPOPUP extends BUILDINGSPOPUP_CLIP {
         this._thumbnailsMC = null;
         this._buildingInfoMC = null;
         this._pageCount = 0;
-        this.mcNew.visible = GLOBAL._newThings;
+        this.mcNew.visible = getGLOBAL()._newThings;
         this.b1.SetupKey("btn_resources");
         this.b2.SetupKey("btn_buildings");
         this.b3.SetupKey("btn_defensive");
@@ -49,16 +52,16 @@ export class BUILDINGSPOPUP extends BUILDINGSPOPUP_CLIP {
         this.bNext.addEventListener(MouseEvent.CLICK, this.Next.bind(this));
         this.bNext.buttonMode = true;
         
-        if (!GLOBAL.townHall) {
+        if (!getGLOBAL().townHall) {
             this.SwitchB(2, 1, 0);
         } else {
-            this.SwitchB(BUILDINGS._menuA, BUILDINGS._menuB, BUILDINGS._page);
+            this.SwitchB(getBUILDINGS()._menuA, getBUILDINGS()._menuB, getBUILDINGS()._page);
         }
         
-        if (BASE.isMainYard) {
-            if (!GLOBAL._flags.radio) {
-                GLOBAL._buildingProps[112].block = true;
-                GLOBAL._buildingProps[11].order = 2;
+        if (getBASE().isMainYard) {
+            if (!getGLOBAL()._flags.radio) {
+                getGLOBAL()._buildingProps[112].block = true;
+                getGLOBAL()._buildingProps[11].order = 2;
             }
         }
     }
@@ -70,7 +73,7 @@ export class BUILDINGSPOPUP extends BUILDINGSPOPUP_CLIP {
         const p: number = param3;
         return function(param1: MouseEvent): void {
             if ((param1.target as any).Enabled) {
-                SOUNDS.Play("click1");
+                getSOUNDS().Play("click1");
                 self.SwitchB(a, b, p);
             }
         };
@@ -105,9 +108,9 @@ export class BUILDINGSPOPUP extends BUILDINGSPOPUP_CLIP {
         let _loc10_: any = null;
         let _loc11_: BUILDINGBUTTON | null = null;
         
-        BUILDINGS._menuA = param1;
-        BUILDINGS._menuB = param2;
-        BUILDINGS._page = param3;
+        getBUILDINGS()._menuA = param1;
+        getBUILDINGS()._menuB = param2;
+        getBUILDINGS()._page = param3;
         
         let _loc4_: number = 1;
         while (_loc4_ < 5) {
@@ -117,7 +120,7 @@ export class BUILDINGSPOPUP extends BUILDINGSPOPUP_CLIP {
         (this as any)["b" + param1].Highlight = true;
         
         if (param1 == 4) {
-            this.SubMenu([KEYS.Get("btn_evil"), KEYS.Get("btn_plants"), KEYS.Get("btn_good"), KEYS.Get("btn_flags"), KEYS.Get("btn_premium")]);
+            this.SubMenu([getKEYS().Get("btn_evil"), getKEYS().Get("btn_plants"), getKEYS().Get("btn_good"), getKEYS().Get("btn_flags"), getKEYS().Get("btn_premium")]);
         } else {
             this.SubMenu([]);
         }
@@ -129,8 +132,8 @@ export class BUILDINGSPOPUP extends BUILDINGSPOPUP_CLIP {
         this._thumbnailsMC.x = 60;
         this._thumbnailsMC.y = 115 + 25;
         
-        const _loc7_: any[] = GLOBAL._buildingProps.concat();
-        if (TUTORIAL.hasFinished) {
+        const _loc7_: any[] = getGLOBAL()._buildingProps.concat();
+        if (getTUTORIAL().hasFinished) {
             this.SortBuildings(_loc7_);
         } else {
             _loc7_.sort((a: any, b: any) => a.order - b.order);
@@ -140,13 +143,13 @@ export class BUILDINGSPOPUP extends BUILDINGSPOPUP_CLIP {
         while (param2 < _loc7_.length) {
             _loc10_ = _loc7_[param2];
             
-            if (BASE.isInfernoMainYardOrOutpost && Number(_loc10_.id) == 135) {
+            if (getBASE().isInfernoMainYardOrOutpost && Number(_loc10_.id) == 135) {
                 param2++;
                 continue;
             }
             
-            if (Number(_loc10_.group) == param1 && (_loc10_.subgroup == null || Number(_loc10_.subgroup) == BUILDINGS._menuB) && (!_loc10_.block || InventoryManager.buildingStorageCount(Number(_loc10_.id)))) {
-                if (_loc8_ >= 10 * BUILDINGS._page && _loc8_ < 10 + 10 * BUILDINGS._page) {
+            if (Number(_loc10_.group) == param1 && (_loc10_.subgroup == null || Number(_loc10_.subgroup) == getBUILDINGS()._menuB) && (!_loc10_.block || getInventoryManager().buildingStorageCount(Number(_loc10_.id)))) {
+                if (_loc8_ >= 10 * getBUILDINGS()._page && _loc8_ < 10 + 10 * getBUILDINGS()._page) {
                     _loc11_ = this._thumbnailsMC.addChild(new BUILDINGBUTTON()) as BUILDINGBUTTON;
                     _loc11_.x = _loc5_ * 130;
                     _loc11_.y = _loc6_ * 170;
@@ -166,18 +169,18 @@ export class BUILDINGSPOPUP extends BUILDINGSPOPUP_CLIP {
         }
         
         const _loc9_: BUILDINGBUTTONSOON = new BUILDINGBUTTONSOON();
-        _loc9_.t.htmlText = KEYS.Get("building_coming_soon");
+        _loc9_.t.htmlText = getKEYS().Get("building_coming_soon");
         if (_loc8_ == 0) {
             this._thumbnailsMC.addChild(_loc9_);
         }
         
         this._pageCount = Math.ceil(_loc8_ / 10);
-        if (BUILDINGS._page > 0) {
+        if (getBUILDINGS()._page > 0) {
             this.bPrevious.Trigger(true);
         } else {
             this.bPrevious.Trigger(false);
         }
-        if (BUILDINGS._page < this._pageCount - 1 && TUTORIAL._stage >= 200) {
+        if (getBUILDINGS()._page < this._pageCount - 1 && getTUTORIAL()._stage >= 200) {
             this.bNext.Trigger(true);
         } else {
             this.bNext.Trigger(false);
@@ -195,15 +198,15 @@ export class BUILDINGSPOPUP extends BUILDINGSPOPUP_CLIP {
         let _loc11_: number = 0;
         let _loc12_: string = "";
         
-        const _loc2_: BFOUNDATION[] = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const _loc2_: BFOUNDATION[] = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         let _loc4_: number = 0;
         
         while (_loc4_ < param1.length) {
             _loc5_ = param1[_loc4_];
-            if (_loc5_.group == BUILDINGS._menuA && (_loc5_.subgroup == null || _loc5_.subgroup == BUILDINGS._menuB) && (!_loc5_.block || InventoryManager.buildingStorageCount(_loc5_.id))) {
-                _loc3_ = GLOBAL._buildingProps[_loc5_.id - 1];
+            if (_loc5_.group == getBUILDINGS()._menuA && (_loc5_.subgroup == null || _loc5_.subgroup == getBUILDINGS()._menuB) && (!_loc5_.block || getInventoryManager().buildingStorageCount(_loc5_.id))) {
+                _loc3_ = getGLOBAL()._buildingProps[_loc5_.id - 1];
                 if (_loc3_.type != "decoration") {
-                    _loc6_ = GLOBAL.GetBuildingTownHallLevel(_loc3_);
+                    _loc6_ = getGLOBAL().GetBuildingTownHallLevel(_loc3_);
                     _loc7_ = _loc6_ < _loc3_.quantity.length ? Number(_loc3_.quantity[_loc6_]) : Number(_loc3_.quantity[_loc3_.quantity.length - 1]);
                     _loc8_ = 0;
                     _loc3_.buildStatus = 1;
@@ -222,7 +225,7 @@ export class BUILDINGSPOPUP extends BUILDINGSPOPUP_CLIP {
                                 _loc11_ = Math.min(_loc11_, Number(_loc12_));
                             }
                         }
-                        if (_loc11_ != Number.MAX_VALUE && _loc3_.upgradeImgData[_loc11_].silhouette_img && !BASE.HasRequirements(_loc3_.costs[0]) && !_loc3_.rewarded) {
+                        if (_loc11_ != Number.MAX_VALUE && _loc3_.upgradeImgData[_loc11_].silhouette_img && !getBASE().HasRequirements(_loc3_.costs[0]) && !_loc3_.rewarded) {
                             _loc3_.buildStatus = 2;
                         }
                     } else if (_loc8_ >= _loc7_) {
@@ -257,8 +260,8 @@ export class BUILDINGSPOPUP extends BUILDINGSPOPUP_CLIP {
             _loc4_.width = 105;
             _loc4_.Setup(param1[_loc3_]);
             _loc2_.push(_loc4_);
-            _loc4_.addEventListener(MouseEvent.CLICK, this.Switch(BUILDINGS._menuA, _loc3_, 0));
-            if (_loc3_ == BUILDINGS._menuB) {
+            _loc4_.addEventListener(MouseEvent.CLICK, this.Switch(getBUILDINGS()._menuA, _loc3_, 0));
+            if (_loc3_ == getBUILDINGS()._menuB) {
                 _loc4_.Highlight = true;
             }
             _loc3_++;
@@ -268,42 +271,42 @@ export class BUILDINGSPOPUP extends BUILDINGSPOPUP_CLIP {
     }
 
     public ShowInfo(param1: number): void {
-        BUILDINGS._buildingID = param1;
+        getBUILDINGS()._buildingID = param1;
         if (this._buildingInfoMC) {
             this._buildingInfoMC.parent.removeChild(this._buildingInfoMC);
         }
-        GLOBAL.BlockerAdd();
-        this._buildingInfoMC = GLOBAL._layerWindows.addChild(new BUILDINGOPTIONSPOPUP("build", param1)) as BUILDINGOPTIONSPOPUP;
-        this._buildingInfoMC.x = GLOBAL._SCREENCENTER.x;
-        this._buildingInfoMC.y = GLOBAL._SCREENCENTER.y;
+        getGLOBAL().BlockerAdd();
+        this._buildingInfoMC = getGLOBAL()._layerWindows.addChild(new BUILDINGOPTIONSPOPUP("build", param1)) as BUILDINGOPTIONSPOPUP;
+        this._buildingInfoMC.x = getGLOBAL()._SCREENCENTER.x;
+        this._buildingInfoMC.y = getGLOBAL()._SCREENCENTER.y;
     }
 
     public HideInfo(): void {
         if (this._buildingInfoMC) {
-            GLOBAL.BlockerRemove();
-            SOUNDS.Play("close");
+            getGLOBAL().BlockerRemove();
+            getSOUNDS().Play("close");
             this._buildingInfoMC.parent.removeChild(this._buildingInfoMC);
             this._buildingInfoMC = null;
         }
     }
 
     public Hide(param1: MouseEvent | null = null): void {
-        BUILDINGS.Hide();
+        getBUILDINGS().Hide();
     }
 
     public Previous(param1: MouseEvent | null = null): void {
-        if (BUILDINGS._page > 0) {
-            --BUILDINGS._page;
-            this.SwitchB(BUILDINGS._menuA, BUILDINGS._menuB, BUILDINGS._page);
-            SOUNDS.Play("click1");
+        if (getBUILDINGS()._page > 0) {
+            --getBUILDINGS()._page;
+            this.SwitchB(getBUILDINGS()._menuA, getBUILDINGS()._menuB, getBUILDINGS()._page);
+            getSOUNDS().Play("click1");
         }
     }
 
     public Next(param1: MouseEvent | null = null): void {
-        if (BUILDINGS._page < this._pageCount - 1) {
-            ++BUILDINGS._page;
-            this.SwitchB(BUILDINGS._menuA, BUILDINGS._menuB, BUILDINGS._page);
-            SOUNDS.Play("click1");
+        if (getBUILDINGS()._page < this._pageCount - 1) {
+            ++getBUILDINGS()._page;
+            this.SwitchB(getBUILDINGS()._menuA, getBUILDINGS()._menuB, getBUILDINGS()._page);
+            getSOUNDS().Play("click1");
         }
     }
 

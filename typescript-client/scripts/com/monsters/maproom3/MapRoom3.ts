@@ -16,9 +16,12 @@ import { MapRoom3WindowHUD } from "./MapRoom3WindowHUD";
 import { IMapRoom } from "../maproom_manager/IMapRoom";
 import { IMapRoomCell } from "../maproom_manager/IMapRoomCell";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { UI2 } from "../../../UI2";
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getUI2(): any { return require("../../../UI2").UI2; }
+
+
 
 /**
  * MapRoom3 - world map implementation (version 3).
@@ -109,24 +112,24 @@ export class MapRoom3 implements IMapRoom {
     }
 
     public ShowDelayed(scrollToHome: boolean = false): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-            GLOBAL.m_mapRoomFunctional = true;
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+            getGLOBAL().m_mapRoomFunctional = true;
         }
         if (this.m_Open === true) {
             return;
         }
         this.m_Open = true;
-        BASE.Cleanup();
+        getBASE().Cleanup();
         this.m_MapRoom3Data!.ParseInitialCellData();
         BookmarksManager.instance.Setup(this.m_CurrentBookmarkData, this.m_MapRoom3Data!);
         this.m_MapRoom3Data!.LoadBookmarkedCells(BookmarksManager.instance.GetBookmarksOfType(BookmarksManager.TYPE_CUSTOM));
         MapRoom3.m_MapRoom3Window = new MapRoom3Window(this.m_MapRoom3Data!);
         MapRoom3.m_MapRoom3WindowHUD = new MapRoom3WindowHUD();
-        GLOBAL._layerUI.addChild(MapRoom3.m_MapRoom3Window);
-        GLOBAL._layerUI.addChild(MapRoom3.m_MapRoom3WindowHUD);
-        UI2.SetupHUD();
-        if (GLOBAL._currentCell === null) {
-            GLOBAL._currentCell = this.m_MapRoom3Data!.homeCell;
+        getGLOBAL()._layerUI.addChild(MapRoom3.m_MapRoom3Window);
+        getGLOBAL()._layerUI.addChild(MapRoom3.m_MapRoom3WindowHUD);
+        getUI2().SetupHUD();
+        if (getGLOBAL()._currentCell === null) {
+            getGLOBAL()._currentCell = this.m_MapRoom3Data!.homeCell;
         }
         if (this.m_LastCenterPoint === null) {
             this.m_LastCenterPoint = new Point(this.m_MapRoom3Data!.homeCell.cellX, this.m_MapRoom3Data!.homeCell.cellY);

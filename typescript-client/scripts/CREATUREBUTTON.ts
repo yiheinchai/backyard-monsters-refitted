@@ -4,13 +4,16 @@ import DisplayObjectContainer from 'openfl/display/DisplayObjectContainer';
 import Event from 'openfl/events/Event';
 import MouseEvent from 'openfl/events/MouseEvent';
 import { ImageCache } from './com/monsters/display/ImageCache';
-import { ATTACK } from './ATTACK';
 import { bubblepopup3 } from './bubblepopup3';
 import { CREATUREBUTTON_CLIP } from './CREATUREBUTTON_CLIP';
-import { CREATURELOCKER } from './CREATURELOCKER';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { UI2 } from './UI2';
+
+// Lazy imports to break circular dependency chains
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getUI2(): any { return require("./UI2").UI2; }
+
 
 /**
  * CREATUREBUTTON - Creature button for attack mode
@@ -26,20 +29,20 @@ export class CREATUREBUTTON extends CREATUREBUTTON_CLIP {
     constructor(param1: string, param2: number, param3: DisplayObjectContainer) {
         super();
         this._creatureID = param1;
-        this._creatureData = CREATURELOCKER._creatures[this._creatureID];
+        this._creatureData = getCREATURELOCKER()._creatures[this._creatureID];
         ImageCache.GetImageWithCallBack("monsters/" + this._creatureID + "-small.png", this.IconLoaded.bind(this), true, 1);
         
-        let _loc4_: string = KEYS.Get(CREATURELOCKER._creatures[this._creatureID].name);
+        let _loc4_: string = getKEYS().Get(getCREATURELOCKER()._creatures[this._creatureID].name);
         const _loc5_: number = Math.max(0.8, Math.min(1, 1 / (_loc4_.length / 10))) * 12;
         
-        if (Boolean(GLOBAL.attackingPlayer.m_upgrades[param1]) && Boolean(GLOBAL.attackingPlayer.m_upgrades[param1].level)) {
-            this.txtName.htmlText = "<b><font size=\"" + _loc5_ + "\">" + _loc4_ + " Level " + GLOBAL.attackingPlayer.m_upgrades[param1].level + "</font></b>";
+        if (Boolean(getGLOBAL().attackingPlayer.m_upgrades[param1]) && Boolean(getGLOBAL().attackingPlayer.m_upgrades[param1].level)) {
+            this.txtName.htmlText = "<b><font size=\"" + _loc5_ + "\">" + _loc4_ + " Level " + getGLOBAL().attackingPlayer.m_upgrades[param1].level + "</font></b>";
         } else {
             this.txtName.htmlText = "<b><font size=\"" + _loc5_ + "\">" + _loc4_ + " Level 1</font></b>";
         }
         
         this._description = new bubblepopup3();
-        this._description.Setup(190, 26, KEYS.Get(CREATURELOCKER._creatures[this._creatureID].description), 5);
+        this._description.Setup(190, 26, getKEYS().Get(getCREATURELOCKER()._creatures[this._creatureID].description), 5);
         param3.addChild(this._description);
         this._description.visible = false;
         this.m_index = param2;
@@ -47,7 +50,7 @@ export class CREATUREBUTTON extends CREATUREBUTTON_CLIP {
         this.addEventListener(MouseEvent.ROLL_OVER, this.Over.bind(this));
         this.addEventListener(MouseEvent.ROLL_OUT, this.Out.bind(this));
         
-        if (!GLOBAL.isInAttackMode) {
+        if (!getGLOBAL().isInAttackMode) {
             this.bMore.visible = false;
             this.bMore.Enabled = false;
             this.bLess.visible = false;
@@ -74,10 +77,10 @@ export class CREATUREBUTTON extends CREATUREBUTTON_CLIP {
     }
 
     public Update(): void {
-        let _loc1_: number = Number(ATTACK._curCreaturesAvailable[this._creatureID]);
+        let _loc1_: number = Number(getATTACK()._curCreaturesAvailable[this._creatureID]);
         let _loc2_: string = "<b>";
-        if (ATTACK._flingerBucket[this._creatureID]) {
-            _loc2_ = "<font color=\"#FF0000\">" + ATTACK._flingerBucket[this._creatureID].Get() + "</font> / ";
+        if (getATTACK()._flingerBucket[this._creatureID]) {
+            _loc2_ = "<font color=\"#FF0000\">" + getATTACK()._flingerBucket[this._creatureID].Get() + "</font> / ";
         }
         _loc2_ += _loc1_ + "</b>";
         this.txtNumber.htmlText = _loc2_;
@@ -110,7 +113,7 @@ export class CREATUREBUTTON extends CREATUREBUTTON_CLIP {
     }
 
     public More(param1: MouseEvent): void {
-        UI2._top.BombDeselect();
+        getUI2()._top.BombDeselect();
         this.MoreTickB();
         this._tick = 0;
         this.addEventListener(Event.ENTER_FRAME, this.MoreTick.bind(this));
@@ -125,13 +128,13 @@ export class CREATUREBUTTON extends CREATUREBUTTON_CLIP {
     }
 
     public MoreTickB(): void {
-        ATTACK.BucketAdd(this._creatureID);
+        getATTACK().BucketAdd(this._creatureID);
         this.Update();
-        ATTACK.BucketUpdate();
+        getATTACK().BucketUpdate();
     }
 
     public Less(param1: MouseEvent): void {
-        UI2._top.BombDeselect();
+        getUI2()._top.BombDeselect();
         this.LessTickB();
         this._tick = 0;
         this.addEventListener(Event.ENTER_FRAME, this.LessTick.bind(this));
@@ -146,9 +149,9 @@ export class CREATUREBUTTON extends CREATUREBUTTON_CLIP {
     }
 
     public LessTickB(): void {
-        ATTACK.BucketRemove(this._creatureID);
+        getATTACK().BucketRemove(this._creatureID);
         this.Update();
-        ATTACK.BucketUpdate();
+        getATTACK().BucketUpdate();
     }
 
     public MoreMovedOut(): void {

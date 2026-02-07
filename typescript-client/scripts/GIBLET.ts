@@ -1,9 +1,12 @@
 import MovieClip from 'openfl/display/MovieClip';
 import Point from 'openfl/geom/Point';
-import { GIBLETS } from './GIBLETS';
-import { SOUNDS } from './SOUNDS';
 import { TweenLite, Sine } from './gs/TweenLite';
 import { GIBLET_CLIP } from './GIBLET_CLIP';
+
+// Lazy imports to break circular dependency chains
+function getGIBLETS(): any { return require("./GIBLETS").GIBLETS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+
 
 /**
  * GIBLET - Individual Giblet Particle
@@ -61,8 +64,8 @@ export class GIBLET extends GIBLET_CLIP {
 
     private Arrived(): void {
         if (!this._cleared) {
-            SOUNDS.Play("splat5");
-            GIBLETS.Remove(this._id);
+            getSOUNDS().Play("splat5");
+            getGIBLETS().Remove(this._id);
         }
     }
 

@@ -1,11 +1,14 @@
 import Point from "openfl/geom/Point";
 
-import { MonsterBase } from "../MonsterBase";
 import { AOEDamageOnAttack } from "../components/abilities/AOEDamageOnAttack";
-import { Targeting } from "../../../../Targeting";
 import { CreepBase } from "./CreepBase";
 
-import { BFOUNDATION } from "../../../../BFOUNDATION";
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../MonsterBase").MonsterBase; }
+function getTargeting(): any { return require("../../../../Targeting").Targeting; }
+function getBFOUNDATION(): any { return require("../../../../BFOUNDATION").BFOUNDATION; }
+
+
 
 /**
  * Fink - creep with AOE damage on attack ability when powered up.
@@ -28,8 +31,8 @@ export class Fink extends CreepBase {
         super(creatureID, behaviour, spawnPoint, rotation, level, health, center, friendly, house, damageMult, goEasy, monster);
         
         if (this.poweredUp()) {
-            let flags = Targeting.k_TARGETS_BUILDINGS | Targeting.k_TARGETS_GROUND;
-            flags |= friendly ? Targeting.k_TARGETS_ATTACKERS : Targeting.k_TARGETS_DEFENDERS;
+            let flags = getTargeting().k_TARGETS_BUILDINGS | getTargeting().k_TARGETS_GROUND;
+            flags |= friendly ? getTargeting().k_TARGETS_ATTACKERS : getTargeting().k_TARGETS_DEFENDERS;
             this.addComponent(new AOEDamageOnAttack(60, flags, this.powerUpLevel(), 60, false));
         }
     }

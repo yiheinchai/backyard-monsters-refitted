@@ -1,7 +1,6 @@
 import MovieClip from 'openfl/display/MovieClip';
 import MouseEvent from 'openfl/events/MouseEvent';
 import { CreepTypeManager } from './com/monsters/creep_types/CreepTypeManager';
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
 import { Bandito } from './com/monsters/monsters/creeps/Bandito';
 import { Bolt } from './com/monsters/monsters/creeps/Bolt';
 import { Brain } from './com/monsters/monsters/creeps/Brain';
@@ -23,20 +22,24 @@ import { Spurtz } from './com/monsters/monsters/creeps/inferno/Spurtz';
 import { RebalancedCreatures } from './com/monsters/monsters/creeps/rebalance/RebalancedCreatures';
 import { SubscriptionHandler } from './com/monsters/subscriptions/SubscriptionHandler';
 import { CREATURELOCKERPOPUP } from './CREATURELOCKERPOPUP';
-import { GLOBAL } from './GLOBAL';
-import { BASE } from './BASE';
-import { KEYS } from './KEYS';
 import { ACHIEVEMENTS } from './ACHIEVEMENTS';
-import { QUESTS } from './QUESTS';
-import { SOUNDS } from './SOUNDS';
-import { STORE } from './STORE';
-import { POPUPS } from './POPUPS';
-import { LOGGER } from './LOGGER';
 import { HATCHERYCC } from './HATCHERYCC';
 import { MAPROOM_DESCENT } from './MAPROOM_DESCENT';
 import { popup_monster } from './popup_monster';
 import { md5 } from './md5';
 import { JSON } from './JSON';
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getQUESTS(): any { return require("./QUESTS").QUESTS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+
 
 export class CREATURELOCKER {
     public static readonly k_USE_REBALANCED_MONSTERS: boolean = false;
@@ -57,7 +60,7 @@ export class CREATURELOCKER {
     }
 
     public static getFirstCreatureID(): string {
-        return BASE.isInfernoMainYardOrOutpost ? "IC1" : "C1";
+        return getBASE().isInfernoMainYardOrOutpost ? "IC1" : "C1";
     }
 
     public static Data(param1: any): void {
@@ -68,8 +71,8 @@ export class CREATURELOCKER {
             CREATURELOCKER._lockerData.C12 = CREATURELOCKER._lockerData.C100;
             delete CREATURELOCKER._lockerData.C100;
         }
-        if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
-            if (BASE.isInfernoMainYardOrOutpost) {
+        if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD) {
+            if (getBASE().isInfernoMainYardOrOutpost) {
                 for (_loc2_ = 2; _loc2_ <= CREATURELOCKER.NUM_ICREEP_TYPE; _loc2_++) {
                     if (CREATURELOCKER._lockerData["IC" + _loc2_] && CREATURELOCKER._lockerData["IC" + _loc2_].t == 2) {
                         ACHIEVEMENTS.Check("unlock_monster", 1);
@@ -361,7 +364,7 @@ export class CREATURELOCKER {
     private static modifyCreepData(): void {
         let _loc1_: number = 0;
         let _loc2_: string = null;
-        if (MapRoomManager.instance.isInMapRoom3) {
+        if (getMapRoomManager().instance.isInMapRoom3) {
             for (_loc2_ in CREATURELOCKER._mainCreatures) {
                 _loc1_ = CREATURELOCKER._mainCreatures[_loc2_].props.cResource.length;
                 for (let i = 0; i < _loc1_; i++) {
@@ -380,24 +383,24 @@ export class CREATURELOCKER {
         for (const i in CREATURELOCKER._lockerData) {
             if (CREATURELOCKER._lockerData[i].t == 1) {
                 const isInfernoType = i.substring(0, 2) == "IC";
-                if ((BASE.isInfernoMainYardOrOutpost && isInfernoType) || (!BASE.isInfernoMainYardOrOutpost && !isInfernoType)) {
+                if ((getBASE().isInfernoMainYardOrOutpost && isInfernoType) || (!getBASE().isInfernoMainYardOrOutpost && !isInfernoType)) {
                     CREATURELOCKER._unlocking = i;
                     break;
                 }
             }
         }
         if (CREATURELOCKER._unlocking != null) {
-            if (GLOBAL._lockerOverdrive > 0) {
+            if (getGLOBAL()._lockerOverdrive > 0) {
                 CREATURELOCKER._lockerData[CREATURELOCKER._unlocking].e -= 4;
             }
-            if (CREATURELOCKER._lockerData[CREATURELOCKER._unlocking].e - GLOBAL.Timestamp() <= 0) {
+            if (CREATURELOCKER._lockerData[CREATURELOCKER._unlocking].e - getGLOBAL().Timestamp() <= 0) {
                 CREATURELOCKER._lockerData[CREATURELOCKER._unlocking].t = 2;
-                GLOBAL.player.m_upgrades[CREATURELOCKER._unlocking] = { "level": 1 };
+                getGLOBAL().player.m_upgrades[CREATURELOCKER._unlocking] = { "level": 1 };
                 ACHIEVEMENTS.Check("unlock_monster", 1);
                 delete CREATURELOCKER._lockerData[CREATURELOCKER._unlocking].s;
                 delete CREATURELOCKER._lockerData[CREATURELOCKER._unlocking].e;
                 CREATURELOCKER._unlocking = null;
-                QUESTS.Check();
+                getQUESTS().Check();
             }
         }
         if (CREATURELOCKER._mc) {
@@ -409,19 +412,19 @@ export class CREATURELOCKER {
         const creatureID = param1;
         if (CREATURELOCKER._lockerData[creatureID]) return false;
         if (CREATURELOCKER._unlocking != null) {
-            GLOBAL.Message(KEYS.Get("mon_alreadyunlocking"), KEYS.Get("btn_speedup"), STORE.ShowB, [3, 0, ["SP1", "SP2", "SP3", "SP4"]]);
+            getGLOBAL().Message(getKEYS().Get("mon_alreadyunlocking"), getKEYS().Get("btn_speedup"), getSTORE().ShowB, [3, 0, ["SP1", "SP2", "SP3", "SP4"]]);
             return false;
         }
         const creature = CREATURELOCKER._creatures[creatureID];
-        if (GLOBAL._bLocker._lvl.Get() < creature.level) {
-            GLOBAL.Message(KEYS.Get("mon_upgradelocker", { "v1": KEYS.Get(GLOBAL._bLocker._buildingProps.name), "v2": creature.level }));
+        if (getGLOBAL()._bLocker._lvl.Get() < creature.level) {
+            getGLOBAL().Message(getKEYS().Get("mon_upgradelocker", { "v1": getKEYS().Get(getGLOBAL()._bLocker._buildingProps.name), "v2": creature.level }));
             return false;
         }
-        if (BASE.Charge(3, creature.resource)) {
-            CREATURELOCKER._lockerData[creatureID] = { "t": 1, "s": GLOBAL.Timestamp(), "e": GLOBAL.Timestamp() + creature.time };
+        if (getBASE().Charge(3, creature.resource)) {
+            CREATURELOCKER._lockerData[creatureID] = { "t": 1, "s": getGLOBAL().Timestamp(), "e": getGLOBAL().Timestamp() + creature.time };
             CREATURELOCKER._unlocking = creatureID;
-            BASE.Save();
-            LOGGER.Stat([9, Number(creatureID.substr(1))]);
+            getBASE().Save();
+            getLOGGER().Stat([9, Number(creatureID.substr(1))]);
             return true;
         }
         return false;
@@ -430,34 +433,34 @@ export class CREATURELOCKER {
     public static Cancel(): void {
         if (CREATURELOCKER._unlocking) {
             delete CREATURELOCKER._lockerData[CREATURELOCKER._unlocking];
-            BASE.Fund(3, CREATURELOCKER._creatures[CREATURELOCKER._unlocking].resource);
+            getBASE().Fund(3, CREATURELOCKER._creatures[CREATURELOCKER._unlocking].resource);
             CREATURELOCKER._unlocking = null;
         }
         CREATURELOCKER.Update();
-        BASE.Save();
+        getBASE().Save();
     }
 
     public static Show(): void {
-        if (GLOBAL._bLocker && GLOBAL._bLocker._lvl.Get() >= 1) {
+        if (getGLOBAL()._bLocker && getGLOBAL()._bLocker._lvl.Get() >= 1) {
             if (!CREATURELOCKER._open) {
                 CREATURELOCKER._open = true;
-                GLOBAL.BlockerAdd();
-                CREATURELOCKER._mc = GLOBAL._layerWindows.addChild(new CREATURELOCKERPOPUP()) as CREATURELOCKERPOPUP;
+                getGLOBAL().BlockerAdd();
+                CREATURELOCKER._mc = getGLOBAL()._layerWindows.addChild(new CREATURELOCKERPOPUP()) as CREATURELOCKERPOPUP;
                 CREATURELOCKER._mc.Center();
                 CREATURELOCKER._mc.ScaleUp();
             }
         } else {
-            GLOBAL.Message(KEYS.Get("msg_nomonsterlocker"));
+            getGLOBAL().Message(getKEYS().Get("msg_nomonsterlocker"));
         }
     }
 
     public static Hide(param1: MouseEvent = null): void {
         if (CREATURELOCKER._open) {
-            GLOBAL.BlockerRemove();
-            SOUNDS.Play("close");
-            BASE.BuildingDeselect();
+            getGLOBAL().BlockerRemove();
+            getSOUNDS().Play("close");
+            getBASE().BuildingDeselect();
             CREATURELOCKER._open = false;
-            GLOBAL._layerWindows.removeChild(CREATURELOCKER._mc);
+            getGLOBAL()._layerWindows.removeChild(CREATURELOCKER._mc);
             CREATURELOCKER._mc = null;
         }
     }
@@ -487,7 +490,7 @@ export class CREATURELOCKER {
         const _loc1_ = CREATURELOCKER._creatures;
         const _loc2_: any = {};
         for (const _loc3_ in _loc1_) {
-            if (!((_loc3_.substr(0, 1) == "C" && BASE.isInfernoMainYardOrOutpost) || (_loc3_.substr(0, 1) == "I" && !BASE.isInfernoMainYardOrOutpost) || _loc3_ == "C200")) {
+            if (!((_loc3_.substr(0, 1) == "C" && getBASE().isInfernoMainYardOrOutpost) || (_loc3_.substr(0, 1) == "I" && !getBASE().isInfernoMainYardOrOutpost) || _loc3_ == "C200")) {
                 _loc2_[_loc3_] = _loc1_[_loc3_];
             }
         }
@@ -502,7 +505,7 @@ export class CREATURELOCKER {
             case "above": _loc3_ = CREATURELOCKER.GetAboveCreatures(); break;
             default:
                 for (const _loc4_ in _loc2_) {
-                    if (!((_loc4_.substr(0, 1) == "C" && BASE.isInfernoMainYardOrOutpost) || (_loc4_.substr(0, 1) == "I" && !BASE.isInfernoMainYardOrOutpost) || _loc4_ == "C200")) {
+                    if (!((_loc4_.substr(0, 1) == "C" && getBASE().isInfernoMainYardOrOutpost) || (_loc4_.substr(0, 1) == "I" && !getBASE().isInfernoMainYardOrOutpost) || _loc4_ == "C200")) {
                         _loc3_[_loc4_] = _loc2_[_loc4_];
                     }
                 }
@@ -556,11 +559,11 @@ export class CREATURELOCKER {
     public static GetAvailableCreatures(): any {
         const _loc1_ = CREATURELOCKER._creatures;
         const _loc2_: any = {};
-        const _loc3_ = MAPROOM_DESCENT.DescentPassed && !BASE.isInfernoMainYardOrOutpost;
+        const _loc3_ = MAPROOM_DESCENT.DescentPassed && !getBASE().isInfernoMainYardOrOutpost;
         for (const _loc4_ in _loc1_) {
             if (_loc3_) {
                 if (_loc4_ != "C200") _loc2_[_loc4_] = _loc1_[_loc4_];
-            } else if (!((_loc4_.substr(0, 1) == "C" && BASE.isInfernoMainYardOrOutpost) || (_loc4_.substr(0, 1) == "I" && !BASE.isInfernoMainYardOrOutpost) || _loc4_ == "C200")) {
+            } else if (!((_loc4_.substr(0, 1) == "C" && getBASE().isInfernoMainYardOrOutpost) || (_loc4_.substr(0, 1) == "I" && !getBASE().isInfernoMainYardOrOutpost) || _loc4_ == "C200")) {
                 _loc2_[_loc4_] = _loc1_[_loc4_];
             }
         }
@@ -572,7 +575,7 @@ export class CREATURELOCKER {
         let _loc3_: any[] = [];
         let _loc4_: any[] = [];
         let _loc5_: any[] = [];
-        if (!BASE.isInfernoMainYardOrOutpost) {
+        if (!getBASE().isInfernoMainYardOrOutpost) {
             const _loc8_ = CREATURELOCKER.GetCreatures("above");
             for (const _loc9_ in _loc8_) {
                 const _loc10_ = CREATURELOCKER._creatures[_loc9_];
@@ -584,7 +587,7 @@ export class CREATURELOCKER {
             }
             _loc3_.sort((a: any, b: any) => a.index - b.index);
         }
-        if (MAPROOM_DESCENT.DescentPassed && (BASE.isInfernoMainYardOrOutpost || SubscriptionHandler.isEnabledForAll || HATCHERYCC.doesShowInfernoCreeps)) {
+        if (MAPROOM_DESCENT.DescentPassed && (getBASE().isInfernoMainYardOrOutpost || SubscriptionHandler.isEnabledForAll || HATCHERYCC.doesShowInfernoCreeps)) {
             const _loc12_ = CREATURELOCKER.GetCreatures("inferno");
             for (const _loc13_ in _loc12_) {
                 const _loc14_ = CREATURELOCKER._creatures[_loc13_];

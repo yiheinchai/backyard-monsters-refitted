@@ -9,45 +9,49 @@ import { SecNum } from "../../../cc/utils/SecNum";
 import { BYMConfig } from "../../configs/BYMConfig";
 import { ILootable } from "../../interfaces/ILootable";
 import { ITargetable } from "../../interfaces/ITargetable";
-import { InstanceManager } from "../../managers/InstanceManager";
 import { MonsterBase } from "../MonsterBase";
 import { CModifiableProperty } from "../components/CModifiableProperty";
 import { AdditionPropertyModifier } from "../components/modifiers/AdditionPropertyModifier";
-import { PATHING } from "../../pathing/PATHING";
 import { RasterData } from "../../rendering/RasterData";
-import { SiegeWeapons } from "../../siege/SiegeWeapons";
-import { Decoy } from "../../siege/weapons/Decoy";
 import { SiegeWeapon } from "../../siege/weapons/SiegeWeapon";
-import { Krallen } from "./Krallen";
 
-import { ATTACK } from "../../../../ATTACK";
-import { BASE } from "../../../../BASE";
-import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { BMUSHROOM } from "../../../../BMUSHROOM";
-import { BTOWER } from "../../../../BTOWER";
-import { Bunker } from "../../../../Bunker";
-import { CHAMPIONCAGE } from "../../../../CHAMPIONCAGE";
-import { CREEPS } from "../../../../CREEPS";
-import { CREATURES } from "../../../../CREATURES";
-import { FIREBALLS } from "../../../../FIREBALLS";
-import { GLOBAL } from "../../../../GLOBAL";
-import { GRID } from "../../../../GRID";
-import { KEYS } from "../../../../KEYS";
-import { LOGIN } from "../../../../LOGIN";
-import { LOGGER } from "../../../../LOGGER";
-import { MAP } from "../../../../MAP";
-import { MONSTERBUNKER } from "../../../../MONSTERBUNKER";
-import { POPUPS } from "../../../../POPUPS";
-import { QUESTS } from "../../../../QUESTS";
-import { SOUNDS } from "../../../../SOUNDS";
-import { SPECIALEVENT } from "../../../../SPECIALEVENT";
-import { SPRITES } from "../../../../SPRITES";
-import { STORE } from "../../../../STORE";
-import { Targeting } from "../../../../Targeting";
+
 
 import { TweenLite } from "gs/TweenLite";
 import { Bounce } from "gs/easing/Bounce";
 import { Sine } from "gs/easing/Sine";
+
+// Lazy imports to break circular dependency chains
+function getKrallen(): any { return require("./Krallen").Krallen; }
+function getInstanceManager(): any { return require("../../managers/InstanceManager").InstanceManager; }
+function getPATHING(): any { return require("../../pathing/PATHING").PATHING; }
+function getSiegeWeapons(): any { return require("../../siege/SiegeWeapons").SiegeWeapons; }
+function getDecoy(): any { return require("../../siege/weapons/Decoy").Decoy; }
+function getATTACK(): any { return require("../../../../ATTACK").ATTACK; }
+function getBASE(): any { return require("../../../../BASE").BASE; }
+function getBFOUNDATION(): any { return require("../../../../BFOUNDATION").BFOUNDATION; }
+function getBMUSHROOM(): any { return require("../../../../BMUSHROOM").BMUSHROOM; }
+function getBTOWER(): any { return require("../../../../BTOWER").BTOWER; }
+function getBunker(): any { return require("../../../../Bunker").Bunker; }
+function getCHAMPIONCAGE(): any { return require("../../../../CHAMPIONCAGE").CHAMPIONCAGE; }
+function getCREEPS(): any { return require("../../../../CREEPS").CREEPS; }
+function getCREATURES(): any { return require("../../../../CREATURES").CREATURES; }
+function getFIREBALLS(): any { return require("../../../../FIREBALLS").FIREBALLS; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getGRID(): any { return require("../../../../GRID").GRID; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getLOGIN(): any { return require("../../../../LOGIN").LOGIN; }
+function getLOGGER(): any { return require("../../../../LOGGER").LOGGER; }
+function getMAP(): any { return require("../../../../MAP").MAP; }
+function getMONSTERBUNKER(): any { return require("../../../../MONSTERBUNKER").MONSTERBUNKER; }
+function getPOPUPS(): any { return require("../../../../POPUPS").POPUPS; }
+function getQUESTS(): any { return require("../../../../QUESTS").QUESTS; }
+function getSOUNDS(): any { return require("../../../../SOUNDS").SOUNDS; }
+function getSPECIALEVENT(): any { return require("../../../../SPECIALEVENT").SPECIALEVENT; }
+function getSPRITES(): any { return require("../../../../SPRITES").SPRITES; }
+function getSTORE(): any { return require("../../../../STORE").STORE; }
+function getTargeting(): any { return require("../../../../Targeting").Targeting; }
+
 
 /**
  * Base class for Champion/Guardian monsters.
@@ -112,17 +116,17 @@ export class ChampionBase extends MonsterBase {
         if (param9 > 0) {
             this._feedTime = new SecNum(param9);
         } else {
-            this._feedTime = new SecNum(Math.floor(GLOBAL.Timestamp() + CHAMPIONCAGE.GetGuardianProperty(this._creatureID, param7, "feedTime")));
+            this._feedTime = new SecNum(Math.floor(getGLOBAL().Timestamp() + getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, param7, "feedTime")));
         }
         
         this._foodBonus = new SecNum(param12 || 0);
         this._powerLevel = new SecNum(param13 || 0);
-        this._lastHeal = GLOBAL.Timestamp();
+        this._lastHeal = getGLOBAL().Timestamp();
         this._house = param6;
         this._hits = 0;
         this._type = param10;
         this._pathing = "";
-        this._spawnTime = GLOBAL.Timestamp();
+        this._spawnTime = getGLOBAL().Timestamp();
         this._spawnPoint = new Point(Math.floor(param2.x / 100) * 100, Math.floor(param2.y / 100) * 100);
         this._targetGroup = 3;
         this._waypoints = [];
@@ -134,21 +138,21 @@ export class ChampionBase extends MonsterBase {
         
         // Set movement speed based on food bonus
         if (this._foodBonus.Get() > 0) {
-            this.moveSpeedProperty.value = (CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "speed") + 
-                                            CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._foodBonus.Get(), "bonusSpeed")) / 2;
+            this.moveSpeedProperty.value = (getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "speed") + 
+                                            getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._foodBonus.Get(), "bonusSpeed")) / 2;
         } else {
-            this.moveSpeedProperty.value = CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "speed") / 2;
+            this.moveSpeedProperty.value = getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "speed") / 2;
         }
         
         // Set max health
         if (this._foodBonus.Get() > 0) {
-            this.maxHealthProperty.value = CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "health") + 
-                                           CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._foodBonus.Get(), "bonusHealth");
+            this.maxHealthProperty.value = getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "health") + 
+                                           getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._foodBonus.Get(), "bonusHealth");
         } else {
-            this.maxHealthProperty.value = CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "health");
+            this.maxHealthProperty.value = getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "health");
         }
         
-        this._regen = CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "healtime");
+        this._regen = getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "healtime");
         
         // Set initial health
         if (param11 > 0 && param11 <= this.maxHealth) {
@@ -161,27 +165,27 @@ export class ChampionBase extends MonsterBase {
         
         // Set damage and range
         if (this._foodBonus.Get() > 0) {
-            this.damageProperty.value = Math.floor(CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "damage")) + 
-                                        Math.floor(CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._foodBonus.Get(), "bonusDamage"));
-            this.m_range = CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "range") + 
-                          CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._foodBonus.Get(), "bonusRange");
+            this.damageProperty.value = Math.floor(getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "damage")) + 
+                                        Math.floor(getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._foodBonus.Get(), "bonusDamage"));
+            this.m_range = getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "range") + 
+                          getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._foodBonus.Get(), "bonusRange");
         } else {
-            this.damageProperty.value = Math.floor(CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "damage"));
-            this.m_range = CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "range");
+            this.damageProperty.value = Math.floor(getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "damage"));
+            this.m_range = getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "range");
         }
         
-        this._movement = CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "movement");
+        this._movement = getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "movement");
         
         // Set buffs
         if (this._foodBonus.Get() > 0) {
-            this._buff = CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "buffs") + 
-                        CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._foodBonus.Get(), "bonusBuffs");
+            this._buff = getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "buffs") + 
+                        getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._foodBonus.Get(), "bonusBuffs");
         } else {
-            this._buff = CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "buffs");
+            this._buff = getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "buffs");
         }
         
-        if (CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "buffRadius")) {
-            this._buffRadius = CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "buffRadius");
+        if (getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "buffRadius")) {
+            this._buffRadius = getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "buffRadius");
         }
         
         this._behaviour = param1;
@@ -195,21 +199,21 @@ export class ChampionBase extends MonsterBase {
         this._targetRotation = param3 || 0;
         this.m_rotation = this._targetRotation;
         this._attacking = false;
-        this.attackFlags |= Targeting.k_TARGETS_GROUND;
+        this.attackFlags |= getTargeting().k_TARGETS_GROUND;
         
         this.setupSprite();
         
         if (this._movement === "fly") {
             this._altitude = 108;
-            this.defenseFlags |= Targeting.k_TARGETS_FLYING;
+            this.defenseFlags |= getTargeting().k_TARGETS_FLYING;
         } else {
             this._altitude = 0;
-            this.defenseFlags |= Targeting.k_TARGETS_GROUND;
+            this.defenseFlags |= getTargeting().k_TARGETS_GROUND;
         }
         
         // Initialize behavior
         if (this._behaviour === "bounce") {
-            if (GLOBAL._render && this._movement !== "fly") {
+            if (getGLOBAL()._render && this._movement !== "fly") {
                 this._graphicMC.y -= 90;
                 TweenLite.to(this._graphicMC, 0.6, {
                     y: this._graphicMC.y + 90,
@@ -247,11 +251,11 @@ export class ChampionBase extends MonsterBase {
 
     protected setupSprite(): void {
         this._frameNumber = Math.random() * 7;
-        this._spriteID = this._creatureID + "_" + Math.min(this._level.Get(), CHAMPIONCAGE.GetGuardianProperties(this._creatureID, "health").length);
-        SPRITES.SetupSprite(this._spriteID);
+        this._spriteID = this._creatureID + "_" + Math.min(this._level.Get(), getCHAMPIONCAGE().GetGuardianProperties(this._creatureID, "health").length);
+        getSPRITES().SetupSprite(this._spriteID);
         
         if (this._movement === "fly") {
-            SPRITES.SetupSprite("bigshadow");
+            getSPRITES().SetupSprite("bigshadow");
             this._shadow = new BitmapData(52, 50, true, 0xFFFFFF);
             this._shadowMC = BYMConfig.instance.RENDERER_ON ? new Bitmap(this._shadow) : this.graphic.addChild(new Bitmap(this._shadow));
             this._shadowMC.x = -21;
@@ -259,16 +263,16 @@ export class ChampionBase extends MonsterBase {
             this._frameNumber = Math.floor(Math.random() * 1000);
         }
         
-        const descriptor: any = SPRITES.GetSpriteDescriptor(this._spriteID);
+        const descriptor: any = getSPRITES().GetSpriteDescriptor(this._spriteID);
         this._graphic = new BitmapData(descriptor.width, descriptor.height, true, 0xFFFFFF);
         this._graphicMC = BYMConfig.instance.RENDERER_ON ? new Bitmap(this._graphic) : this.graphic.addChild(new Bitmap(this._graphic)) as Bitmap;
-        this._graphicMC.x = CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "offset_x");
-        this._graphicMC.y = CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "offset_y");
+        this._graphicMC.x = getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "offset_x");
+        this._graphicMC.y = getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "offset_y");
         
         if (BYMConfig.instance.RENDERER_ON) {
             this._rasterData = new RasterData(this._graphicMC, this._rasterPt, Number.MAX_VALUE);
             if (this._movement === "fly") {
-                this._shadowData = new RasterData(this._shadow, this._shadowPt, MAP.DEPTH_SHADOW, null, true);
+                this._shadowData = new RasterData(this._shadow, this._shadowPt, getMAP().DEPTH_SHADOW, null, true);
             }
         }
     }
@@ -276,7 +280,7 @@ export class ChampionBase extends MonsterBase {
     public override changeModeJuice(): void {
         this._behaviour = "juice";
         this.changeMode();
-        this._targetBuilding = GLOBAL._bJuicer;
+        this._targetBuilding = getGLOBAL()._bJuicer;
         
         if (this._movement === "fly" && this._altitude < 60) {
             if (BYMConfig.instance.RENDERER_ON) {
@@ -294,30 +298,30 @@ export class ChampionBase extends MonsterBase {
             }
         }
         
-        ++CREATURES._creatureID;
-        ++CREATURES._creatureCount;
-        CREATURES._creatures[CREATURES._creatureID] = this;
+        ++getCREATURES()._creatureID;
+        ++getCREATURES()._creatureCount;
+        getCREATURES()._creatures[getCREATURES()._creatureID] = this;
         
-        const idx: number = BASE.getGuardianIndex(CREATURES._guardian!._type);
-        BASE._guardianData[idx].status = ChampionBase.k_CHAMPION_STATUS_JUICED;
-        BASE._guardianData[idx].log += "," + ChampionBase.k_CHAMPION_STATUS_JUICED.toString();
+        const idx: number = getBASE().getGuardianIndex(getCREATURES()._guardian!._type);
+        getBASE()._guardianData[idx].status = ChampionBase.k_CHAMPION_STATUS_JUICED;
+        getBASE()._guardianData[idx].log += "," + ChampionBase.k_CHAMPION_STATUS_JUICED.toString();
         
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-            const playerIdx = GLOBAL.getPlayerGuardianIndex(CREATURES._guardian!._type);
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+            const playerIdx = getGLOBAL().getPlayerGuardianIndex(getCREATURES()._guardian!._type);
             if (playerIdx !== -1) {
-                GLOBAL._playerGuardianData[playerIdx].status = ChampionBase.k_CHAMPION_STATUS_JUICED;
-                GLOBAL._playerGuardianData[playerIdx].log += "," + ChampionBase.k_CHAMPION_STATUS_JUICED.toString();
+                getGLOBAL()._playerGuardianData[playerIdx].status = ChampionBase.k_CHAMPION_STATUS_JUICED;
+                getGLOBAL()._playerGuardianData[playerIdx].log += "," + ChampionBase.k_CHAMPION_STATUS_JUICED.toString();
             }
         }
         
-        CREATURES._guardian = null;
-        BASE.Save();
-        PATHING.GetPath(this._tmpPoint, new Rectangle(this._targetBuilding._mc.x, this._targetBuilding._mc.y, 80, 80), this.setWaypoints.bind(this), true);
+        getCREATURES()._guardian = null;
+        getBASE().Save();
+        getPATHING().GetPath(this._tmpPoint, new Rectangle(this._targetBuilding._mc.x, this._targetBuilding._mc.y, 80, 80), this.setWaypoints.bind(this), true);
     }
 
     public override changeModeAttack(): void {
         this.changeMode();
-        this._behaviour = GLOBAL.e_BASE_MODE.ATTACK;
+        this._behaviour = getGLOBAL().e_BASE_MODE.ATTACK;
         this._targetCreep = null;
         this.findTarget(0);
     }
@@ -327,19 +331,19 @@ export class ChampionBase extends MonsterBase {
         this._behaviour = "cage";
         this._attacking = false;
         const loc1: Point = new Point(this._house!._mc.x + 50, this._house!._mc.y + 60);
-        this._targetCenter = GRID.FromISO(GLOBAL._bCage._mc.x, GLOBAL._bCage._mc.y);
-        PATHING.GetPath(this._tmpPoint, new Rectangle(loc1.x, loc1.y, 10, 10), this.setWaypoints.bind(this), true);
-        this._house = GLOBAL._bCage;
+        this._targetCenter = getGRID().FromISO(getGLOBAL()._bCage._mc.x, getGLOBAL()._bCage._mc.y);
+        getPATHING().GetPath(this._tmpPoint, new Rectangle(loc1.x, loc1.y, 10, 10), this.setWaypoints.bind(this), true);
+        this._house = getGLOBAL()._bCage;
     }
 
     public changeModeFreeze(): void {
         this.changeMode();
         this._behaviour = "freeze";
         this._attacking = false;
-        ++CREATURES._creatureID;
-        ++CREATURES._creatureCount;
-        CREATURES._creatures[CREATURES._creatureID] = this;
-        PATHING.GetPath(this._tmpPoint, new Rectangle(GLOBAL._bChamber._mc.x, GLOBAL._bChamber._mc.y, 80, 80), this.setWaypoints.bind(this), true);
+        ++getCREATURES()._creatureID;
+        ++getCREATURES()._creatureCount;
+        getCREATURES()._creatures[getCREATURES()._creatureID] = this;
+        getPATHING().GetPath(this._tmpPoint, new Rectangle(getGLOBAL()._bChamber._mc.x, getGLOBAL()._bChamber._mc.y, 80, 80), this.setWaypoints.bind(this), true);
     }
 
     public changeModeDefend(): void {
@@ -348,8 +352,8 @@ export class ChampionBase extends MonsterBase {
     }
 
     public changeModeDecoy(): void {
-        const activeWeapon: SiegeWeapon | null = SiegeWeapons.activeWeapon;
-        if (activeWeapon && activeWeapon instanceof Decoy) {
+        const activeWeapon: SiegeWeapon | null = getSiegeWeapons().activeWeapon;
+        if (activeWeapon && activeWeapon instanceof getDecoy()) {
             this.changeMode();
             this._behaviour = "decoy";
             this._attacking = false;
@@ -362,7 +366,7 @@ export class ChampionBase extends MonsterBase {
             if (this._movement === "fly") {
                 this._hasTarget = true;
                 this._hasPath = true;
-                if (GLOBAL.QuickDistance(this._tmpPoint, this._targetCenter) < 50) {
+                if (getGLOBAL().QuickDistance(this._tmpPoint, this._targetCenter) < 50) {
                     this._atTarget = true;
                     this._hasPath = true;
                     this._targetPosition = this._targetCenter;
@@ -391,7 +395,7 @@ export class ChampionBase extends MonsterBase {
     }
 
     public click(event: MouseEvent): void {
-        if (GLOBAL.mode === "build") {
+        if (getGLOBAL().mode === "build") {
             ChampionBase.show();
         }
     }
@@ -400,21 +404,21 @@ export class ChampionBase extends MonsterBase {
         if (this._targetCreep === null) return false;
         if (this._targetCreep._movement === "fly") return false;
         
-        const dist = GLOBAL.QuickDistance(this._targetCreep._tmpPoint, this._tmpPoint);
+        const dist = getGLOBAL().QuickDistance(this._targetCreep._tmpPoint, this._tmpPoint);
         if (dist > this.m_range) return false;
         if (this._movement === "fly") return true;
         
-        return PATHING.LineOfSight(this._tmpPoint.x, this._tmpPoint.y, this._targetCreep._tmpPoint.x, this._targetCreep._tmpPoint.y);
+        return getPATHING().LineOfSight(this._tmpPoint.x, this._tmpPoint.y, this._targetCreep._tmpPoint.x, this._targetCreep._tmpPoint.y);
     }
 
     protected canHitBuilding(): boolean {
         if (this._targetBuilding === null) return false;
         
-        const dist = GLOBAL.QuickDistance(this._targetBuilding._position, this._tmpPoint);
+        const dist = getGLOBAL().QuickDistance(this._targetBuilding._position, this._tmpPoint);
         if (dist > this.m_range) return false;
         if (this._movement === "fly") return true;
         
-        return PATHING.LineOfSight(this._tmpPoint.x, this._tmpPoint.y, this._targetBuilding._position.x, this._targetBuilding._position.y, this._targetBuilding);
+        return getPATHING().LineOfSight(this._tmpPoint.x, this._tmpPoint.y, this._targetBuilding._position.x, this._targetBuilding._position.y, this._targetBuilding);
     }
 
     public clearRasterData(): void {
@@ -427,11 +431,11 @@ export class ChampionBase extends MonsterBase {
     }
 
     public override clear(): void {
-        if (CREATURES._guardian === this) {
-            CREATURES._guardian = null;
+        if (getCREATURES()._guardian === this) {
+            getCREATURES()._guardian = null;
         }
-        if (CREEPS._guardian === this) {
-            CREEPS._guardian = null;
+        if (getCREEPS()._guardian === this) {
+            getCREEPS()._guardian = null;
         }
         super.clear();
     }
@@ -457,13 +461,13 @@ export class ChampionBase extends MonsterBase {
             this._altitude = 61;
         }
         
-        if (GLOBAL.QuickDistance(this._targetCreep!._tmpPoint, this._tmpPoint) < this.m_range) {
+        if (getGLOBAL().QuickDistance(this._targetCreep!._tmpPoint, this._tmpPoint) < this.m_range) {
             this._atTarget = true;
             this._looking = false;
-        } else if (this._noDefensePath || GLOBAL.QuickDistance(this._targetCreep!._tmpPoint, this._tmpPoint) < this.m_range * 2 || this._movement === "fly") {
+        } else if (this._noDefensePath || getGLOBAL().QuickDistance(this._targetCreep!._tmpPoint, this._tmpPoint) < this.m_range * 2 || this._movement === "fly") {
             this._waypoints = [this._targetCreep!._tmpPoint];
             this._targetPosition = this._targetCreep!._tmpPoint;
-        } else if (this._targetCreep!._atTarget || this._targetCreep!._waypoints.length < 8 || GLOBAL.QuickDistance(this._targetCreep!._tmpPoint, this._tmpPoint) < 250) {
+        } else if (this._targetCreep!._atTarget || this._targetCreep!._waypoints.length < 8 || getGLOBAL().QuickDistance(this._targetCreep!._tmpPoint, this._tmpPoint) < 250) {
             this.WaypointTo(this._targetCreep!._tmpPoint, null);
         } else {
             this.WaypointTo(this._targetCreep!._waypoints[7], null);
@@ -473,7 +477,7 @@ export class ChampionBase extends MonsterBase {
     }
 
     protected getTargetCreeps(): void {
-        this._targetCreeps = Targeting.getCreepsInRange(800, this._tmpPoint, this.attackFlags);
+        this._targetCreeps = getTargeting().getCreepsInRange(800, this._tmpPoint, this.attackFlags);
     }
 
     public FindDefenseTargets(): void {
@@ -521,46 +525,46 @@ export class ChampionBase extends MonsterBase {
     public override findTarget(param1: number = 0): void {
         const buildings: any[] = [];
         this._looking = true;
-        const loc7 = PATHING.FromISO(this._tmpPoint);
+        const loc7 = getPATHING().FromISO(this._tmpPoint);
         
         // Get resource buildings, town halls, silos
-        const foundations = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const foundations = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const building of foundations) {
             if (building.health > 0 && (building._class === "resource" || building._type === 6 || building._type === 14 || building._type === 112)) {
-                const loc8 = GRID.FromISO(building._mc.x, building._mc.y + building._middle);
-                const dist = GLOBAL.QuickDistance(loc7, loc8) - building._middle;
+                const loc8 = getGRID().FromISO(building._mc.x, building._mc.y + building._middle);
+                const dist = getGLOBAL().QuickDistance(loc7, loc8) - building._middle;
                 buildings.push({ building, distance: dist });
             }
         }
         
         // Get towers
-        const towers = InstanceManager.getInstancesByClass(BTOWER);
+        const towers = getInstanceManager().getInstancesByClass(getBTOWER());
         for (const building of towers) {
             if (building.health > 0 && !(building as BTOWER).isJard) {
-                const loc8 = GRID.FromISO(building._mc.x, building._mc.y + building._middle);
-                const dist = GLOBAL.QuickDistance(loc7, loc8) - building._middle;
+                const loc8 = getGRID().FromISO(building._mc.x, building._mc.y + building._middle);
+                const dist = getGLOBAL().QuickDistance(loc7, loc8) - building._middle;
                 buildings.push({ building, distance: dist, expand: false });
             }
         }
         
         // Get bunkers
-        const bunkers = InstanceManager.getInstancesByClass(Bunker);
+        const bunkers = getInstanceManager().getInstancesByClass(getBunker());
         for (const building of bunkers) {
             if (building.health > 0 && ((building as any)._used > 0 || (building as any)._monstersDispatchedTotal > 0)) {
-                const loc8 = GRID.FromISO(building._mc.x, building._mc.y + building._middle);
-                const dist = GLOBAL.QuickDistance(loc7, loc8) - building._middle;
+                const loc8 = getGRID().FromISO(building._mc.x, building._mc.y + building._middle);
+                const dist = getGLOBAL().QuickDistance(loc7, loc8) - building._middle;
                 buildings.push({ building, distance: dist, expand: false });
             }
         }
         
         if (buildings.length === 0) {
-            for (const building of Object.values(BASE._buildingsMain) as BFOUNDATION[]) {
-                if (!(building instanceof BMUSHROOM) && building._class !== "decoration" && building._class !== "immovable" && building.health > 0 && building._class !== "enemy") {
-                    if (building._class === "tower" && !(building instanceof Bunker) && (building as BTOWER).isJard) {
+            for (const building of Object.values(getBASE()._buildingsMain) as BFOUNDATION[]) {
+                if (!(building instanceof getBMUSHROOM()) && building._class !== "decoration" && building._class !== "immovable" && building.health > 0 && building._class !== "enemy") {
+                    if (building._class === "tower" && !(building instanceof getBunker()) && (building as BTOWER).isJard) {
                         continue;
                     }
-                    const loc8 = GRID.FromISO(building._mc.x, building._mc.y + building._middle);
-                    const dist = GLOBAL.QuickDistance(loc7, loc8) - building._middle;
+                    const loc8 = getGRID().FromISO(building._mc.x, building._mc.y + building._middle);
+                    const dist = getGLOBAL().QuickDistance(loc7, loc8) - building._middle;
                     buildings.push({ building, distance: dist, expand: true });
                 }
             }
@@ -577,7 +581,7 @@ export class ChampionBase extends MonsterBase {
                 this._targetBuilding = buildings[0].building;
                 this._targetCenter = this._targetBuilding._position;
                 
-                if (GLOBAL.QuickDistance(this._tmpPoint, this._targetCenter) < 170) {
+                if (getGLOBAL().QuickDistance(this._tmpPoint, this._targetCenter) < 170) {
                     this._atTarget = true;
                     this._hasPath = true;
                     this._targetPosition = this._targetCenter;
@@ -598,17 +602,17 @@ export class ChampionBase extends MonsterBase {
     // Remaining tick methods and utility functions follow same pattern...
     protected tickBAttack(): void {
         if (this.health <= 0) {
-            Targeting.CreepCellDelete(this._id, this.node);
-            const activeEvent: any = SPECIALEVENT.getActiveSpecialEvent();
+            getTargeting().CreepCellDelete(this._id, this.node);
+            const activeEvent: any = getSPECIALEVENT().getActiveSpecialEvent();
             if (!activeEvent.active) {
                 this.changeModeRetreat();
-                ATTACK.Log(this._creatureID, LOGIN._playerName + "'s Level " + this._level.Get() + " " + CHAMPIONCAGE._guardians[this._creatureID].name + " retreated.");
-                SOUNDS.Play("monsterland" + (1 + Math.floor(Math.random() * 3)));
-                if (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK) {
-                    LOGGER.Stat([54, this._creatureID, 1, this._level.Get()]);
+                getATTACK().Log(this._creatureID, getLOGIN()._playerName + "'s Level " + this._level.Get() + " " + getCHAMPIONCAGE()._guardians[this._creatureID].name + " retreated.");
+                getSOUNDS().Play("monsterland" + (1 + Math.floor(Math.random() * 3)));
+                if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK) {
+                    getLOGGER().Stat([54, this._creatureID, 1, this._level.Get()]);
                 }
             }
-            BASE.Save();
+            getBASE().Save();
             return;
         }
         // ... rest of implementation follows AS3 logic
@@ -621,9 +625,9 @@ export class ChampionBase extends MonsterBase {
     protected doAttackDamage(): void {
         let modifier: number = 1;
         if (this._targetBuilding && this._targetBuilding._fortification.Get() > 0) {
-            ATTACK.Damage(this._tmpPoint.x, this._tmpPoint.y - 5, this.damage * modifier * (100 - (this._targetBuilding._fortification.Get() * 10 + 10)) / 100, this._mc.visible);
+            getATTACK().Damage(this._tmpPoint.x, this._tmpPoint.y - 5, this.damage * modifier * (100 - (this._targetBuilding._fortification.Get() * 10 + 10)) / 100, this._mc.visible);
         } else {
-            ATTACK.Damage(this._tmpPoint.x, this._tmpPoint.y - 5, this.damage * modifier, this._mc.visible);
+            getATTACK().Damage(this._tmpPoint.x, this._tmpPoint.y - 5, this.damage * modifier, this._mc.visible);
         }
         if (this._targetCreep) {
             this._targetCreep.modifyHealth(-(this.damage * modifier));
@@ -643,10 +647,10 @@ export class ChampionBase extends MonsterBase {
         let loc1: Point;
         if (this._creatureID === "G3") {
             loc1 = Point.interpolate(this._tmpPoint.add(new Point(0, -this._altitude)), this._targetCreep._tmpPoint, 0.8);
-            FIREBALLS.Spawn2(loc1, this._targetCreep._tmpPoint, this._targetCreep, 8, this.damage, 0, FIREBALLS.TYPE_FIREBALL, 1, this);
-            FIREBALLS._fireballs[FIREBALLS._id - 1]._graphic.gotoAndStop(3);
+            getFIREBALLS().Spawn2(loc1, this._targetCreep._tmpPoint, this._targetCreep, 8, this.damage, 0, getFIREBALLS().TYPE_FIREBALL, 1, this);
+            getFIREBALLS()._fireballs[getFIREBALLS()._id - 1]._graphic.gotoAndStop(3);
         } else {
-            ATTACK.Damage(this._tmpPoint.x, this._tmpPoint.y - 5, this.damage, this._mc.visible);
+            getATTACK().Damage(this._tmpPoint.x, this._tmpPoint.y - 5, this.damage, this._mc.visible);
             this._targetCreep.modifyHealth(-this.damage);
         }
     }
@@ -667,57 +671,57 @@ export class ChampionBase extends MonsterBase {
         if (param1 !== this._level.Get()) {
             this._level = new SecNum(param1);
             
-            if (this instanceof Krallen) {
+            if (this instanceof getKrallen()) {
                 this._spriteID = this._creatureID + "_" + this._powerLevel.Get();
             } else {
                 this._spriteID = this._creatureID + "_" + param1;
             }
             
             // Update sprite and properties...
-            this.maxHealthProperty.value = CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "health");
-            this.moveSpeedProperty.value = CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "speed") / 2;
-            this._regen = CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "healtime");
+            this.maxHealthProperty.value = getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "health");
+            this.moveSpeedProperty.value = getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "speed") / 2;
+            this._regen = getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "healtime");
             this.setHealth(this.maxHealth);
-            this.damageProperty.value = Math.floor(CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "damage"));
-            this.m_range = CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "range");
-            this._movement = CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "movement");
+            this.damageProperty.value = Math.floor(getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "damage"));
+            this.m_range = getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "range");
+            this._movement = getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "movement");
             
             if (param1 >= 6) {
-                QUESTS.Check("upgrade_champ" + this._creatureID.substr(1, 1), 1);
+                getQUESTS().Check("upgrade_champ" + this._creatureID.substr(1, 1), 1);
             }
-            LOGGER.Stat([57, this._creatureID, param2, this._level.Get()]);
-            BASE.Save();
+            getLOGGER().Stat([57, this._creatureID, param2, this._level.Get()]);
+            getBASE().Save();
         }
     }
 
     public heal(): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
             const cost = this.getHealCost();
             if (cost > 0) {
-                GLOBAL.Message(KEYS.Get("msg_healchampion", { v1: cost }), KEYS.Get("str_heal"), this.healB.bind(this));
+                getGLOBAL().Message(getKEYS().Get("msg_healchampion", { v1: cost }), getKEYS().Get("str_heal"), this.healB.bind(this));
             }
         }
     }
 
     public healB(): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
             const cost = this.getHealCost();
-            if (cost > BASE._credits.Get()) {
-                POPUPS.DisplayGetShiny();
+            if (cost > getBASE()._credits.Get()) {
+                getPOPUPS().DisplayGetShiny();
                 return;
             }
             this.setHealth(this.maxHealth);
-            BASE.Purchase("IHE", cost, "CHAMPION.Heal");
+            getBASE().Purchase("IHE", cost, "CHAMPION.Heal");
             this.export(this._friendly);
-            LOGGER.Stat([58, this._creatureID, cost, this._level.Get()]);
-            BASE.Save();
+            getLOGGER().Stat([58, this._creatureID, cost, this._level.Get()]);
+            getBASE().Save();
         }
     }
 
     public getHealCost(): number {
         const ratio = (this.maxHealth - this.health) / this.maxHealth;
-        const time = Math.floor(ratio * CHAMPIONCAGE.GetGuardianProperty(this._creatureID, this._level.Get(), "healtime"));
-        return STORE.GetTimeCost(time, false);
+        const time = Math.floor(ratio * getCHAMPIONCAGE().GetGuardianProperty(this._creatureID, this._level.Get(), "healtime"));
+        return getSTORE().GetTimeCost(time, false);
     }
 
     public export(param1: boolean = true): void {

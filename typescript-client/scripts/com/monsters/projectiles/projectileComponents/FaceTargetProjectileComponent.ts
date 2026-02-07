@@ -4,7 +4,10 @@ import { SpriteSheetAnimation } from "../../display/SpriteSheetAnimation";
 import { Projectilev2 } from "../Projectilev2";
 import { ProjectileComponent } from "./ProjectileComponent";
 
-import { SPRITES } from "../../../../SPRITES";
+// Lazy imports to break circular dependency chains
+function getSPRITES(): any { return require("../../../../SPRITES").SPRITES; }
+
+
 
 /**
  * Face target projectile component - rotates projectile to face target.
@@ -26,7 +29,7 @@ export class FaceTargetProjectileComponent extends ProjectileComponent {
                 angle = 360 + angle;
             }
             const bitmapData: BitmapData = this.m_projectile.rasterData.data as BitmapData;
-            SPRITES.GetFrame(bitmapData, this.m_animation.spriteData, angle / this.m_animation.totalFrames);
+            getSPRITES().GetFrame(bitmapData, this.m_animation.spriteData, angle / this.m_animation.totalFrames);
         }
     }
 }

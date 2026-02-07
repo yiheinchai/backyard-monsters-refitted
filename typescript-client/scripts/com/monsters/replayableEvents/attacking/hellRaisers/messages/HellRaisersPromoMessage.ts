@@ -4,10 +4,13 @@ import { FrontPageGraphic } from "../../../../frontPage/FrontPageGraphic";
 import { KeywordMessage } from "../../../../frontPage/messages/KeywordMessage";
 import { Message } from "../../../../frontPage/messages/Message";
 import { Maproom3OptInPopup } from "../../../../frontPage/messages/promotions/Maproom3OptInPopup";
-import { MapRoomManager } from "../../../../maproom_manager/MapRoomManager";
 import { HellRaisers } from "../HellRaisers";
 
-import { POPUPS } from "../../../../../../POPUPS";
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../../../../maproom_manager/MapRoomManager").MapRoomManager; }
+function getPOPUPS(): any { return require("../../../../../../POPUPS").POPUPS; }
+
+
 
 /**
  * Hell Raisers promo message - promotional message for Hell Raisers event.
@@ -17,7 +20,7 @@ export class HellRaisersPromoMessage extends Message {
 
     constructor(keyword: string) {
         let modifiedKeyword: string | null = null;
-        if (MapRoomManager.instance.isInMapRoom2) {
+        if (getMapRoomManager().instance.isInMapRoom2) {
             modifiedKeyword = keyword + "_upgrade";
             const buttonCopy = "btn_joinnow";
             super(
@@ -41,12 +44,12 @@ export class HellRaisersPromoMessage extends Message {
     }
 
     protected override onButtonClick(): void {
-        POPUPS.Next();
+        getPOPUPS().Next();
         this._buttonAction();
     }
 
     private showUpgradeToMR3Popup(): void {
-        POPUPS.Push(new FrontPageGraphic(new Maproom3OptInPopup()));
+        getPOPUPS().Push(new FrontPageGraphic(new Maproom3OptInPopup()));
     }
 
     private RSVP(): void {

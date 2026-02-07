@@ -12,8 +12,11 @@ import { ReplayableEvent } from "./ReplayableEvent";
 import { ReplayableEventHandler } from "./ReplayableEventHandler";
 import { MR3EventHUD_CLIP } from "../../../MR3EventHUD_CLIP";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+
+
 
 /**
  * Map room 3 event HUD - displays event information in the map room.
@@ -47,7 +50,7 @@ export class Maproom3EventHUD extends MR3EventHUD_CLIP implements IReplayableEve
 
     public setup(event: ReplayableEvent): void {
         this.m_event = event;
-        this.bInfo.Setup(KEYS.Get("btn_info"));
+        this.bInfo.Setup(getKEYS().Get("btn_info"));
         this.updateState();
         this.update();
         this.mouseEnabled = false;
@@ -62,10 +65,10 @@ export class Maproom3EventHUD extends MR3EventHUD_CLIP implements IReplayableEve
             this.updateState();
         }
         if (this.m_state >= Maproom3EventHUD.k_duringEventState) {
-            this.tExperience.text = ">" + GLOBAL.FormatNumber(ReplayableEventHandler.eventXP) + "XP";
-            this.tCountdown.text = GLOBAL.ToTime(this.m_event!.timeUntilNextDate, true, false, false);
+            this.tExperience.text = ">" + getGLOBAL().FormatNumber(ReplayableEventHandler.eventXP) + "XP";
+            this.tCountdown.text = getGLOBAL().ToTime(this.m_event!.timeUntilNextDate, true, false, false);
         } else {
-            this.tCountdown.text = GLOBAL.ToTime(this.m_event!.timeUntilNextDate, true);
+            this.tCountdown.text = getGLOBAL().ToTime(this.m_event!.timeUntilNextDate, true);
         }
         this.resize();
     }
@@ -85,7 +88,7 @@ export class Maproom3EventHUD extends MR3EventHUD_CLIP implements IReplayableEve
     }
 
     private resize(): void {
-        this.x = GLOBAL._SCREEN.x;
+        this.x = getGLOBAL()._SCREEN.x;
         if (Boolean(MapRoom3.mapRoom3WindowHUD) && Boolean(MapRoom3.mapRoom3WindowHUD.leftMenuButtonsBar)) {
             this.y = MapRoom3.mapRoom3WindowHUD.leftMenuButtonsBar.y;
             this.y -= this.height;
@@ -93,7 +96,7 @@ export class Maproom3EventHUD extends MR3EventHUD_CLIP implements IReplayableEve
             this.y = Chat._bymChat.y + Chat._bymChat.chatBox.background.y;
             this.y -= this.height;
         } else {
-            this.y = GLOBAL._SCREEN.y + (GLOBAL._SCREEN.height - this.height);
+            this.y = getGLOBAL()._SCREEN.y + (getGLOBAL()._SCREEN.height - this.height);
         }
     }
 

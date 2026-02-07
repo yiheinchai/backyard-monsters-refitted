@@ -7,7 +7,10 @@ import { ArmorPropertyModifier } from "../modifiers/ArmorPropertyModifier";
 import { DivisionModifier } from "../modifiers/DivisionModifier";
 import { MultiplicationPropertyModifier } from "../modifiers/MultiplicationPropertyModifier";
 
-import { SPECIALEVENT } from "../../../../../SPECIALEVENT";
+// Lazy imports to break circular dependency chains
+function getSPECIALEVENT(): any { return require("../../../../../SPECIALEVENT").SPECIALEVENT; }
+
+
 
 /**
  * Enrage - ability that boosts move speed, attack speed, and armor.
@@ -26,7 +29,7 @@ export class Enrage extends Component {
         this.m_armorModifier = new ArmorPropertyModifier(armorBonus);
         this.m_sourceCreatureID = sourceCreatureID;
 
-        const activeEvent: any = SPECIALEVENT.getActiveSpecialEvent();
+        const activeEvent: any = getSPECIALEVENT().getActiveSpecialEvent();
         if (activeEvent.active && this.m_sourceCreatureID !== "G3") {
             this.m_filter = new GlowFilter(13582340, 1, 3, 3, 5, 1);
             return;

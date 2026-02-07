@@ -1,8 +1,11 @@
-import { BuildingEvent } from "../../../events/BuildingEvent";
 import { BuildTreeMessage } from "../BuildTreeMessage";
 
-import { GLOBAL } from "../../../../../GLOBAL";
-import { BASE } from "../../../../../BASE";
+// Lazy imports to break circular dependency chains
+function getBuildingEvent(): any { return require("../../../events/BuildingEvent").BuildingEvent; }
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+function getBASE(): any { return require("../../../../../BASE").BASE; }
+
+
 
 /**
  * Build tree 03 - Monster Locker suggestion message.
@@ -13,16 +16,16 @@ export class BuildTree_03_MonsterLocker extends BuildTreeMessage {
     }
 
     public override get areRequirementsMet(): boolean {
-        if (BASE.hasNumBuildings(8) !== 0) {
+        if (getBASE().hasNumBuildings(8) !== 0) {
             return false;
         }
-        return GLOBAL.townHall._lvl.Get() >= 2;
+        return getGLOBAL().townHall._lvl.Get() >= 2;
     }
 
     protected override onButtonClick(): void {
         this.buyBuilding(8);
-        GLOBAL.eventDispatcher.addEventListener(
-            BuildingEvent.PLACED_FOR_CONSTRUCTION,
+        getGLOBAL().eventDispatcher.addEventListener(
+            getBuildingEvent().PLACED_FOR_CONSTRUCTION,
             this.placedForConstruction.bind(this),
             false,
             0,

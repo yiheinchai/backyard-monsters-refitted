@@ -18,7 +18,10 @@ import { PushPin } from "./PushPin";
 import { ForeignBaseInferno_CLIP } from "../../../ForeignBaseInferno_CLIP";
 import { Button } from "../../../Button";
 
-import { KEYS } from "../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+
+
 
 /**
  * ForeignBase - displays another player's base on the Inferno map.
@@ -49,7 +52,7 @@ export class ForeignBase extends ForeignBaseInferno_CLIP {
     constructor() {
         super();
         this.popUp = new MapBasePopup();
-        this.popUp.title_txt.htmlText = "<b>" + KEYS.Get("map_options") + "</b>";
+        this.popUp.title_txt.htmlText = "<b>" + getKEYS().Get("map_options") + "</b>";
         this.popUp.x = 21;
         this.popUp.y = 40;
         this.addChild(this.popUp);
@@ -93,10 +96,10 @@ export class ForeignBase extends ForeignBaseInferno_CLIP {
         const boxWidth = this.name_txt.textWidth + 2 * 7;
         this.box_mc.width = boxWidth < 51 ? 51 : boxWidth;
         (this.level as any).lv_txt.htmlText = "<b>" + baseData.level.Get();
-        this.attackBtn!.Setup(KEYS.Get("map_attack_btn"));
-        this.helpBtn!.Setup(KEYS.Get("map_help_btn"));
-        this.truceBtn!.Setup(KEYS.Get("map_truce_btn"));
-        this.msgBtn!.Setup(KEYS.Get("map_message_btn"));
+        this.attackBtn!.Setup(getKEYS().Get("map_attack_btn"));
+        this.helpBtn!.Setup(getKEYS().Get("map_help_btn"));
+        this.truceBtn!.Setup(getKEYS().Get("map_truce_btn"));
+        this.msgBtn!.Setup(getKEYS().Get("map_message_btn"));
         this.removeChild(this.mediumhit);
         this.setState("off");
         this.addEventListener(MouseEvent.MOUSE_OVER, this.thisOver.bind(this));

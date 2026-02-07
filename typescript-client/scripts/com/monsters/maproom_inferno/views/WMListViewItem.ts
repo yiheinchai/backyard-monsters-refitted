@@ -7,8 +7,11 @@ import { PlayerHandler } from "../PlayerHandler";
 import { BaseObject } from "../model/BaseObject";
 import { WMListViewItemInferno_CLIP } from "../../../../WMListViewItemInferno_CLIP";
 
-import { KEYS } from "../../../../KEYS";
-import { LOGGER } from "../../../../LOGGER";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../../LOGGER").LOGGER; }
+
+
 
 /**
  * WM list view item (Inferno) - displays a base item in the wild monster list.
@@ -42,7 +45,7 @@ export class WMListViewItem extends WMListViewItemInferno_CLIP {
                 ImageCache.GetImageWithCallBack(this.data!.pic, this.onImageLoaded.bind(this));
                 this.loaded = true;
             } catch (e: any) {
-                LOGGER.Log("err", "MapRoom WMListViewItem Display: " + e.stack);
+                getLOGGER().Log("err", "MapRoom WMListViewItem Display: " + e.stack);
             }
         }
     }
@@ -65,9 +68,9 @@ export class WMListViewItem extends WMListViewItemInferno_CLIP {
         const config: any = this.handler!.configure(this);
         if (this.level_txt) {
             this.level_txt.htmlText = "<b>" + this.data!.level.Get();
-            this.name_txt.htmlText = "<b>" + KEYS.Get("inf_ai_tribe_mapview", { "v1": this.data!.ownerName }) + "</b>";
+            this.name_txt.htmlText = "<b>" + getKEYS().Get("inf_ai_tribe_mapview", { "v1": this.data!.ownerName }) + "</b>";
         } else {
-            this.name_txt.htmlText = "<b>" + KEYS.Get("inf_ai_tribe_listview", {
+            this.name_txt.htmlText = "<b>" + getKEYS().Get("inf_ai_tribe_listview", {
                 "v1": this.data!.ownerName,
                 "v2": this.data!.level.Get()
             }) + "</b>";

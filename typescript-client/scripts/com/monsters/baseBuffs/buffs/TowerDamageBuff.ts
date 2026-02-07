@@ -1,8 +1,11 @@
 import { BaseBuff } from "../BaseBuff";
-import { InstanceManager } from "../../managers/InstanceManager";
 import { MultiplicationPropertyModifier } from "../../monsters/components/modifiers/MultiplicationPropertyModifier";
 
-import { BTOWER } from "../../../../BTOWER";
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("../../managers/InstanceManager").InstanceManager; }
+function getBTOWER(): any { return require("../../../../BTOWER").BTOWER; }
+
+
 
 /**
  * Tower damage multiplier - internal class for tower damage buff.
@@ -28,7 +31,7 @@ export class TowerDamageBuff extends BaseBuff {
     }
 
     public override apply(): void {
-        const towers: Array<any> = InstanceManager.getInstancesByClass(BTOWER);
+        const towers: Array<any> = getInstanceManager().getInstancesByClass(getBTOWER());
         for (let i = 0; i < towers.length; i++) {
             const tower: BTOWER = towers[i] as BTOWER;
             tower.damageProperty.addModifier(new TowerDamageMultiplier(this.getValue() * 0.01 + 1));
@@ -36,7 +39,7 @@ export class TowerDamageBuff extends BaseBuff {
     }
 
     public override clear(): void {
-        const towers: Array<any> = InstanceManager.getInstancesByClass(BTOWER);
+        const towers: Array<any> = getInstanceManager().getInstancesByClass(getBTOWER());
         for (let i = 0; i < towers.length; i++) {
             const tower: BTOWER = towers[i] as BTOWER;
             tower.damageProperty.removeModifier(tower.damageProperty.getModifierByType(TowerDamageMultiplier));

@@ -1,20 +1,23 @@
 import { ImageCache } from './com/monsters/display/ImageCache';
-import { InstanceManager } from './com/monsters/managers/InstanceManager';
 import { ACADEMYPOPUP_CLIP } from './ACADEMYPOPUP_CLIP';
 import { ACADEMY } from './ACADEMY';
-import { BASE } from './BASE';
-import { CREATURELOCKER } from './CREATURELOCKER';
-import { CREATURES } from './CREATURES';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { BRESOURCE } from './BRESOURCE';
-import { BFOUNDATION } from './BFOUNDATION';
-import { BUILDING26 } from './BUILDING26';
-import { LOGGER } from './LOGGER';
-import { POPUPS } from './POPUPS';
 import { POPUPSETTINGS } from './POPUPSETTINGS';
-import { STORE } from './STORE';
 import { popup_monster } from './popup_monster';
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getBRESOURCE(): any { return require("./BRESOURCE").BRESOURCE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBUILDING26(): any { return require("./BUILDING26").BUILDING26; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+
 
 /**
  * ACADEMYPOPUP - UI popup for the Academy building
@@ -84,15 +87,15 @@ export class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP {
     constructor() {
         super();
         
-        if (BASE.isInfernoMainYardOrOutpost) {
+        if (getBASE().isInfernoMainYardOrOutpost) {
             ACADEMYPOPUP._monsterString = "IC";
-            ACADEMYPOPUP._maxMonsters = CREATURELOCKER.NUM_ICREEP_TYPE;
+            ACADEMYPOPUP._maxMonsters = getCREATURELOCKER().NUM_ICREEP_TYPE;
             if (ACADEMYPOPUP._page > ACADEMYPOPUP._maxMonsters) {
                 ACADEMYPOPUP._page = 1;
             }
         } else {
             ACADEMYPOPUP._monsterString = "C";
-            ACADEMYPOPUP._maxMonsters = CREATURELOCKER.NUM_CREEP_TYPE + 1;
+            ACADEMYPOPUP._maxMonsters = getCREATURELOCKER().NUM_CREEP_TYPE + 1;
         }
         
         this.bPrevious.addEventListener("click", this.Previous.bind(this));
@@ -102,36 +105,36 @@ export class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP {
         
         for (let i: number = 1; i < 5; i++) {
             this.bB["mcR" + i].visible = false;
-            this.bB["mcR" + i].gotoAndStop(i + (BASE.isInfernoMainYardOrOutpost ? this._infernoFrameOffset : 0));
+            this.bB["mcR" + i].gotoAndStop(i + (getBASE().isInfernoMainYardOrOutpost ? this._infernoFrameOffset : 0));
             if (i !== 3) {
                 this.bB["mcR" + i].alpha = 0.25;
             }
-            this.bB["mcR" + i].tTitle.htmlText = "<b>" + KEYS.Get(GLOBAL._resourceNames[i - 1]) + "</b>";
+            this.bB["mcR" + i].tTitle.htmlText = "<b>" + getKEYS().Get(getGLOBAL()._resourceNames[i - 1]) + "</b>";
             this.bB["mcR" + i].tValue.htmlText = "<b>0</b>";
         }
         
         this.bB.mcTime.visible = false;
-        this.bB.mcTime.gotoAndStop((BASE.isInfernoMainYardOrOutpost ? this._infernoFrameOffset : 0) + 6);
-        this.bB.mcTime.tTitle.htmlText = "<b>" + KEYS.Get("#r_time#") + "</b>";
+        this.bB.mcTime.gotoAndStop((getBASE().isInfernoMainYardOrOutpost ? this._infernoFrameOffset : 0) + 6);
+        this.bB.mcTime.tTitle.htmlText = "<b>" + getKEYS().Get("#r_time#") + "</b>";
         
-        for (const creatureID in CREATURELOCKER._creatures) {
-            if (CREATURES.GetProperty(creatureID, "speed", 10) > ACADEMYPOPUP._maxSpeed) {
-                ACADEMYPOPUP._maxSpeed = CREATURES.GetProperty(creatureID, "speed", 10);
+        for (const creatureID in getCREATURELOCKER()._creatures) {
+            if (getCREATURES().GetProperty(creatureID, "speed", 10) > ACADEMYPOPUP._maxSpeed) {
+                ACADEMYPOPUP._maxSpeed = getCREATURES().GetProperty(creatureID, "speed", 10);
             }
-            if (CREATURES.GetProperty(creatureID, "health", 10) > ACADEMYPOPUP._maxHealth) {
-                ACADEMYPOPUP._maxHealth = CREATURES.GetProperty(creatureID, "health", 10);
+            if (getCREATURES().GetProperty(creatureID, "health", 10) > ACADEMYPOPUP._maxHealth) {
+                ACADEMYPOPUP._maxHealth = getCREATURES().GetProperty(creatureID, "health", 10);
             }
-            if (CREATURES.GetProperty(creatureID, "damage", 10) > ACADEMYPOPUP._maxDamage) {
-                ACADEMYPOPUP._maxDamage = CREATURES.GetProperty(creatureID, "damage", 10);
+            if (getCREATURES().GetProperty(creatureID, "damage", 10) > ACADEMYPOPUP._maxDamage) {
+                ACADEMYPOPUP._maxDamage = getCREATURES().GetProperty(creatureID, "damage", 10);
             }
-            if (CREATURES.GetProperty(creatureID, "cTime", 10) > ACADEMYPOPUP._maxTime) {
-                ACADEMYPOPUP._maxTime = CREATURES.GetProperty(creatureID, "cTime", 10);
+            if (getCREATURES().GetProperty(creatureID, "cTime", 10) > ACADEMYPOPUP._maxTime) {
+                ACADEMYPOPUP._maxTime = getCREATURES().GetProperty(creatureID, "cTime", 10);
             }
-            if (CREATURES.GetProperty(creatureID, "cResource", 10) > ACADEMYPOPUP._maxResource) {
-                ACADEMYPOPUP._maxResource = CREATURES.GetProperty(creatureID, "cResource", 10);
+            if (getCREATURES().GetProperty(creatureID, "cResource", 10) > ACADEMYPOPUP._maxResource) {
+                ACADEMYPOPUP._maxResource = getCREATURES().GetProperty(creatureID, "cResource", 10);
             }
-            if (CREATURES.GetProperty(creatureID, "cStorage", 10) > ACADEMYPOPUP._maxStorage) {
-                ACADEMYPOPUP._maxStorage = CREATURES.GetProperty(creatureID, "cStorage", 10);
+            if (getCREATURES().GetProperty(creatureID, "cStorage", 10) > ACADEMYPOPUP._maxStorage) {
+                ACADEMYPOPUP._maxStorage = getCREATURES().GetProperty(creatureID, "cStorage", 10);
             }
         }
         
@@ -143,25 +146,25 @@ export class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP {
         
         this.Setup(ACADEMYPOPUP._monsterString + ACADEMYPOPUP._page);
         
-        this.speed_txt.htmlText = "<b>" + KEYS.Get("acad_att_speed") + "</b>";
-        this.health_txt.htmlText = "<b>" + KEYS.Get("acad_att_health") + "</b>";
-        this.damage_txt.htmlText = "<b>" + KEYS.Get("acad_att_damage") + "</b>";
-        this.cost_txt.htmlText = "<b>" + KEYS.Get("acad_att_cost") + "</b>";
+        this.speed_txt.htmlText = "<b>" + getKEYS().Get("acad_att_speed") + "</b>";
+        this.health_txt.htmlText = "<b>" + getKEYS().Get("acad_att_health") + "</b>";
+        this.damage_txt.htmlText = "<b>" + getKEYS().Get("acad_att_damage") + "</b>";
+        this.cost_txt.htmlText = "<b>" + getKEYS().Get("acad_att_cost") + "</b>";
         
-        if (BASE.isInfernoMainYardOrOutpost) {
-            this.cost_txt.htmlText = "<b>" + KEYS.Get("infacad_att_cost") + "</b>";
+        if (getBASE().isInfernoMainYardOrOutpost) {
+            this.cost_txt.htmlText = "<b>" + getKEYS().Get("infacad_att_cost") + "</b>";
         }
         
-        this.housing_txt.htmlText = "<b>" + KEYS.Get("acad_att_housing") + "</b>";
-        this.time_txt.htmlText = "<b>" + KEYS.Get("acad_att_time") + "</b>";
-        this.before_txt.htmlText = "<b>" + KEYS.Get("acad_att_before") + "</b>";
-        this.after_txt.htmlText = "<b>" + KEYS.Get("acad_att_after") + "</b>";
+        this.housing_txt.htmlText = "<b>" + getKEYS().Get("acad_att_housing") + "</b>";
+        this.time_txt.htmlText = "<b>" + getKEYS().Get("acad_att_time") + "</b>";
+        this.before_txt.htmlText = "<b>" + getKEYS().Get("acad_att_before") + "</b>";
+        this.after_txt.htmlText = "<b>" + getKEYS().Get("acad_att_after") + "</b>";
     }
     
     public Setup(monsterID: string): void {
         ACADEMYPOPUP._monsterID = monsterID;
-        if (!GLOBAL.player.m_upgrades[ACADEMYPOPUP._monsterID]) {
-            GLOBAL.player.m_upgrades[ACADEMYPOPUP._monsterID] = { level: 1 };
+        if (!getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID]) {
+            getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID] = { level: 1 };
         }
         this.Update(true);
         ACADEMYPOPUP.lastAction = 0;
@@ -178,22 +181,22 @@ export class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP {
     }
     
     private CalculateInstantCost(): void {
-        const trainingCosts = CREATURELOCKER._creatures[ACADEMYPOPUP._monsterID].trainingCosts[
-            GLOBAL.player.m_upgrades[ACADEMYPOPUP._monsterID].level - 1
+        const trainingCosts = getCREATURELOCKER()._creatures[ACADEMYPOPUP._monsterID].trainingCosts[
+            getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID].level - 1
         ];
-        const monsterName: string = KEYS.Get(CREATURELOCKER._creatures[ACADEMYPOPUP._monsterID].name);
+        const monsterName: string = getKEYS().Get(getCREATURELOCKER()._creatures[ACADEMYPOPUP._monsterID].name);
         const resourceCost: number = trainingCosts[0];
         const timeCost: number = trainingCosts[1];
-        const shinyCost: number = STORE.GetTimeCost(timeCost);
+        const shinyCost: number = getSTORE().GetTimeCost(timeCost);
         const additionalCost: number = Math.ceil(Math.pow(Math.sqrt(resourceCost / 2), 0.75));
         ACADEMYPOPUP._instantUpgradeCost = shinyCost + additionalCost;
     }
     
     public Update(forceUpdate: boolean = false): void {
-        const upgrade = GLOBAL.player.m_upgrades[ACADEMYPOPUP._monsterID];
+        const upgrade = getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID];
         const startResult = ACADEMY.StartMonsterUpgrade(ACADEMYPOPUP._monsterID, true);
-        const trainingCosts = CREATURELOCKER._creatures[ACADEMYPOPUP._monsterID].trainingCosts[
-            GLOBAL.player.m_upgrades[ACADEMYPOPUP._monsterID].level - 1
+        const trainingCosts = getCREATURELOCKER()._creatures[ACADEMYPOPUP._monsterID].trainingCosts[
+            getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID].level - 1
         ];
         
         if (this._portraitImage && this._portraitImage.parent) {
@@ -235,13 +238,13 @@ export class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP {
             }
         } else {
             if (!startResult.error) {
-                this.bA.tDescription.htmlText = KEYS.Get("academy_traininstantly");
+                this.bA.tDescription.htmlText = getKEYS().Get("academy_traininstantly");
                 this.CalculateInstantCost();
                 this.bA.gArrow.visible = true;
                 this.bA.tDescription.visible = true;
                 this.bA.gCoin.visible = true;
                 this.bA.bAction.removeEventListener("click", this.SpeedUp.bind(this));
-                this.bA.bAction.Setup(KEYS.Get("btn_useshiny", { v1: ACADEMYPOPUP._instantUpgradeCost }));
+                this.bA.bAction.Setup(getKEYS().Get("btn_useshiny", { v1: ACADEMYPOPUP._instantUpgradeCost }));
                 this.bA.bAction.removeEventListener("click", this.SpeedUp.bind(this));
                 this.bA.bAction.Enabled = true;
                 this.bA.bAction.Highlight = true;
@@ -255,26 +258,26 @@ export class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP {
                 this.bB.mcR1.visible = true;
                 this.bB.mcR2.visible = true;
                 this.bB.mcR3.visible = true;
-                const resourceColor = trainingCosts[0] > GLOBAL._resources.r3.Get() ? "FF0000" : "000000";
-                this.bB.mcR3.tValue.htmlText = `<b><font color="#${resourceColor}">${GLOBAL.FormatNumber(trainingCosts[0])}</font></b>`;
+                const resourceColor = trainingCosts[0] > getGLOBAL()._resources.r3.Get() ? "FF0000" : "000000";
+                this.bB.mcR3.tValue.htmlText = `<b><font color="#${resourceColor}">${getGLOBAL().FormatNumber(trainingCosts[0])}</font></b>`;
                 this.bB.mcR4.visible = true;
                 this.bB.mcTime.visible = true;
-                this.bB.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(trainingCosts[1]) + "</b>";
-            } else if (startResult.status === KEYS.Get("acad_err_putty") || startResult.status === KEYS.Get("acad_err_sulfur")) {
+                this.bB.mcTime.tValue.htmlText = "<b>" + getGLOBAL().ToTime(trainingCosts[1]) + "</b>";
+            } else if (startResult.status === getKEYS().Get("acad_err_putty") || startResult.status === getKEYS().Get("acad_err_sulfur")) {
                 this.bA.tDescription.visible = true;
                 this.bA.gArrow.visible = true;
                 this.bA.gCoin.visible = true;
-                this.bA.tDescription.htmlText = KEYS.Get("academy_traininstantly");
+                this.bA.tDescription.htmlText = getKEYS().Get("academy_traininstantly");
                 this.bB.mcR1.visible = true;
                 this.bB.mcR2.visible = true;
                 this.bB.mcR3.visible = true;
-                const resourceColor = trainingCosts[0] > GLOBAL._resources.r3.Get() ? "FF0000" : "000000";
-                this.bB.mcR3.tValue.htmlText = `<b><font color="#${resourceColor}">${GLOBAL.FormatNumber(trainingCosts[0])}</font></b>`;
+                const resourceColor = trainingCosts[0] > getGLOBAL()._resources.r3.Get() ? "FF0000" : "000000";
+                this.bB.mcR3.tValue.htmlText = `<b><font color="#${resourceColor}">${getGLOBAL().FormatNumber(trainingCosts[0])}</font></b>`;
                 this.bB.mcR4.visible = true;
                 this.bB.mcTime.visible = true;
-                this.bB.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(trainingCosts[1]) + "</b>";
+                this.bB.mcTime.tValue.htmlText = "<b>" + getGLOBAL().ToTime(trainingCosts[1]) + "</b>";
                 this.CalculateInstantCost();
-                this.bA.bAction.Setup(KEYS.Get("btn_useshiny", { v1: ACADEMYPOPUP._instantUpgradeCost }));
+                this.bA.bAction.Setup(getKEYS().Get("btn_useshiny", { v1: ACADEMYPOPUP._instantUpgradeCost }));
                 this.bA.bAction.removeEventListener("click", this.InstantMonsterUpgrade.bind(this));
                 this.bA.bAction.addEventListener("click", this.InstantMonsterUpgrade.bind(this));
                 this.bA.bAction.removeEventListener("click", this.SpeedUp.bind(this));
@@ -307,16 +310,16 @@ export class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP {
             this.bPrevious.visible = this.bNext.visible = true;
         }
         
-        let infoText = "<b>" + KEYS.Get("acad_mon_name") + "</b> " + KEYS.Get(CREATURELOCKER._creatures[ACADEMYPOPUP._monsterID].name) + "<br>";
-        infoText += "<b>" + KEYS.Get("acad_mon_status") + "</b> " + startResult.status;
-        infoText += "<br>" + KEYS.Get(CREATURELOCKER._creatures[ACADEMYPOPUP._monsterID].description);
+        let infoText = "<b>" + getKEYS().Get("acad_mon_name") + "</b> " + getKEYS().Get(getCREATURELOCKER()._creatures[ACADEMYPOPUP._monsterID].name) + "<br>";
+        infoText += "<b>" + getKEYS().Get("acad_mon_status") + "</b> " + startResult.status;
+        infoText += "<br>" + getKEYS().Get(getCREATURELOCKER()._creatures[ACADEMYPOPUP._monsterID].description);
         this.tName.htmlText = infoText;
         
-        let damage: number = CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "damage");
+        let damage: number = getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "damage");
         const isHealer: boolean = damage <= 0;
         
-        this.bSpeedA.mcBar.width = 100 / ACADEMYPOPUP._maxSpeed * CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "speed");
-        this.bHealthA.mcBar.width = 100 / ACADEMYPOPUP._maxHealth * CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "health");
+        this.bSpeedA.mcBar.width = 100 / ACADEMYPOPUP._maxSpeed * getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "speed");
+        this.bHealthA.mcBar.width = 100 / ACADEMYPOPUP._maxHealth * getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "health");
         
         if (!isHealer) {
             this.bDamageA.mcBar.width = 100 / ACADEMYPOPUP._maxDamage * damage;
@@ -324,31 +327,31 @@ export class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP {
             this.bDamageA.mcBar.width = 100 / ACADEMYPOPUP._maxDamage * -damage;
         }
         
-        this.bResourceA.mcBar.width = 100 / ACADEMYPOPUP._maxResource * CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cResource");
-        this.bStorageA.mcBar.width = 100 / ACADEMYPOPUP._maxStorage * CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cStorage");
-        this.bTimeA.mcBar.width = 100 / ACADEMYPOPUP._maxTime * CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cTime");
+        this.bResourceA.mcBar.width = 100 / ACADEMYPOPUP._maxResource * getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cResource");
+        this.bStorageA.mcBar.width = 100 / ACADEMYPOPUP._maxStorage * getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cStorage");
+        this.bTimeA.mcBar.width = 100 / ACADEMYPOPUP._maxTime * getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cTime");
         
-        this.tSpeedA.htmlText = KEYS.Get("mon_att_speedvalue", { v1: CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "speed") });
-        this.tHealthA.htmlText = CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "health").toString();
+        this.tSpeedA.htmlText = getKEYS().Get("mon_att_speedvalue", { v1: getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "speed") });
+        this.tHealthA.htmlText = getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "health").toString();
         
         if (!isHealer) {
             this.tDamageA.htmlText = damage.toString();
         } else {
-            this.tDamageA.htmlText = -damage + " (" + KEYS.Get("str_heal") + ")";
+            this.tDamageA.htmlText = -damage + " (" + getKEYS().Get("str_heal") + ")";
         }
         
-        this.tResourceA.htmlText = KEYS.Get("mon_att_costvalue", {
-            v1: CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cResource"),
-            v2: KEYS.Get(BRESOURCE.GetResourceNameKey(3))
+        this.tResourceA.htmlText = getKEYS().Get("mon_att_costvalue", {
+            v1: getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cResource"),
+            v2: getKEYS().Get(getBRESOURCE().GetResourceNameKey(3))
         });
-        this.tStorageA.htmlText = KEYS.Get("mon_att_housingvalue", { v1: CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cStorage") });
-        this.tTimeA.htmlText = GLOBAL.ToTime(CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cTime"), true);
+        this.tStorageA.htmlText = getKEYS().Get("mon_att_housingvalue", { v1: getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cStorage") });
+        this.tTimeA.htmlText = getGLOBAL().ToTime(getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cTime"), true);
         
-        let afterLevel: number = GLOBAL.player.m_upgrades[ACADEMYPOPUP._monsterID].level;
+        let afterLevel: number = getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID].level;
         let canUpgrade: boolean = false;
         let maxBuildingLevel: number = 1;
         
-        for (const prop of GLOBAL._buildingProps) {
+        for (const prop of getGLOBAL()._buildingProps) {
             if (prop.id === 26) {
                 if (prop.costs && prop.costs.length > maxBuildingLevel) {
                     maxBuildingLevel = prop.costs.length;
@@ -356,49 +359,49 @@ export class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP {
             }
         }
         
-        canUpgrade = GLOBAL.player.m_upgrades[ACADEMYPOPUP._monsterID].level <= maxBuildingLevel;
+        canUpgrade = getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID].level <= maxBuildingLevel;
         
         if (canUpgrade) {
-            afterLevel = GLOBAL.player.m_upgrades[ACADEMYPOPUP._monsterID].level + 1;
+            afterLevel = getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID].level + 1;
         } else {
-            afterLevel = GLOBAL.player.m_upgrades[ACADEMYPOPUP._monsterID].level;
+            afterLevel = getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID].level;
         }
         
-        damage = CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "damage", afterLevel);
+        damage = getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "damage", afterLevel);
         if (isHealer) {
             damage = -damage;
         }
         
-        this.bSpeedB.mcBar.width = 100 / ACADEMYPOPUP._maxSpeed * CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "speed", afterLevel);
-        this.bHealthB.mcBar.width = 100 / ACADEMYPOPUP._maxHealth * CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "health", afterLevel);
+        this.bSpeedB.mcBar.width = 100 / ACADEMYPOPUP._maxSpeed * getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "speed", afterLevel);
+        this.bHealthB.mcBar.width = 100 / ACADEMYPOPUP._maxHealth * getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "health", afterLevel);
         this.bDamageB.mcBar.width = 100 / ACADEMYPOPUP._maxDamage * damage;
-        this.bResourceB.mcBar.width = 100 / ACADEMYPOPUP._maxResource * CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cResource", afterLevel);
-        this.bStorageB.mcBar.width = 100 / ACADEMYPOPUP._maxStorage * CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cStorage", afterLevel);
-        this.bTimeB.mcBar.width = 100 / ACADEMYPOPUP._maxTime * CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cTime", afterLevel);
+        this.bResourceB.mcBar.width = 100 / ACADEMYPOPUP._maxResource * getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cResource", afterLevel);
+        this.bStorageB.mcBar.width = 100 / ACADEMYPOPUP._maxStorage * getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cStorage", afterLevel);
+        this.bTimeB.mcBar.width = 100 / ACADEMYPOPUP._maxTime * getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cTime", afterLevel);
         
-        this.tSpeedB.htmlText = KEYS.Get("mon_att_speedvalue", { v1: CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "speed", afterLevel) });
-        this.tHealthB.htmlText = CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "health", afterLevel).toString();
+        this.tSpeedB.htmlText = getKEYS().Get("mon_att_speedvalue", { v1: getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "speed", afterLevel) });
+        this.tHealthB.htmlText = getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "health", afterLevel).toString();
         
         if (!isHealer) {
             this.tDamageB.htmlText = damage.toString();
         } else {
-            this.tDamageB.htmlText = damage + " (" + KEYS.Get("str_heal") + ")";
+            this.tDamageB.htmlText = damage + " (" + getKEYS().Get("str_heal") + ")";
         }
         
-        this.tResourceB.htmlText = KEYS.Get("mon_att_costvalue", {
-            v1: CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cResource", afterLevel),
-            v2: KEYS.Get(BRESOURCE.GetResourceNameKey(3))
+        this.tResourceB.htmlText = getKEYS().Get("mon_att_costvalue", {
+            v1: getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cResource", afterLevel),
+            v2: getKEYS().Get(getBRESOURCE().GetResourceNameKey(3))
         });
-        this.tStorageB.htmlText = KEYS.Get("mon_att_housingvalue", { v1: CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cStorage", afterLevel) });
-        this.tTimeB.htmlText = GLOBAL.ToTime(CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cTime", afterLevel), true);
+        this.tStorageB.htmlText = getKEYS().Get("mon_att_housingvalue", { v1: getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cStorage", afterLevel) });
+        this.tTimeB.htmlText = getGLOBAL().ToTime(getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cTime", afterLevel), true);
         
         // Update bar colors based on stat changes
-        this.bSpeedB.mcBar.gotoAndStop(CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "speed") !== CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "speed", afterLevel) ? 2 : 1);
-        this.bHealthB.mcBar.gotoAndStop(CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "health") !== CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "health", afterLevel) ? 2 : 1);
-        this.bDamageB.mcBar.gotoAndStop(CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "damage") !== CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "damage", afterLevel) ? 2 : 1);
-        this.bResourceB.mcBar.gotoAndStop(CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cResource") !== CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cResource", afterLevel) ? 2 : 1);
-        this.bStorageB.mcBar.gotoAndStop(CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cStorage") !== CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cStorage", afterLevel) ? 2 : 1);
-        this.bTimeB.mcBar.gotoAndStop(CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cTime") !== CREATURES.GetProperty(ACADEMYPOPUP._monsterID, "cTime", afterLevel) ? 2 : 1);
+        this.bSpeedB.mcBar.gotoAndStop(getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "speed") !== getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "speed", afterLevel) ? 2 : 1);
+        this.bHealthB.mcBar.gotoAndStop(getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "health") !== getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "health", afterLevel) ? 2 : 1);
+        this.bDamageB.mcBar.gotoAndStop(getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "damage") !== getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "damage", afterLevel) ? 2 : 1);
+        this.bResourceB.mcBar.gotoAndStop(getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cResource") !== getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cResource", afterLevel) ? 2 : 1);
+        this.bStorageB.mcBar.gotoAndStop(getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cStorage") !== getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cStorage", afterLevel) ? 2 : 1);
+        this.bTimeB.mcBar.gotoAndStop(getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cTime") !== getCREATURES().GetProperty(ACADEMYPOPUP._monsterID, "cTime", afterLevel) ? 2 : 1);
     }
     
     public StartMonsterUpgrade(event: MouseEvent): void {
@@ -407,23 +410,23 @@ export class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP {
     }
     
     public InstantMonsterUpgrade(event: MouseEvent): void {
-        if (BASE._credits.Get() < ACADEMYPOPUP._instantUpgradeCost) {
-            POPUPS.DisplayGetShiny();
+        if (getBASE()._credits.Get() < ACADEMYPOPUP._instantUpgradeCost) {
+            getPOPUPS().DisplayGetShiny();
             return;
         }
         
-        if (GLOBAL.player.m_upgrades[ACADEMYPOPUP._monsterID].time) {
-            delete GLOBAL.player.m_upgrades[ACADEMYPOPUP._monsterID].time;
+        if (getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID].time) {
+            delete getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID].time;
         }
         
-        if (GLOBAL.player.m_upgrades[ACADEMYPOPUP._monsterID].duration) {
-            delete GLOBAL.player.m_upgrades[ACADEMYPOPUP._monsterID].duration;
+        if (getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID].duration) {
+            delete getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID].duration;
         }
         
-        ++GLOBAL.player.m_upgrades[ACADEMYPOPUP._monsterID].level;
-        GLOBAL.player.upgradeHealthData(ACADEMYPOPUP._monsterID);
+        ++getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID].level;
+        getGLOBAL().player.upgradeHealthData(ACADEMYPOPUP._monsterID);
         
-        const buildingInstances: BUILDING26[] = InstanceManager.getInstancesByClass(BUILDING26) as BUILDING26[];
+        const buildingInstances: BUILDING26[] = getInstanceManager().getInstancesByClass(getBUILDING26()) as BUILDING26[];
         
         for (const building of buildingInstances) {
             if (building._upgrading === ACADEMYPOPUP._monsterID) {
@@ -432,63 +435,63 @@ export class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP {
             }
         }
         
-        LOGGER.Stat([47, ACADEMYPOPUP._monsterID, GLOBAL.player.m_upgrades[ACADEMYPOPUP._monsterID].level]);
+        getLOGGER().Stat([47, ACADEMYPOPUP._monsterID, getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID].level]);
         
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
             let bragImage: string | null = null;
             
-            if (CREATURELOCKER._creatures[ACADEMYPOPUP._monsterID].stream[2]) {
-                bragImage = String(CREATURELOCKER._creatures[ACADEMYPOPUP._monsterID].stream[2]);
+            if (getCREATURELOCKER()._creatures[ACADEMYPOPUP._monsterID].stream[2]) {
+                bragImage = String(getCREATURELOCKER()._creatures[ACADEMYPOPUP._monsterID].stream[2]);
             }
             
-            let monsterName: string = String(CREATURELOCKER._creatures[ACADEMYPOPUP._monsterID].name);
+            let monsterName: string = String(getCREATURELOCKER()._creatures[ACADEMYPOPUP._monsterID].name);
             if (monsterName.substring(0, 1) === "#") {
-                monsterName = KEYS.Get(monsterName);
+                monsterName = getKEYS().Get(monsterName);
             }
             
             const Post = (): void => {
-                if (BASE.isInfernoMainYardOrOutpost) {
-                    GLOBAL.CallJS("sendFeed", [
+                if (getBASE().isInfernoMainYardOrOutpost) {
+                    getGLOBAL().CallJS("sendFeed", [
                         "academy-training",
-                        KEYS.Get("acad_stream_title_inf", {
+                        getKEYS().Get("acad_stream_title_inf", {
                             v1: monsterName,
-                            v2: GLOBAL.player.m_upgrades[ACADEMYPOPUP._monsterID].level
+                            v2: getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID].level
                         }),
-                        KEYS.Get("acad_stream_description"),
+                        getKEYS().Get("acad_stream_description"),
                         bragImage,
                         0
                     ]);
                 } else {
-                    GLOBAL.CallJS("sendFeed", [
+                    getGLOBAL().CallJS("sendFeed", [
                         "academy-training",
-                        KEYS.Get("acad_stream_title", {
+                        getKEYS().Get("acad_stream_title", {
                             v1: monsterName,
-                            v2: GLOBAL.player.m_upgrades[ACADEMYPOPUP._monsterID].level
+                            v2: getGLOBAL().player.m_upgrades[ACADEMYPOPUP._monsterID].level
                         }),
-                        KEYS.Get("acad_stream_description"),
+                        getKEYS().Get("acad_stream_description"),
                         bragImage,
                         0
                     ]);
                 }
-                POPUPS.Next();
+                getPOPUPS().Next();
             };
             
             const popupMC: popup_monster = new popup_monster();
-            popupMC.tText.htmlText = KEYS.Get("acad_pop_complete", { v1: monsterName });
+            popupMC.tText.htmlText = getKEYS().Get("acad_pop_complete", { v1: monsterName });
             popupMC.bAction.SetupKey("btn_warnyourfriends");
             popupMC.bAction.addEventListener("click", Post);
             popupMC.bAction.Highlight = true;
             popupMC.bSpeedup.visible = false;
-            POPUPS.Push(popupMC, null, null, null, `${ACADEMYPOPUP._monsterID}-150.png`);
+            getPOPUPS().Push(popupMC, null, null, null, `${ACADEMYPOPUP._monsterID}-150.png`);
         }
         
-        BASE.Purchase("ITR", ACADEMYPOPUP._instantUpgradeCost, "academy");
+        getBASE().Purchase("ITR", ACADEMYPOPUP._instantUpgradeCost, "academy");
     }
     
     public CancelMonsterUpgrade(event: MouseEvent): void {
-        GLOBAL.Message(
-            KEYS.Get("acad_confirmcancel", { v1: KEYS.Get(CREATURELOCKER._creatures[ACADEMYPOPUP._monsterID].name) }),
-            KEYS.Get("acad_confirmcancel_btn"),
+        getGLOBAL().Message(
+            getKEYS().Get("acad_confirmcancel", { v1: getKEYS().Get(getCREATURELOCKER()._creatures[ACADEMYPOPUP._monsterID].name) }),
+            getKEYS().Get("acad_confirmcancel_btn"),
             this.CancelMonsterUpgradeB.bind(this)
         );
     }
@@ -500,7 +503,7 @@ export class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP {
     
     public SpeedUp(event: MouseEvent): void {
         ACADEMY._monsterID = ACADEMYPOPUP._monsterID;
-        STORE.SpeedUp("SP4");
+        getSTORE().SpeedUp("SP4");
     }
     
     public Previous(event?: MouseEvent): void {
@@ -546,7 +549,7 @@ export class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP {
     }
     
     public CheckMonsterLock(monsterID: string): boolean {
-        const isBlocked: boolean = Boolean(CREATURELOCKER._creatures[monsterID]?.blocked);
+        const isBlocked: boolean = Boolean(getCREATURELOCKER()._creatures[monsterID]?.blocked);
         return isBlocked;
     }
     
@@ -561,7 +564,7 @@ export class ACADEMYPOPUP extends ACADEMYPOPUP_CLIP {
         this.gotoAndStop(this._guidePage);
         
         if (this._guidePage > 1) {
-            this.txtGuide.htmlText = KEYS.Get("acad_tut_" + (this._guidePage - 1));
+            this.txtGuide.htmlText = getKEYS().Get("acad_tut_" + (this._guidePage - 1));
             if (this._guidePage === 2) {
                 this.bContinue.addEventListener("click", this.Help.bind(this));
                 this.bContinue.SetupKey("btn_continue");

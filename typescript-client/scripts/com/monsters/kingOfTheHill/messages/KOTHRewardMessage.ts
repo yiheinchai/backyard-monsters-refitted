@@ -1,9 +1,12 @@
 import { KeywordMessage } from "../../frontPage/messages/KeywordMessage";
 
-import { CREEPS } from "../../../../CREEPS";
-import { KEYS } from "../../../../KEYS";
-import { GLOBAL } from "../../../../GLOBAL";
-import { POPUPS } from "../../../../POPUPS";
+// Lazy imports to break circular dependency chains
+function getCREEPS(): any { return require("../../../../CREEPS").CREEPS; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getPOPUPS(): any { return require("../../../../POPUPS").POPUPS; }
+
+
 
 /**
  * KOTH reward message - shown when player wins/keeps Krallen.
@@ -11,21 +14,21 @@ import { POPUPS } from "../../../../POPUPS";
 export class KOTHRewardMessage extends KeywordMessage {
     constructor(keptKrallen: boolean) {
         let level = 1;
-        if (CREEPS.krallen) {
-            level = CREEPS.krallen._level.Get();
+        if (getCREEPS().krallen) {
+            level = getCREEPS().krallen._level.Get();
         }
         super(keptKrallen ? "kothendkeep" : "kothendwin", "btn_brag");
-        this.body = KEYS.Get(KeywordMessage.PREFIX + this._keyword, { v1: level });
+        this.body = getKEYS().Get(KeywordMessage.PREFIX + this._keyword, { v1: level });
         this.imageURL = KeywordMessage.getImageURLFromKeyword("event_kothwin");
     }
 
     protected override onButtonClick(): void {
-        GLOBAL.CallJS("sendFeed", [
+        getGLOBAL().CallJS("sendFeed", [
             "event4-reward",
-            KEYS.Get("fb_kothstream_title"),
-            KEYS.Get("fb_kothstream_desc"),
+            getKEYS().Get("fb_kothstream_title"),
+            getKEYS().Get("fb_kothstream_desc"),
             "fb_kothstream.png"
         ]);
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 }

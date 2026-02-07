@@ -5,28 +5,31 @@ import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import TextFieldAutoSize from 'openfl/text/TextFieldAutoSize';
 import { BYMConfig } from './com/monsters/configs/BYMConfig';
-import { InventoryManager } from './com/monsters/inventory/InventoryManager';
-import { InstanceManager } from './com/monsters/managers/InstanceManager';
 import { ChampionBase } from './com/monsters/monsters/champions/ChampionBase';
 import { Reward } from './com/monsters/rewarding/Reward';
 import { RewardHandler } from './com/monsters/rewarding/RewardHandler';
 import { popup_helped } from './popup_helped';
 import { frame } from './frame';
-import { BFOUNDATION } from './BFOUNDATION';
-import { CHAMPIONCHAMBER } from './CHAMPIONCHAMBER';
-import { CHAMPIONCAGE } from './CHAMPIONCAGE';
-import { CREATURES } from './CREATURES';
-import { GLOBAL } from './GLOBAL';
-import { BASE } from './BASE';
-import { GRID } from './GRID';
-import { KEYS } from './KEYS';
-import { LOGIN } from './LOGIN';
-import { LOGGER } from './LOGGER';
-import { MAP } from './MAP';
-import { POPUPS } from './POPUPS';
-import { TUTORIAL } from './TUTORIAL';
-import { URLLoaderApi } from './URLLoaderApi';
 import { JSON } from './JSON';
+
+// Lazy imports to break circular dependency chains
+function getInventoryManager(): any { return require("./com/monsters/inventory/InventoryManager").InventoryManager; }
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getCHAMPIONCHAMBER(): any { return require("./CHAMPIONCHAMBER").CHAMPIONCHAMBER; }
+function getCHAMPIONCAGE(): any { return require("./CHAMPIONCAGE").CHAMPIONCAGE; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGRID(): any { return require("./GRID").GRID; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGIN(): any { return require("./LOGIN").LOGIN; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+function getURLLoaderApi(): any { return require("./URLLoaderApi").URLLoaderApi; }
+
 
 export class UPDATES {
     public static _updates: any[];
@@ -51,7 +54,7 @@ export class UPDATES {
     }
 
     public static Process(param1: any[]): void {
-        if (!GLOBAL._save) {
+        if (!getGLOBAL()._save) {
             return;
         }
         if (param1) {
@@ -74,10 +77,10 @@ export class UPDATES {
     }
 
     public static Check(): void {
-        if (!GLOBAL._save) {
+        if (!getGLOBAL()._save) {
             return;
         }
-        const _loc1_ = GLOBAL.Timestamp();
+        const _loc1_ = getGLOBAL().Timestamp();
         for (let _loc2_ = 0; _loc2_ < UPDATES._updates.length; _loc2_++) {
             const _loc3_ = UPDATES._updates[_loc2_].data;
             if (_loc3_[0] <= _loc1_) {
@@ -87,7 +90,7 @@ export class UPDATES {
                 }
             }
         }
-        if (UPDATES._catchupList.length > 0 && !GLOBAL._catchup) {
+        if (UPDATES._catchupList.length > 0 && !getGLOBAL()._catchup) {
             UPDATES.Catchup();
         }
     }
@@ -98,55 +101,55 @@ export class UPDATES {
         let length: number = 0;
 
         const freezeChamp = (): void => {
-            if (CREATURES._guardian) {
-                CREATURES._guardian.modifyHealth(CREATURES._guardian.maxHealth);
-                CREATURES._guardian.export();
-                CREATURES._guardian.changeModeFreeze();
+            if (getCREATURES()._guardian) {
+                getCREATURES()._guardian.modifyHealth(getCREATURES()._guardian.maxHealth);
+                getCREATURES()._guardian.export();
+                getCREATURES()._guardian.changeModeFreeze();
                 let _loc1_ = 0;
-                for (let _loc2_ = 0; _loc2_ < BASE._guardianData.length; _loc2_++) {
-                    if (BASE._guardianData[_loc2_].t == CREATURES._guardian._type) {
+                for (let _loc2_ = 0; _loc2_ < getBASE()._guardianData.length; _loc2_++) {
+                    if (getBASE()._guardianData[_loc2_].t == getCREATURES()._guardian._type) {
                         _loc1_ = _loc2_;
                     }
                 }
-                BASE._guardianData[_loc1_].ft -= GLOBAL.Timestamp();
-                (GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen.push(BASE._guardianData[_loc1_]);
-                BASE._guardianData[_loc1_].status = ChampionBase.k_CHAMPION_STATUS_FROZEN;
-                BASE._guardianData[_loc1_].log += "," + ChampionBase.k_CHAMPION_STATUS_FROZEN.toString();
-                if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
-                    const _loc2_ = GLOBAL.getPlayerGuardianIndex(CREATURES._guardian._type);
+                getBASE()._guardianData[_loc1_].ft -= getGLOBAL().Timestamp();
+                (getGLOBAL()._bChamber as CHAMPIONCHAMBER)._frozen.push(getBASE()._guardianData[_loc1_]);
+                getBASE()._guardianData[_loc1_].status = ChampionBase.k_CHAMPION_STATUS_FROZEN;
+                getBASE()._guardianData[_loc1_].log += "," + ChampionBase.k_CHAMPION_STATUS_FROZEN.toString();
+                if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD) {
+                    const _loc2_ = getGLOBAL().getPlayerGuardianIndex(getCREATURES()._guardian._type);
                     if (_loc2_ != -1) {
-                        GLOBAL._playerGuardianData[_loc2_].status = ChampionBase.k_CHAMPION_STATUS_FROZEN;
-                        GLOBAL._playerGuardianData[_loc2_].log += "," + ChampionBase.k_CHAMPION_STATUS_FROZEN.toString();
-                        GLOBAL._playerGuardianData[_loc2_].ft -= GLOBAL.Timestamp();
+                        getGLOBAL()._playerGuardianData[_loc2_].status = ChampionBase.k_CHAMPION_STATUS_FROZEN;
+                        getGLOBAL()._playerGuardianData[_loc2_].log += "," + ChampionBase.k_CHAMPION_STATUS_FROZEN.toString();
+                        getGLOBAL()._playerGuardianData[_loc2_].ft -= getGLOBAL().Timestamp();
                     }
                 }
-                CREATURES._guardian = null;
+                getCREATURES()._guardian = null;
             }
         };
 
         const thawChamp = (param1: number): void => {
-            for (let _loc2_ = 0; _loc2_ < (GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen.length; _loc2_++) {
-                if ((GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen[_loc2_].t == param1) {
-                    const _loc3_ = new Point(GLOBAL._bChamber.x, GLOBAL._bChamber.y + 80);
-                    const _loc4_ = (GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen[_loc2_].l.Get();
-                    const _loc5_ = GRID.FromISO(GLOBAL._bCage.x, GLOBAL._bCage.y + 20);
+            for (let _loc2_ = 0; _loc2_ < (getGLOBAL()._bChamber as CHAMPIONCHAMBER)._frozen.length; _loc2_++) {
+                if ((getGLOBAL()._bChamber as CHAMPIONCHAMBER)._frozen[_loc2_].t == param1) {
+                    const _loc3_ = new Point(getGLOBAL()._bChamber.x, getGLOBAL()._bChamber.y + 80);
+                    const _loc4_ = (getGLOBAL()._bChamber as CHAMPIONCHAMBER)._frozen[_loc2_].l.Get();
+                    const _loc5_ = getGRID().FromISO(getGLOBAL()._bCage.x, getGLOBAL()._bCage.y + 20);
                     // Champion respawn logic
                     const _loc6_: any[] = [];
-                    for (let _loc7_ = 0; _loc7_ < (GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen.length; _loc7_++) {
+                    for (let _loc7_ = 0; _loc7_ < (getGLOBAL()._bChamber as CHAMPIONCHAMBER)._frozen.length; _loc7_++) {
                         if (_loc2_ != _loc7_) {
-                            _loc6_.push((GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen[_loc7_]);
+                            _loc6_.push((getGLOBAL()._bChamber as CHAMPIONCHAMBER)._frozen[_loc7_]);
                         }
                     }
-                    (GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen = _loc6_;
+                    (getGLOBAL()._bChamber as CHAMPIONCHAMBER)._frozen = _loc6_;
                     break;
                 }
             }
         };
 
-        if (!GLOBAL._save) {
+        if (!getGLOBAL()._save) {
             return false;
         }
-        if (BASE.isInfernoMainYardOrOutpost) {
+        if (getBASE().isInfernoMainYardOrOutpost) {
             return false;
         }
         if (update.data[1] == RewardHandler.k_UPDATE_ADD || update.data[1] == RewardHandler.k_UPDATE_REMOVE || update.data[1] === RewardHandler.k_UPDATE_VALUE) {
@@ -178,13 +181,13 @@ export class UPDATES {
         }
         if (update.data[1] == "BMU") {
             length = update.data.length;
-            if (GLOBAL.player.monsterList.length) {
+            if (getGLOBAL().player.monsterList.length) {
                 for (let i = 2; i < length; i++) {
                     const monsterdata = update.data[i];
-                    if (GLOBAL.player.monsterListByID(monsterdata.creatureID) && GLOBAL.player.monsterListByID(monsterdata.creatureID).numCreeps > 0) {
-                        GLOBAL.player.monsterListByID(monsterdata.creatureID).add(-monsterdata.count, null, true);
+                    if (getGLOBAL().player.monsterListByID(monsterdata.creatureID) && getGLOBAL().player.monsterListByID(monsterdata.creatureID).numCreeps > 0) {
+                        getGLOBAL().player.monsterListByID(monsterdata.creatureID).add(-monsterdata.count, null, true);
                     } else if (monsterdata.count < 0) {
-                        GLOBAL.player.monsterListByID(monsterdata.creatureID).setNum(-monsterdata.count);
+                        getGLOBAL().player.monsterListByID(monsterdata.creatureID).setNum(-monsterdata.count);
                     }
                 }
             }
@@ -197,18 +200,18 @@ export class UPDATES {
             if (building) {
                 time = building.HelpB();
             }
-            if (time > 0 && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
-                UPDATES._catchupList.push([GLOBAL.e_BASE_MODE.BUILD, update.fbid, update.name, GLOBAL._buildingProps[building._type - 1].name, time]);
+            if (time > 0 && getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD) {
+                UPDATES._catchupList.push([getGLOBAL().e_BASE_MODE.BUILD, update.fbid, update.name, getGLOBAL()._buildingProps[building._type - 1].name, time]);
             }
         }
         if (update.data[1] == "BP") {
-            if (GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD) {
-                building = BASE.addBuildingC(update.data[2]);
+            if (getGLOBAL().mode != getGLOBAL().e_BASE_MODE.BUILD) {
+                building = getBASE().addBuildingC(update.data[2]);
                 building.Setup(update.data[3]);
             }
         }
         if (update.data[1] == "DBU") {
-            BASE._damagedBaseWarnTime = update.data[0];
+            getBASE()._damagedBaseWarnTime = update.data[0];
         }
         if (update.data[1] == "BT") {
             building = UPDATES.GetBuilding(update.data[2]);
@@ -219,26 +222,26 @@ export class UPDATES {
             if (building) building._senderPic = update.data[7];
         }
         if (update.data[1] == "BE") {
-            BASE._resources.r1.Add(-update.data[3]);
-            BASE._hpResources.r1 -= update.data[3];
-            BASE._resources.r2.Add(-update.data[4]);
-            BASE._hpResources.r2 -= update.data[4];
-            BASE._resources.r3.Add(-update.data[5]);
-            BASE._hpResources.r3 -= update.data[5];
-            BASE._resources.r4.Add(-update.data[6]);
-            BASE._hpResources.r4 -= update.data[6];
-            BASE._credits.Add(-update.data[7]);
-            BASE._hpCredits -= update.data[7];
+            getBASE()._resources.r1.Add(-update.data[3]);
+            getBASE()._hpResources.r1 -= update.data[3];
+            getBASE()._resources.r2.Add(-update.data[4]);
+            getBASE()._hpResources.r2 -= update.data[4];
+            getBASE()._resources.r3.Add(-update.data[5]);
+            getBASE()._hpResources.r3 -= update.data[5];
+            getBASE()._resources.r4.Add(-update.data[6]);
+            getBASE()._hpResources.r4 -= update.data[6];
+            getBASE()._credits.Add(-update.data[7]);
+            getBASE()._hpCredits -= update.data[7];
         }
         if (update.data[1] == "BS") {
             const numBuildings = update.data[3];
             for (let i = 0; i < numBuildings; i++) {
-                InventoryManager.buildingStorageAdd(update.data[2]);
+                getInventoryManager().buildingStorageAdd(update.data[2]);
             }
         }
         if (update.data[1] == "CMR") {
-            if (BASE.isInfernoMainYardOrOutpost) {
-                LOGGER.Log("log", "ABORTING Champion Refund because user is in Inferno", true);
+            if (getBASE().isInfernoMainYardOrOutpost) {
+                getLOGGER().Log("log", "ABORTING Champion Refund because user is in Inferno", true);
                 return false;
             }
             const refundType = update.data[2];
@@ -247,42 +250,42 @@ export class UPDATES {
             const refundAbility = update.data.length > 5 ? update.data[5] : 0;
             const refundBuff = 0;
             const refundID = "G" + refundType;
-            const refundName = CHAMPIONCAGE.GetGuardianProperty(refundID, refundLevel, "name");
-            const refundHealth = CHAMPIONCAGE.GetGuardianProperty(refundID, refundLevel, "health");
-            const refundFeedtime = GLOBAL.Timestamp();
-            if (CREATURES._guardian && CREATURES._guardian.graphic.parent == MAP._BUILDINGTOPS && !BYMConfig.instance.RENDERER_ON) {
-                MAP._BUILDINGTOPS.removeChild(CREATURES._guardian.graphic);
+            const refundName = getCHAMPIONCAGE().GetGuardianProperty(refundID, refundLevel, "name");
+            const refundHealth = getCHAMPIONCAGE().GetGuardianProperty(refundID, refundLevel, "health");
+            const refundFeedtime = getGLOBAL().Timestamp();
+            if (getCREATURES()._guardian && getCREATURES()._guardian.graphic.parent == getMAP()._BUILDINGTOPS && !BYMConfig.instance.RENDERER_ON) {
+                getMAP()._BUILDINGTOPS.removeChild(getCREATURES()._guardian.graphic);
             }
-            if (CREATURES._guardian && CREATURES._guardian._creatureID == refundID) {
-                CREATURES._guardian.clear();
-            } else if (GLOBAL._bChamber) {
-                if (CREATURES._guardian && CREATURES._guardian._creatureID != refundID) {
+            if (getCREATURES()._guardian && getCREATURES()._guardian._creatureID == refundID) {
+                getCREATURES()._guardian.clear();
+            } else if (getGLOBAL()._bChamber) {
+                if (getCREATURES()._guardian && getCREATURES()._guardian._creatureID != refundID) {
                     freezeChamp();
                 }
-                if (CHAMPIONCHAMBER.HasFrozen(refundType)) {
+                if (getCHAMPIONCHAMBER().HasFrozen(refundType)) {
                     thawChamp(refundType);
                 }
             }
-            if (CREATURES._guardian) {
-                CREATURES._guardian.modifyHealth(-Number.MIN_VALUE);
-                CREATURES._guardian.tick(1);
-                CREATURES.removeGuardianType(CREATURES._guardian._type);
+            if (getCREATURES()._guardian) {
+                getCREATURES()._guardian.modifyHealth(-Number.MIN_VALUE);
+                getCREATURES()._guardian.tick(1);
+                getCREATURES().removeGuardianType(getCREATURES()._guardian._type);
             }
-            if (GLOBAL._bCage) {
+            if (getGLOBAL()._bCage) {
                 if (refundLevel > 0) {
-                    GLOBAL._bCage.SpawnGuardian(refundLevel, refundFeeds, refundFeedtime, refundType, refundHealth, refundName, refundBuff, refundAbility);
+                    getGLOBAL()._bCage.SpawnGuardian(refundLevel, refundFeeds, refundFeedtime, refundType, refundHealth, refundName, refundBuff, refundAbility);
                 }
-                BASE.Save();
+                getBASE().Save();
             }
         }
         return true;
     }
 
     public static Catchup(): void {
-        if (!GLOBAL._save) {
+        if (!getGLOBAL()._save) {
             return;
         }
-        if (BASE.isInfernoMainYardOrOutpost) {
+        if (getBASE().isInfernoMainYardOrOutpost) {
             return;
         }
         if (UPDATES._catchupList.length > 0) {
@@ -312,60 +315,60 @@ export class UPDATES {
                 }
                 _loc7_ += UPDATES._catchupList[_loc1_][4];
             }
-            let _loc9_ = KEYS.Get("pop_helped_1a");
-            if (!GLOBAL._catchup) {
+            let _loc9_ = getKEYS().Get("pop_helped_1a");
+            if (!getGLOBAL()._catchup) {
                 if (_loc3_.length == 1) {
-                    _loc9_ = " " + KEYS.Get("pop_helped_1b") + " ";
+                    _loc9_ = " " + getKEYS().Get("pop_helped_1b") + " ";
                 }
                 if (_loc3_.length > 1) {
-                    _loc9_ = " " + KEYS.Get("pop_helped_1c") + " ";
+                    _loc9_ = " " + getKEYS().Get("pop_helped_1c") + " ";
                 }
             }
             if (_loc3_.length == 1) {
-                _loc8_.tA.htmlText = "<font size=\"14\"><b>" + KEYS.Get("pop_helped_title", { "v1": _loc3_[0][1] }) + "</b></font>";
+                _loc8_.tA.htmlText = "<font size=\"14\"><b>" + getKEYS().Get("pop_helped_title", { "v1": _loc3_[0][1] }) + "</b></font>";
                 let _loc5_: string;
                 if (_loc4_.length > 1) {
-                    _loc5_ = _loc3_[0][1] + _loc9_ + KEYS.Get("pop_helped_2a", { "v1": GLOBAL.Array2StringB(_loc4_) });
+                    _loc5_ = _loc3_[0][1] + _loc9_ + getKEYS().Get("pop_helped_2a", { "v1": getGLOBAL().Array2StringB(_loc4_) });
                 } else {
-                    _loc5_ = _loc3_[0][1] + _loc9_ + KEYS.Get("pop_helped_2b", { "v1": GLOBAL.Array2StringB(_loc4_) });
+                    _loc5_ = _loc3_[0][1] + _loc9_ + getKEYS().Get("pop_helped_2b", { "v1": getGLOBAL().Array2StringB(_loc4_) });
                 }
-                _loc5_ += ", <b>" + KEYS.Get("pop_helped_3a", { "v1": GLOBAL.ToTime(_loc7_, false, false) }) + "</b>";
+                _loc5_ += ", <b>" + getKEYS().Get("pop_helped_3a", { "v1": getGLOBAL().ToTime(_loc7_, false, false) }) + "</b>";
                 _loc8_.tB.htmlText = _loc5_;
-                _loc8_.bPost.Setup(KEYS.Get("pop_helped_saythanks_btn", { "v1": _loc3_[0][1] }));
-                _loc8_.bPost.addEventListener(MouseEvent.CLICK, UPDATES.GiveThanks(_loc3_[0][0], KEYS.Get("pop_helped_streamtitle"), KEYS.Get("pop_helped_pl_streambody", { "v1": _loc3_[0][1] }), "quests/build.v2.png"));
+                _loc8_.bPost.Setup(getKEYS().Get("pop_helped_saythanks_btn", { "v1": _loc3_[0][1] }));
+                _loc8_.bPost.addEventListener(MouseEvent.CLICK, UPDATES.GiveThanks(_loc3_[0][0], getKEYS().Get("pop_helped_streamtitle"), getKEYS().Get("pop_helped_pl_streambody", { "v1": _loc3_[0][1] }), "quests/build.v2.png"));
                 _loc8_.bPost.Highlight = true;
             } else {
-                _loc8_.tA.htmlText = "<font size=\"14\"><b>" + KEYS.Get("pop_helped_title_pl") + "</b></font>";
-                _loc8_.tB.htmlText = KEYS.Get("pop_helped_pl_1a", {
-                    "v1": GLOBAL.Array2StringB(_loc3_),
+                _loc8_.tA.htmlText = "<font size=\"14\"><b>" + getKEYS().Get("pop_helped_title_pl") + "</b></font>";
+                _loc8_.tB.htmlText = getKEYS().Get("pop_helped_pl_1a", {
+                    "v1": getGLOBAL().Array2StringB(_loc3_),
                     "v2": _loc9_,
-                    "v3": GLOBAL.Array2StringB(_loc4_),
-                    "v4": GLOBAL.ToTime(_loc7_, false, false)
+                    "v3": getGLOBAL().Array2StringB(_loc4_),
+                    "v4": getGLOBAL().ToTime(_loc7_, false, false)
                 });
                 _loc8_.bPost.SetupKey("pop_saythanks_btn");
-                _loc8_.bPost.addEventListener(MouseEvent.CLICK, UPDATES.GiveThanks(0, KEYS.Get("pop_helped_streamtitle"), KEYS.Get("pop_helped_pl_streambody", { "v1": GLOBAL.Array2StringB(_loc3_) }), "quests/build.v2.png"));
+                _loc8_.bPost.addEventListener(MouseEvent.CLICK, UPDATES.GiveThanks(0, getKEYS().Get("pop_helped_streamtitle"), getKEYS().Get("pop_helped_pl_streambody", { "v1": getGLOBAL().Array2StringB(_loc3_) }), "quests/build.v2.png"));
                 _loc8_.bPost.Highlight = true;
             }
             _loc8_.bPost.y = _loc8_.tB.height - 15;
             _loc8_.mcFrame.height = _loc8_.bPost.y + 110;
             (_loc8_.mcFrame as frame).Setup();
-            POPUPS.Push(_loc8_, null, null, "", "build.v2.png");
+            getPOPUPS().Push(_loc8_, null, null, "", "build.v2.png");
             UPDATES._catchupList = [];
         }
     }
 
     public static GiveThanks(fbid: number, messageA: string, messageB: string, image: string): (event: MouseEvent) => void {
         return (param1: MouseEvent): void => {
-            GLOBAL.CallJS("sendFeed", ["thanks", messageA, messageB, image, fbid]);
-            POPUPS.Next();
+            getGLOBAL().CallJS("sendFeed", ["thanks", messageA, messageB, image, fbid]);
+            getPOPUPS().Next();
         };
     }
 
     public static Create(param1: any[], param2: number = 0): void {
-        if (BASE.isInfernoMainYardOrOutpost) {
+        if (getBASE().isInfernoMainYardOrOutpost) {
             return;
         }
-        let _loc3_ = BASE._loadedBaseID;
+        let _loc3_ = getBASE()._loadedBaseID;
         if (param2) {
             _loc3_ = param2;
         }
@@ -377,40 +380,40 @@ export class UPDATES {
             if (param1.error == 0) {
                 UPDATES.Process(param1.updates);
             } else {
-                LOGGER.Log("err", "UPDATES.Create: " + JSON.encode(param1));
-                GLOBAL.ErrorMessage("UPDATES.Create");
+                getLOGGER().Log("err", "UPDATES.Create: " + JSON.encode(param1));
+                getGLOBAL().ErrorMessage("UPDATES.Create");
             }
         };
         const handleLoadError = (param1: IOErrorEvent): void => {
-            LOGGER.Log("err", "UPDATES.Create HTTP");
+            getLOGGER().Log("err", "UPDATES.Create HTTP");
         };
-        if (!GLOBAL._save) {
+        if (!getGLOBAL()._save) {
             return;
         }
-        if (BASE.isInfernoMainYardOrOutpost) {
+        if (getBASE().isInfernoMainYardOrOutpost) {
             return;
         }
-        if (!GLOBAL._openBase && TUTORIAL._stage < 200) {
+        if (!getGLOBAL()._openBase && getTUTORIAL()._stage < 200) {
             return;
         }
-        if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && GLOBAL._friendCount == 0) {
+        if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD && getGLOBAL()._friendCount == 0) {
             return;
         }
-        update.splice(0, 0, GLOBAL.Timestamp());
-        let url = GLOBAL._baseURL;
-        if (GLOBAL._baseURL2) {
-            url = GLOBAL._baseURL2;
+        update.splice(0, 0, getGLOBAL().Timestamp());
+        let url = getGLOBAL()._baseURL;
+        if (getGLOBAL()._baseURL2) {
+            url = getGLOBAL()._baseURL2;
         }
         let isHelping = false;
-        if (GLOBAL.mode == GLOBAL.e_BASE_MODE.HELP || GLOBAL.mode == GLOBAL.e_BASE_MODE.IHELP) {
+        if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.HELP || getGLOBAL().mode == getGLOBAL().e_BASE_MODE.IHELP) {
             isHelping = true;
         }
         const loadVars = [["baseid", id], ["data", JSON.encode([update])], ["lastupdate", lastupdate], ["help", isHelping]];
-        new URLLoaderApi().load(url + "saveupdate", loadVars, handleLoadSuccessful, handleLoadError);
+        new (getURLLoaderApi())().load(url + "saveupdate", loadVars, handleLoadSuccessful, handleLoadError);
     }
 
     public static GetBuilding(param1: number): BFOUNDATION {
-        const _loc2_ = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const _loc2_ = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const _loc3_ of _loc2_) {
             if ((_loc3_ as BFOUNDATION)._id == param1) {
                 return _loc3_ as BFOUNDATION;

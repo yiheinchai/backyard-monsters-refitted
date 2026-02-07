@@ -12,11 +12,14 @@ import { EnumYardType } from "../enums/EnumYardType";
 import { MapRoom } from "./MapRoom";
 import { MapRoomCell } from "./MapRoomCell";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
 import { PopupInfoViewOnly_CLIP } from "../../../PopupInfoViewOnly_CLIP";
 import { frame } from "../../../frame";
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+
 
 // JSON declaration
 declare const JSON: { encode(obj: any): string };
@@ -60,26 +63,26 @@ export class PopupInfoViewOnly extends PopupInfoViewOnly_CLIP {
     public Setup(cell: MapRoomCell, flingerInRange: boolean = false): void {
         this._cell = cell;
         
-        this.tLabel1.htmlText = "<b>" + KEYS.Get("popup_label_namelocheight") + "</b>";
-        this.tLabel2.htmlText = "<b>" + KEYS.Get("popup_label_thisyardhas") + "</b>";
+        this.tLabel1.htmlText = "<b>" + getKEYS().Get("popup_label_namelocheight") + "</b>";
+        this.tLabel2.htmlText = "<b>" + getKEYS().Get("popup_label_thisyardhas") + "</b>";
         
         if (this._cell._base === 3) {
             if (this._cell._baseID === MapRoom._inviteBaseID) {
-                this.tName.htmlText = "<b>" + KEYS.Get("map_outpostowner", { v1: this._cell._name }) + " (" + KEYS.Get("map_target") + ")</b>";
+                this.tName.htmlText = "<b>" + getKEYS().Get("map_outpostowner", { v1: this._cell._name }) + " (" + getKEYS().Get("map_target") + ")</b>";
             } else if (!this._cell._destroyed) {
-                this.tName.htmlText = "<b>" + KEYS.Get("map_outpostowner", { v1: this._cell._name }) + "</b>";
+                this.tName.htmlText = "<b>" + getKEYS().Get("map_outpostowner", { v1: this._cell._name }) + "</b>";
             } else {
-                this.tName.htmlText = "<b>" + KEYS.Get("map_outpostowner", { v1: this._cell._name }) + " (" + KEYS.Get("newmap_inf_destroyed") + ")</b>";
+                this.tName.htmlText = "<b>" + getKEYS().Get("map_outpostowner", { v1: this._cell._name }) + " (" + getKEYS().Get("newmap_inf_destroyed") + ")</b>";
             }
             this.ProfilePic();
         } else if (this._cell._base === 2) {
-            this.tName.htmlText = "<b>" + KEYS.Get("map_yardowner", { v1: this._cell._name }) + "</b>";
+            this.tName.htmlText = "<b>" + getKEYS().Get("map_yardowner", { v1: this._cell._name }) + "</b>";
             this.ProfilePic();
         } else if (this._cell._base === 1) {
             if (!this._cell._destroyed) {
-                this.tName.htmlText = "<b>" + KEYS.Get("ai_tribe", { v1: this._cell._name }) + "</b>";
+                this.tName.htmlText = "<b>" + getKEYS().Get("ai_tribe", { v1: this._cell._name }) + "</b>";
             } else {
-                this.tName.htmlText = "<b>" + KEYS.Get("ai_tribe", { v1: this._cell._name }) + " (" + KEYS.Get("newmap_inf_destroyed") + ")</b>";
+                this.tName.htmlText = "<b>" + getKEYS().Get("ai_tribe", { v1: this._cell._name }) + " (" + getKEYS().Get("newmap_inf_destroyed") + ")</b>";
             }
             this.ProfilePic();
         }
@@ -94,23 +97,23 @@ export class PopupInfoViewOnly extends PopupInfoViewOnly_CLIP {
             towerBonus = 0;
             resourceBonus = 0;
         } else {
-            towerBonus = Math.floor(this._cell._height * 100 / GLOBAL._averageAltitude.Get() - 100);
-            resourceBonus = Math.floor(100 * GLOBAL._averageAltitude.Get() / this._cell._height - 100);
+            towerBonus = Math.floor(this._cell._height * 100 / getGLOBAL()._averageAltitude.Get() - 100);
+            resourceBonus = Math.floor(100 * getGLOBAL()._averageAltitude.Get() / this._cell._height - 100);
         }
         
         let towerStr: string;
         let resourceStr: string;
         
         if (towerBonus >= 0) {
-            towerStr = '<font color="#003300">+' + KEYS.Get("newmap_h1", { v1: towerBonus }) + '</font>';
+            towerStr = '<font color="#003300">+' + getKEYS().Get("newmap_h1", { v1: towerBonus }) + '</font>';
         } else {
-            towerStr = '<font color="#330000">- ' + KEYS.Get("newmap_h1", { v1: Math.abs(towerBonus) }) + '</font>';
+            towerStr = '<font color="#330000">- ' + getKEYS().Get("newmap_h1", { v1: Math.abs(towerBonus) }) + '</font>';
         }
         
         if (resourceBonus >= 0) {
-            resourceStr = '<font color="#003300">+' + KEYS.Get("newmap_h2", { v1: resourceBonus }) + '</font>';
+            resourceStr = '<font color="#003300">+' + getKEYS().Get("newmap_h2", { v1: resourceBonus }) + '</font>';
         } else {
-            resourceStr = '<font color="#330000">- ' + KEYS.Get("newmap_h2", { v1: Math.abs(resourceBonus) }) + '</font>';
+            resourceStr = '<font color="#330000">- ' + getKEYS().Get("newmap_h2", { v1: Math.abs(resourceBonus) }) + '</font>';
         }
         
         this.tBonus.htmlText = towerStr + "<br>" + resourceStr;
@@ -131,7 +134,7 @@ export class PopupInfoViewOnly extends PopupInfoViewOnly_CLIP {
         
         const imageComplete = (path: string, data: BitmapData): void => {
             this._profileBmp = new Bitmap(data);
-            this.mcProfilePic.mcBG.addChild(this._profileBmp);
+            (this.mcProfilePic as any).mcBG.addChild(this._profileBmp);
         };
         
         const LoadImageError = (event: IOErrorEvent): void => {
@@ -147,7 +150,7 @@ export class PopupInfoViewOnly extends PopupInfoViewOnly_CLIP {
         
         if (this._cell._base > 1) {
             this._profilePic = new Loader();
-            if (!GLOBAL._flags.viximo) {
+            if (!getGLOBAL()._flags.viximo) {
                 this._profilePic.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, LoadImageError, false);
                 this._profilePic.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoad);
                 if (this._cell._pic_square) {
@@ -189,21 +192,21 @@ export class PopupInfoViewOnly extends PopupInfoViewOnly_CLIP {
         
         MapRoom.HideFromViewOnly();
         if (MapRoom._mc) {
-            GLOBAL._attackerCellsInRange = MapRoom._mc.GetCellsInRange(this._cell.X, this._cell.Y, 10);
+            getGLOBAL()._attackerCellsInRange = MapRoom._mc.GetCellsInRange(this._cell.X, this._cell.Y, 10);
         }
-        GLOBAL._currentCell = this._cell;
+        getGLOBAL()._currentCell = this._cell;
         
         if (this._cell._base === 1) {
-            BASE.LoadBase(null, 0, this._cell._baseID, "wmview", false, EnumYardType.MAIN_YARD);
+            getBASE().LoadBase(null, 0, this._cell._baseID, "wmview", false, EnumYardType.MAIN_YARD);
         } else {
             const yardType = this._cell._base === 3 ? EnumYardType.OUTPOST : EnumYardType.MAIN_YARD;
-            BASE.LoadBase(null, 0, this._cell._baseID, "view", false, yardType);
+            getBASE().LoadBase(null, 0, this._cell._baseID, "view", false, yardType);
         }
     }
 
     public ButtonInfo(buttonType: string): void {
         if (!this._cell) return;
-        this.txtButtonInfo.htmlText = KEYS.Get("newmap_view", { v1: this._cell._name });
+        this.txtButtonInfo.htmlText = getKEYS().Get("newmap_view", { v1: this._cell._name });
         this.mcArrow.x = this.bView.x + this.bView.width / 2 - 5;
     }
 

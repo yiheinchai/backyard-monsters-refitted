@@ -6,24 +6,27 @@ function getQualifiedClassName(cls: any): string {
 }
 
 import { SiegeWeaponProperty } from "../SiegeWeaponProperty";
-import { SiegeWeapons } from "../SiegeWeapons";
 import { SiegeWeapon } from "./SiegeWeapon";
 import { IDurable } from "./IDurable";
-import { VacuumHose } from "./VacuumHose";
 
-import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { BUILDING14 } from "../../../../BUILDING14";
 import { DROPZONE } from "../../../../DROPZONE";
-import { GLOBAL } from "../../../../GLOBAL";
-import { ResourceOutpost } from "../../../../ResourceOutpost";
+
+// Lazy imports to break circular dependency chains
+function getSiegeWeapons(): any { return require("../SiegeWeapons").SiegeWeapons; }
+function getVacuumHose(): any { return require("./VacuumHose").VacuumHose; }
+function getBFOUNDATION(): any { return require("../../../../BFOUNDATION").BFOUNDATION; }
+function getBUILDING14(): any { return require("../../../../BUILDING14").BUILDING14; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getResourceOutpost(): any { return require("../../../../ResourceOutpost").ResourceOutpost; }
+
 
 /**
  * Vacuum - siege weapon that sucks resources from target buildings.
  */
 export class Vacuum extends SiegeWeapon implements IDurable {
     private static readonly k_BUILDINGS_THAT_CAN_BE_SUCKED: Array<string> = [
-        getQualifiedClassName(BUILDING14),
-        getQualifiedClassName(ResourceOutpost)
+        getQualifiedClassName(getBUILDING14()),
+        getQualifiedClassName(getResourceOutpost())
     ];
     public static readonly ID: string = "vacuum";
     public static readonly LOOT_BONUS: string = "siegeWeaponLootBonus";
@@ -67,7 +70,7 @@ export class Vacuum extends SiegeWeapon implements IDurable {
     }
 
     public static getHose(): VacuumHose | null {
-        const weapon = SiegeWeapons.activeWeapon;
+        const weapon = getSiegeWeapons().activeWeapon;
         if (Boolean(weapon) && weapon instanceof Vacuum) {
             return (weapon as Vacuum).hose;
         }
@@ -75,7 +78,7 @@ export class Vacuum extends SiegeWeapon implements IDurable {
     }
 
     public static getTarget(): BFOUNDATION | null {
-        const weapon = SiegeWeapons.activeWeapon;
+        const weapon = getSiegeWeapons().activeWeapon;
         if (Boolean(weapon) && weapon instanceof Vacuum) {
             return (weapon as Vacuum).hose!._target;
         }
@@ -116,7 +119,7 @@ export class Vacuum extends SiegeWeapon implements IDurable {
             this.print("Could not start Vacuum, either no valid target or the weapon is already on");
             return;
         }
-        this.hose = new VacuumHose(target, this.durability, this.lootBonus);
+        this.hose = new (getVacuumHose())(target, this.durability, this.lootBonus);
         this.hose._vacuum.addEventListener(Event.ENTER_FRAME, this.onEnterFrame.bind(this));
         Vacuum.target;
     }
@@ -136,7 +139,7 @@ export class Vacuum extends SiegeWeapon implements IDurable {
     }
 
     private findTarget(): BFOUNDATION | null {
-        return Boolean(GLOBAL.townHall) && Vacuum.k_BUILDINGS_THAT_CAN_BE_SUCKED.indexOf(getQualifiedClassName(GLOBAL.townHall)) >= 0 ? GLOBAL.townHall : null;
+        return Boolean(getGLOBAL().townHall) && Vacuum.k_BUILDINGS_THAT_CAN_BE_SUCKED.indexOf(getQualifiedClassName(getGLOBAL().townHall)) >= 0 ? getGLOBAL().townHall : null;
     }
 
     private print(msg: string): void {

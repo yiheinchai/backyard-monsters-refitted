@@ -12,12 +12,15 @@ import { MailBox } from "./MailBox";
 import { Message } from "./Message";
 import { Thread } from "./Thread";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGIN } from "../../../LOGIN";
 import { MAILBOX } from "../../../MAILBOX";
-import { SOUNDS } from "../../../SOUNDS";
-import { URLLoaderApi } from "../../../URLLoaderApi";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGIN(): any { return require("../../../LOGIN").LOGIN; }
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+function getURLLoaderApi(): any { return require("../../../URLLoaderApi").URLLoaderApi; }
+
 
 /**
  * Inbox - mailbox inbox view.
@@ -76,8 +79,8 @@ export class Inbox extends Inbox_CLIP {
         this.removeChild(this.inBtn);
         this.removeChild(this.outBtn);
         this.addEventListener(Event.ADDED_TO_STAGE, this.onAdd.bind(this));
-        this.title_txt.htmlText = KEYS.Get("mail_title");
-        (this.noMessages_btn as any).label_txt.htmlText = "<b>" + KEYS.Get("mail_nomessages") + "</b>";
+        this.title_txt.htmlText = getKEYS().Get("mail_title");
+        (this.noMessages_btn as any).label_txt.htmlText = "<b>" + getKEYS().Get("mail_nomessages") + "</b>";
         Inbox._instance = this;
     }
 
@@ -97,7 +100,7 @@ export class Inbox extends Inbox_CLIP {
         const message = new InboxMessage();
         message.Setup(thread);
         message.addEventListener("open", Inbox.onThreadOpen);
-        if (thread.targetid === LOGIN._playerID || thread.messagecount > 1) {
+        if (thread.targetid === getLOGIN()._playerID || thread.messagecount > 1) {
             Inbox.recd.push(message);
         } else {
             Inbox.sent.push(message);
@@ -151,8 +154,8 @@ export class Inbox extends Inbox_CLIP {
     }
 
     public Tick(...args: any[]): void {
-        const r = new URLLoaderApi();
-        r.load(GLOBAL._apiURL + "player/getmessagethreads", [], this.handleLoadSuccessful.bind(this), this.handleLoadError.bind(this));
+        const r = new (getURLLoaderApi())();
+        r.load(getGLOBAL()._apiURL + "player/getmessagethreads", [], this.handleLoadSuccessful.bind(this), this.handleLoadError.bind(this));
     }
 
     private handleLoadSuccessful(response: Record<string, any>): void {
@@ -246,14 +249,14 @@ export class Inbox extends Inbox_CLIP {
     }
 
     private nextDown(event: MouseEvent): void {
-        SOUNDS.Play("click1");
+        getSOUNDS().Play("click1");
         if (this.currentPage < this.pageLimit) {
             this.scrollToPage(this.currentPage + 1);
         }
     }
 
     private prevDown(event: MouseEvent): void {
-        SOUNDS.Play("click1");
+        getSOUNDS().Play("click1");
         if (this.currentPage > 0) {
             this.scrollToPage(this.currentPage - 1);
         }
@@ -292,17 +295,17 @@ export class Inbox extends Inbox_CLIP {
     }
 
     private onNewDown(event: MouseEvent): void {
-        SOUNDS.Play("click1");
+        getSOUNDS().Play("click1");
         const mess = new Message();
         mess.addEventListener(Event.COMPLETE, this.showOut.bind(this));
-        GLOBAL.BlockerAdd();
-        GLOBAL._layerWindows.addChild(mess);
+        getGLOBAL().BlockerAdd();
+        getGLOBAL()._layerWindows.addChild(mess);
         mess.init();
         mess.successHandler = (data: Record<string, any>): void => {
             const newThread = new ThreadData({
-                "sendtime": GLOBAL.Timestamp(),
+                "sendtime": getGLOBAL().Timestamp(),
                 "threadid": data.threadid,
-                "userid": LOGIN._playerID,
+                "userid": getLOGIN()._playerID,
                 "targetid": mess.picker.getCurrentData().userid,
                 "messagetype": "message",
                 "unread": 0,
@@ -373,7 +376,7 @@ export class Inbox extends Inbox_CLIP {
     }
 
     public Resize(): void {
-        this.x = GLOBAL._SCREENCENTER.x;
-        this.y = GLOBAL._SCREENCENTER.y;
+        this.x = getGLOBAL()._SCREENCENTER.x;
+        this.y = getGLOBAL()._SCREENCENTER.y;
     }
 }

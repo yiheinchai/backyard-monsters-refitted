@@ -1,13 +1,16 @@
 import MouseEvent from "openfl/events/MouseEvent";
 
-import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
 import { popup_new_map_confirm } from "../../../../popup_new_map_confirm";
 import { SingletonLock } from "../../../../config/singletonlock/SingletonLock";
 
-import { GLOBAL } from "../../../../GLOBAL";
-import { KEYS } from "../../../../KEYS";
-import { POPUPS } from "../../../../POPUPS";
-import { SOUNDS } from "../../../../SOUNDS";
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../../maproom_manager/MapRoomManager").MapRoomManager; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getPOPUPS(): any { return require("../../../../POPUPS").POPUPS; }
+function getSOUNDS(): any { return require("../../../../SOUNDS").SOUNDS; }
+
+
 
 /**
  * Map room 3 confirm migration popup - confirmation for upgrading to map room 3.
@@ -26,43 +29,43 @@ export class MapRoom3ConfirmMigrationPopup extends popup_new_map_confirm {
     }
 
     public Show(forceMode: boolean = false): void {
-        if (this.m_IsShowing === true || GLOBAL._flags.maproom2) {
+        if (this.m_IsShowing === true || getGLOBAL()._flags.maproom2) {
             return;
         }
-        this.tfTitle.htmlText = KEYS.Get("nwm_confirm_title");
-        this.tfBody.htmlText = KEYS.Get("nwm_confirm");
+        this.tfTitle.htmlText = getKEYS().Get("nwm_confirm_title");
+        this.tfBody.htmlText = getKEYS().Get("nwm_confirm");
         this.btnJuice.SetupKey("btn_joinnow");
         this.btnJuice.addEventListener(MouseEvent.CLICK, this.OnConfirmButtonClicked.bind(this), false, 0, true);
         this.btnJuice.Highlight = true;
         this.btnCancel.SetupKey("btn_cancel");
         this.btnCancel.addEventListener(MouseEvent.CLICK, this.OnCancelButtonClicked.bind(this), false, 0, true);
         if (forceMode) {
-            this.tfBody.htmlText = KEYS.Get("nwm_confirm_force");
+            this.tfBody.htmlText = getKEYS().Get("nwm_confirm_force");
             this.btnJuice.SetupKey("btn_ok");
             this.btnJuice.x = 0;
             this.btnCancel.visible = false;
             this.mcFrame.Setup(false);
         }
-        POPUPS.Push(this);
+        getPOPUPS().Push(this);
         this.m_IsShowing = true;
     }
 
     public Hide(): void {
         this.btnJuice.removeEventListener(MouseEvent.CLICK, this.OnConfirmButtonClicked.bind(this));
         this.btnCancel.removeEventListener(MouseEvent.CLICK, this.OnCancelButtonClicked.bind(this));
-        SOUNDS.Play("close");
-        POPUPS.Next();
+        getSOUNDS().Play("close");
+        getPOPUPS().Next();
         this.m_IsShowing = false;
     }
 
     public Resize(): void {
-        this.x = GLOBAL._SCREENCENTER.x;
-        this.y = GLOBAL._SCREENCENTER.y;
+        this.x = getGLOBAL()._SCREENCENTER.x;
+        this.y = getGLOBAL()._SCREENCENTER.y;
     }
 
     private OnConfirmButtonClicked(event: MouseEvent): void {
         this.Hide();
-        MapRoomManager.instance.UpgradeToMapRoom3();
+        getMapRoomManager().instance.UpgradeToMapRoom3();
     }
 
     private OnCancelButtonClicked(event: MouseEvent): void {

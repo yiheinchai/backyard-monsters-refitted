@@ -3,14 +3,17 @@ import BitmapData from 'openfl/display/BitmapData';
 import MouseEvent from 'openfl/events/MouseEvent';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { ROUNDCOMPLETEPOPUP_CLIP } from './ROUNDCOMPLETEPOPUP_CLIP';
-import { BTOTEM } from './BTOTEM';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { POPUPS } from './POPUPS';
-import { SOUNDS } from './SOUNDS';
 import { SPECIALEVENT_WM1 } from './SPECIALEVENT_WM1';
-import { STORE } from './STORE';
+
+// Lazy imports to break circular dependency chains
+function getBTOTEM(): any { return require("./BTOTEM").BTOTEM; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+
 
 /**
  * This is the original WMIROUNDCOMPLETE.as class for Wild Monster Invasion 1.
@@ -48,18 +51,18 @@ export class WMIROUNDCOMPLETE_WM1 extends ROUNDCOMPLETEPOPUP_CLIP {
         }
         this.mcFrame.Setup(wave != 1);
         if (WMIROUNDCOMPLETE_WM1.isMajorWave(wave)) {
-            this.mcTitle.htmlText = KEYS.Get("wmi_winwavetitle");
-            this.mcText.htmlText = KEYS.Get("wmi_winwave" + wave);
+            this.mcTitle.htmlText = getKEYS().Get("wmi_winwavetitle");
+            this.mcText.htmlText = getKEYS().Get("wmi_winwave" + wave);
             if (wave == SPECIALEVENT_WM1.BONUSWAVE) {
-                this.mcStats.htmlText = KEYS.Get("wmi_completedwave31");
+                this.mcStats.htmlText = getKEYS().Get("wmi_completedwave31");
             } else if (wave == SPECIALEVENT_WM1.BONUSWAVE2) {
-                this.mcStats.htmlText = KEYS.Get("wmi_completedwave32");
+                this.mcStats.htmlText = getKEYS().Get("wmi_completedwave32");
             } else {
-                this.mcStats.htmlText = KEYS.Get("wmi_completedwaves", { "v1": wave });
+                this.mcStats.htmlText = getKEYS().Get("wmi_completedwaves", { "v1": wave });
             }
             this.rBtn.Highlight = true;
             if (wave == 1) {
-                BTOTEM.TotemReward();
+                getBTOTEM().TotemReward();
                 this.ButtonsVisible(false, false, true, false);
                 this.rBtn.SetupKey("wmi_placetotembtn");
                 this.rBtn.addEventListener(MouseEvent.CLICK, this.PlaceTotem.bind(this));
@@ -72,15 +75,15 @@ export class WMIROUNDCOMPLETE_WM1 extends ROUNDCOMPLETEPOPUP_CLIP {
             this.lBtn.visible = false;
         } else if (wave == -1) {
             if (surrendered) {
-                this.mcTitle.htmlText = KEYS.Get("wmi_surrendertitle");
-                this.mcText.htmlText = KEYS.Get("wmi_surrender");
+                this.mcTitle.htmlText = getKEYS().Get("wmi_surrendertitle");
+                this.mcText.htmlText = getKEYS().Get("wmi_surrender");
             } else {
-                this.mcTitle.htmlText = KEYS.Get("wmi_losewavetitle");
-                this.mcText.htmlText = KEYS.Get("wmi_losewave");
+                this.mcTitle.htmlText = getKEYS().Get("wmi_losewavetitle");
+                this.mcText.htmlText = getKEYS().Get("wmi_losewave");
             }
             this.mcStats.htmlText = "";
             let numDamagedBuildings = 0;
-            for (const b of BASE._buildingsAll) {
+            for (const b of getBASE()._buildingsAll) {
                 if (b.health < b.maxHealth) {
                     numDamagedBuildings++;
                 }
@@ -97,18 +100,18 @@ export class WMIROUNDCOMPLETE_WM1 extends ROUNDCOMPLETEPOPUP_CLIP {
             }
         } else if (wave == SPECIALEVENT_WM1.EVENTEND) {
             this.mcTitle.htmlText = "";
-            this.mcText.htmlText = KEYS.Get("wmi_eventover");
+            this.mcText.htmlText = getKEYS().Get("wmi_eventover");
             this.mcStats.htmlText = "";
             this.ButtonsVisible(false, false, false, true);
             this.bragBtn.SetupKey("btn_brag");
             this.bragBtn.Highlight = true;
             this.bragBtn.addEventListener(MouseEvent.CLICK, WMIROUNDCOMPLETE_WM1.Brag);
         } else {
-            this.mcTitle.htmlText = KEYS.Get("wmi_winwavetitle");
-            this.mcText.htmlText = KEYS.Get("wmi_winwave");
-            this.mcStats.htmlText = KEYS.Get("wmi_completedwaves", { "v1": wave });
+            this.mcTitle.htmlText = getKEYS().Get("wmi_winwavetitle");
+            this.mcText.htmlText = getKEYS().Get("wmi_winwave");
+            this.mcStats.htmlText = getKEYS().Get("wmi_completedwaves", { "v1": wave });
             let numDamagedBuildings = 0;
-            for (const b of BASE._buildingsAll) {
+            for (const b of getBASE()._buildingsAll) {
                 if (b.health < b.maxHealth) {
                     numDamagedBuildings++;
                 }
@@ -160,27 +163,27 @@ export class WMIROUNDCOMPLETE_WM1 extends ROUNDCOMPLETEPOPUP_CLIP {
     private static Brag(param1: MouseEvent): void {
         switch (WMIROUNDCOMPLETE_WM1._wave) {
             case 1:
-                GLOBAL.CallJS("sendFeed", ["wmitotem-construct", KEYS.Get("wmi_wave1streamtitle"), KEYS.Get("wmi_wave1streamdesc"), "wmitotemfeed1.png"]);
+                getGLOBAL().CallJS("sendFeed", ["wmitotem-construct", getKEYS().Get("wmi_wave1streamtitle"), getKEYS().Get("wmi_wave1streamdesc"), "wmitotemfeed1.png"]);
                 break;
             case 10:
-                GLOBAL.CallJS("sendFeed", ["wmitotem-construct", KEYS.Get("wmi_wave10streamtitle"), KEYS.Get("wmi_wave10streamdesc"), "wmitotemfeed2.png"]);
+                getGLOBAL().CallJS("sendFeed", ["wmitotem-construct", getKEYS().Get("wmi_wave10streamtitle"), getKEYS().Get("wmi_wave10streamdesc"), "wmitotemfeed2.png"]);
                 break;
             case 20:
-                GLOBAL.CallJS("sendFeed", ["wmitotem-construct", KEYS.Get("wmi_wave20streamtitle"), KEYS.Get("wmi_wave20streamdesc"), "wmitotemfeed3.png"]);
+                getGLOBAL().CallJS("sendFeed", ["wmitotem-construct", getKEYS().Get("wmi_wave20streamtitle"), getKEYS().Get("wmi_wave20streamdesc"), "wmitotemfeed3.png"]);
                 break;
             case 30:
-                GLOBAL.CallJS("sendFeed", ["wmitotem-construct", KEYS.Get("wmi_wave30streamtitle"), KEYS.Get("wmi_wave30streamdesc"), "wmitotemfeed4.png"]);
+                getGLOBAL().CallJS("sendFeed", ["wmitotem-construct", getKEYS().Get("wmi_wave30streamtitle"), getKEYS().Get("wmi_wave30streamdesc"), "wmitotemfeed4.png"]);
                 break;
             case 31:
-                GLOBAL.CallJS("sendFeed", ["wmitotem-construct", KEYS.Get("wmi_wave31streamtitle"), KEYS.Get("wmi_wave31streamdesc"), "wmitotemfeed5.png"]);
+                getGLOBAL().CallJS("sendFeed", ["wmitotem-construct", getKEYS().Get("wmi_wave31streamtitle"), getKEYS().Get("wmi_wave31streamdesc"), "wmitotemfeed5.png"]);
                 break;
             case 32:
-                GLOBAL.CallJS("sendFeed", ["wmitotem-construct", KEYS.Get("wmi_wave32streamtitle"), KEYS.Get("wmi_wave32streamdesc"), "wmitotemfeed6.png"]);
+                getGLOBAL().CallJS("sendFeed", ["wmitotem-construct", getKEYS().Get("wmi_wave32streamtitle"), getKEYS().Get("wmi_wave32streamdesc"), "wmitotemfeed6.png"]);
                 break;
             case 33:
-                GLOBAL.CallJS("sendFeed", ["wmi-eventover", KEYS.Get("wmi_eventoverstreamtitle"), KEYS.Get("wmi_eventoverstreamdesc", { "v1": GLOBAL.StatGet("wmi_wave") }), "wmi_aftermath.png"]);
+                getGLOBAL().CallJS("sendFeed", ["wmi-eventover", getKEYS().Get("wmi_eventoverstreamtitle"), getKEYS().Get("wmi_eventoverstreamdesc", { "v1": getGLOBAL().StatGet("wmi_wave") }), "wmi_aftermath.png"]);
         }
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 
     private static GetImageName(param1: number, param2: boolean): string {
@@ -222,7 +225,7 @@ export class WMIROUNDCOMPLETE_WM1 extends ROUNDCOMPLETEPOPUP_CLIP {
 
     public Hide(): void {
         WMIROUNDCOMPLETE_WM1._open = false;
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 
     private ButtonsVisible(param1: boolean, param2: boolean, param3: boolean, param4: boolean): void {
@@ -242,22 +245,22 @@ export class WMIROUNDCOMPLETE_WM1 extends ROUNDCOMPLETEPOPUP_CLIP {
     }
 
     private StartRepairsClicked(param1: MouseEvent): void {
-        for (const _loc2_ of BASE._buildingsAll) {
+        for (const _loc2_ of getBASE()._buildingsAll) {
             if (_loc2_.health < _loc2_.maxHealth && _loc2_._repairing == 0) {
                 _loc2_.Repair();
             }
         }
-        SOUNDS.Play("repair1", 0.25);
+        getSOUNDS().Play("repair1", 0.25);
         this.Hide();
     }
 
     private RepairAllClicked(param1: MouseEvent): void {
-        STORE.ShowB(3, 1, ["FIX"], true);
+        getSTORE().ShowB(3, 1, ["FIX"], true);
         this.Hide();
     }
 
     private PlaceTotem(param1: MouseEvent): void {
-        BTOTEM.TotemPlace();
+        getBTOTEM().TotemPlace();
         this.Hide();
     }
 }

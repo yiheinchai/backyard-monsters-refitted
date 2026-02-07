@@ -4,8 +4,11 @@ import { BasePlannerServiceEvent } from "./events/BasePlannerServiceEvent";
 import { BasePlanner } from "./BasePlanner";
 import { BaseTemplate } from "./BaseTemplate";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { URLLoaderApi } from "../../../URLLoaderApi";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getURLLoaderApi(): any { return require("../../../URLLoaderApi").URLLoaderApi; }
+
+
 
 // Helper function
 declare function print(msg: string): void;
@@ -22,8 +25,8 @@ export class BasePlannerService extends EventDispatcher {
     }
 
     public callServerMethod(url: string, keyValue: any[] | null, onComplete: Function | null = null): void {
-        const urlLoader = new URLLoaderApi();
-        urlLoader.load(GLOBAL._apiURL + "bm/yardplanner/" + url, keyValue, onComplete);
+        const urlLoader = new (getURLLoaderApi())();
+        urlLoader.load(getGLOBAL()._apiURL + "bm/yardplanner/" + url, keyValue, onComplete);
     }
 
     public saveTemplate(baseTemplate: BaseTemplate, slotId: number): void {

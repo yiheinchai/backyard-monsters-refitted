@@ -5,10 +5,13 @@ import Rectangle from "openfl/geom/Rectangle";
 
 import { ParticlesObject } from "./ParticlesObject";
 
-import { GLOBAL } from "../../../../GLOBAL";
-import { GRID } from "../../../../GRID";
-import { MAP } from "../../../../MAP";
-import { LOGGER } from "../../../../LOGGER";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getGRID(): any { return require("../../../../GRID").GRID; }
+function getMAP(): any { return require("../../../../MAP").MAP; }
+function getLOGGER(): any { return require("../../../../LOGGER").LOGGER; }
+
+
 
 /**
  * Particles - manages particle effects system.
@@ -38,7 +41,7 @@ export class Particles {
             Particles._particleCount = 0;
             Particles._frame = 0;
         } catch (e: any) {
-            LOGGER.Log("err", "Particles Clear " + e.stack);
+            getLOGGER().Log("err", "Particles Clear " + e.stack);
         }
     }
 
@@ -59,7 +62,7 @@ export class Particles {
     }
 
     public static Create(origin: Point, alpha: number, distance: number, count: number, offsetY: number = 0): void {
-        if (!GLOBAL._catchup) {
+        if (!getGLOBAL()._catchup) {
             if (Particles._tmpParticleCount < 80) {
                 for (let i = 0; i < count; i++) {
                     Particles._tmpParticleCount += 1;
@@ -75,11 +78,11 @@ export class Particles {
 
     public static Spawn(origin: Point, alpha: number, distance: number, delay: number, offsetY: number): void {
         const angle: number = Math.random() * 360;
-        const isoPos: Point = GRID.FromISO(origin.x, origin.y);
+        const isoPos: Point = getGRID().FromISO(origin.x, origin.y);
         const newX: number = isoPos.x + Math.cos(angle) * distance;
         const newY: number = isoPos.y + Math.sin(angle) * distance;
-        const endPos: Point = GRID.ToISO(newX, newY, 0).add(new Point(0, offsetY));
-        Particles._particles[Particles._particleCount] = MAP._GROUND.addChild(Particles.PoolGet(Particles._particleCount, origin, endPos, distance, delay, alpha)) as ParticlesObject;
+        const endPos: Point = getGRID().ToISO(newX, newY, 0).add(new Point(0, offsetY));
+        Particles._particles[Particles._particleCount] = getMAP()._GROUND.addChild(Particles.PoolGet(Particles._particleCount, origin, endPos, distance, delay, alpha)) as ParticlesObject;
         Particles._particleCount += 1;
     }
 
@@ -87,7 +90,7 @@ export class Particles {
         const particle: ParticlesObject = Particles._particles[id];
         --Particles._tmpParticleCount;
         try {
-            MAP._GROUND.removeChild(particle);
+            getMAP()._GROUND.removeChild(particle);
             particle.Clear();
             Particles.PoolSet(particle);
             delete Particles._particles[id];
@@ -106,7 +109,7 @@ export class Particles {
             matrix.tx = width * 0.5;
             matrix.ty = height * 0.5;
             bmd.draw(particle, matrix);
-            MAP.effectsBMD.copyPixels(bmd, new Rectangle(0, 0, width, height), new Point(x + MAP.effectsBMD.width * 0.5 - width / 2, y + MAP.effectsBMD.height * 0.5 - height * 0.5), null, null, true);
+            getMAP().effectsBMD.copyPixels(bmd, new Rectangle(0, 0, width, height), new Point(x + getMAP().effectsBMD.width * 0.5 - width / 2, y + getMAP().effectsBMD.height * 0.5 - height * 0.5), null, null, true);
         } catch (e: any) {
             // Ignore error
         }

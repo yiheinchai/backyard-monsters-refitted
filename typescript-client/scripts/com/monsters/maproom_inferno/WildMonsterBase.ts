@@ -18,8 +18,11 @@ import { PushPin } from "./PushPin";
 import { WildMonsterBaseInferno_CLIP } from "../../../WildMonsterBaseInferno_CLIP";
 import { Button } from "../../../Button";
 
-import { KEYS } from "../../../KEYS";
-import { LOGGER } from "../../../LOGGER";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+
+
 
 /**
  * WildMonsterBase - represents a wild monster base on the Inferno map.
@@ -50,7 +53,7 @@ export class WildMonsterBase extends WildMonsterBaseInferno_CLIP {
     constructor() {
         super();
         this.popUp = new MapBasePopup();
-        this.popUp.title_txt.htmlText = "<b>" + KEYS.Get("map_options") + "</b>";
+        this.popUp.title_txt.htmlText = "<b>" + getKEYS().Get("map_options") + "</b>";
         this.popUp.x = 21;
         this.popUp.y = 40;
         this.addChild(this.popUp);
@@ -89,7 +92,7 @@ export class WildMonsterBase extends WildMonsterBaseInferno_CLIP {
         this.removeChild(this.largehit);
         this.name_txt.autoSize = TextFieldAutoSize.LEFT;
         this.level_txt.htmlText = "<b>" + this.data.level.Get().toString() + "</b>";
-        this.name_txt.htmlText = "<b>" + KEYS.Get("inf_ai_tribe_mapview", { "v1": this.data.ownerName }).toUpperCase() + "</b>";
+        this.name_txt.htmlText = "<b>" + getKEYS().Get("inf_ai_tribe_mapview", { "v1": this.data.ownerName }).toUpperCase() + "</b>";
         this.name_txt.x = this.name_txt.textWidth * -0.5;
         const boxWidth = this.name_txt.textWidth + 2 * 7;
         this.box_mc.width = boxWidth < 51 ? 51 : boxWidth;
@@ -118,7 +121,7 @@ export class WildMonsterBase extends WildMonsterBaseInferno_CLIP {
                     this.loadingImage = true;
                     this.imageLoadState = 1;
                 } catch (e: any) {
-                    LOGGER.Log("err", "WildMonsterBase state set: " + e.errorID + " - " + e.getStackTrace());
+                    getLOGGER().Log("err", "WildMonsterBase state set: " + e.errorID + " - " + e.getStackTrace());
                 }
             }
             if (this.contains(this.popUp!)) {

@@ -3,8 +3,6 @@ import MouseEvent from "openfl/events/MouseEvent";
 
 import { ABTest } from "../../cc/tests/ABTest";
 import { BasePlanner } from "../baseplanner/BasePlanner";
-import { FrontPageHandler } from "../frontPage/FrontPageHandler";
-import { FrontPageLibrary } from "../frontPage/FrontPageLibrary";
 import { Promo01DaveClub } from "../frontPage/messages/promotions/Promo01DaveClub";
 import { Promo02DaveClub } from "../frontPage/messages/promotions/Promo02DaveClub";
 import { IHandler } from "../interfaces/IHandler";
@@ -21,14 +19,19 @@ import { SubscriptionControlPanelPopup } from "./ui/controlPanel/SubscriptionCon
 import { SubscriptionService } from "./SubscriptionService";
 import { SubscriptionStatusEvent } from "./SubscriptionStatusEvent";
 
-import { BASE } from "../../../BASE";
-import { BFOUNDATION } from "../../../BFOUNDATION";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGGER } from "../../../LOGGER";
-import { LOGIN } from "../../../LOGIN";
-import { POPUPS } from "../../../POPUPS";
-import { UI2 } from "../../../UI2";
+// Lazy imports to break circular dependency chains
+function getFrontPageHandler(): any { return require("../frontPage/FrontPageHandler").FrontPageHandler; }
+function getFrontPageLibrary(): any { return require("../frontPage/FrontPageLibrary").FrontPageLibrary; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getBFOUNDATION(): any { return require("../../../BFOUNDATION").BFOUNDATION; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+function getLOGIN(): any { return require("../../../LOGIN").LOGIN; }
+function getPOPUPS(): any { return require("../../../POPUPS").POPUPS; }
+function getUI2(): any { return require("../../../UI2").UI2; }
+
+
 
 /**
  * SubscriptionHandler - manages DAVE's Club subscription functionality.
@@ -64,7 +67,7 @@ export class SubscriptionHandler implements IHandler {
     }
 
     public static get isEnabledForAll(): boolean {
-        return GLOBAL._flags["subscriptions"] > 0 && GLOBAL._flags["subscriptions_ab"] === 0;
+        return getGLOBAL()._flags["subscriptions"] > 0 && getGLOBAL()._flags["subscriptions_ab"] === 0;
     }
 
     public static setRenewalDateDEBUG(date: number): void {
@@ -99,11 +102,11 @@ export class SubscriptionHandler implements IHandler {
     }
 
     private specialUser(): boolean {
-        return SubscriptionHandler.ignoreAB || (LOGIN._playerID === 12467111 || LOGIN._playerID === 3099454);
+        return SubscriptionHandler.ignoreAB || (getLOGIN()._playerID === 12467111 || getLOGIN()._playerID === 3099454);
     }
 
     public initialize(data: Record<string, any> | null = null): void {
-        if (!SubscriptionHandler.isEnabledForAll && !ABTest.isInTestGroup("davesclub108", 64) && !this.specialUser() || !GLOBAL.isAtHome() || !GLOBAL._flags["subscriptions"] || GLOBAL.isNoob()) {
+        if (!SubscriptionHandler.isEnabledForAll && !ABTest.isInTestGroup("davesclub108", 64) && !this.specialUser() || !getGLOBAL().isAtHome() || !getGLOBAL()._flags["subscriptions"] || getGLOBAL().isNoob()) {
             return;
         }
         this.unlockTeaserInformation();
@@ -122,8 +125,8 @@ export class SubscriptionHandler implements IHandler {
     private updateSubscriptionStatus(): void {
         this.updateRewards();
         this._icon!.update(this.isSubscriptionActive);
-        const promo1 = FrontPageLibrary.getMessageByName(Promo01DaveClub.NAME) as Promo01DaveClub;
-        const promo2 = FrontPageLibrary.getMessageByName(Promo02DaveClub.NAME) as Promo02DaveClub;
+        const promo1 = getFrontPageLibrary().getMessageByName(Promo01DaveClub.NAME) as Promo01DaveClub;
+        const promo2 = getFrontPageLibrary().getMessageByName(Promo02DaveClub.NAME) as Promo02DaveClub;
         if (promo1 && !ABTest.isInTestGroup("davesclub108", 64) && !this.isSubscriptionActive) {
             promo1.canBeShown = true;
         } else if (promo2 && ABTest.isInTestGroup("davesclub108", 64) && SubscriptionHandler.isEnabledForAll) {
@@ -132,13 +135,13 @@ export class SubscriptionHandler implements IHandler {
         if (!promo1 && !promo2) {
             return;
         }
-        if (FrontPageHandler.hasBeenSetupThisSession === false) {
+        if (getFrontPageHandler().hasBeenSetupThisSession === false) {
             return;
         }
-        if (FrontPageHandler.hasBeenSeenThisSession === false || FrontPageHandler.isVisible) {
-            FrontPageHandler.showPopup(true);
-        } else if (POPUPS.hasPopupsOpen()) {
-            FrontPageHandler.refresh();
+        if (getFrontPageHandler().hasBeenSeenThisSession === false || getFrontPageHandler().isVisible) {
+            getFrontPageHandler().showPopup(true);
+        } else if (getPOPUPS().hasPopupsOpen()) {
+            getFrontPageHandler().refresh();
         }
     }
 
@@ -154,7 +157,7 @@ export class SubscriptionHandler implements IHandler {
 
     private addIcon(): void {
         this._icon = new SubscriptionResourceIcon(this.isSubscriptionActive);
-        UI2._top.addResourceBar(this._icon);
+        getUI2()._top.addResourceBar(this._icon);
         this._icon.addEventListener(MouseEvent.CLICK, this.clickedIcon.bind(this), false, 0, true);
     }
 
@@ -162,13 +165,13 @@ export class SubscriptionHandler implements IHandler {
         if (this.isSubscriptionActive) {
             this.showControlPanel();
         } else {
-            GLOBAL.Message(KEYS.Get("disabled_daveclub"));
+            getGLOBAL().Message(getKEYS().Get("disabled_daveclub"));
         }
     }
 
     private showControlPanel(): void {
         const panel = new SubscriptionControlPanelPopup();
-        POPUPS.Push(panel);
+        getPOPUPS().Push(panel);
         panel.addEventListener(Event.CLOSE, this.clickedClosePanel.bind(this));
         panel.addEventListener(SubscriptionHandler.CHANGE, this.clickedChange.bind(this));
         panel.addEventListener(SubscriptionHandler.CANCEL, this.clickedCancel.bind(this));
@@ -187,7 +190,7 @@ export class SubscriptionHandler implements IHandler {
         panel.removeEventListener(SubscriptionControlPanelPopup.PLACE_DAVE_STATUE, this.clickedPlace.bind(this));
         panel.removeEventListener(SubscriptionControlPanelPopup.REMOVE_DAVE_STATUE, this.clickedRemove.bind(this));
         panel.removeEventListener(SubscriptionControlPanelPopup.SAVE, this.clickedSave.bind(this));
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 
     protected clickedReactivate(event: Event): void {
@@ -203,8 +206,8 @@ export class SubscriptionHandler implements IHandler {
     }
 
     protected clickedPlace(event: Event): void {
-        LOGGER.StatB({ "st1": "daves_club" }, "golden_dave_placed");
-        BASE.addBuildingB(DAVEStatueReward.DAVE_STATUE_TYPE_ID, true);
+        getLOGGER().StatB({ "st1": "daves_club" }, "golden_dave_placed");
+        getBASE().addBuildingB(DAVEStatueReward.DAVE_STATUE_TYPE_ID, true);
     }
 
     protected clickedRemove(event: Event): void {
@@ -219,15 +222,15 @@ export class SubscriptionHandler implements IHandler {
         let reward = RewardHandler.instance.getRewardByID(GoldenDAVEReward.ID);
         if (this.updateRewardValue(reward, panel.goldDavesToggle)) {
             if (panel.goldDavesToggle) {
-                LOGGER.StatB({ "st1": "daves_club" }, "dave_on");
+                getLOGGER().StatB({ "st1": "daves_club" }, "dave_on");
             } else {
-                LOGGER.StatB({ "st1": "daves_club" }, "dave_off");
+                getLOGGER().StatB({ "st1": "daves_club" }, "dave_off");
             }
         }
         reward = RewardHandler.instance.getRewardByID(ExtraTilesReward.ID);
         this.updateRewardValue(reward, panel.bgTileSelected);
-        POPUPS.Next();
-        BASE.Save();
+        getPOPUPS().Next();
+        getBASE().Save();
     }
 
     private updateRewardValue(reward: Reward, value: number): boolean {
@@ -242,11 +245,11 @@ export class SubscriptionHandler implements IHandler {
     public showPromoPopup(): void {
         if (this.isSubscriptionActive) {
             const popup = new SubscriptionJoinPopup();
-            POPUPS.Push(popup);
+            getPOPUPS().Push(popup);
             popup.addEventListener(SubscriptionHandler.JOIN, this.clickedJoin.bind(this));
             popup.addEventListener(Event.CLOSE, this.clickedClose.bind(this));
         } else {
-            GLOBAL.Message(KEYS.Get("disabled_daveclub"));
+            getGLOBAL().Message(getKEYS().Get("disabled_daveclub"));
         }
     }
 
@@ -259,7 +262,7 @@ export class SubscriptionHandler implements IHandler {
         const popup = event.target as SubscriptionJoinPopup;
         popup.removeEventListener(SubscriptionHandler.JOIN, this.clickedJoin.bind(this));
         popup.removeEventListener(Event.CLOSE, this.clickedClose.bind(this));
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 
     private updateRewards(): void {
@@ -276,14 +279,14 @@ export class SubscriptionHandler implements IHandler {
     }
 
     public importData(data: Record<string, any>): void {
-        this._renewalDate = GLOBAL.StatGet("renewal");
-        this._expirationDate = GLOBAL.StatGet("expiration");
+        this._renewalDate = getGLOBAL().StatGet("renewal");
+        this._expirationDate = getGLOBAL().StatGet("expiration");
         this.updateRewards();
     }
 
     public exportData(): Record<string, any> | null {
-        GLOBAL.StatSet("renewal", this._renewalDate, false);
-        GLOBAL.StatSet("expiration", this._expirationDate, false);
+        getGLOBAL().StatSet("renewal", this._renewalDate, false);
+        getGLOBAL().StatSet("expiration", this._expirationDate, false);
         return null;
     }
 }

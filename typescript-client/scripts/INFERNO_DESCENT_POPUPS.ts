@@ -5,18 +5,21 @@ import TextField from 'openfl/text/TextField';
 import Point from 'openfl/geom/Point';
 import { WMBASE } from './com/monsters/ai/WMBASE';
 import { EnumYardType } from './com/monsters/enums/EnumYardType';
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
 import { popup_dialogue } from './popup_dialogue';
 import { popup_infernodescent_battle_report } from './popup_infernodescent_battle_report';
 import { popup_infernoentice_CLIP } from './popup_infernoentice_CLIP';
 import { popup_infernoemerge_dialog } from './popup_infernoemerge_dialog';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { INFERNOPORTAL } from './INFERNOPORTAL';
-import { KEYS } from './KEYS';
-import { LOGGER } from './LOGGER';
 import { MAPROOM_DESCENT } from './MAPROOM_DESCENT';
-import { POPUPS } from './POPUPS';
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getINFERNOPORTAL(): any { return require("./INFERNOPORTAL").INFERNOPORTAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+
 
 class InfernoBattleReportPopup extends popup_infernodescent_battle_report {
     constructor(param1: string, param2: string, param3: number[]) {
@@ -28,19 +31,19 @@ class InfernoBattleReportPopup extends popup_infernodescent_battle_report {
             const _loc6_ = this.getChildByName(_loc5_) as MovieClip;
             switch (_loc4_) {
                 case 0:
-                    (_loc6_ as any).tTitle.htmlText = "<b>" + KEYS.Get("#r_bone#") + "</b>";
+                    (_loc6_ as any).tTitle.htmlText = "<b>" + getKEYS().Get("#r_bone#") + "</b>";
                     break;
                 case 1:
-                    (_loc6_ as any).tTitle.htmlText = "<b>" + KEYS.Get("#r_coal#") + "</b>";
+                    (_loc6_ as any).tTitle.htmlText = "<b>" + getKEYS().Get("#r_coal#") + "</b>";
                     break;
                 case 2:
-                    (_loc6_ as any).tTitle.htmlText = "<b>" + KEYS.Get("#r_sulfur#") + "</b>";
+                    (_loc6_ as any).tTitle.htmlText = "<b>" + getKEYS().Get("#r_sulfur#") + "</b>";
                     break;
                 case 3:
-                    (_loc6_ as any).tTitle.htmlText = "<b>" + KEYS.Get("#r_magma#") + "</b>";
+                    (_loc6_ as any).tTitle.htmlText = "<b>" + getKEYS().Get("#r_magma#") + "</b>";
                     break;
                 case 4:
-                    (_loc6_ as any).tTitle.htmlText = "<b>" + KEYS.Get("#r_shiny#") + "</b>";
+                    (_loc6_ as any).tTitle.htmlText = "<b>" + getKEYS().Get("#r_shiny#") + "</b>";
                     break;
             }
             (_loc6_ as any).tValue.htmlText = "<b>" + Math.floor(param3[_loc4_]).toString() + "</b>";
@@ -61,7 +64,7 @@ export class INFERNO_DESCENT_POPUPS {
     }
 
     public static ShowTauntDialog(param1: number): void {
-        const _loc2_ = POPUPS.DisplayDialogue("", KEYS.Get("descent_moloch_taunt" + param1), KEYS.Get("taunt_player_response" + param1), INFERNO_DESCENT_POPUPS._MOLOCH_PORTRAIT_NEUTRAL, INFERNO_DESCENT_POPUPS._PORTRAIT_IMAGE_OFFSET, POPUPS.Next) as popup_dialogue;
+        const _loc2_ = getPOPUPS().DisplayDialogue("", getKEYS().Get("descent_moloch_taunt" + param1), getKEYS().Get("taunt_player_response" + param1), INFERNO_DESCENT_POPUPS._MOLOCH_PORTRAIT_NEUTRAL, INFERNO_DESCENT_POPUPS._PORTRAIT_IMAGE_OFFSET, getPOPUPS().Next) as popup_dialogue;
         INFERNO_DESCENT_POPUPS.FormatTextFieldForDialog(_loc2_.tBody);
     }
 
@@ -75,44 +78,44 @@ export class INFERNO_DESCENT_POPUPS {
             if (param1 >= MAPROOM_DESCENT._descentLvlMax - 1) {
                 INFERNO_DESCENT_POPUPS.ShowCapturePopup();
             }
-            LOGGER.Stat([87, param1, "Victory"]);
+            getLOGGER().Stat([87, param1, "Victory"]);
         } else {
             _loc5_ = INFERNO_DESCENT_POPUPS.ShowGloatDialog(param1);
-            LOGGER.Stat([87, param1, "Defeat"]);
+            getLOGGER().Stat([87, param1, "Defeat"]);
         }
     }
 
     public static ShowEnticePopup(): void {
         const CloseAndEnter = (param1: MouseEvent): void => {
-            POPUPS.Next();
-            GLOBAL.StatSet("p_id", 1);
-            INFERNOPORTAL.EnterPortal();
+            getPOPUPS().Next();
+            getGLOBAL().StatSet("p_id", 1);
+            getINFERNOPORTAL().EnterPortal();
         };
         const entice = new popup_infernoentice_CLIP();
-        entice.tDesc.htmlText = KEYS.Get("entercavern_direct_popup");
-        entice.tButton.htmlText = KEYS.Get(INFERNOPORTAL.ENTER_BUTTON);
+        entice.tDesc.htmlText = getKEYS().Get("entercavern_direct_popup");
+        entice.tButton.htmlText = getKEYS().Get(getINFERNOPORTAL().ENTER_BUTTON);
         entice.tButton.mouseEnabled = false;
         entice.bEnter.Setup(" ");
         entice.bEnter.addEventListener(MouseEvent.CLICK, CloseAndEnter);
-        POPUPS.Push(entice);
+        getPOPUPS().Push(entice);
     }
 
     public static ShowGloatDialog(param1: number): MovieClip {
-        return INFERNO_DESCENT_POPUPS.ShowAttackEndDialog(INFERNO_DESCENT_POPUPS._MOLOCH_PORTRAIT_GLOAT, KEYS.Get("descent_moloch_gloat" + param1), KEYS.Get("gloat_player_response" + param1));
+        return INFERNO_DESCENT_POPUPS.ShowAttackEndDialog(INFERNO_DESCENT_POPUPS._MOLOCH_PORTRAIT_GLOAT, getKEYS().Get("descent_moloch_gloat" + param1), getKEYS().Get("gloat_player_response" + param1));
     }
 
     public static ShowWhimperDialog(param1: number): MovieClip {
-        return INFERNO_DESCENT_POPUPS.ShowAttackEndDialog(INFERNO_DESCENT_POPUPS._MOLOCH_PORTRAIT_WHIMPER, KEYS.Get("descent_moloch_whimper" + param1), KEYS.Get("whimper_player_response" + param1));
+        return INFERNO_DESCENT_POPUPS.ShowAttackEndDialog(INFERNO_DESCENT_POPUPS._MOLOCH_PORTRAIT_WHIMPER, getKEYS().Get("descent_moloch_whimper" + param1), getKEYS().Get("whimper_player_response" + param1));
     }
 
     public static ShowBattleReport(param1: number, param2: number[], param3: number[]): void {
-        const _loc4_ = KEYS.Get("descent_battlereport", {
+        const _loc4_ = getKEYS().Get("descent_battlereport", {
             "v1": param2[0],
             "v2": param2[1],
             "v3": param2[2],
             "v4": param2[3]
         });
-        const _loc5_ = new InfernoBattleReportPopup("<b>" + KEYS.Get("pop_youlooted_title") + "</b>", _loc4_, param3);
+        const _loc5_ = new InfernoBattleReportPopup("<b>" + getKEYS().Get("pop_youlooted_title") + "</b>", _loc4_, param3);
         if (INFERNO_DESCENT_POPUPS.isBragable(param1)) {
             _loc5_.bButton.SetupKey("btn_brag");
             _loc5_.bButton.Highlight = true;
@@ -121,7 +124,7 @@ export class INFERNO_DESCENT_POPUPS {
             _loc5_.bButton.SetupKey("btn_close");
             _loc5_.bButton.addEventListener(MouseEvent.CLICK, INFERNO_DESCENT_POPUPS.CloseBattleReport, false, 0, true);
         }
-        POPUPS.Push(_loc5_, null, null, null, "portrait_moloch.png");
+        getPOPUPS().Push(_loc5_, null, null, null, "portrait_moloch.png");
     }
 
     private static UpdateTotalLoot(param1: number[], param2: number[]): number[] {
@@ -134,7 +137,7 @@ export class INFERNO_DESCENT_POPUPS {
 
     private static CloseBattleReport(param1: MouseEvent): void {
         (param1.target as MovieClip).removeEventListener(Event.REMOVED_FROM_STAGE, INFERNO_DESCENT_POPUPS.CloseBattleReport);
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 
     private static isBragable(param1: number): boolean {
@@ -142,30 +145,30 @@ export class INFERNO_DESCENT_POPUPS {
     }
 
     private static BragBattleReport(param1: MouseEvent): void {
-        GLOBAL.CallJS("sendFeed", ["loot", KEYS.Get("pop_cavernwin" + INFERNO_DESCENT_POPUPS._level + "_streamtitle"), KEYS.Get("pop_cavernwin" + INFERNO_DESCENT_POPUPS._level + "_streambody"), "pop_cavernwin" + INFERNO_DESCENT_POPUPS._level + ".png"]);
-        POPUPS.Next();
+        getGLOBAL().CallJS("sendFeed", ["loot", getKEYS().Get("pop_cavernwin" + INFERNO_DESCENT_POPUPS._level + "_streamtitle"), getKEYS().Get("pop_cavernwin" + INFERNO_DESCENT_POPUPS._level + "_streambody"), "pop_cavernwin" + INFERNO_DESCENT_POPUPS._level + ".png"]);
+        getPOPUPS().Next();
     }
 
     public static ShowCapturePopup(): void {
         const _loc1_ = new popup_infernoemerge_dialog();
-        _loc1_.tBody.htmlText = "<b>" + KEYS.Get("descent_pop_victory_title") + "</b><br><br>";
-        _loc1_.tBody.htmlText += KEYS.Get("descent_pop_victory_body");
-        _loc1_.bAction.Setup(KEYS.Get("descent_pop_victory_button"));
+        _loc1_.tBody.htmlText = "<b>" + getKEYS().Get("descent_pop_victory_title") + "</b><br><br>";
+        _loc1_.tBody.htmlText += getKEYS().Get("descent_pop_victory_body");
+        _loc1_.bAction.Setup(getKEYS().Get("descent_pop_victory_button"));
         _loc1_.bAction.addEventListener(MouseEvent.CLICK, INFERNO_DESCENT_POPUPS.ClosedCapturePopup);
-        POPUPS.Push(_loc1_, null, null, "");
-        GLOBAL.StatSet("descentLvl", MAPROOM_DESCENT._descentLvlMax);
+        getPOPUPS().Push(_loc1_, null, null, "");
+        getGLOBAL().StatSet("descentLvl", MAPROOM_DESCENT._descentLvlMax);
         MAPROOM_DESCENT._descentLvl = MAPROOM_DESCENT._descentLvlMax;
         MAPROOM_DESCENT.DescentPassed;
         WMBASE.DestroyAllDescent();
     }
 
     private static ClosedCapturePopup(param1: MouseEvent): void {
-        MapRoomManager.instance.mapRoomVersion = MapRoomManager.MAP_ROOM_VERSION_1;
-        BASE.LoadBase(GLOBAL._infBaseURL, 0, 0, "ibuild", false, EnumYardType.INFERNO_YARD);
+        getMapRoomManager().instance.mapRoomVersion = getMapRoomManager().MAP_ROOM_VERSION_1;
+        getBASE().LoadBase(getGLOBAL()._infBaseURL, 0, 0, "ibuild", false, EnumYardType.INFERNO_YARD);
     }
 
     private static ShowAttackEndDialog(param1: string, param2: string, param3: string): MovieClip {
-        const _loc4_ = POPUPS.DisplayDialogue("", param2, param3, param1, INFERNO_DESCENT_POPUPS._PORTRAIT_IMAGE_OFFSET, POPUPS.Next) as popup_dialogue;
+        const _loc4_ = getPOPUPS().DisplayDialogue("", param2, param3, param1, INFERNO_DESCENT_POPUPS._PORTRAIT_IMAGE_OFFSET, getPOPUPS().Next) as popup_dialogue;
         INFERNO_DESCENT_POPUPS.FormatTextFieldForDialog(_loc4_.tBody);
         return _loc4_;
     }
@@ -176,6 +179,6 @@ export class INFERNO_DESCENT_POPUPS {
     }
 
     public static isInDescent(): boolean {
-        return BASE.isInfernoMainYardOrOutpost && !MAPROOM_DESCENT.DescentPassed && GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK;
+        return getBASE().isInfernoMainYardOrOutpost && !MAPROOM_DESCENT.DescentPassed && getGLOBAL().mode == getGLOBAL().e_BASE_MODE.WMATTACK;
     }
 }

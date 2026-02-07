@@ -9,10 +9,13 @@ import { Contact } from "./model/Contact";
 import { ThreadData } from "./model/ThreadData";
 import { InboxMessage_CLIP } from "../../../InboxMessage_CLIP";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGIN } from "../../../LOGIN";
-import { SOUNDS } from "../../../SOUNDS";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGIN(): any { return require("../../../LOGIN").LOGIN; }
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+
+
 
 /**
  * InboxMessage - displays a single thread preview in the mailbox inbox.
@@ -33,7 +36,7 @@ export class InboxMessage extends InboxMessage_CLIP {
     }
 
     private openDown(event: MouseEvent): void {
-        SOUNDS.Play("click1");
+        getSOUNDS().Play("click1");
         this.dispatchEvent(new Event("open"));
     }
 
@@ -47,7 +50,7 @@ export class InboxMessage extends InboxMessage_CLIP {
     public displayData(...rest: any[]): void {
         let contact: Contact | null = null;
         let lastInitial = "";
-        if (this.data!.userid === LOGIN._playerID) {
+        if (this.data!.userid === getLOGIN()._playerID) {
             contact = Contact.contactWithUserId(this.data!.targetid);
         } else {
             contact = Contact.contactWithUserId(this.data!.userid);
@@ -67,13 +70,13 @@ export class InboxMessage extends InboxMessage_CLIP {
             this.bg_mc.gotoAndStop("admin");
         } else if (this.data!.trucestate) {
             if (this.data!.trucestate === "requested") {
-                this.subjectType_txt.htmlText = "<b>" + KEYS.Get("inbox_trucerequested");
+                this.subjectType_txt.htmlText = "<b>" + getKEYS().Get("inbox_trucerequested");
                 this.bg_mc.gotoAndStop("blue");
             } else if (this.data!.trucestate === "rejected") {
-                this.subjectType_txt.htmlText = "<b>" + KEYS.Get("inbox_trucerejected");
+                this.subjectType_txt.htmlText = "<b>" + getKEYS().Get("inbox_trucerejected");
                 this.bg_mc.gotoAndStop("red");
             } else if (this.data!.trucestate === "accepted") {
-                this.subjectType_txt.htmlText = "<b>" + KEYS.Get("inbox_truceaccepted");
+                this.subjectType_txt.htmlText = "<b>" + getKEYS().Get("inbox_truceaccepted");
                 this.bg_mc.gotoAndStop("green");
             }
         }
@@ -92,8 +95,8 @@ export class InboxMessage extends InboxMessage_CLIP {
         }
         this.sendtime = this.data!.sendtime;
         this.subject = this.data!.subject;
-        this.userid_txt.htmlText = KEYS.Get("label_userid", { "v1": this.data!.userid });
-        this.replies_txt.htmlText = KEYS.Get("mail_numreplies", { "v1": this.data!.messagecount - 1 });
+        this.userid_txt.htmlText = getKEYS().Get("label_userid", { "v1": this.data!.userid });
+        this.replies_txt.htmlText = getKEYS().Get("mail_numreplies", { "v1": this.data!.messagecount - 1 });
     }
 
     public shouldLoadImage(): void {
@@ -102,7 +105,7 @@ export class InboxMessage extends InboxMessage_CLIP {
             this.image.contentLoaderInfo.addEventListener(Event.COMPLETE, this.onImgComplete.bind(this));
             this.image.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, this.onErr.bind(this));
             let contact: Contact | null;
-            if (this.data!.userid === LOGIN._playerID) {
+            if (this.data!.userid === getLOGIN()._playerID) {
                 contact = Contact.contactWithUserId(this.data!.targetid, true);
             } else {
                 contact = Contact.contactWithUserId(this.data!.userid, true);
@@ -134,7 +137,7 @@ export class InboxMessage extends InboxMessage_CLIP {
     }
 
     public getTimeDistanceString(timestamp: number): string {
-        const now = GLOBAL.Timestamp();
+        const now = getGLOBAL().Timestamp();
         const diff = now - timestamp;
         let value = 0;
         let key = "";
@@ -157,9 +160,9 @@ export class InboxMessage extends InboxMessage_CLIP {
             value = Math.floor(diff / 60 / 60 / 24 / 7 / 31);
             key = value === 1 ? "mail_time_month" : "mail_time_months";
         }
-        return KEYS.Get("mail_time_ago", {
+        return getKEYS().Get("mail_time_ago", {
             "v1": value,
-            "v2": KEYS.Get(key)
+            "v2": getKEYS().Get(key)
         });
     }
 }

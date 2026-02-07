@@ -1,9 +1,5 @@
 import { SecNum } from './com/cc/utils/SecNum';
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
-import { MonsterBase } from './com/monsters/monsters/MonsterBase';
 import { CreepInfo } from './com/monsters/player/CreepInfo';
-import { SiegeWeapons } from './com/monsters/siege/SiegeWeapons';
-import { Decoy } from './com/monsters/siege/weapons/Decoy';
 import Bitmap from 'openfl/display/Bitmap';
 import BitmapData from 'openfl/display/BitmapData';
 import MovieClip from 'openfl/display/MovieClip';
@@ -14,18 +10,25 @@ import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { Bunker } from './Bunker';
-import { ATTACK } from './ATTACK';
-import { BASE } from './BASE';
-import { CREATURELOCKER } from './CREATURELOCKER';
-import { CREATURES } from './CREATURES';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { MAP } from './MAP';
-import { POPUPS } from './POPUPS';
-import { SOUNDS } from './SOUNDS';
-import { Targeting } from './Targeting';
 import { TweenLite } from './gs/TweenLite';
 import { Expo } from './gs/easing';
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getSiegeWeapons(): any { return require("./com/monsters/siege/SiegeWeapons").SiegeWeapons; }
+function getDecoy(): any { return require("./com/monsters/siege/weapons/Decoy").Decoy; }
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getTargeting(): any { return require("./Targeting").Targeting; }
+
 
 /**
  * BUILDING22 - Monster Bunker
@@ -77,10 +80,10 @@ export class BUILDING22 extends Bunker {
 
     public FindTargets(count: number, priority: number = 1): void {
         if (this._lvl.Get() > 0 && this.health > 0) {
-            let targets: any[] = Targeting.getCreepsInRange(
-                GLOBAL._buildingProps[21].stats[this._lvl.Get() - 1].range,
+            let targets: any[] = getTargeting().getCreepsInRange(
+                getGLOBAL()._buildingProps[21].stats[this._lvl.Get() - 1].range,
                 this._position!.add(new Point(0, this._footprint[0].height / 2)),
-                Targeting.getOldStyleTargets(0)
+                getTargeting().getOldStyleTargets(0)
             );
             this._hasTargets = false;
             if (targets.length > 0) {
@@ -108,13 +111,13 @@ export class BUILDING22 extends Bunker {
                 }
             }
             // Check for flying targets if we have flying attackers
-            if ((this._monsters["C12"] && GLOBAL.player.m_upgrades["C12"]?.powerup) ||
-                (this._monsters["C5"] && GLOBAL.player.m_upgrades["C5"]?.powerup) ||
+            if ((this._monsters["C12"] && getGLOBAL().player.m_upgrades["C12"]?.powerup) ||
+                (this._monsters["C5"] && getGLOBAL().player.m_upgrades["C5"]?.powerup) ||
                 this._monsters["IC5"] || this._monsters["IC7"]) {
-                targets = Targeting.getCreepsInRange(
-                    GLOBAL._buildingProps[21].stats[this._lvl.Get() - 1].range,
+                targets = getTargeting().getCreepsInRange(
+                    getGLOBAL()._buildingProps[21].stats[this._lvl.Get() - 1].range,
                     this._position!.add(new Point(0, this._footprint[0].height / 2)),
-                    Targeting.getOldStyleTargets(2)
+                    getTargeting().getOldStyleTargets(2)
                 );
                 if (targets.length > 0) {
                     this._targetFlyers = [];
@@ -169,7 +172,7 @@ export class BUILDING22 extends Bunker {
 
     private numMonsters(creatureId: string): number {
         if (this._monsters[creatureId]) {
-            return MapRoomManager.instance.isInMapRoom3 && BASE.isMainYardOrInfernoMainYard 
+            return getMapRoomManager().instance.isInMapRoom3 && getBASE().isMainYardOrInfernoMainYard 
                 ? this._monsters[creatureId].length 
                 : this._monsters[creatureId];
         }
@@ -193,7 +196,7 @@ export class BUILDING22 extends Bunker {
                         dy = fh / 2;
                         dx = dx <= 0 ? fw / -4 : fw / 2;
                     }
-                    const spawned = CREATURES.Spawn(creatureToRelease, MAP._BUILDINGTOPS, "decoy", this._position!.add(new Point(dx, dy)), Math.random() * 360);
+                    const spawned = getCREATURES().Spawn(creatureToRelease, getMAP()._BUILDINGTOPS, "decoy", this._position!.add(new Point(dx, dy)), Math.random() * 360);
                     if (spawned) {
                         spawned._homeBunker = this;
                         ++this._monstersDispatched[creatureToRelease];
@@ -205,11 +208,11 @@ export class BUILDING22 extends Bunker {
     }
 
     private DecoyInRange(): boolean {
-        if (SiegeWeapons.activeWeapon && SiegeWeapons.activeWeaponID === Decoy.ID) {
-            const decoy = SiegeWeapons.activeWeapon as Decoy;
+        if (getSiegeWeapons().activeWeapon && getSiegeWeapons().activeWeaponID === getDecoy().ID) {
+            const decoy = getSiegeWeapons().activeWeapon as Decoy;
             if (decoy) {
                 const pos = new Point(decoy.x, decoy.y);
-                if (GLOBAL.QuickDistance(pos, this._position!) < decoy.range) {
+                if (getGLOBAL().QuickDistance(pos, this._position!) < decoy.range) {
                     return true;
                 }
             }
@@ -218,11 +221,11 @@ export class BUILDING22 extends Bunker {
     }
 
     private getNumReleasableCreeps(creatureId: string): number {
-        if (!MapRoomManager.instance.isInMapRoom3 || !BASE.isMainYardOrInfernoMainYard) {
+        if (!getMapRoomManager().instance.isInMapRoom3 || !getBASE().isMainYardOrInfernoMainYard) {
             return this._monsters[creatureId];
         }
         let count: number = this.numMonsters(creatureId);
-        const minHealth: number = CREATURES.GetProperty(creatureId, "health", 0, true);
+        const minHealth: number = getCREATURES().GetProperty(creatureId, "health", 0, true);
         for (let i = count - 1; i >= 0; i--) {
             if (this._monsters[creatureId][i].self || this._monsters[creatureId][i].queued || 
                 this._monsters[creatureId][i].health < minHealth * BUILDING22.kPercentAllowed) {
@@ -233,11 +236,11 @@ export class BUILDING22 extends Bunker {
     }
 
     private getNextCreepToRelease(creatureId: string): CreepInfo | null {
-        if (!MapRoomManager.instance.isInMapRoom3 || !BASE.isMainYardOrInfernoMainYard) {
+        if (!getMapRoomManager().instance.isInMapRoom3 || !getBASE().isMainYardOrInfernoMainYard) {
             return null;
         }
         const total: number = this._monsters[creatureId].length;
-        const minHealth: number = CREATURES.GetProperty(creatureId, "health", 0, true);
+        const minHealth: number = getCREATURES().GetProperty(creatureId, "health", 0, true);
         for (let i = 0; i < total; i++) {
             if (!this._monsters[creatureId][i].self && !this._monsters[creatureId][i].queued &&
                 this._monsters[creatureId][i].health > minHealth * BUILDING22.kPercentAllowed) {
@@ -250,11 +253,11 @@ export class BUILDING22 extends Bunker {
     public override TickAttack(): void {
         super.TickAttack();
         if (this.health > 0) {
-            this._capacity = GLOBAL._buildingProps[21].capacity[this._lvl.Get() - 1];
+            this._capacity = getGLOBAL()._buildingProps[21].capacity[this._lvl.Get() - 1];
         }
         this._used = 0;
         for (const creatureId in this._monsters) {
-            this._used += CREATURES.GetProperty(creatureId, "cStorage", 0, true) * this.numMonsters(creatureId);
+            this._used += getCREATURES().GetProperty(creatureId, "cStorage", 0, true) * this.numMonsters(creatureId);
             if (!this._monstersDispatched[creatureId]) {
                 this._monstersDispatched[creatureId] = 0;
             }
@@ -281,16 +284,16 @@ export class BUILDING22 extends Bunker {
         ++this._tickNumber;
         
         // Release creatures to attack
-        if ((this._targetFlyers.length > 0 || this._targetCreeps.length > 0) && (this._animTick >= 15 || GLOBAL._catchup) && this._tickNumber % 30 === 0) {
+        if ((this._targetFlyers.length > 0 || this._targetCreeps.length > 0) && (this._animTick >= 15 || getGLOBAL()._catchup) && this._tickNumber % 30 === 0) {
             let creatureToRelease: string | null = null;
             this._targetCreeps.sort((a, b) => a.dist - b.dist);
             this._targetFlyers.sort((a, b) => a.dist - b.dist);
             
             if (this._targetFlyers.length > 0 && this.getNumReleasableCreeps("C12") > 0 && 
-                this._monstersDispatched["C12"] < this.numMonsters("C12") && GLOBAL.player.m_upgrades["C12"]?.powerup) {
+                this._monstersDispatched["C12"] < this.numMonsters("C12") && getGLOBAL().player.m_upgrades["C12"]?.powerup) {
                 creatureToRelease = "C12";
             } else if (this._targetFlyers.length > 0 && this.getNumReleasableCreeps("C5") > 0 && 
-                       this._monstersDispatched["C5"] < this.numMonsters("C5") && GLOBAL.player.m_upgrades["C5"]?.powerup) {
+                       this._monstersDispatched["C5"] < this.numMonsters("C5") && getGLOBAL().player.m_upgrades["C5"]?.powerup) {
                 creatureToRelease = "C5";
             } else if (this._targetFlyers.length > 0 && this.getNumReleasableCreeps("IC5") > 0 && 
                        this._monstersDispatched["IC5"] < this.numMonsters("IC5")) {
@@ -311,15 +314,15 @@ export class BUILDING22 extends Bunker {
                     const monsterList: any[] = [];
                     for (const cid in this._monsters) {
                         if (this.numMonsters(cid) > 0) {
-                            const name = KEYS.Get(CREATURELOCKER._creatures[cid].name);
+                            const name = getKEYS().Get(getCREATURELOCKER()._creatures[cid].name);
                             monsterList.push([this.numMonsters(cid), name]);
                         }
                     }
                     this._logged = true;
-                    ATTACK.Log("b" + this._id, `<font color="#FF0000">${KEYS.Get("attacklog_unleashed", {
+                    getATTACK().Log("b" + this._id, `<font color="#FF0000">${getKEYS().Get("attacklog_unleashed", {
                         v1: this._lvl.Get(),
-                        v2: KEYS.Get(this._buildingProps.name),
-                        v3: GLOBAL.Array2String(monsterList)
+                        v2: getKEYS().Get(this._buildingProps.name),
+                        v3: getGLOBAL().Array2String(monsterList)
                     })}</font>`);
                 }
                 
@@ -343,7 +346,7 @@ export class BUILDING22 extends Bunker {
                 }
                 
                 const creepInfo = this.getNextCreepToRelease(creatureToRelease);
-                const spawned = CREATURES.Spawn(creatureToRelease, MAP._BUILDINGTOPS, "defend", 
+                const spawned = getCREATURES().Spawn(creatureToRelease, getMAP()._BUILDINGTOPS, "defend", 
                     this._position!.add(new Point(dx, dy)), Math.random() * 360, null, null, 0, 
                     creepInfo ? creepInfo.health : Number.MAX_SAFE_INTEGER);
                     
@@ -368,10 +371,10 @@ export class BUILDING22 extends Bunker {
 
     public override TickFast(event: Event | null = null): void {
         ++this._frameNumber;
-        if (!GLOBAL._catchup) {
+        if (!getGLOBAL()._catchup) {
             if (this._used > 0 && (this._targetCreeps.length > 0 || this._targetFlyers.length > 0 || this._monstersDispatchedTotal > 0 || this.DecoyInRange())) {
                 if (this._animTick === 1) {
-                    SOUNDS.Play("bunkerdoor");
+                    getSOUNDS().Play("bunkerdoor");
                 }
                 if (this._animTick < 15) {
                     this._animTick += 1;
@@ -379,7 +382,7 @@ export class BUILDING22 extends Bunker {
                 }
             } else {
                 if (this._animTick === 15) {
-                    SOUNDS.Play("bunkerdoor");
+                    getSOUNDS().Play("bunkerdoor");
                 }
                 if (this._animTick > 0) {
                     --this._animTick;
@@ -391,7 +394,7 @@ export class BUILDING22 extends Bunker {
 
     public override Description(): void {
         super.Description();
-        this._upgradeDescription = KEYS.Get("bunker_upgrade_desc");
+        this._upgradeDescription = getKEYS().Get("bunker_upgrade_desc");
     }
 
     public override Update(force: boolean = false): void {
@@ -401,14 +404,14 @@ export class BUILDING22 extends Bunker {
     public override Constructed(): void {
         super.Constructed();
         if (this._lvl.Get() > 0) {
-            this._capacity = GLOBAL._buildingProps[21].capacity[this._lvl.Get() - 1];
-            this._range = GLOBAL._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].range;
+            this._capacity = getGLOBAL()._buildingProps[21].capacity[this._lvl.Get() - 1];
+            this._range = getGLOBAL()._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].range;
         }
     }
 
     public override Destroyed(byAttacker: boolean = true): void {
         for (const creatureId in this._monsters) {
-            if (MapRoomManager.instance.isInMapRoom3 && BASE.isMainYardOrInfernoMainYard) {
+            if (getMapRoomManager().instance.isInMapRoom3 && getBASE().isMainYardOrInfernoMainYard) {
                 for (let i = 0; i < this._monsters[creatureId].length; i++) {
                     this._monsters[creatureId][i].health *= 0.5;
                 }
@@ -425,14 +428,14 @@ export class BUILDING22 extends Bunker {
     public override Upgraded(): void {
         super.Upgraded();
         if (this._lvl.Get() > 0) {
-            this._capacity = GLOBAL._buildingProps[21].capacity[this._lvl.Get() - 1];
-            this._range = GLOBAL._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].range;
+            this._capacity = getGLOBAL()._buildingProps[21].capacity[this._lvl.Get() - 1];
+            this._range = getGLOBAL()._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].range;
         }
     }
 
     public override Recycle(): void {
         this._blockRecycle = false;
-        if (MapRoomManager.instance.isInMapRoom3 && !BASE.isMainYardOrInfernoMainYard) {
+        if (getMapRoomManager().instance.isInMapRoom3 && !getBASE().isMainYardOrInfernoMainYard) {
             for (const creatureId in this._monsters) {
                 if (this._monsters[creatureId].length) {
                     this._blockRecycle = true;
@@ -455,7 +458,7 @@ export class BUILDING22 extends Bunker {
             for (const creatureId in this._monsters) {
                 if (this.numMonsters(creatureId)) {
                     --this._monsters[creatureId];
-                    this._used -= CREATURELOCKER._creatures[creatureId].props.cStorage;
+                    this._used -= getCREATURELOCKER()._creatures[creatureId].props.cStorage;
                     changed = true;
                 } else {
                     this._monsters[creatureId] = 0;
@@ -471,7 +474,7 @@ export class BUILDING22 extends Bunker {
             }
         }
         if (changed) {
-            BASE.Save();
+            getBASE().Save();
         }
     }
 
@@ -491,7 +494,7 @@ export class BUILDING22 extends Bunker {
     }
 
     public override Over(event: MouseEvent): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && this._lvl.Get() > 0 && 
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && this._lvl.Get() > 0 && 
             this._countdownBuild.Get() === 0 && this._countdownFortify.Get() === 0 && 
             this._countdownUpgrade.Get() === 0 && this.health > 0) {
             TweenLite.delayedCall(0.25, this.RangeIndicator.bind(this));
@@ -512,7 +515,7 @@ export class BUILDING22 extends Bunker {
         container.addChild(this._radiusGraphic);
         container.x = center.x;
         container.y = center.y;
-        MAP._BUILDINGFOOTPRINTS.addChild(container);
+        getMAP()._BUILDINGFOOTPRINTS.addChild(container);
         TweenLite.from(container, 0.25, {
             alpha: 0.5,
             scaleX: 0.25,
@@ -524,7 +527,7 @@ export class BUILDING22 extends Bunker {
     }
 
     public override Out(event: MouseEvent): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && this._radiusGraphic) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && this._radiusGraphic) {
             if (this._radiusGraphic.parent) {
                 this._radiusGraphic.parent.removeChild(this._radiusGraphic);
             }
@@ -537,19 +540,19 @@ export class BUILDING22 extends Bunker {
         if (!this._monsters) {
             this._monsters = {};
         }
-        const monsterListLength: number = GLOBAL.player.monsterList.length;
+        const monsterListLength: number = getGLOBAL().player.monsterList.length;
         for (let i = 0; i < monsterListLength; i++) {
-            const creeps = GLOBAL.player.monsterList[i].getOwnedCreeps(this._id);
+            const creeps = getGLOBAL().player.monsterList[i].getOwnedCreeps(this._id);
             if (creeps.length) {
-                this._monsters[GLOBAL.player.monsterList[i].m_creatureID] = creeps;
-                this._monstersDispatched[GLOBAL.player.monsterList[i].m_creatureID] = 0;
+                this._monsters[getGLOBAL().player.monsterList[i].m_creatureID] = creeps;
+                this._monstersDispatched[getGLOBAL().player.monsterList[i].m_creatureID] = 0;
             }
         }
     }
 
     public override Setup(building: any): void {
         super.Setup(building);
-        if (MapRoomManager.instance.isInMapRoom3 && BASE.isMainYardOrInfernoMainYard) {
+        if (getMapRoomManager().instance.isInMapRoom3 && getBASE().isMainYardOrInfernoMainYard) {
             this.linkMonstersToData(building);
         } else {
             for (const creatureId in building.m) {
@@ -558,8 +561,8 @@ export class BUILDING22 extends Bunker {
             }
         }
         if (this._lvl.Get() > 0) {
-            this._capacity = GLOBAL._buildingProps[21].capacity[this._lvl.Get() - 1];
-            this._range = GLOBAL._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].range;
+            this._capacity = getGLOBAL()._buildingProps[21].capacity[this._lvl.Get() - 1];
+            this._range = getGLOBAL()._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].range;
         }
     }
 

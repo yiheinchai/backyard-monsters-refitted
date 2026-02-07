@@ -2,7 +2,10 @@ import Point from "openfl/geom/Point";
 
 import { LASER } from "./LASER";
 
-import { MAP } from "../../../MAP";
+// Lazy imports to break circular dependency chains
+function getMAP(): any { return require("../../../MAP").MAP; }
+
+
 
 /**
  * Static laser effects manager.
@@ -31,7 +34,7 @@ export class LASERS {
     ): void {
         const laser = new LASER();
         laser.Fire(
-            MAP._PROJECTILES,
+            getMAP()._PROJECTILES,
             new Point(startX, startY),
             new Point(endX, endY),
             color,

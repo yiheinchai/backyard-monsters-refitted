@@ -1,13 +1,16 @@
 import { BaseBuff } from "../BaseBuff";
-import { InstanceManager } from "../../managers/InstanceManager";
-import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
 import { MultiplicationPropertyModifier } from "../../monsters/components/modifiers/MultiplicationPropertyModifier";
 
-import { KEYS } from "../../../../KEYS";
-import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { BTOWER } from "../../../../BTOWER";
-import { BWALL } from "../../../../BWALL";
-import { BTRAP } from "../../../../BTRAP";
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("../../managers/InstanceManager").InstanceManager; }
+function getMapRoomManager(): any { return require("../../maproom_manager/MapRoomManager").MapRoomManager; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getBFOUNDATION(): any { return require("../../../../BFOUNDATION").BFOUNDATION; }
+function getBTOWER(): any { return require("../../../../BTOWER").BTOWER; }
+function getBWALL(): any { return require("../../../../BWALL").BWALL; }
+function getBTRAP(): any { return require("../../../../BTRAP").BTRAP; }
+
+
 
 /**
  * Armament building defense multiplier - internal class.
@@ -40,20 +43,20 @@ export class AllianceArmamentBuff extends BaseBuff {
     }
 
     public override get description(): string {
-        return KEYS.Get(MapRoomManager.instance.isInMapRoom2 ? "ap_armament_desc" : "nwm_ap_armament_desc");
+        return getKEYS().Get(getMapRoomManager().instance.isInMapRoom2 ? "ap_armament_desc" : "nwm_ap_armament_desc");
     }
 
     public override apply(): void {
-        const buildings: Array<any> = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const buildings: Array<any> = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (let i = 0; i < buildings.length; i++) {
             const building: BFOUNDATION = buildings[i] as BFOUNDATION;
-            if (building instanceof BTOWER || building instanceof BWALL) {
+            if (building instanceof getBTOWER() || building instanceof getBWALL()) {
                 building.maxHealthProperty.store();
                 building.maxHealthProperty.addModifier(new ArmamentBuildingDefenseMultiplier());
                 building.maxHealthProperty.updateHealth();
             }
         }
-        const traps: Array<any> = InstanceManager.getInstancesByClass(BTRAP);
+        const traps: Array<any> = getInstanceManager().getInstancesByClass(getBTRAP());
         for (let i = 0; i < traps.length; i++) {
             const trap: BTRAP = traps[i] as BTRAP;
             trap.damageProperty.addModifier(new ArmamentTrapDamageMultiplier());
@@ -61,16 +64,16 @@ export class AllianceArmamentBuff extends BaseBuff {
     }
 
     public override clear(): void {
-        const buildings: Array<any> = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const buildings: Array<any> = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (let i = 0; i < buildings.length; i++) {
             const building: BFOUNDATION = buildings[i] as BFOUNDATION;
-            if (building instanceof BTOWER || building instanceof BWALL) {
+            if (building instanceof getBTOWER() || building instanceof getBWALL()) {
                 building.maxHealthProperty.store();
                 building.maxHealthProperty.removeModifier(building.maxHealthProperty.getModifierByType(ArmamentBuildingDefenseMultiplier));
                 building.maxHealthProperty.updateHealth();
             }
         }
-        const traps: Array<any> = InstanceManager.getInstancesByClass(BTRAP);
+        const traps: Array<any> = getInstanceManager().getInstancesByClass(getBTRAP());
         for (let i = 0; i < traps.length; i++) {
             const trap: BTRAP = traps[i] as BTRAP;
             trap.damageProperty.removeModifier(trap.damageProperty.getModifierByType(ArmamentTrapDamageMultiplier));

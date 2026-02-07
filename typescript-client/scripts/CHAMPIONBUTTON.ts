@@ -4,12 +4,15 @@ import DisplayObjectContainer from 'openfl/display/DisplayObjectContainer';
 import MouseEvent from 'openfl/events/MouseEvent';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { GUARDIANBUTTON_CLIP } from './GUARDIANBUTTON_CLIP';
-import { CHAMPIONCAGE } from './CHAMPIONCAGE';
 import { bubblepopup3 } from './bubblepopup3';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { CREEPS } from './CREEPS';
-import { ATTACK } from './ATTACK';
+
+// Lazy imports to break circular dependency chains
+function getCHAMPIONCAGE(): any { return require("./CHAMPIONCAGE").CHAMPIONCAGE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+
 
 /**
  * CHAMPIONBUTTON - Champion button for attack UI
@@ -28,17 +31,17 @@ export class CHAMPIONBUTTON extends GUARDIANBUTTON_CLIP {
         super();
         this._index = param3;
         this._creatureID = param1;
-        this._creatureData = CHAMPIONCAGE._guardians[param1];
+        this._creatureData = getCHAMPIONCAGE()._guardians[param1];
         this._level = Math.min(this.MAX_ICON_LEVEL, param2);
-        const _loc6_: string = String(CHAMPIONCAGE._guardians[param1].name);
-        if (GLOBAL._playerGuardianData[this._index] && GLOBAL._playerGuardianData[this._index].l.Get()) {
-            this.txtName.htmlText = "<b>" + _loc6_ + " Level " + GLOBAL._playerGuardianData[this._index].l.Get() + "</b>";
+        const _loc6_: string = String(getCHAMPIONCAGE()._guardians[param1].name);
+        if (getGLOBAL()._playerGuardianData[this._index] && getGLOBAL()._playerGuardianData[this._index].l.Get()) {
+            this.txtName.htmlText = "<b>" + _loc6_ + " Level " + getGLOBAL()._playerGuardianData[this._index].l.Get() + "</b>";
         } else {
             this.txtName.htmlText = "<b>" + _loc6_ + " Level 1</b>";
         }
         ImageCache.GetImageWithCallBack("monsters/" + this._creatureID + "_L" + this._level + "-small.png", this.IconLoaded.bind(this), true, 1);
         this._description = new bubblepopup3();
-        this._description.Setup(190, 26, KEYS.Get(CHAMPIONCAGE._guardians[this._creatureID].description), 5);
+        this._description.Setup(190, 26, getKEYS().Get(getCHAMPIONCAGE()._guardians[this._creatureID].description), 5);
         param5.addChild(this._description);
         this._description.visible = false;
         this._bg.gotoAndStop("bg" + String(param4 % 2 + 1));
@@ -48,14 +51,14 @@ export class CHAMPIONBUTTON extends GUARDIANBUTTON_CLIP {
         this.bRetreat.addEventListener(MouseEvent.CLICK, this.Retreat.bind(this));
         this.addEventListener(MouseEvent.ROLL_OVER, this.Over.bind(this));
         this.addEventListener(MouseEvent.ROLL_OUT, this.Out.bind(this));
-        if (!GLOBAL.isInAttackMode) {
+        if (!getGLOBAL().isInAttackMode) {
             this.bSend.visible = false;
             this.bSend.Enabled = false;
             this.bRetreat.visible = false;
             this.bRetreat.Enabled = false;
         }
-        if (CREEPS._flungGuardian) {
-            CREEPS._flungGuardian[this._index] = false;
+        if (getCREEPS()._flungGuardian) {
+            getCREEPS()._flungGuardian[this._index] = false;
         }
         this.Update();
     }
@@ -65,7 +68,7 @@ export class CHAMPIONBUTTON extends GUARDIANBUTTON_CLIP {
     }
 
     public Update(): void {
-        if (CREEPS._flungGuardian[this._index]) {
+        if (getCREEPS()._flungGuardian[this._index]) {
             this.bSend.removeEventListener(MouseEvent.CLICK, this.Send.bind(this));
             this.bSend.Enabled = false;
         }
@@ -73,9 +76,9 @@ export class CHAMPIONBUTTON extends GUARDIANBUTTON_CLIP {
 
     public Send(param1: MouseEvent): void {
         if (!this._sent) {
-            ATTACK.BucketAdd(this._creatureID);
+            getATTACK().BucketAdd(this._creatureID);
             this.bSend.SetupKey("btn_hold");
-            ATTACK.BucketUpdate();
+            getATTACK().BucketUpdate();
             this._sent = true;
         } else {
             this.deSelectSend();
@@ -85,17 +88,17 @@ export class CHAMPIONBUTTON extends GUARDIANBUTTON_CLIP {
 
     public deSelectSend(): void {
         if (this.bSend.Enabled) {
-            ATTACK.BucketRemove(this._creatureID);
+            getATTACK().BucketRemove(this._creatureID);
             this.bSend.SetupKey("btn_send");
-            ATTACK.BucketUpdate();
+            getATTACK().BucketUpdate();
             this._sent = false;
         }
     }
 
     public Retreat(param1: MouseEvent): void {
-        const _loc2_: number = CREEPS.getGuardianIndex(Number(this._creatureID.substr(1)));
+        const _loc2_: number = getCREEPS().getGuardianIndex(Number(this._creatureID.substr(1)));
         if (_loc2_ >= 0) {
-            CREEPS._guardianList[_loc2_].changeModeRetreat();
+            getCREEPS()._guardianList[_loc2_].changeModeRetreat();
         }
     }
 

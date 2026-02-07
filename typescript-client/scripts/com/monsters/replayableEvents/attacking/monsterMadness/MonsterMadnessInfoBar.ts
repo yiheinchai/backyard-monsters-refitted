@@ -8,9 +8,12 @@ import { ImageCache } from "../../../display/ImageCache";
 import { MonsterMadness } from "./MonsterMadness";
 import { MonsterMadnessBar_CLIP } from "../../../../../MonsterMadnessBar_CLIP";
 
-import { BASE } from "../../../../../BASE";
-import { GLOBAL } from "../../../../../GLOBAL";
-import { KEYS } from "../../../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../../KEYS").KEYS; }
+
+
 
 /**
  * MonsterMadnessInfoBar - bottom UI bar showing Monster Madness event progress.
@@ -38,17 +41,17 @@ export class MonsterMadnessInfoBar extends MonsterMadnessBar_CLIP {
         this.addEventListener(MouseEvent.CLICK, MonsterMadnessInfoBar.ShowEventPopup);
         this.buttonMode = true;
         this.mouseChildren = false;
-        this.bActionTxt.htmlText = KEYS.Get("btn_info");
+        this.bActionTxt.htmlText = getKEYS().Get("btn_info");
         this.bActionTxt.mouseEnabled = false;
         this.bAction.addEventListener(MouseEvent.CLICK, MonsterMadnessInfoBar.ShowEventPopup);
         let frame = 1;
-        if (BASE.isInfernoMainYardOrOutpost) {
+        if (getBASE().isInfernoMainYardOrOutpost) {
             frame = 2;
         }
         this.mcBG.gotoAndStop(frame);
         this.bAction.gotoAndStop(frame);
         this.Update();
-        GLOBAL._layerUI.addChild(this);
+        getGLOBAL()._layerUI.addChild(this);
     }
 
     public Update(): void {
@@ -65,7 +68,7 @@ export class MonsterMadnessInfoBar extends MonsterMadnessBar_CLIP {
     public updateText(): void {
         const stage = MonsterMadness.stage;
         const timeRemaining = MonsterMadness.timeUntilNextPhase;
-        const timeStr = GLOBAL.ToTime(timeRemaining);
+        const timeStr = getGLOBAL().ToTime(timeRemaining);
         this.tLabel.htmlText = "<b>" + timeStr + "</b>";
         if (stage > 1 && stage < 5) {
             let pct = 0;
@@ -74,15 +77,15 @@ export class MonsterMadnessInfoBar extends MonsterMadnessBar_CLIP {
             let label = "";
             if (stage === 2) {
                 goal = MonsterMadness.POINTS_GOAL1;
-                label = KEYS.Get("mm_infobar_progressbar");
+                label = getKEYS().Get("mm_infobar_progressbar");
             } else if (stage === 3) {
                 goal = MonsterMadness.POINTS_GOAL2 - MonsterMadness.POINTS_GOAL1;
                 points = MonsterMadness.points - MonsterMadness.POINTS_GOAL1;
-                label = KEYS.Get("mm_infobar_progressbar2");
+                label = getKEYS().Get("mm_infobar_progressbar2");
             } else if (stage === 4) {
                 goal = MonsterMadness.POINTS_GOAL3 - MonsterMadness.POINTS_GOAL2;
                 points = MonsterMadness.points - MonsterMadness.POINTS_GOAL2;
-                label = KEYS.Get("mm_infobar_progressbar3");
+                label = getKEYS().Get("mm_infobar_progressbar3");
             }
             pct = Math.min(100, Math.floor(points / goal * 100));
             this.barProgressTxt.htmlText = "" + label + pct + " %" + "";
@@ -120,9 +123,9 @@ export class MonsterMadnessInfoBar extends MonsterMadnessBar_CLIP {
     }
 
     public Resize(): void {
-        GLOBAL.RefreshScreen();
-        this.x = Math.floor(GLOBAL._SCREEN.x + 5 + 30);
-        this.y = Math.floor(GLOBAL._SCREEN.y + GLOBAL._SCREEN.height - this.mcHit.height - 10);
+        getGLOBAL().RefreshScreen();
+        this.x = Math.floor(getGLOBAL()._SCREEN.x + 5 + 30);
+        this.y = Math.floor(getGLOBAL()._SCREEN.y + getGLOBAL()._SCREEN.height - this.mcHit.height - 10);
         if (Boolean(Chat._bymChat) && Boolean(Chat._bymChat.chatBox.background)) {
             this.y = Math.floor(Chat._bymChat.y + Chat._bymChat.chatBox.y + Chat._bymChat.chatBox.background.y - 53);
         }

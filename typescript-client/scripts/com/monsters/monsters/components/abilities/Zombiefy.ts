@@ -4,8 +4,11 @@ import { Component } from "../Component";
 import { DivisionModifier } from "../modifiers/DivisionModifier";
 import { MultiplicationPropertyModifier } from "../modifiers/MultiplicationPropertyModifier";
 
-import { EFFECTS } from "../../../../../EFFECTS";
 import { TweenMax } from "gs/TweenMax";
+
+// Lazy imports to break circular dependency chains
+function getEFFECTS(): any { return require("../../../../../EFFECTS").EFFECTS; }
+
 
 /**
  * Zombiefy - transforms creature into a zombie with modified stats and lightning effects.
@@ -47,7 +50,7 @@ export class Zombiefy extends Component {
         if (Math.random() > 0.9) {
             const startPoint: Point = new Point(this.owner.x, this.owner.y).add(this.owner.getRandomPointOnGraphic());
             const endPoint: Point = new Point(this.owner.x, this.owner.y).add(this.owner.getRandomPointOnGraphic());
-            EFFECTS.Lightning(startPoint.x, startPoint.y, endPoint.x, endPoint.y, null, 65280);
+            getEFFECTS().Lightning(startPoint.x, startPoint.y, endPoint.x, endPoint.y, null, 65280);
         }
     }
 

@@ -6,12 +6,15 @@ import MouseEvent from "openfl/events/MouseEvent";
 
 import { ImageCache } from "../display/ImageCache";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
 import { POPUPSETTINGS } from "../../../POPUPSETTINGS";
-import { SOUNDS } from "../../../SOUNDS";
 import { popup_mr2tutorial } from "../../../popup_mr2tutorial";
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+
 
 /**
  * Map Room 2 tutorial system.
@@ -28,14 +31,14 @@ export class Tutorial {
     }
 
     public static ShowIfNeeded(): void {
-        if (GLOBAL._mr2TutorialId < 2) {
+        if (getGLOBAL()._mr2TutorialId < 2) {
             Tutorial.Hide();
             Tutorial._instance = new Tutorial();
         }
     }
 
     public static ForceShowAll(): void {
-        GLOBAL._mr2TutorialId = 0;
+        getGLOBAL()._mr2TutorialId = 0;
         Tutorial.ShowIfNeeded();
     }
 
@@ -48,7 +51,7 @@ export class Tutorial {
 
     public Update(): void {
         while (this._tutStep <= 7) {
-            if (GLOBAL._mr2TutorialId <= ((this._tutStep === 1 || this._tutStep === 5) ? 1 : 0)) {
+            if (getGLOBAL()._mr2TutorialId <= ((this._tutStep === 1 || this._tutStep === 5) ? 1 : 0)) {
                 break;
             }
             this._tutStep++;
@@ -56,11 +59,11 @@ export class Tutorial {
         
         if (this._tutStep < 7) {
             this.ShowBigDialog(
-                KEYS.Get("newmap_g" + (this._tutStep + 1)),
+                getKEYS().Get("newmap_g" + (this._tutStep + 1)),
                 "ui/mr2_tutorial_" + (this._tutStep + 1) + ".png"
             );
         } else if (this._tutStep === 7) {
-            this.ShowSmallDialog(KEYS.Get("newmap_g" + (this._tutStep + 1)));
+            this.ShowSmallDialog(getKEYS().Get("newmap_g" + (this._tutStep + 1)));
         } else {
             this.FinishTutorial();
         }
@@ -73,14 +76,14 @@ export class Tutorial {
 
     private FinishTutorial(event: Event | null = null): void {
         Tutorial.Hide();
-        GLOBAL._mr2TutorialId = 2;
-        BASE.Save();
+        getGLOBAL()._mr2TutorialId = 2;
+        getBASE().Save();
     }
 
     private ShowBigDialog(text: string, imageUrl: string): void {
         this.HideBigDialog();
-        GLOBAL.BlockerAdd();
-        SOUNDS.Play("click1");
+        getGLOBAL().BlockerAdd();
+        getSOUNDS().Play("click1");
         
         this._bigPopup = new popup_mr2tutorial();
         this._bigPopup.tBody.htmlText = text;
@@ -92,7 +95,7 @@ export class Tutorial {
         this._currImageUrl = imageUrl;
         ImageCache.GetImageWithCallBack(this._currImageUrl, this.ImageLoaded.bind(this));
         
-        GLOBAL._layerTop.addChild(this._bigPopup);
+        getGLOBAL()._layerTop.addChild(this._bigPopup);
         POPUPSETTINGS.AlignToCenter(this._bigPopup);
         POPUPSETTINGS.ScaleUp(this._bigPopup);
     }
@@ -106,13 +109,13 @@ export class Tutorial {
     private ShowSmallDialog(text: string): void {
         this.HideBigDialog();
         this._currImageUrl = "";
-        GLOBAL.Message(text, KEYS.Get("btn_continue"), this.AdvanceTutorial.bind(this));
+        getGLOBAL().Message(text, getKEYS().Get("btn_continue"), this.AdvanceTutorial.bind(this));
     }
 
     private HideBigDialog(): void {
         if (this._bigPopup) {
-            GLOBAL.BlockerRemove();
-            GLOBAL._layerTop.removeChild(this._bigPopup);
+            getGLOBAL().BlockerRemove();
+            getGLOBAL()._layerTop.removeChild(this._bigPopup);
             this._bigPopup = null;
         }
     }

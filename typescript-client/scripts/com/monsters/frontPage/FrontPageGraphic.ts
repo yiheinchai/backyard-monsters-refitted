@@ -12,10 +12,13 @@ import { Category } from "./categories/Category";
 import { FrontPageEvent } from "./events/FrontPageEvent";
 import { Message } from "./messages/Message";
 
-import { KEYS } from "../../../KEYS";
 import { popup_frontpage_CLIP } from "../../../popup_frontpage_CLIP";
 import { frontpage_featuredItem_CLIP } from "../../../frontpage_featuredItem_CLIP";
 import { CarouselCategoryButton2 } from "../../../CarouselCategoryButton2";
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+
 
 declare class TweenLite {
     static to(target: any, duration: number, vars: any): void;
@@ -132,8 +135,8 @@ export class FrontPageGraphic extends popup_frontpage_CLIP {
         
         this.bNext.visible = false;
         this.bPrev.visible = false;
-        this.bNext.tLabel.htmlText = KEYS.Get("btn_next");
-        this.bPrev.tLabel.htmlText = KEYS.Get("btn_prev");
+        (this.bNext as any).tLabel.htmlText = getKEYS().Get("btn_next");
+        (this.bPrev as any).tLabel.htmlText = getKEYS().Get("btn_prev");
         this.bNext.mouseChildren = false;
         this.bPrev.mouseChildren = false;
         this.bNext.buttonMode = true;

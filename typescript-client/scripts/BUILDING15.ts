@@ -1,14 +1,17 @@
 import MovieClip from 'openfl/display/MovieClip';
 import MouseEvent from 'openfl/events/MouseEvent';
 import Rectangle from 'openfl/geom/Rectangle';
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
 import { CreepBase } from './com/monsters/monsters/creeps/CreepBase';
 import { BFOUNDATION } from './BFOUNDATION';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { HOUSING } from './HOUSING';
-import { KEYS } from './KEYS';
-import { POPUPS } from './POPUPS';
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getHOUSING(): any { return require("./HOUSING").HOUSING; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+
 
 /**
  * BUILDING15 - Monster Housing
@@ -42,31 +45,31 @@ export class BUILDING15 extends BFOUNDATION {
 
     public override Description(): void {
         super.Description();
-        this._upgradeDescription = KEYS.Get("bdg_housing_capacitydesc", {
-            v1: GLOBAL.FormatNumber(this._buildingProps.capacity[this._lvl.Get() - 1]),
-            v2: GLOBAL.FormatNumber(this._buildingProps.capacity[this._lvl.Get()])
+        this._upgradeDescription = getKEYS().Get("bdg_housing_capacitydesc", {
+            v1: getGLOBAL().FormatNumber(this._buildingProps.capacity[this._lvl.Get() - 1]),
+            v2: getGLOBAL().FormatNumber(this._buildingProps.capacity[this._lvl.Get()])
         });
         if (this._recycleCosts !== null) {
-            this._recycleDescription = `<b>${KEYS.Get("bdg_housing_recycledesc")}</b><br>${this._recycleCosts}`;
+            this._recycleDescription = `<b>${getKEYS().Get("bdg_housing_recycledesc")}</b><br>${this._recycleCosts}`;
         }
-        HOUSING.HousingSpace();
-        if (BASE.isMainYardOrInfernoMainYard) {
+        getHOUSING().HousingSpace();
+        if (getBASE().isMainYardOrInfernoMainYard) {
             this._blockRecycle = false;
         }
-        if (HOUSING._housingSpace.Get() - this._buildingProps.capacity[this._lvl.Get() - 1] < 0) {
-            this._recycleDescription = `<font color="#CC0000">${KEYS.Get("bdg_housing_recyclewarning")}</font>`;
+        if (getHOUSING()._housingSpace.Get() - this._buildingProps.capacity[this._lvl.Get() - 1] < 0) {
+            this._recycleDescription = `<font color="#CC0000">${getKEYS().Get("bdg_housing_recyclewarning")}</font>`;
             this._blockRecycle = true;
         }
     }
 
     public override Constructed(): void {
         super.Constructed();
-        HOUSING.AddHouse(this);
+        getHOUSING().AddHouse(this);
     }
 
     public override Upgraded(): void {
         super.Upgraded();
-        HOUSING.HousingSpace();
+        getHOUSING().HousingSpace();
     }
 
     public override Tick(seconds: number): void {
@@ -79,20 +82,20 @@ export class BUILDING15 extends BFOUNDATION {
 
     public override RecycleC(): void {
         super.RecycleC();
-        HOUSING.HousingSpace();
-        HOUSING.RemoveHouse(this);
+        getHOUSING().HousingSpace();
+        getHOUSING().RemoveHouse(this);
         this.RelocateHousedCreatures();
     }
 
     public override Destroyed(byAttacker: boolean = true): void {
         super.Destroyed(byAttacker);
-        const isMapRoom3: boolean = MapRoomManager.instance.isInMapRoom3;
+        const isMapRoom3: boolean = getMapRoomManager().instance.isInMapRoom3;
         for (const creature of this._creatures) {
             (creature as CreepBase).setHealth(isMapRoom3 ? (creature as CreepBase).health * 0.5 : 0);
         }
-        if (!MapRoomManager.instance.isInMapRoom3) {
-            HOUSING.Cull();
-            HOUSING.RemoveHouse(this);
+        if (!getMapRoomManager().instance.isInMapRoom3) {
+            getHOUSING().Cull();
+            getHOUSING().RemoveHouse(this);
         }
     }
 
@@ -103,7 +106,7 @@ export class BUILDING15 extends BFOUNDATION {
             this.setHealth(this.maxHealth);
         }
         if (this._countdownBuild.Get() === 0) {
-            HOUSING.AddHouse(this);
+            getHOUSING().AddHouse(this);
         }
     }
 }

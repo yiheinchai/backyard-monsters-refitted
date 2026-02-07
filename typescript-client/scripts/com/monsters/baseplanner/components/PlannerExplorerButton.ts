@@ -5,8 +5,11 @@ import { PlannerNode } from "../PlannerNode";
 import { BasePlannerNodeEvent } from "../events/BasePlannerNodeEvent";
 import { PlannerItem } from "./PlannerItem";
 
-import { PLANNER } from "../../../../PLANNER";
 import { Embed } from "../../../../core/Embed";
+
+// Lazy imports to break circular dependency chains
+function getPLANNER(): any { return require("../../../../PLANNER").PLANNER; }
+
 
 // [Embed(source="/_assets/assets.swf", symbol="BasePlannerPopup_ExplorerItem_Type")]
 /**
@@ -62,7 +65,7 @@ export class PlannerExplorerButton extends PlannerItem {
         }
         this.mc.mcLevel.tLabel.htmlText = String(this._nodeList.length - 1);
         if (this._nodeList.length - 1 > 0 && addToInventory) {
-            PLANNER.basePlanner.popup.designView.addInventoryItem(this._nodeList[this._nodeList.length - 2]);
+            getPLANNER().basePlanner.popup.designView.addInventoryItem(this._nodeList[this._nodeList.length - 2]);
         } else {
             this.mc.mcFrame.gotoAndStop("off");
         }

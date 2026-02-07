@@ -27,43 +27,23 @@ import { Rndm } from "./com/gskinner/utils/Rndm";
 import { WMBASE } from "./com/monsters/ai/WMBASE";
 import { Chat } from "./com/monsters/chat/Chat";
 import { BYMConfig } from "./com/monsters/configs/BYMConfig";
-import { Console } from "./com/monsters/debug/Console";
 import { ImageCache } from "./com/monsters/display/ImageCache";
 import { Fire } from "./com/monsters/effects/fire/Fire";
-import { Smoke } from "./com/monsters/effects/smoke/Smoke";
 import { EnumBaseMode } from "./com/monsters/enums/EnumBaseMode";
 import { EnumYardType } from "./com/monsters/enums/EnumYardType";
 import { ICoreBuilding } from "./com/monsters/interfaces/ICoreBuilding";
 import { ITickable } from "./com/monsters/interfaces/ITickable";
-import { InstanceManager } from "./com/monsters/managers/InstanceManager";
 import { MapRoom3AssetCache } from "./com/monsters/maproom3/MapRoom3AssetCache";
 import { MapRoom3TileSetManager } from "./com/monsters/maproom3/tiles/MapRoom3TileSetManager";
 import { CellData } from "./com/monsters/maproom_advanced/CellData";
 import { IMapRoomCell } from "./com/monsters/maproom_manager/IMapRoomCell";
-import { MapRoomManager } from "./com/monsters/maproom_manager/MapRoomManager";
-import { MonsterBase } from "./com/monsters/monsters/MonsterBase";
 import { ChampionBase } from "./com/monsters/monsters/champions/ChampionBase";
-import { PATHING } from "./com/monsters/pathing/PATHING";
 import { Player } from "./com/monsters/player/Player";
 import { SiegeFactory } from "./com/monsters/siege/SiegeFactory";
 import { SiegeLab } from "./com/monsters/siege/SiegeLab";
-import { SiegeWeapons } from "./com/monsters/siege/SiegeWeapons";
 import { UI_BOTTOM } from "./com/monsters/ui/UI_BOTTOM";
 import { TweenLite, Cubic } from "./gs";
-import { URLLoaderApi } from "./URLLoaderApi";
 import { GAME } from "./GAME";
-import { BFOUNDATION } from "./BFOUNDATION";
-import { BRESOURCE } from "./BRESOURCE";
-import { BTOWER } from "./BTOWER";
-import { BTRAP } from "./BTRAP";
-import { BTOTEM } from "./BTOTEM";
-import { Bunker } from "./Bunker";
-import { BUILDING5 } from "./BUILDING5";
-import { BUILDING9 } from "./BUILDING9";
-import { BUILDING14 } from "./BUILDING14";
-import { BUILDING16 } from "./BUILDING16";
-import { CHAMPIONCAGE } from "./CHAMPIONCAGE";
-import { INFERNOQUAKETOWER } from "./INFERNOQUAKETOWER";
 import { INFERNOYARDPROPS } from "./INFERNOYARDPROPS";
 import { OUTPOST_YARD_PROPS } from "./OUTPOST_YARD_PROPS";
 import { YARD_PROPS } from "./YARD_PROPS";
@@ -72,42 +52,65 @@ import { popup_bg2 } from "./popup_bg2";
 import { PROTIP_CLIP } from "./PROTIP_CLIP";
 import { ERRORMESSAGE } from "./ERRORMESSAGE";
 import { MESSAGE } from "./MESSAGE";
-import { KEYS } from "./KEYS";
-import { LOGIN } from "./LOGIN";
-import { BASE } from "./BASE";
-import { MAP } from "./MAP";
-import { UI2 } from "./UI2";
-import { ATTACK } from "./ATTACK";
 import { ACADEMY } from "./ACADEMY";
-import { CREATURELOCKER } from "./CREATURELOCKER";
-import { CREATURES } from "./CREATURES";
-import { CREEPS } from "./CREEPS";
-import { EFFECTS } from "./EFFECTS";
-import { FIREBALLS } from "./FIREBALLS";
 import { HATCHERY } from "./HATCHERY";
 import { HATCHERYCC } from "./HATCHERYCC";
-import { HOUSING } from "./HOUSING";
-import { LOGGER } from "./LOGGER";
 import { MAILBOX } from "./MAILBOX";
 import { MAPROOM } from "./MAPROOM";
 import { MAPROOM_DESCENT } from "./MAPROOM_DESCENT";
 import { MAPROOM_INFERNO } from "./MAPROOM_INFERNO";
 import { MONSTERBAITER } from "./MONSTERBAITER";
-import { MONSTERBUNKER } from "./MONSTERBUNKER";
 import { PLEASEWAIT } from "./PLEASEWAIT";
-import { POPUPS } from "./POPUPS";
 import { POWERUPS } from "./POWERUPS";
 import { PROJECTILES } from "./PROJECTILES";
-import { QUEUE } from "./QUEUE";
-import { SOUNDS } from "./SOUNDS";
-import { STORE } from "./STORE";
-import { TUTORIAL } from "./TUTORIAL";
-import { UPDATES } from "./UPDATES";
-import { WMATTACK } from "./WMATTACK";
 import { WORKERS } from "./WORKERS";
 import { JSON as JSONUtil } from "./JSON";
 import { md5 } from "./md5";
 import { print } from "./print";
+
+// Lazy imports to break circular dependency chains
+function getConsole(): any { return require("./com/monsters/debug/Console").Console; }
+function getSmoke(): any { return require("./com/monsters/effects/smoke/Smoke").Smoke; }
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getPATHING(): any { return require("./com/monsters/pathing/PATHING").PATHING; }
+function getSiegeWeapons(): any { return require("./com/monsters/siege/SiegeWeapons").SiegeWeapons; }
+function getURLLoaderApi(): any { return require("./URLLoaderApi").URLLoaderApi; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBRESOURCE(): any { return require("./BRESOURCE").BRESOURCE; }
+function getBTOWER(): any { return require("./BTOWER").BTOWER; }
+function getBTRAP(): any { return require("./BTRAP").BTRAP; }
+function getBTOTEM(): any { return require("./BTOTEM").BTOTEM; }
+function getBunker(): any { return require("./Bunker").Bunker; }
+function getBUILDING5(): any { return require("./BUILDING5").BUILDING5; }
+function getBUILDING9(): any { return require("./BUILDING9").BUILDING9; }
+function getBUILDING14(): any { return require("./BUILDING14").BUILDING14; }
+function getBUILDING16(): any { return require("./BUILDING16").BUILDING16; }
+function getCHAMPIONCAGE(): any { return require("./CHAMPIONCAGE").CHAMPIONCAGE; }
+function getINFERNOQUAKETOWER(): any { return require("./INFERNOQUAKETOWER").INFERNOQUAKETOWER; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGIN(): any { return require("./LOGIN").LOGIN; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getUI2(): any { return require("./UI2").UI2; }
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getEFFECTS(): any { return require("./EFFECTS").EFFECTS; }
+function getFIREBALLS(): any { return require("./FIREBALLS").FIREBALLS; }
+function getHOUSING(): any { return require("./HOUSING").HOUSING; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getMONSTERBUNKER(): any { return require("./MONSTERBUNKER").MONSTERBUNKER; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getQUEUE(): any { return require("./QUEUE").QUEUE; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+function getUPDATES(): any { return require("./UPDATES").UPDATES; }
+function getWMATTACK(): any { return require("./WMATTACK").WMATTACK; }
+
 
 export class GLOBAL {
     public static serverUrl: string = "http://localhost:3001/";
@@ -318,7 +321,7 @@ export class GLOBAL {
     }
 
     public static init(): void {
-        new URLLoaderApi().load(GLOBAL.serverUrl + "init", [["apiVersion", GLOBAL.apiVersionSuffix]], (serverData: any): void => {
+        new (getURLLoaderApi())().load(GLOBAL.serverUrl + "init", [["apiVersion", GLOBAL.apiVersionSuffix]], (serverData: any): void => {
             const stage = GAME._instance.stage;
             if (serverData.hasOwnProperty("error")) {
                 GLOBAL.initError = serverData.error;
@@ -329,7 +332,7 @@ export class GLOBAL {
             GLOBAL.LanguageSetup();
             if (serverData.hasOwnProperty("debugMode")) {
                 GLOBAL._aiDesignMode = serverData.debugMode;
-                Console.initialize(stage);
+                getConsole().initialize(stage);
             }
         }, (error: IOErrorEvent): void => {
             GLOBAL.initError = "Failed to connect to the server.";
@@ -353,7 +356,7 @@ export class GLOBAL {
             loader.removeEventListener(Event.COMPLETE, onComplete);
             loader.removeEventListener(IOErrorEvent.IO_ERROR, onError);
             GLOBAL.connectionLost = true;
-            POPUPS.NoConnection();
+            getPOPUPS().NoConnection();
         };
 
         loader.addEventListener(Event.COMPLETE, onComplete);
@@ -363,20 +366,20 @@ export class GLOBAL {
             loader.load(request);
         } catch (error) {
             GLOBAL.connectionLost = true;
-            POPUPS.NoConnection();
+            getPOPUPS().NoConnection();
         }
     }
 
     public static LanguageSetup(): void {
         const token = GAME.sharedObj.data.token;
         const language = GAME.sharedObj.data.language;
-        KEYS._storageURL = GLOBAL.languageUrl;
-        KEYS.GetSupportedLanguages();
+        getKEYS()._storageURL = GLOBAL.languageUrl;
+        getKEYS().GetSupportedLanguages();
 
         if (token) {
-            KEYS.Setup(language);
+            getKEYS().Setup(language);
         } else {
-            KEYS.Setup("english");
+            getKEYS().Setup("english");
         }
     }
 
@@ -426,7 +429,7 @@ export class GLOBAL {
     }
 
     public static SetBuildingProps(): void {
-        switch (BASE.yardType) {
+        switch (getBASE().yardType) {
             case EnumYardType.INFERNO_YARD:
                 GLOBAL._buildingProps = INFERNOYARDPROPS._infernoYardProps;
                 break;
@@ -435,7 +438,7 @@ export class GLOBAL {
                 break;
             default:
                 GLOBAL._buildingProps = YARD_PROPS._yardProps;
-                if (!MapRoomManager.instance.isInMapRoom3) {
+                if (!getMapRoomManager().instance.isInMapRoom3) {
                     GLOBAL.changeNotMaproom3SpecificBuildings();
                 }
         }
@@ -529,19 +532,19 @@ export class GLOBAL {
         switch (GLOBAL._loadmode) {
             case GLOBAL.e_BASE_MODE.IATTACK:
             case GLOBAL.e_BASE_MODE.IWMATTACK:
-                SOUNDS.PlayMusic("musiciattack");
+                getSOUNDS().PlayMusic("musiciattack");
                 break;
             case GLOBAL.e_BASE_MODE.IBUILD:
             case GLOBAL.e_BASE_MODE.IHELP:
             case GLOBAL.e_BASE_MODE.IVIEW:
-                SOUNDS.PlayMusic("musicibuild");
+                getSOUNDS().PlayMusic("musicibuild");
                 break;
             case GLOBAL.e_BASE_MODE.ATTACK:
             case GLOBAL.e_BASE_MODE.WMATTACK:
-                SOUNDS.PlayMusic("musicattack");
+                getSOUNDS().PlayMusic("musicattack");
                 break;
             default:
-                SOUNDS.PlayMusic("musicbuild");
+                getSOUNDS().PlayMusic("musicbuild");
         }
         
         GLOBAL._render = false;
@@ -554,7 +557,7 @@ export class GLOBAL {
             GLOBAL._resourceNames = GLOBAL.iresourceNames;
         }
         
-        BASE.Setup();
+        getBASE().Setup();
     }
 
     public static Clear(): void {
@@ -580,7 +583,7 @@ export class GLOBAL {
     }
 
     public static WaitShow(message: string = ""): void {
-        PLEASEWAIT.Show(KEYS.Get("wait_processing"));
+        PLEASEWAIT.Show(getKEYS().Get("wait_processing"));
     }
 
     public static WaitHide(): void {
@@ -596,45 +599,45 @@ export class GLOBAL {
         if (!GLOBAL._halt && !GLOBAL._catchup) {
             GLOBAL.t += 1;
             
-            if (MapRoomManager.instance.isOpen) {
-                MapRoomManager.instance.Tick();
-                LOGGER.Tick();
+            if (getMapRoomManager().instance.isOpen) {
+                getMapRoomManager().instance.Tick();
+                getLOGGER().Tick();
                 MAILBOX.Tick();
                 GLOBAL.AFK();
             } else {
-                MapRoomManager.instance.CheckForAndForceUpgradeFromMapRoom1();
+                getMapRoomManager().instance.CheckForAndForceUpgradeFromMapRoom1();
                 GLOBAL._timePlayed++;
                 
                 for (let i = 0; i < GLOBAL.tickables.length - 1; i++) {
                     GLOBAL.tickables[i].tick();
                 }
                 
-                const foundations = InstanceManager.getInstancesByClass(BFOUNDATION);
+                const foundations = getInstanceManager().getInstancesByClass(getBFOUNDATION());
                 for (const foundation of foundations) {
                     (foundation as BFOUNDATION).Tick(1);
                 }
                 
-                HOUSING.catchupTick(1);
-                UPDATES.Check();
-                CREATURELOCKER.Tick();
+                getHOUSING().catchupTick(1);
+                getUPDATES().Check();
+                getCREATURELOCKER().Tick();
                 HATCHERY.Tick();
                 HATCHERYCC.Tick();
-                STORE.ProcessPurchases();
-                BASE.Tick();
-                HOUSING.Update();
+                getSTORE().ProcessPurchases();
+                getBASE().Tick();
+                getHOUSING().Update();
                 ACADEMY.Tick();
                 
                 if (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
-                    ATTACK.Tick();
+                    getATTACK().Tick();
                 }
                 
-                QUEUE.Tick();
-                UI2.Update();
-                LOGGER.Tick();
+                getQUEUE().Tick();
+                getUI2().Update();
+                getLOGGER().Tick();
                 MAILBOX.Tick();
                 GLOBAL.AFK();
                 MONSTERBAITER.Tick();
-                MONSTERBUNKER.Tick();
+                getMONSTERBUNKER().Tick();
                 
                 if (GLOBAL._mode === GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL._mode === GLOBAL.e_BASE_MODE.WMVIEW) {
                     WMBASE.Tick();
@@ -667,62 +670,62 @@ export class GLOBAL {
 
     public static TickFast(e: Event): void {
         if (!GLOBAL._halt) {
-            SOUNDS.Tick();
-            MapRoomManager.instance.TickFast();
+            getSOUNDS().Tick();
+            getMapRoomManager().instance.TickFast();
             
             if (GLOBAL._render) {
                 const now = getTimer();
                 
-                if (!MapRoomManager.instance.isOpen) {
+                if (!getMapRoomManager().instance.isOpen) {
                     for (let i = 0; i < GLOBAL._loops; i++) {
                         GLOBAL._render = (i === GLOBAL._loops - 1);
                         
-                        if (CREEPS._creepCount > 0 || SiegeWeapons.activeWeapon) {
-                            CREEPS.Tick();
+                        if (getCREEPS()._creepCount > 0 || getSiegeWeapons().activeWeapon) {
+                            getCREEPS().Tick();
                             
-                            const towers = InstanceManager.getInstancesByClass(BTOWER);
+                            const towers = getInstanceManager().getInstancesByClass(getBTOWER());
                             for (const tower of towers) {
                                 (tower as BFOUNDATION).TickAttack();
                             }
                             
-                            const traps = InstanceManager.getInstancesByClass(BTRAP);
+                            const traps = getInstanceManager().getInstancesByClass(getBTRAP());
                             for (const trap of traps) {
                                 (trap as BTRAP).TickAttack();
                             }
                             
-                            const bunkers = InstanceManager.getInstancesByClass(Bunker);
+                            const bunkers = getInstanceManager().getInstancesByClass(getBunker());
                             for (const bunker of bunkers) {
                                 (bunker as Bunker).TickAttack();
                             }
                         }
                         
-                        CREATURES.Tick();
+                        getCREATURES().Tick();
                         
                         for (let j = GLOBAL.fastTickables.length - 1; j >= 0; j--) {
                             GLOBAL.fastTickables[j].tick();
                         }
                         
                         PROJECTILES.Tick();
-                        FIREBALLS.Tick();
+                        getFIREBALLS().Tick();
                     }
                 }
                 
                 GLOBAL._frameNumber++;
                 
-                if (!MapRoomManager.instance.isOpen) {
+                if (!getMapRoomManager().instance.isOpen) {
                     WORKERS.Tick();
-                    EFFECTS.Tick();
-                    WMATTACK.Tick();
+                    getEFFECTS().Tick();
+                    getWMATTACK().Tick();
                     MAPROOM.Tick();
-                    PATHING.Tick();
-                    Smoke.Tick();
+                    getPATHING().Tick();
+                    getSmoke().Tick();
                     Fire.Tick();
-                    BASE.ShakeB();
+                    getBASE().ShakeB();
                     GLOBAL._player.tick();
                 }
                 
-                if (!TUTORIAL.hasFinished) {
-                    TUTORIAL.Tick();
+                if (!getTUTORIAL().hasFinished) {
+                    getTUTORIAL().Tick();
                 }
             }
         }
@@ -733,14 +736,14 @@ export class GLOBAL {
     }
 
     public static ShowMap(e: MouseEvent = null): void {
-        if (!BASE._loading) {
-            if (BASE.isInfernoMainYardOrOutpost) {
-                BASE._needCurrentCell = false;
+        if (!getBASE()._loading) {
+            if (getBASE().isInfernoMainYardOrOutpost) {
+                getBASE()._needCurrentCell = false;
                 MAPROOM_INFERNO.Setup();
                 MAPROOM_INFERNO.Show();
-            } else if (MapRoomManager.instance.isInMapRoom2or3) {
-                BASE._needCurrentCell = false;
-                MapRoomManager.instance.SetupAndShow();
+            } else if (getMapRoomManager().instance.isInMapRoom2or3) {
+                getBASE()._needCurrentCell = false;
+                getMapRoomManager().instance.SetupAndShow();
             } else {
                 MAPROOM.Setup();
                 MAPROOM.Show();
@@ -749,7 +752,7 @@ export class GLOBAL {
     }
 
     public static isMapOpen(): boolean {
-        return MAPROOM_INFERNO._open || MapRoomManager.instance.isOpen || MAPROOM._open;
+        return MAPROOM_INFERNO._open || getMapRoomManager().instance.isOpen || MAPROOM._open;
     }
 
     public static ToTime(totalSeconds: number, includeDays: boolean = false, includeHours: boolean = true, includeMinutes: boolean = true, includeSeconds: boolean = false): string {
@@ -773,16 +776,16 @@ export class GLOBAL {
         
         let result = "";
         if (includeDays) {
-            if (days) result = days + KEYS.Get("global_days_short") + " ";
-            if (hours || days || includeSeconds) result += GLOBAL.DoubleDigit(hours) + KEYS.Get("global_hours_short") + " ";
-            if (minutes || hours || days || includeSeconds) result += GLOBAL.DoubleDigit(minutes) + KEYS.Get("global_minutes_short") + " ";
-            if (includeHours || days + hours + minutes === 0 || includeSeconds) result += GLOBAL.DoubleDigit(seconds) + KEYS.Get("global_seconds_short");
+            if (days) result = days + getKEYS().Get("global_days_short") + " ";
+            if (hours || days || includeSeconds) result += GLOBAL.DoubleDigit(hours) + getKEYS().Get("global_hours_short") + " ";
+            if (minutes || hours || days || includeSeconds) result += GLOBAL.DoubleDigit(minutes) + getKEYS().Get("global_minutes_short") + " ";
+            if (includeHours || days + hours + minutes === 0 || includeSeconds) result += GLOBAL.DoubleDigit(seconds) + getKEYS().Get("global_seconds_short");
         } else {
-            if (days) result += days + (days > 1 ? KEYS.Get("global_days") : KEYS.Get("global_day")) + " ";
-            if (hours || days || includeSeconds) result += hours + (hours > 1 ? KEYS.Get("global_hours") : KEYS.Get("global_hour")) + " ";
-            if (minutes || hours || days || includeSeconds) result += minutes + (minutes > 1 ? KEYS.Get("global_minutes") : KEYS.Get("global_minute")) + " ";
+            if (days) result += days + (days > 1 ? getKEYS().Get("global_days") : getKEYS().Get("global_day")) + " ";
+            if (hours || days || includeSeconds) result += hours + (hours > 1 ? getKEYS().Get("global_hours") : getKEYS().Get("global_hour")) + " ";
+            if (minutes || hours || days || includeSeconds) result += minutes + (minutes > 1 ? getKEYS().Get("global_minutes") : getKEYS().Get("global_minute")) + " ";
             if ((minutes > 0 || hours > 0 || days === 0 || includeSeconds) && (seconds > 0 && (includeHours || days + hours + minutes === 0))) {
-                result += GLOBAL.dd(seconds) + KEYS.Get("global_seconds_short");
+                result += GLOBAL.dd(seconds) + getKEYS().Get("global_seconds_short");
             }
         }
         return result;
@@ -810,7 +813,7 @@ export class GLOBAL {
     }
 
     public static ErrorMessage(message: string = "", errorType: number = 0): Function {
-        print(message + "@ " + Console.getSource(3));
+        print(message + "@ " + getConsole().getSource(3));
         const em = new ERRORMESSAGE();
         em.Show(message, errorType);
         return (e?: MouseEvent): void => {};
@@ -859,10 +862,10 @@ export class GLOBAL {
                 GLOBAL._oldMousePoint = new Point(GLOBAL._ROOT.mouseX, GLOBAL._ROOT.mouseY);
                 GLOBAL.UpdateAFKTimer();
             }
-            if (GLOBAL.Timestamp() - GLOBAL._afktimer.Get() === 60 * 6 && !MapRoomManager.instance.isOpen) {
-                POPUPS.AFK();
+            if (GLOBAL.Timestamp() - GLOBAL._afktimer.Get() === 60 * 6 && !getMapRoomManager().instance.isOpen) {
+                getPOPUPS().AFK();
             } else if (GLOBAL.Timestamp() - GLOBAL._afktimer.Get() > 60 * 10) {
-                POPUPS.Timeout();
+                getPOPUPS().Timeout();
             }
         }
     }
@@ -876,16 +879,16 @@ export class GLOBAL {
     }
 
     public static StatSet(key: string, value: number, save: boolean = true): void {
-        if (MapRoomManager.instance.isInMapRoom3 && key === "mrl" && value !== 3) return;
+        if (getMapRoomManager().instance.isInMapRoom3 && key === "mrl" && value !== 3) return;
         
         if (!GLOBAL._otherStats) GLOBAL._otherStats = {};
         
         if (value === 0 && GLOBAL._otherStats[key]) {
             delete GLOBAL._otherStats[key];
-            if (save) BASE.Save();
+            if (save) getBASE().Save();
         } else if (!GLOBAL._otherStats[key] || GLOBAL._otherStats[key] !== value) {
             GLOBAL._otherStats[key] = value;
-            if (save) BASE.Save();
+            if (save) getBASE().Save();
         }
     }
 
@@ -913,7 +916,7 @@ export class GLOBAL {
     public static RefreshScreen(): void {
         const width = GLOBAL._ROOT.stage.stageWidth;
         const height = GLOBAL.GetGameHeight();
-        const monsterBarHeight = UI2._wildMonsterBar != null ? 40 : 0;
+        const monsterBarHeight = getUI2()._wildMonsterBar != null ? 40 : 0;
         
         if (!GLOBAL._SCREEN || !GLOBAL._SCREEN.x || !GLOBAL._SCREEN.y || !GLOBAL._SCREEN.width || !GLOBAL._SCREEN.height) {
             GLOBAL._SCREEN = new Rectangle(
@@ -933,25 +936,25 @@ export class GLOBAL {
         GLOBAL._SCREENHUD = new Point(GLOBAL._SCREEN.x, GLOBAL._SCREEN.y + GLOBAL._SCREEN.height - 208);
         GLOBAL._SCREENHUDLEFT = new Point(GLOBAL._SCREEN.x, GLOBAL._SCREEN.y + GLOBAL._SCREEN.height - 208);
         
-        if (MAP._GROUND) {
-            MAP.instance.resizeViewRect();
-            BFOUNDATION.updateAllRasterData();
+        if (getMAP()._GROUND) {
+            getMAP().instance.resizeViewRect();
+            getBFOUNDATION().updateAllRasterData();
         }
     }
 
     public static ResizeGame(e: Event): void {
         if (GLOBAL._fluidWidthEnabled && GAME._firstLoadComplete) {
             GLOBAL.RefreshScreen();
-            UI2.ResizeHandler(e);
+            getUI2().ResizeHandler(e);
             GLOBAL.ResizeLayer(GLOBAL._layerUI);
             GLOBAL.ResizeLayer(GLOBAL._layerWindows);
             GLOBAL.ResizeLayer(GLOBAL._layerMessages);
             GLOBAL.ResizeLayer(GLOBAL._layerTop);
-            if (TUTORIAL._stage < TUTORIAL._endstage) {
-                TUTORIAL.Resize();
+            if (getTUTORIAL()._stage < getTUTORIAL()._endstage) {
+                getTUTORIAL().Resize();
             }
         } else {
-            UI2.ResizeHandler(e);
+            getUI2().ResizeHandler(e);
         }
     }
 
@@ -982,28 +985,28 @@ export class GLOBAL {
     public static goFullScreen(e: MouseEvent = null): void {
         if (GLOBAL._ROOT.stage.displayState === StageDisplayState.NORMAL) {
             GLOBAL._ROOT.stage.displayState = StageDisplayState.FULL_SCREEN;
-            MAP._GROUND.scaleX = MAP._GROUND.scaleY = 1;
+            getMAP()._GROUND.scaleX = getMAP()._GROUND.scaleY = 1;
         } else {
             GLOBAL._ROOT.stage.displayState = StageDisplayState.NORMAL;
         }
         GLOBAL._zoomed = false;
         GLOBAL.magnification = 1;
-        if (MapRoomManager.instance.isOpen) {
-            MapRoomManager.instance.ResizeHandler();
+        if (getMapRoomManager().instance.isOpen) {
+            getMapRoomManager().instance.ResizeHandler();
         }
     }
 
     public static Zoom(e: MouseEvent = null): void {
         if (GLOBAL._ROOT.stage.displayState !== StageDisplayState.FULL_SCREEN) {
-            BASE.BuildingDeselect();
-            MAP.FocusTo(0, 0, 0.4);
+            getBASE().BuildingDeselect();
+            getMAP().FocusTo(0, 0, 0.4);
             
             if (GLOBAL._zoomed) {
                 GLOBAL._zoomed = false;
-                TweenLite.to(MAP._GROUND, 0.1, { scaleX: 1, scaleY: 1, ease: Cubic.easeInOut, overwrite: false });
+                TweenLite.to(getMAP()._GROUND, 0.1, { scaleX: 1, scaleY: 1, ease: Cubic.easeInOut, overwrite: false });
             } else {
                 GLOBAL._zoomed = true;
-                TweenLite.to(MAP._GROUND, 0.4, { scaleX: 0.5, scaleY: 0.5, ease: Cubic.easeInOut, overwrite: false });
+                TweenLite.to(getMAP()._GROUND, 0.4, { scaleX: 0.5, scaleY: 0.5, ease: Cubic.easeInOut, overwrite: false });
             }
         }
     }
@@ -1020,14 +1023,14 @@ export class GLOBAL {
     }
 
     private static onMagnificationUpdate(): void {
-        MAP._GROUND.scaleX = MAP._GROUND.scaleY = GLOBAL._magnification;
-        MAP.Focus(0, 0);
+        getMAP()._GROUND.scaleX = getMAP()._GROUND.scaleY = GLOBAL._magnification;
+        getMAP().Focus(0, 0);
         GLOBAL.RefreshScreen();
         UI_BOTTOM.Resize();
     }
 
     public static getResourceFrame(resource: string, isInferno: boolean = false): string {
-        if (isInferno || BASE.isInfernoMainYardOrOutpost) {
+        if (isInferno || getBASE().isInfernoMainYardOrOutpost) {
             switch (resource) {
                 case "r1": return "bone";
                 case "r2": return "coal";
@@ -1052,12 +1055,12 @@ export class GLOBAL {
     public static getResourceName(resource: string, isInferno: boolean = false): string {
         const names = isInferno ? GLOBAL.iresourceNames : GLOBAL._resourceNames;
         switch (resource) {
-            case "r1": return KEYS.Get(names[0]);
-            case "r2": return KEYS.Get(names[1]);
-            case "r3": return KEYS.Get(names[2]);
-            case "r4": return KEYS.Get(names[3]);
-            case "shiny": return KEYS.Get(names[4]);
-            case "time": return KEYS.Get(names[5]);
+            case "r1": return getKEYS().Get(names[0]);
+            case "r2": return getKEYS().Get(names[1]);
+            case "r3": return getKEYS().Get(names[2]);
+            case "r4": return getKEYS().Get(names[3]);
+            case "shiny": return getKEYS().Get(names[4]);
+            case "time": return getKEYS().Get(names[5]);
             default: return "???";
         }
     }
@@ -1080,11 +1083,11 @@ export class GLOBAL {
     }
 
     public static isAtHome(): boolean {
-        return GLOBAL._mode === "build" && BASE.isMainYardOrInfernoMainYard;
+        return GLOBAL._mode === "build" && getBASE().isMainYardOrInfernoMainYard;
     }
 
     public static isAtHomeOrInOutpost(): boolean {
-        return GLOBAL._mode === "build" && (BASE.isMainYard || BASE.isOutpost);
+        return GLOBAL._mode === "build" && (getBASE().isMainYard || getBASE().isOutpost);
     }
 
     public static isDefending(): boolean {
@@ -1092,7 +1095,7 @@ export class GLOBAL {
     }
 
     public static isNoob(): boolean {
-        return TUTORIAL._stage <= 200 && GLOBAL._sessionCount < 5;
+        return getTUTORIAL()._stage <= 200 && GLOBAL._sessionCount < 5;
     }
 
     public static InfernoMode(mode: string = null): boolean {
@@ -1200,9 +1203,9 @@ export class GLOBAL {
         if (GLOBAL._bTownhall) {
             if (buildingProps.costs?.[0]?.re?.[0]) {
                 // Check if requirement is for Underhall
-                if (buildingProps.costs[0].re[0][0] === INFERNOQUAKETOWER.UNDERHALL_ID) {
+                if (buildingProps.costs[0].re[0][0] === getINFERNOQUAKETOWER().UNDERHALL_ID) {
                     if (MAPROOM_DESCENT.DescentPassed) {
-                        return GLOBAL.StatGet(BUILDING14.UNDERHALL_LEVEL);
+                        return GLOBAL.StatGet(getBUILDING14().UNDERHALL_LEVEL);
                     } else {
                         return buildingProps.rewarded ? 9 : 0;
                     }
@@ -1241,7 +1244,7 @@ export class GLOBAL {
             window.open(targetUrl, target);
             
             if (statParams) {
-                LOGGER.Stat(statParams);
+                getLOGGER().Stat(statParams);
             }
         }
     }
@@ -1256,15 +1259,15 @@ export class GLOBAL {
             (event.target as any).removeEventListener(IOErrorEvent.IO_ERROR, GLOBAL.handleLoadError);
         }
         const message = "Error loading: " + event.text;
-        LOGGER.Log("log", message);
-        Console.warning(message, true);
+        getLOGGER().Log("log", message);
+        getConsole().warning(message, true);
     }
 
     /**
      * Post to social feed (bragging)
      */
     public static Brag(title: string, body: string, caption: string, url: string): void {
-        GLOBAL.CallJS("sendFeed", [title, KEYS.Get(body), KEYS.Get(caption), url]);
+        GLOBAL.CallJS("sendFeed", [title, getKEYS().Get(body), getKEYS().Get(caption), url]);
     }
 
     /**
@@ -1285,7 +1288,7 @@ export class GLOBAL {
     public static ValidateMushroomPick(param1: BFOUNDATION): void {
         const rndm: Rndm = new Rndm(Math.floor(param1.x * param1.y));
         if (Math.floor(rndm.random() * 16) >> 2) {
-            LOGGER.Log("log", "Invalid shinyshroom");
+            getLOGGER().Log("log", "Invalid shinyshroom");
             GLOBAL.ErrorMessage("GLOBAL mushroom hack 1");
             GLOBAL._shinyShroomValid = false;
             return;
@@ -1293,7 +1296,7 @@ export class GLOBAL {
         const len: number = Math.floor(GLOBAL._shinyShrooms.length);
         for (let i: number = 0; i < len; i++) {
             if (param1.x == GLOBAL._shinyShrooms[i].x && param1.y == GLOBAL._shinyShrooms[i].y) {
-                LOGGER.Log("log", "Shinyshroom multi-pick");
+                getLOGGER().Log("log", "Shinyshroom multi-pick");
                 GLOBAL.ErrorMessage("GLOBAL mushroom hack 2");
                 GLOBAL._shinyShroomValid = false;
                 return;

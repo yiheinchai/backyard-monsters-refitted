@@ -1,7 +1,10 @@
 import { KeywordMessage } from "../../../../frontPage/messages/KeywordMessage";
 
-import { POPUPS } from "../../../../../../POPUPS";
-import { GLOBAL } from "../../../../../../GLOBAL";
+// Lazy imports to break circular dependency chains
+function getPOPUPS(): any { return require("../../../../../../POPUPS").POPUPS; }
+function getGLOBAL(): any { return require("../../../../../../GLOBAL").GLOBAL; }
+
+
 
 /**
  * Hell Raisers start message - shown when Hell Raisers event starts.
@@ -12,7 +15,7 @@ export class HellRaisersStartMessage extends KeywordMessage {
     }
 
     protected override onButtonClick(): void {
-        POPUPS.Next();
-        GLOBAL.Message(">Show Event Details Page");
+        getPOPUPS().Next();
+        getGLOBAL().Message(">Show Event Details Page");
     }
 }

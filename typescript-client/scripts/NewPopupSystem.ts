@@ -1,9 +1,12 @@
 import { EnumYardType } from './com/monsters/enums/EnumYardType';
 import { PopupMigrate } from './com/monsters/maproom_advanced/PopupMigrate';
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
-import { GLOBAL } from './GLOBAL';
-import { BASE } from './BASE';
-import { POPUPS } from './POPUPS';
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+
 
 class RequireData {
     public id: string;
@@ -46,7 +49,7 @@ export class NewPopupSystem {
                 "maxMapRoomLevel": 1,
                 "minTimeBetweenDisplays": 5 * 24 * 60 * 60,
                 "requirementsFn": (id: string): boolean => {
-                    return Boolean(GLOBAL._bMap);
+                    return Boolean(getGLOBAL()._bMap);
                 }
             }]
         }];
@@ -58,12 +61,12 @@ export class NewPopupSystem {
         }
         ++this._popupStates[param1].count;
         this._dialogShowing = false;
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 
     public IgnoreDialog(param1: string): void {
         this._dialogShowing = false;
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 
     public Setup(param1: any): void {
@@ -100,27 +103,27 @@ export class NewPopupSystem {
         switch (requireId) {
             case "minTimeBetweenDialogs":
                 return (param1: string): boolean => {
-                    return (value as number) <= GLOBAL.Timestamp() - this._timeOfLastDialog && Boolean(nextFn(param1));
+                    return (value as number) <= getGLOBAL().Timestamp() - this._timeOfLastDialog && Boolean(nextFn(param1));
                 };
             case "minSessionTimeBetweenDialogs":
                 return (param1: string): boolean => {
-                    return (value as number) <= GLOBAL.Timestamp() - this._timeOfLastDialog && this._dialogShownInSession && Boolean(nextFn(param1));
+                    return (value as number) <= getGLOBAL().Timestamp() - this._timeOfLastDialog && this._dialogShownInSession && Boolean(nextFn(param1));
                 };
             case "yardType":
                 return (param1: string): boolean => {
-                    return BASE.yardType == value && Boolean(nextFn(param1));
+                    return getBASE().yardType == value && Boolean(nextFn(param1));
                 };
             case "maxMapRoomLevel":
                 return (param1: string): boolean => {
-                    return ((value as number) < 2 ? !MapRoomManager.instance.isInMapRoom2 : true) && Boolean(nextFn(param1));
+                    return ((value as number) < 2 ? !getMapRoomManager().instance.isInMapRoom2 : true) && Boolean(nextFn(param1));
                 };
             case "minTownHallLevel":
                 return (param1: string): boolean => {
-                    return Boolean(GLOBAL.townHall) && GLOBAL.townHall._lvl.Get() >= (value as number) && Boolean(nextFn(param1));
+                    return Boolean(getGLOBAL().townHall) && getGLOBAL().townHall._lvl.Get() >= (value as number) && Boolean(nextFn(param1));
                 };
             case "minTimeBetweenDisplays":
                 return (param1: string): boolean => {
-                    return Boolean(this._popupStates[param1]) && (value as number) > GLOBAL.Timestamp() - this._popupStates[param1].shown && Boolean(nextFn(param1));
+                    return Boolean(this._popupStates[param1]) && (value as number) > getGLOBAL().Timestamp() - this._popupStates[param1].shown && Boolean(nextFn(param1));
                 };
             case "never":
                 return (param1: string): boolean => {
@@ -136,7 +139,7 @@ export class NewPopupSystem {
     }
 
     private coreRequirements(param1: string): boolean {
-        if (POPUPS._open || GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD) {
+        if (getPOPUPS()._open || getGLOBAL().mode != getGLOBAL().e_BASE_MODE.BUILD) {
             return false;
         }
         if (this._popupStates[param1] && this._popupStates[param1].count > 0) {
@@ -175,7 +178,7 @@ export class NewPopupSystem {
             if (!this._popupStates[_loc2_[0].id]) {
                 this._popupStates[_loc2_[0].id] = {};
             }
-            this._popupStates[_loc2_[0].id].shown = GLOBAL.Timestamp();
+            this._popupStates[_loc2_[0].id].shown = getGLOBAL().Timestamp();
             _loc2_[0].displayFn(_loc2_[0].id);
             return true;
         }

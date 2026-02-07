@@ -3,14 +3,17 @@ import IOErrorEvent from "openfl/events/IOErrorEvent";
 import { EnumYardType } from "../../enums/EnumYardType";
 import { MapRoom3Cell } from "../MapRoom3Cell";
 import { MapRoom3Data } from "../data/MapRoom3Data";
-import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
 import { Bookmark } from "./Bookmark";
 import { SingletonLock } from "../../../../config/singletonlock/SingletonLock";
-import { URLLoaderApi } from "../../../../URLLoaderApi";
 
-import { GLOBAL } from "../../../../GLOBAL";
-import { KEYS } from "../../../../KEYS";
-import { LOGGER } from "../../../../LOGGER";
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../../maproom_manager/MapRoomManager").MapRoomManager; }
+function getURLLoaderApi(): any { return require("../../../../URLLoaderApi").URLLoaderApi; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../../LOGGER").LOGGER; }
+
+
 
 /**
  * BookmarksManager - manages custom and auto-generated bookmarks for map cells.
@@ -85,20 +88,20 @@ export class BookmarksManager {
         saveData[BookmarksManager.BOOKMARKS_CUSTOM_SAVE_DATA_FIELD] = this.SaveBookmarksOfType(BookmarksManager.TYPE_CUSTOM);
         saveData[BookmarksManager.BOOKMARKS_ENEMIES_SAVE_DATA_FIELD] = this.SaveBookmarksOfType(BookmarksManager.TYPE_ENEMIES);
         saveData[BookmarksManager.BOOKMARKS_FRIENDS_SAVE_DATA_FIELD] = this.SaveBookmarksOfType(BookmarksManager.TYPE_FRIENDS);
-        MapRoomManager.instance.bookmarkData = saveData;
-        const url = GLOBAL._apiURL + "player/savebookmarks";
+        getMapRoomManager().instance.bookmarkData = saveData;
+        const url = getGLOBAL()._apiURL + "player/savebookmarks";
         const params = [["bookmarks", JSON.stringify(saveData)]];
-        new URLLoaderApi().load(url, params, this.OnBookmarksSaved.bind(this), this.OnBookmarksSavedError.bind(this));
+        new (getURLLoaderApi())().load(url, params, this.OnBookmarksSaved.bind(this), this.OnBookmarksSavedError.bind(this));
     }
 
     private OnBookmarksSaved(result: Record<string, any>): void {
         if (result.error !== 0) {
-            LOGGER.Log("err", "BookmarksManager.SaveBookmarks", result.error);
+            getLOGGER().Log("err", "BookmarksManager.SaveBookmarks", result.error);
         }
     }
 
     private OnBookmarksSavedError(event: IOErrorEvent): void {
-        LOGGER.Log("err", "BookmarksManager.SaveBookmarks HTTP");
+        getLOGGER().Log("err", "BookmarksManager.SaveBookmarks HTTP");
     }
 
     private SaveBookmarksOfType(type: number): Array<Record<string, any>> {
@@ -157,7 +160,7 @@ export class BookmarksManager {
         }
         const maxBookmarks = type === BookmarksManager.TYPE_CUSTOM ? BookmarksManager.MAX_CUSTOM_BOOKMARKS : BookmarksManager.MAX_AUTO_BOOKMARKS;
         if (bookmarks.length >= maxBookmarks) {
-            GLOBAL.Message(KEYS.Get("mr3_bookmarks_full_message", { "v1": maxBookmarks }));
+            getGLOBAL().Message(getKEYS().Get("mr3_bookmarks_full_message", { "v1": maxBookmarks }));
             return;
         }
         const bookmark = new Bookmark(cell);

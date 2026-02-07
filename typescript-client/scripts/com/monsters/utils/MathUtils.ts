@@ -1,6 +1,9 @@
 import Point from "openfl/geom/Point";
 
-import { GLOBAL } from "../../../GLOBAL";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+
+
 
 /**
  * Math utility functions for geometry and angle calculations.
@@ -12,7 +15,7 @@ export class MathUtils {
     constructor() {}
 
     public static getDistanceBetweenTwoPoints(p1: Point, p2: Point): number {
-        return GLOBAL.QuickDistance(p1, p2);
+        return getGLOBAL().QuickDistance(p1, p2);
     }
 
     public static getAngleBetweenTwoPointsInRadians(p1: Point, p2: Point): number {

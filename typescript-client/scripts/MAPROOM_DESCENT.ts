@@ -7,25 +7,28 @@ import MovieClip from "openfl/display/MovieClip";
 import Event from "openfl/events/Event";
 import MouseEvent from "openfl/events/MouseEvent";
 import ProgressEvent from "openfl/events/ProgressEvent";
-import { GLOBAL } from "./GLOBAL";
-import { BASE } from "./BASE";
-import { KEYS } from "./KEYS";
-import { LOGGER } from "./LOGGER";
-import { URLLoaderApi } from "./URLLoaderApi";
-import { LOGIN } from "./LOGIN";
-import { HOUSING } from "./HOUSING";
-import { SOUNDS } from "./SOUNDS";
-import { TUTORIAL } from "./TUTORIAL";
-import { WMATTACK } from "./WMATTACK";
 import { INFERNOAPI } from "./INFERNOAPI";
-import { INFERNOPORTAL } from "./INFERNOPORTAL";
 import { PLEASEWAIT } from "./PLEASEWAIT";
-import { POPUPS } from "./POPUPS";
 import { MAPROOM } from "./MAPROOM";
 import { popup_truce } from "./popup_truce";
 import { popup_truce_accept } from "./popup_truce_accept";
 import { popup_truce_sent } from "./popup_truce_sent";
 import { JSON } from "./JSON";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getURLLoaderApi(): any { return require("./URLLoaderApi").URLLoaderApi; }
+function getLOGIN(): any { return require("./LOGIN").LOGIN; }
+function getHOUSING(): any { return require("./HOUSING").HOUSING; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+function getWMATTACK(): any { return require("./WMATTACK").WMATTACK; }
+function getINFERNOPORTAL(): any { return require("./INFERNOPORTAL").INFERNOPORTAL; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+
 
 export class MAPROOM_DESCENT {
     public static _mc: DescentMapRoom;
@@ -47,15 +50,15 @@ export class MAPROOM_DESCENT {
     
     public static _descentTribe: any = {
         "id": 1,
-        "name": KEYS.Get("ai_descenttribe_name"),
+        "name": getKEYS().Get("ai_descenttribe_name"),
         "process": PROCESS7,
-        "type": WMATTACK.TYPE_NERD,
-        "taunt": KEYS.Get("ai_descenttribe_taunt"),
+        "type": 7, // getWMATTACK().TYPE_NERD - inlined to break circular dependency
+        "taunt": getKEYS().Get("ai_descenttribe_taunt"),
         "splash": "popups/portrait_moloch.png",
-        "description": KEYS.Get("ai_descenttribe_description"),
-        "succ": KEYS.Get("ai_descenttribe_succ"),
-        "succ_stream": KEYS.Get("ai_descenttribe_succstream"),
-        "fail": KEYS.Get("ai_descenttribe_fail"),
+        "description": getKEYS().Get("ai_descenttribe_description"),
+        "succ": getKEYS().Get("ai_descenttribe_succ"),
+        "succ_stream": getKEYS().Get("ai_descenttribe_succstream"),
+        "fail": getKEYS().Get("ai_descenttribe_fail"),
         "profilepic": "monsters/tribe_dreadnaut_50.v2.jpg",
         "streampostpic": "tribe-dreadnaut.v2.png"
     };
@@ -71,26 +74,26 @@ export class MAPROOM_DESCENT {
         MAPROOM_DESCENT._mc = null;
         MAPROOM_DESCENT.loadState = 0;
         MAPROOM_DESCENT._open = false;
-        if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD) {
             MAPROOM_DESCENT._visitingFriend = false;
-            MAPROOM_DESCENT._descentLvl = GLOBAL.StatGet("descentLvl");
+            MAPROOM_DESCENT._descentLvl = getGLOBAL().StatGet("descentLvl");
             MAPROOM_DESCENT._inDescent = MAPROOM_DESCENT._descentLvl < MAPROOM_DESCENT._descentLvlMax ? true : false;
             MAPROOM_DESCENT._loot = {};
             MAPROOM_DESCENT.bridge_obj = {
-                "Timestamp": GLOBAL.Timestamp,
+                "Timestamp": getGLOBAL().Timestamp,
                 "GLOBAL": GLOBAL,
                 "BASE": BASE,
                 "readyFunction": MAPROOM_DESCENT.onMapRoomReady,
-                "ErrorMessage": GLOBAL.ErrorMessage,
-                "Log": LOGGER.Log,
+                "ErrorMessage": getGLOBAL().ErrorMessage,
+                "Log": getLOGGER().Log,
                 "URLLoaderApi": URLLoaderApi,
                 "Hide": MAPROOM_DESCENT.Hide,
                 "truceShareHandler": MAPROOM_DESCENT.TruceSent,
-                "playerBaseID": BASE._loadedBaseID,
-                "playerBaseSeed": BASE._baseSeed,
-                "_playerName": LOGIN._playerName,
-                "_playerPic": LOGIN._playerPic,
-                "LoadBase": BASE.LoadBase,
+                "playerBaseID": getBASE()._loadedBaseID,
+                "playerBaseSeed": getBASE()._baseSeed,
+                "_playerName": getLOGIN()._playerName,
+                "_playerPic": getLOGIN()._playerPic,
+                "LoadBase": getBASE().LoadBase,
                 "MessageUI": Message,
                 "HOUSING": HOUSING,
                 "RequestTruce": MAPROOM_DESCENT.RequestTruce,
@@ -100,7 +103,7 @@ export class MAPROOM_DESCENT {
                 "setLastSortReversed": MAPROOM_DESCENT.setLastSortReversed,
                 "setVisitingFriend": MAPROOM_DESCENT.setVisitingFriend,
                 "SOUNDS": SOUNDS,
-                "BaseLevel": BASE.BaseLevel,
+                "BaseLevel": getBASE().BaseLevel,
                 "scrollToBaseID": 0,
                 "TUTORIAL": TUTORIAL,
                 "WMBASE": WMBASE,
@@ -112,7 +115,7 @@ export class MAPROOM_DESCENT {
             if (param1) {
                 MAPROOM_DESCENT.loadThenShow = true;
             }
-            INFERNOAPI.LoadInfernoData(GLOBAL._infBaseURL, 0, 0, "idescent");
+            INFERNOAPI.LoadInfernoData(getGLOBAL()._infBaseURL, 0, 0, "idescent");
             INFERNOAPI.addEventListenerStatic(INFERNOAPI.EVENT_DESCENTLOADED, MAPROOM_DESCENT.DescentDataLoaded, false, 0, true);
         }
     }
@@ -122,7 +125,7 @@ export class MAPROOM_DESCENT {
         MAPROOM_DESCENT._initialized = true;
         MAPROOM_DESCENT._initing = false;
         if (MAPROOM_DESCENT.DescentLevel >= MAPROOM_DESCENT._descentLvlMax && MAPROOM_DESCENT.DescentPassed) {
-            INFERNOPORTAL.ToggleYard();
+            getINFERNOPORTAL().ToggleYard();
             return;
         }
         if (MAPROOM_DESCENT.loadThenShow) {
@@ -138,14 +141,14 @@ export class MAPROOM_DESCENT {
         MAPROOM_DESCENT.bridge_obj._lastSort = MAPROOM_DESCENT._lastSort;
         MAPROOM_DESCENT.bridge_obj._lastSortReversed = MAPROOM_DESCENT._lastSortReversed;
         MAPROOM_DESCENT.andShow = true;
-        GLOBAL.BlockerAdd();
-        SOUNDS.Play("click1");
+        getGLOBAL().BlockerAdd();
+        getSOUNDS().Play("click1");
         MAPROOM_DESCENT._open = true;
         MAPROOM_DESCENT.EnterDescent();
         if (MAPROOM_DESCENT.loadState != 2 && MAPROOM_DESCENT.loadState != 1) {
             MAPROOM_DESCENT._mc = new DescentMapRoom();
             MAPROOM_DESCENT._mc.init(MAPROOM_DESCENT.bridge_obj);
-            GLOBAL._layerTop.addChild(MAPROOM_DESCENT._mc);
+            getGLOBAL()._layerTop.addChild(MAPROOM_DESCENT._mc);
         } else if (MAPROOM_DESCENT.loadState == 2) {
             MAPROOM_DESCENT.ShowB();
         }
@@ -153,8 +156,8 @@ export class MAPROOM_DESCENT {
 
     private static ShowB(): void {
         MAPROOM_DESCENT.andShow = false;
-        GLOBAL._layerWindows.addChild(MAPROOM_DESCENT._mc);
-        GLOBAL.WaitHide();
+        getGLOBAL()._layerWindows.addChild(MAPROOM_DESCENT._mc);
+        getGLOBAL().WaitHide();
     }
 
     public static EnterDescent(): void {
@@ -165,8 +168,8 @@ export class MAPROOM_DESCENT {
 
     public static ExitDescent(): void {
         if (MAPROOM_DESCENT._inDescent) {
-            if (BASE.isInfernoMainYardOrOutpost) {
-                if (GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.IWMATTACK) {
+            if (getBASE().isInfernoMainYardOrOutpost) {
+                if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.WMATTACK || getGLOBAL().mode == getGLOBAL().e_BASE_MODE.IWMATTACK) {
                     // Empty block
                 }
             }
@@ -187,8 +190,8 @@ export class MAPROOM_DESCENT {
 
     public static Hide(param1: MouseEvent = null): void {
         try {
-            GLOBAL.BlockerRemove();
-            SOUNDS.Play("close");
+            getGLOBAL().BlockerRemove();
+            getSOUNDS().Play("close");
             if (Boolean(MAPROOM_DESCENT._mc) && Boolean(MAPROOM_DESCENT._mc.parent)) {
                 MAPROOM_DESCENT._mc.parent.removeChild(MAPROOM_DESCENT._mc);
             }
@@ -223,21 +226,21 @@ export class MAPROOM_DESCENT {
                         MAPROOM_DESCENT._mc.Get();
                     }
                 } else {
-                    LOGGER.Log("err", "MAPROOM.RequestTruce: " + JSON.encode(param1));
+                    getLOGGER().Log("err", "MAPROOM.RequestTruce: " + JSON.encode(param1));
                 }
             };
-            new URLLoaderApi().load(GLOBAL._apiURL + "player/requesttruce", [["baseid", baseid], ["duration", 1209600], ["message", (mc as any).bMessage.text]], handleLoadSuccessful);
-            POPUPS.Next();
+            new (getURLLoaderApi())().load(getGLOBAL()._apiURL + "player/requesttruce", [["baseid", baseid], ["duration", 1209600], ["message", (mc as any).bMessage.text]], handleLoadSuccessful);
+            getPOPUPS().Next();
             MAPROOM_DESCENT.TruceSent(name, (mc as any).bMessage.text);
         };
         
         mc = new popup_truce();
-        (mc as any).tA.htmlText = "<b>" + KEYS.Get("map_trucerequest") + " " + name + ".</b>";
-        (mc as any).tB.htmlText = KEYS.Get("map_trucerequest_desc");
+        (mc as any).tA.htmlText = "<b>" + getKEYS().Get("map_trucerequest") + " " + name + ".</b>";
+        (mc as any).tB.htmlText = getKEYS().Get("map_trucerequest_desc");
         (mc as any).bSend.SetupKey("map_trucereq_btn");
         (mc as any).bSend.addEventListener(MouseEvent.CLICK, Truce);
         (mc as any).bMessage.htmlText = "";
-        POPUPS.Push(mc);
+        getPOPUPS().Push(mc);
     }
 
     public static TruceAccepted(param1: string, param2: string): void {
@@ -248,8 +251,8 @@ export class MAPROOM_DESCENT {
         const message: string = param2;
         
         const Share = function(param1: MouseEvent = null): void {
-            GLOBAL.CallJS("sendFeed", ["Truce", KEYS.Get("map_truceaccept_streamtitle", { "v1": name }), KEYS.Get("map_truceaccept_streambody"), "truceaccept" + imgNumber + ".png", 0]);
-            POPUPS.Next();
+            getGLOBAL().CallJS("sendFeed", ["Truce", getKEYS().Get("map_truceaccept_streamtitle", { "v1": name }), getKEYS().Get("map_truceaccept_streambody"), "truceaccept" + imgNumber + ".png", 0]);
+            getPOPUPS().Next();
         };
         
         const Switch = function(param1: number): Function {
@@ -273,7 +276,7 @@ export class MAPROOM_DESCENT {
         (mc as any).bShare.SetupKey("btn_share");
         (mc as any).bShare.addEventListener(MouseEvent.CLICK, Share);
         (mc as any).bShare.Highlight = true;
-        (mc as any).tTitle.htmlText = KEYS.Get("popup_desc_truceaccept");
+        (mc as any).tTitle.htmlText = getKEYS().Get("popup_desc_truceaccept");
         i = 1;
         while (i < 4) {
             mc["mcIcon" + i].buttonMode = true;
@@ -281,7 +284,7 @@ export class MAPROOM_DESCENT {
             mc["mcIcon" + i].addEventListener(MouseEvent.CLICK, Switch(i));
             i++;
         }
-        POPUPS.Push(mc);
+        getPOPUPS().Push(mc);
         SwitchB(1);
     }
 
@@ -293,8 +296,8 @@ export class MAPROOM_DESCENT {
         const message: string = param2;
         
         const Share = function(param1: MouseEvent = null): void {
-            GLOBAL.CallJS("sendFeed", ["Truce", KEYS.Get("map_truceproposed_streamtitle", { "v1": name }), KEYS.Get("map_truceproposed_streambody"), "truceaccept" + imgNumber + ".png", 0]);
-            POPUPS.Next();
+            getGLOBAL().CallJS("sendFeed", ["Truce", getKEYS().Get("map_truceproposed_streamtitle", { "v1": name }), getKEYS().Get("map_truceproposed_streambody"), "truceaccept" + imgNumber + ".png", 0]);
+            getPOPUPS().Next();
         };
         
         const Switch = function(param1: number): Function {
@@ -318,7 +321,7 @@ export class MAPROOM_DESCENT {
         (mc as any).bShare.SetupKey("btn_share");
         (mc as any).bShare.addEventListener(MouseEvent.CLICK, Share);
         (mc as any).bShare.Highlight = true;
-        (mc as any).tTitle.htmlText = KEYS.Get("popup_desc_trucesent");
+        (mc as any).tTitle.htmlText = getKEYS().Get("popup_desc_trucesent");
         i = 1;
         while (i < 4) {
             mc["mcIcon" + i].buttonMode = true;
@@ -326,7 +329,7 @@ export class MAPROOM_DESCENT {
             mc["mcIcon" + i].addEventListener(MouseEvent.CLICK, Switch(i));
             i++;
         }
-        POPUPS.Push(mc);
+        getPOPUPS().Push(mc);
         SwitchB(1);
     }
 
@@ -338,8 +341,8 @@ export class MAPROOM_DESCENT {
         const message: string = param2;
         
         const Share = function(param1: MouseEvent = null): void {
-            GLOBAL.CallJS("sendFeed", ["Truce", KEYS.Get("map_trucerejected_streamtitle", { "v1": name }), KEYS.Get("map_trucerejected_streambody"), "taunt" + imgNumber + ".png", 0]);
-            POPUPS.Next();
+            getGLOBAL().CallJS("sendFeed", ["Truce", getKEYS().Get("map_trucerejected_streamtitle", { "v1": name }), getKEYS().Get("map_trucerejected_streambody"), "taunt" + imgNumber + ".png", 0]);
+            getPOPUPS().Next();
         };
         
         const Switch = function(param1: number): Function {
@@ -363,7 +366,7 @@ export class MAPROOM_DESCENT {
         (mc as any).bShare.SetupKey("btn_share");
         (mc as any).bShare.addEventListener(MouseEvent.CLICK, Share);
         (mc as any).bShare.Highlight = true;
-        (mc as any).tTitle.htmlText = KEYS.Get("popup_desc_trucesent");
+        (mc as any).tTitle.htmlText = getKEYS().Get("popup_desc_trucesent");
         i = 1;
         while (i < 4) {
             mc["mcIcon" + i].buttonMode = true;
@@ -371,7 +374,7 @@ export class MAPROOM_DESCENT {
             mc["mcIcon" + i].addEventListener(MouseEvent.CLICK, Switch(i));
             i++;
         }
-        POPUPS.Push(mc);
+        getPOPUPS().Push(mc);
         SwitchB(1);
     }
 
@@ -381,28 +384,28 @@ export class MAPROOM_DESCENT {
 
     private static setLastSort(param1: number): void {
         MAPROOM_DESCENT._lastSort = param1;
-        GLOBAL.StatSet("mrls", MAPROOM._lastSort);
+        getGLOBAL().StatSet("mrls", MAPROOM._lastSort);
     }
 
     private static setLastView(param1: number): void {
         MAPROOM_DESCENT._lastView = param1;
-        GLOBAL.StatSet("mrlv", MAPROOM_DESCENT._lastView);
+        getGLOBAL().StatSet("mrlv", MAPROOM_DESCENT._lastView);
     }
 
     private static setLastSortReversed(param1: number): void {
         MAPROOM_DESCENT._lastSortReversed = param1;
-        GLOBAL.StatSet("mrlsr", MAPROOM._lastSortReversed);
+        getGLOBAL().StatSet("mrlsr", MAPROOM._lastSortReversed);
     }
 
     public static get DescentLevel(): number {
         let _loc1_: number = MAPROOM_DESCENT._descentLvl;
-        if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD) {
             if (Boolean(WMBASE._descentBases) && WMBASE._descentBases.length > 0) {
                 _loc1_ = WMBASE.CheckDescentProgress();
                 MAPROOM_DESCENT._descentLvl = _loc1_;
-                GLOBAL.StatSet("descentLvl", MAPROOM_DESCENT._descentLvl);
+                getGLOBAL().StatSet("descentLvl", MAPROOM_DESCENT._descentLvl);
             } else {
-                _loc1_ = GLOBAL.StatGet("descentLvl");
+                _loc1_ = getGLOBAL().StatGet("descentLvl");
             }
         }
         return _loc1_;
@@ -410,8 +413,8 @@ export class MAPROOM_DESCENT {
 
     public static get InDescent(): boolean {
         const _loc1_: boolean = false;
-        if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
-            MAPROOM_DESCENT._descentLvl = GLOBAL.StatGet("descentLvl");
+        if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD) {
+            MAPROOM_DESCENT._descentLvl = getGLOBAL().StatGet("descentLvl");
         }
         return MAPROOM_DESCENT._descentLvl < MAPROOM_DESCENT._descentLvlMax ? true : false;
     }
@@ -419,11 +422,11 @@ export class MAPROOM_DESCENT {
     public static get DescentPassed(): boolean {
         let _loc2_: number = 0;
         const _loc1_: boolean = false;
-        if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && GLOBAL.StatGet("descentLvl") < 1) {
+        if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD && getGLOBAL().StatGet("descentLvl") < 1) {
             return false;
         }
-        if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
-            _loc2_ = GLOBAL.StatGet("descentLvl");
+        if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD) {
+            _loc2_ = getGLOBAL().StatGet("descentLvl");
             MAPROOM_DESCENT._descentLvl = MAPROOM_DESCENT._descentLvl < _loc2_ ? _loc2_ : MAPROOM_DESCENT._descentLvl;
         }
         return MAPROOM_DESCENT._descentLvl >= MAPROOM_DESCENT._descentLvlMax;

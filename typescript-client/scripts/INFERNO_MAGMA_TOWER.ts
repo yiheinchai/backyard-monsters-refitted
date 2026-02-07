@@ -1,5 +1,4 @@
 import { IAttackable } from "./com/monsters/interfaces/IAttackable";
-import { MonsterBase } from "./com/monsters/monsters/MonsterBase";
 import { FlameEffect } from "./com/monsters/monsters/components/statusEffects/FlameEffect";
 import BitmapData from "openfl/display/BitmapData";
 import MovieClip from "openfl/display/MovieClip";
@@ -7,11 +6,17 @@ import Event from "openfl/events/Event";
 import Point from "openfl/geom/Point";
 import Rectangle from "openfl/geom/Rectangle";
 import { BTOWER } from "./BTOWER";
-import { GLOBAL } from "./GLOBAL";
-import { SOUNDS } from "./SOUNDS";
-import { FIREBALLS } from "./FIREBALLS";
-import { FIREBALL } from "./FIREBALL";
-import { Targeting } from "./Targeting";
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getFIREBALLS(): any { return require("./FIREBALLS").FIREBALLS; }
+function getFIREBALL(): any { return require("./FIREBALL").FIREBALL; }
+function getTargeting(): any { return require("./Targeting").Targeting; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+
 
 export class INFERNO_MAGMA_TOWER extends BTOWER {
     public static readonly ID: number = 132;
@@ -32,7 +37,7 @@ export class INFERNO_MAGMA_TOWER extends BTOWER {
         this._top = -30;
         this._footprint = [new Rectangle(0, 0, 70, 70)];
         this._gridCost = [[new Rectangle(0, 0, 70, 70), 10], [new Rectangle(10, 10, 50, 50), 200]];
-        this._projectileType = FIREBALLS.TYPE_MAGMA;
+        this._projectileType = getFIREBALLS().TYPE_MAGMA;
         this._fireStage = 1;
         this.SetProps();
     }
@@ -43,7 +48,7 @@ export class INFERNO_MAGMA_TOWER extends BTOWER {
     }
 
     override AnimFrame(param1: boolean = true): void {
-        if (this._animLoaded && GLOBAL._render) {
+        if (this._animLoaded && getGLOBAL()._render) {
             this._animRect.x = this._animRect.width * this._animTick;
             this._animContainerBMD.copyPixels(this._animBMD, this._animRect, this._nullPoint);
         }
@@ -53,22 +58,22 @@ export class INFERNO_MAGMA_TOWER extends BTOWER {
     override Fire(param1: IAttackable): void {
         super.Fire(param1);
         if (Math.random() * 2 <= 1) {
-            SOUNDS.Play("magma1");
+            getSOUNDS().Play("magma1");
         } else {
-            SOUNDS.Play("magma2");
+            getSOUNDS().Play("magma2");
         }
         const _loc2_: number = 0.5 + 0.5 / this.maxHealth * this.health;
         let _loc3_: number = 1;
-        if (Boolean(GLOBAL._towerOverdrive) && GLOBAL._towerOverdrive.Get() >= GLOBAL.Timestamp()) {
+        if (Boolean(getGLOBAL()._towerOverdrive) && getGLOBAL()._towerOverdrive.Get() >= getGLOBAL().Timestamp()) {
             _loc3_ = 1.25;
         }
-        this._projectile = FIREBALLS.Spawn2(new Point(this._mc.x, this._mc.y + this._top), new Point(param1.x, param1.y), param1, this._speed, Math.floor(this.damage * _loc2_ * _loc3_), this._splash, this._projectileType, 1, this);
+        this._projectile = getFIREBALLS().Spawn2(new Point(this._mc.x, this._mc.y + this._top), new Point(param1.x, param1.y), param1, this._speed, Math.floor(this.damage * _loc2_ * _loc3_), this._splash, this._projectileType, 1, this);
     }
 
     protected onProjectileCollision(param1: Event): void {
         const _loc2_: FIREBALL = param1.target as FIREBALL;
-        _loc2_.removeEventListener(FIREBALL.COLLIDED, this.onProjectileCollision);
-        const _loc3_: Array<any> = Targeting.getCreepsInRange(this._splash, new Point(_loc2_._targetCreep.x, _loc2_._targetCreep.y), Targeting.getOldStyleTargets(0));
+        _loc2_.removeEventListener(getFIREBALL().COLLIDED, this.onProjectileCollision);
+        const _loc3_: Array<any> = getTargeting().getCreepsInRange(this._splash, new Point(_loc2_._targetCreep.x, _loc2_._targetCreep.y), getTargeting().getOldStyleTargets(0));
         let _loc4_: number = 0;
         while (_loc4_ < _loc3_.length) {
             ((_loc3_[_loc4_].creep) as MonsterBase).addStatusEffect(new FlameEffect((_loc3_[_loc4_].creep) as MonsterBase, this.damage * 0.5));
@@ -88,24 +93,24 @@ export class INFERNO_MAGMA_TOWER extends BTOWER {
             _loc2_ = this._buildingProps.stats[this._lvl.Get()];
             _loc3_ = Number(_loc1_.range);
             _loc4_ = Number(_loc2_.range);
-            if (BASE.isOutpost) {
-                _loc3_ = BTOWER.AdjustTowerRange(GLOBAL._currentCell, _loc3_);
-                _loc4_ = BTOWER.AdjustTowerRange(GLOBAL._currentCell, _loc4_);
+            if (getBASE().isOutpost) {
+                _loc3_ = BTOWER.AdjustTowerRange(getGLOBAL()._currentCell, _loc3_);
+                _loc4_ = BTOWER.AdjustTowerRange(getGLOBAL()._currentCell, _loc4_);
             }
             if (_loc1_.range < _loc2_.range) {
-                this._upgradeDescription += KEYS.Get("building_rangeincrease", {
+                this._upgradeDescription += getKEYS().Get("building_rangeincrease", {
                     "v1": _loc3_,
                     "v2": _loc4_
                 }) + "<br>";
             }
             if (_loc1_.damage < _loc2_.damage) {
-                this._upgradeDescription += KEYS.Get("building_dpsincrease", {
+                this._upgradeDescription += getKEYS().Get("building_dpsincrease", {
                     "v1": _loc1_.damage,
                     "v2": _loc2_.damage
                 }) + "<br>";
             }
             if (this._lvl.Get() > 1) {
-                this._upgradeDescription += KEYS.Get("building_sfpsincrease", {
+                this._upgradeDescription += getKEYS().Get("building_sfpsincrease", {
                     "v1": this._targetArray[this._lvl.Get() - 1],
                     "v2": this._targetArray[this._lvl.Get()]
                 }) + "<br>";
@@ -121,5 +126,3 @@ export class INFERNO_MAGMA_TOWER extends BTOWER {
 }
 
 // Import needed for Description method
-import { BASE } from "./BASE";
-import { KEYS } from "./KEYS";

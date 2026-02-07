@@ -1,20 +1,23 @@
 import { BYMConfig } from './com/monsters/configs/BYMConfig';
 import { CreepEvent } from './com/monsters/events/CreepEvent';
-import { MonsterBase } from './com/monsters/monsters/MonsterBase';
 import { ChampionBase } from './com/monsters/monsters/champions/ChampionBase';
 import { Krallen } from './com/monsters/monsters/champions/Krallen';
 import { CreepBase } from './com/monsters/monsters/creeps/CreepBase';
 import BitmapData from 'openfl/display/BitmapData';
 import Point from 'openfl/geom/Point';
-import { ATTACK } from './ATTACK';
-import { BASE } from './BASE';
-import { CHAMPIONCAGE } from './CHAMPIONCAGE';
-import { CREATURELOCKER } from './CREATURELOCKER';
-import { GLOBAL } from './GLOBAL';
-import { LOGGER } from './LOGGER';
-import { MAP } from './MAP';
-import { SPRITES } from './SPRITES';
-import { Targeting } from './Targeting';
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getCHAMPIONCAGE(): any { return require("./CHAMPIONCAGE").CHAMPIONCAGE; }
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getSPRITES(): any { return require("./SPRITES").SPRITES; }
+function getTargeting(): any { return require("./Targeting").Targeting; }
+
 
 /**
  * CREEPS - Attacking Monster Management System
@@ -127,15 +130,15 @@ export class CREEPS {
             
             if (!BYMConfig.instance.RENDERER_ON) {
                 if (creep.graphic) {
-                    MAP._BUILDINGTOPS.removeChild(creep.graphic);
+                    getMAP()._BUILDINGTOPS.removeChild(creep.graphic);
                 }
             }
             --CREEPS._creepCount;
             
             if (creep._creatureID && (creep._creatureID.substr(0, 1) === "G" || 
-                (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) && !creep.isDisposable)) {
+                (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) && !creep.isDisposable)) {
                 --CREEPS._flungCount;
-                ATTACK._creaturesFlung.Add(-1);
+                getATTACK()._creaturesFlung.Add(-1);
             }
             delete CREEPS._creeps[deadId];
         }
@@ -147,10 +150,10 @@ export class CREEPS {
             CREEPS._flungCount = CREEPS._creepCount = 0;
         }
         
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
-            if (ATTACK._creaturesFlung.Get() < CREEPS._flungCount && ATTACK._creaturesFlung.Get() > 0) {
-                LOGGER.Log("log", "More creeps than flung creatures");
-                GLOBAL.ErrorMessage();
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
+            if (getATTACK()._creaturesFlung.Get() < CREEPS._flungCount && getATTACK()._creaturesFlung.Get() > 0) {
+                getLOGGER().Log("log", "More creeps than flung creatures");
+                getGLOBAL().ErrorMessage();
             }
         }
     }
@@ -209,7 +212,7 @@ export class CREEPS {
         }
         ++CREEPS._creepCount;
         
-        let CreatureClass = CREATURELOCKER._creatures[creatureId].classType;
+        let CreatureClass = getCREATURELOCKER()._creatures[creatureId].classType;
         if (!CreatureClass) {
             CreatureClass = CreepBase;
         }
@@ -221,14 +224,14 @@ export class CREEPS {
         creep.isDisposable = isDisposable;
         CREEPS._creeps[CREEPS._creepID] = creep;
         CREEPS.m_attackingCreeps.push(creep);
-        GLOBAL.eventDispatcher.dispatchEvent(new CreepEvent(CreepEvent.ATTACKING_MONSTER_SPAWNED, creep));
+        getGLOBAL().eventDispatcher.dispatchEvent(new CreepEvent(CreepEvent.ATTACKING_MONSTER_SPAWNED, creep));
         return creep;
     }
 
     public static SpawnGuardian(guardianType: number, parent: any, behaviour: string, level: number, 
                                 pos: Point, rotation: number, health: number = 20000, 
                                 fd: number = 0, ft: number = 0, isEnemy: boolean = false): ChampionBase | null {
-        const GuardianClass = CHAMPIONCAGE.getGuardianSpawnClass(guardianType);
+        const GuardianClass = getCHAMPIONCAGE().getGuardianSpawnClass(guardianType);
         ++CREEPS._creepID;
         ++CREEPS._creepCount;
         ++CREEPS._flungCount;
@@ -237,15 +240,15 @@ export class CREEPS {
         if (isEnemy) {
             guardian = new GuardianClass(behaviour, pos, 0, null, false, null, level, 0, 0, guardianType, health, fd, ft);
         } else {
-            const guardianIndex: number = GLOBAL.getPlayerGuardianIndex(guardianType);
-            if (GLOBAL._playerGuardianData[guardianIndex].status === ChampionBase.k_CHAMPION_STATUS_NORMAL) {
+            const guardianIndex: number = getGLOBAL().getPlayerGuardianIndex(guardianType);
+            if (getGLOBAL()._playerGuardianData[guardianIndex].status === ChampionBase.k_CHAMPION_STATUS_NORMAL) {
                 guardian = new GuardianClass(
                     behaviour, pos, 0, null, false, null, level,
-                    GLOBAL._playerGuardianData[guardianIndex].fd,
-                    GLOBAL._playerGuardianData[guardianIndex].ft,
+                    getGLOBAL()._playerGuardianData[guardianIndex].fd,
+                    getGLOBAL()._playerGuardianData[guardianIndex].ft,
                     guardianType, health, fd, ft
                 );
-                if (CHAMPIONCAGE.getGuardianClassType(guardianType) === CHAMPIONCAGE.CLASS_TYPE_BASIC) {
+                if (getCHAMPIONCAGE().getGuardianClassType(guardianType) === getCHAMPIONCAGE().CLASS_TYPE_BASIC) {
                     CREEPS._guardian = guardian;
                 } else if (!CREEPS.addGuardian(guardian)) {
                     guardian = null;
@@ -259,7 +262,7 @@ export class CREEPS {
                 parent.addChild(guardian.graphic);
             }
         }
-        GLOBAL.eventDispatcher.dispatchEvent(new CreepEvent(CreepEvent.ATTACKING_MONSTER_SPAWNED, guardian));
+        getGLOBAL().eventDispatcher.dispatchEvent(new CreepEvent(CreepEvent.ATTACKING_MONSTER_SPAWNED, guardian));
         return guardian;
     }
 
@@ -274,15 +277,15 @@ export class CREEPS {
             const creep: MonsterBase = CREEPS._creeps[key];
             let spriteData: any;
             if (creep._creatureID.substr(0, 1) === "G") {
-                spriteData = SPRITES._sprites[(creep as ChampionBase)._spriteID];
+                spriteData = getSPRITES()._sprites[(creep as ChampionBase)._spriteID];
             } else {
-                spriteData = SPRITES._sprites[creep._creatureID];
+                spriteData = getSPRITES()._sprites[creep._creatureID];
             }
             const creepCenter: Point = new Point(creep.x + spriteData.middle.x, creep.y + spriteData.middle.y);
             let angle: number = Math.atan2(pos.y - creepCenter.y, pos.x - creepCenter.x);
-            const edge1: number = BASE.EllipseEdgeDistance(angle, radius, radius * BASE._angle);
+            const edge1: number = getBASE().EllipseEdgeDistance(angle, radius, radius * getBASE()._angle);
             angle = Math.atan2(creepCenter.y - pos.y, creepCenter.x - pos.x);
-            const edge2: number = BASE.EllipseEdgeDistance(angle, spriteData.width * 0.5, spriteData.width * 0.5 * BASE._angle);
+            const edge2: number = getBASE().EllipseEdgeDistance(angle, spriteData.width * 0.5, spriteData.width * 0.5 * getBASE()._angle);
             const dx: number = pos.x - creepCenter.x;
             const dy: number = pos.y - creepCenter.y;
             const dist: number = Math.sqrt(dx * dx + dy * dy);
@@ -301,7 +304,7 @@ export class CREEPS {
             const creep: MonsterBase = CREEPS._creeps[key];
             creep.clear();
             if (!BYMConfig.instance.RENDERER_ON) {
-                MAP._BUILDINGTOPS.removeChild(creep.graphic);
+                getMAP()._BUILDINGTOPS.removeChild(creep.graphic);
             }
         }
         CREEPS._creeps = {};
@@ -314,12 +317,12 @@ export class CREEPS {
         }
         CREEPS._guardianList.length = 0;
         CREEPS.clearOverlapCache();
-        Targeting.clearGridCaches();
+        getTargeting().clearGridCaches();
     }
 
     public static get _guardian(): ChampionBase | null {
         for (let i = 0; i < CREEPS._guardianList.length; i++) {
-            if (CREEPS._guardianList[i] && CHAMPIONCAGE.isBasicGuardian(CREEPS._guardianList[i]._creatureID)) {
+            if (CREEPS._guardianList[i] && getCHAMPIONCAGE().isBasicGuardian(CREEPS._guardianList[i]._creatureID)) {
                 return CREEPS._guardianList[i];
             }
         }
@@ -329,7 +332,7 @@ export class CREEPS {
     public static set _guardian(guardian: ChampionBase | null) {
         let foundIndex = -1;
         for (let i = 0; i < CREEPS._guardianList.length; i++) {
-            if (CHAMPIONCAGE.isBasicGuardian(CREEPS._guardianList[i]._creatureID)) {
+            if (getCHAMPIONCAGE().isBasicGuardian(CREEPS._guardianList[i]._creatureID)) {
                 foundIndex = i;
             }
         }

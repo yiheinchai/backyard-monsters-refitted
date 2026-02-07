@@ -7,7 +7,10 @@ import { BasePlannerTransferEvent } from "../../events/BasePlannerTransferEvent"
 import { BasePlannerTransferPopup } from "./BasePlannerTransferPopup";
 import { BasePlannerTransferRow } from "./BasePlannerTransferRow";
 
-import { KEYS } from "../../../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../../KEYS").KEYS; }
+
+
 
 /**
  * Base planner load popup - popup for loading saved base templates.
@@ -15,7 +18,7 @@ import { KEYS } from "../../../../../KEYS";
 export class BasePlannerLoadPopup extends BasePlannerTransferPopup {
     constructor() {
         super();
-        this.tTitle.htmlText = KEYS.Get("basePlanner_loadtitle");
+        this.tTitle.htmlText = getKEYS().Get("basePlanner_loadtitle");
     }
 
     public override updateList(templates: Array<BaseTemplate>): void {
@@ -43,7 +46,7 @@ export class BasePlannerLoadPopup extends BasePlannerTransferPopup {
     }
 
     public override get name(): string {
-        return KEYS.Get("basePlanner_btnLoad");
+        return getKEYS().Get("basePlanner_btnLoad");
     }
 
     protected override clickedTransfer(event: Event): void {

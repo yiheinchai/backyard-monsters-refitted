@@ -3,10 +3,13 @@ import BitmapData from 'openfl/display/BitmapData';
 import MouseEvent from 'openfl/events/MouseEvent';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { DEFENSEEVENTPOPUP_CLIP } from './DEFENSEEVENTPOPUP_CLIP';
-import { SPECIALEVENT } from './SPECIALEVENT';
-import { KEYS } from './KEYS';
-import { GLOBAL } from './GLOBAL';
-import { POPUPS } from './POPUPS';
+
+// Lazy imports to break circular dependency chains
+function getSPECIALEVENT(): any { return require("./SPECIALEVENT").SPECIALEVENT; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+
 
 /**
  * DEFENSEEVENTPOPUP_WM1 - Original defense event popup for Wild Monster Invasion 1
@@ -42,18 +45,18 @@ export class DEFENSEEVENTPOPUP_WM1 extends DEFENSEEVENTPOPUP_CLIP {
         }
         
         if (popupnum == 4) {
-            if (SPECIALEVENT.wave == 1) {
-                this.rsvpBtn.Setup(KEYS.Get("wmi_buttonpopup2"), false, 0, 0);
+            if (getSPECIALEVENT().wave == 1) {
+                this.rsvpBtn.Setup(getKEYS().Get("wmi_buttonpopup2"), false, 0, 0);
                 this.rsvpBtn.addEventListener(MouseEvent.CLICK, this.startDown.bind(this));
             } else {
                 this.rsvpBtn.visible = false;
             }
         } else if (popupnum == 5) {
-            this.rsvpBtn.Setup(KEYS.Get("str_zazzle"), false, 0, 0);
+            this.rsvpBtn.Setup(getKEYS().Get("str_zazzle"), false, 0, 0);
             this.rsvpBtn.Highlight = true;
             this.rsvpBtn.addEventListener(MouseEvent.CLICK, this.merchandiseDown.bind(this));
         } else {
-            this.rsvpBtn.Setup(KEYS.Get("wmi_buttonpopup1"), false, 0, 0);
+            this.rsvpBtn.Setup(getKEYS().Get("wmi_buttonpopup1"), false, 0, 0);
             this.rsvpBtn.addEventListener(MouseEvent.CLICK, this.rsvpDown.bind(this));
         }
         
@@ -61,10 +64,10 @@ export class DEFENSEEVENTPOPUP_WM1 extends DEFENSEEVENTPOPUP_CLIP {
         
         if (popupnum > 0 && popupnum < 5) {
             ImageCache.GetImageWithCallBack("specialevent/200x200_" + popupnum + ".jpg", imageComplete);
-            this.mcText.htmlText = KEYS.Get("wmi_popup" + popupnum);
+            this.mcText.htmlText = getKEYS().Get("wmi_popup" + popupnum);
         } else if (popupnum == 5) {
             ImageCache.GetImageWithCallBack("specialevent/tshirt_v2.png", imageComplete);
-            this.mcText.htmlText = KEYS.Get("wmi_tshirt");
+            this.mcText.htmlText = getKEYS().Get("wmi_tshirt");
         }
         
         this.mcFrame.Setup(true);
@@ -76,9 +79,9 @@ export class DEFENSEEVENTPOPUP_WM1 extends DEFENSEEVENTPOPUP_CLIP {
     }
 
     public rsvpDown(param1: MouseEvent): void {
-        // GLOBAL.gotoURL("http://www.facebook.com/event.php?eid=141841065917218", null, true, null);
-        GLOBAL.gotoURL("https://backyard-monsters.fandom.com/wiki/Wild_Monster_Invasion", null, true, null);
-        POPUPS.Next();
+        // getGLOBAL().gotoURL("http://www.facebook.com/event.php?eid=141841065917218", null, true, null);
+        getGLOBAL().gotoURL("https://backyard-monsters.fandom.com/wiki/Wild_Monster_Invasion", null, true, null);
+        getPOPUPS().Next();
     }
 
     public startDown(param1: MouseEvent): void {
@@ -86,12 +89,12 @@ export class DEFENSEEVENTPOPUP_WM1 extends DEFENSEEVENTPOPUP_CLIP {
     }
 
     private merchandiseDown(param1: MouseEvent): void {
-        GLOBAL.gotoURL("http://www.zazzle.com/ultimate_i_survived_wild_monster_invasion_t_shirt-235246313457240737", null, true, [63, 1]);
-        POPUPS.Next();
+        getGLOBAL().gotoURL("http://www.zazzle.com/ultimate_i_survived_wild_monster_invasion_t_shirt-235246313457240737", null, true, [63, 1]);
+        getPOPUPS().Next();
     }
 
     public Hide(): void {
         DEFENSEEVENTPOPUP_WM1._open = false;
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 }

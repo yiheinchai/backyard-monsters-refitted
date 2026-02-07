@@ -2,19 +2,22 @@ import DisplayObject from "openfl/display/DisplayObject";
 import MovieClip from "openfl/display/MovieClip";
 import Point from "openfl/geom/Point";
 
-import { InstanceManager } from "../managers/InstanceManager";
-import { MonsterBase } from "../monsters/MonsterBase";
 import { Enrage } from "../monsters/components/abilities/Enrage";
 import { TemporaryComponent } from "../monsters/components/abilities/TemporaryComponent";
-import { PATHING } from "../pathing/PATHING";
 import { ResourceBombParticle } from "./ResourceBombParticle";
 
-import { BASE } from "../../../BASE";
-import { BFOUNDATION } from "../../../BFOUNDATION";
-import { BTOWER } from "../../../BTOWER";
-import { CREEPS } from "../../../CREEPS";
-import { MAP } from "../../../MAP";
-import { SPRITES } from "../../../SPRITES";
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("../managers/InstanceManager").InstanceManager; }
+function getMonsterBase(): any { return require("../monsters/MonsterBase").MonsterBase; }
+function getPATHING(): any { return require("../pathing/PATHING").PATHING; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getBFOUNDATION(): any { return require("../../../BFOUNDATION").BFOUNDATION; }
+function getBTOWER(): any { return require("../../../BTOWER").BTOWER; }
+function getCREEPS(): any { return require("../../../CREEPS").CREEPS; }
+function getMAP(): any { return require("../../../MAP").MAP; }
+function getSPRITES(): any { return require("../../../SPRITES").SPRITES; }
+
+
 
 /**
  * Resource bomb - area effect bomb that damages buildings or affects creatures.
@@ -50,17 +53,17 @@ export class ResourceBomb {
         this.damage = bombData.damage;
         this.damageSum = 0;
         this.resourceid = bombData.resource;
-        this.positionFromISO = PATHING.FromISO(this.position);
+        this.positionFromISO = getPATHING().FromISO(this.position);
         
         if (this.resourceid !== ResourceBombParticle.k_TYPE_PUTTY) {
-            const buildings = InstanceManager.getInstancesByClass(BFOUNDATION);
+            const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION());
             for (const building of buildings) {
                 const buildingPoint = new Point(building._mc.x, building._mc.y + building._middle);
                 if (!(building._class === "trap" || building.health <= 0 || building._class === "decoration" || building._class === "enemy" || building._class === "immovable")) {
                     let angle = Math.atan2(this.position.y - buildingPoint.y, this.position.x - buildingPoint.x);
-                    const ellipseDist1 = BASE.EllipseEdgeDistanceSqrd(angle, this.size, this.size * BASE._angle);
+                    const ellipseDist1 = getBASE().EllipseEdgeDistanceSqrd(angle, this.size, this.size * getBASE()._angle);
                     angle = Math.atan2(buildingPoint.y - this.position.y, buildingPoint.x - this.position.x);
-                    const ellipseDist2 = BASE.EllipseEdgeDistanceSqrd(angle, building._size * 0.5, building._size * 0.5 * BASE._angle);
+                    const ellipseDist2 = getBASE().EllipseEdgeDistanceSqrd(angle, building._size * 0.5, building._size * 0.5 * getBASE()._angle);
                     const dx = this.position.x - buildingPoint.x;
                     const dy = this.position.y - buildingPoint.y;
                     const distSq = dx * dx + dy * dy;
@@ -70,15 +73,15 @@ export class ResourceBomb {
                 }
             }
         } else {
-            const creeps = CREEPS._creeps;
+            const creeps = getCREEPS()._creeps;
             for (const creatureId in creeps) {
                 const creep = creeps[creatureId];
-                this.tempPoint = PATHING.FromISO(new Point(creep.x, creep.y));
+                this.tempPoint = getPATHING().FromISO(new Point(creep.x, creep.y));
                 let sprite: any;
                 if (creep._creatureID.substr(0, 1) === "G") {
-                    sprite = SPRITES._sprites[(creep as any)._spriteID];
+                    sprite = getSPRITES()._sprites[(creep as any)._spriteID];
                 } else {
-                    sprite = SPRITES._sprites[creep._creatureID];
+                    sprite = getSPRITES()._sprites[creep._creatureID];
                 }
                 this.tempPoint.add(sprite.middle);
                 const dx = this.positionFromISO.x - this.tempPoint.x;
@@ -90,8 +93,8 @@ export class ResourceBomb {
             }
         }
         
-        this.mctop = MAP._BUILDINGTOPS.addChild(new MovieClip());
-        this.mcbottom = MAP._BUILDINGBASES.addChild(new MovieClip());
+        this.mctop = getMAP()._BUILDINGTOPS.addChild(new MovieClip());
+        this.mcbottom = getMAP()._BUILDINGBASES.addChild(new MovieClip());
         const particleCount = this.bomb.particles;
         for (let i = 0; i < particleCount; i++) {
             const angle = Math.random() * 360 * 0.0174532925;
@@ -118,7 +121,7 @@ export class ResourceBomb {
 
     public Damage(point: Point): void {
         const targetCount = this.targets.length;
-        const isoPoint = PATHING.FromISO(point);
+        const isoPoint = getPATHING().FromISO(point);
         
         if (this.resourceid !== ResourceBombParticle.k_TYPE_PUTTY) {
             for (const target of this.targets) {
@@ -146,7 +149,7 @@ export class ResourceBomb {
         } else {
             for (let i = 0; i < targetCount; i++) {
                 if (Boolean(this.targets[i][0]._visible) && !this.targets[i][0].dead) {
-                    if (this.targets[i][0] instanceof MonsterBase) {
+                    if (this.targets[i][0] instanceof getMonsterBase()) {
                         const monster = this.targets[i][0] as MonsterBase;
                         if (!monster.getComponentByName(ResourceBomb.k_PUTTY_BOMB_ENRAGE)) {
                             monster.addComponent(new TemporaryComponent(new Enrage(this.bomb.speed, this.bomb.damageMult), this.bomb.speedlength), ResourceBomb.k_PUTTY_BOMB_ENRAGE);

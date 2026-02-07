@@ -1,6 +1,9 @@
-import { INFERNOPORTAL } from "./INFERNOPORTAL";
-import { BASE } from "./BASE";
-import { WMATTACK } from "./WMATTACK";
+
+
+// Lazy imports to break circular dependency chains
+function getINFERNOPORTAL(): any { return require("./INFERNOPORTAL").INFERNOPORTAL; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getWMATTACK(): any { return require("./WMATTACK").WMATTACK; }
 
 export class INFERNO_PORTAL_ATTACK {
     constructor() {
@@ -9,8 +12,8 @@ export class INFERNO_PORTAL_ATTACK {
 
     public static GetVariableCreeps(): Array<any> {
         const _loc1_: number = 186;
-        let _loc2_: number = INFERNOPORTAL.building._lvl.Get() - 1;
-        const _loc3_: number = Number(BASE.BaseLevel().level);
+        let _loc2_: number = getINFERNOPORTAL().building._lvl.Get() - 1;
+        const _loc3_: number = Number(getBASE().BaseLevel().level);
         let _loc4_: number = (_loc3_ - 30) / 16 + 0.25;
         if (_loc2_ < 0) {
             _loc2_ = 0;
@@ -78,8 +81,8 @@ export class INFERNO_PORTAL_ATTACK {
     }
 
     public static SpawnAttack(): void {
-        WMATTACK._isAI = false;
-        WMATTACK.AttackB();
-        WMATTACK.SpawnA(INFERNO_PORTAL_ATTACK.GetVariableCreeps());
+        getWMATTACK()._isAI = false;
+        getWMATTACK().AttackB();
+        getWMATTACK().SpawnA(INFERNO_PORTAL_ATTACK.GetVariableCreeps());
     }
 }

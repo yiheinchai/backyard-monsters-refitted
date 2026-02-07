@@ -3,13 +3,16 @@ import Point from "openfl/geom/Point";
 
 import { IAttackable } from "../../../interfaces/IAttackable";
 import { ITargetable } from "../../../interfaces/ITargetable";
-import { MonsterBase } from "../../MonsterBase";
 import { Component } from "../Component";
 import { IDefendingComponent } from "../IDefendingComponent";
-import { Targeting } from "../../../../../Targeting";
 
 import { PROJECTILE } from "../../../../../PROJECTILE";
 import { PROJECTILES } from "../../../../../PROJECTILES";
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+function getTargeting(): any { return require("../../../../../Targeting").Targeting; }
+
 
 /**
  * Absorb projectiles - absorbs incoming projectiles and releases them on death.
@@ -26,19 +29,19 @@ export class AbsorbProjectiles extends Component implements IDefendingComponent 
     }
 
     protected override onRegister(): void {
-        this.owner.addEventListener(MonsterBase.k_DEATH_EVENT, this.onDeath.bind(this));
+        this.owner.addEventListener(getMonsterBase().k_DEATH_EVENT, this.onDeath.bind(this));
     }
 
     protected override onUnregister(): void {
-        this.owner.removeEventListener(MonsterBase.k_DEATH_EVENT, this.onDeath.bind(this));
+        this.owner.removeEventListener(getMonsterBase().k_DEATH_EVENT, this.onDeath.bind(this));
     }
 
     private onDeath(event: Event): void {
         const ownerPos: Point = new Point(this.owner.x, this.owner.y);
-        const targets: Array<any> = Targeting.getTargetsInRange(
+        const targets: Array<any> = getTargeting().getTargetsInRange(
             this.m_blastRadius,
             ownerPos,
-            Targeting.getEnemyFlag(this.owner) | Targeting.k_TARGETS_FLYING | Targeting.k_TARGETS_GROUND | Targeting.k_TARGETS_BUILDINGS
+            getTargeting().getEnemyFlag(this.owner) | getTargeting().k_TARGETS_FLYING | getTargeting().k_TARGETS_GROUND | getTargeting().k_TARGETS_BUILDINGS
         );
 
         for (let i = 0; i < this.m_absorbedProjectiles.length; i++) {

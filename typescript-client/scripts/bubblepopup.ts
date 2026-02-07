@@ -4,7 +4,10 @@ import TextFieldAutoSize from 'openfl/text/TextFieldAutoSize';
 import { TweenLite } from 'gs/TweenLite';
 import { Elastic } from 'gs/easing';
 import { bubblepopup_CLIP } from './bubblepopup_CLIP';
-import { GLOBAL } from './GLOBAL';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+
 
 export class bubblepopup extends bubblepopup_CLIP {
     public _dropShadow: DropShadowFilter;
@@ -51,8 +54,8 @@ export class bubblepopup extends bubblepopup_CLIP {
         this.mcBG.height = Math.floor(this.mcText.height + 10);
         this.mcBG.y = Math.floor(this.mcText.y - 4);
         this.mcBG.x = -Math.floor(this.mcBG.width * 0.5);
-        const _loc3_ = GLOBAL._ROOT.stage.stageWidth;
-        const _loc4_ = GLOBAL.GetGameHeight();
+        const _loc3_ = getGLOBAL()._ROOT.stage.stageWidth;
+        const _loc4_ = getGLOBAL().GetGameHeight();
         const _loc5_ = new Rectangle(0 - (_loc3_ - 760) / 2, 0 - (_loc4_ - 520) / 2, _loc3_, _loc4_);
         if (this.x + this.mcBG.x < _loc5_.x + 10) {
             this.mcBG.x = Math.floor(_loc5_.x - this.x + 10);

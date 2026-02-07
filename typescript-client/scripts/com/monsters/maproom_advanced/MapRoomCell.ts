@@ -13,12 +13,15 @@ import { MapRoomCell_CLIP } from "../../../MapRoomCell_CLIP";
 import { MapRoom } from "./MapRoom";
 
 import { ALLIANCES } from "../alliances/ALLIANCES";
-import { BUILDING5 } from "../../../BUILDING5";
-import { CREATURES } from "../../../CREATURES";
-import { GLOBAL } from "../../../GLOBAL";
 import { JSON } from "../../../JSON";
-import { LOGGER } from "../../../LOGGER";
-import { LOGIN } from "../../../LOGIN";
+
+// Lazy imports to break circular dependency chains
+function getBUILDING5(): any { return require("../../../BUILDING5").BUILDING5; }
+function getCREATURES(): any { return require("../../../CREATURES").CREATURES; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+function getLOGIN(): any { return require("../../../LOGIN").LOGIN; }
+
 
 /**
  * MapRoomCell - Represents a single cell in the map room grid.
@@ -133,7 +136,7 @@ export class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
     public get truce(): number { return this._truce; }
     public get isDestroyed(): boolean { return !!this._destroyed; }
     public set destroyed(value: number) { this._destroyed = value; }
-    public get isLocked(): boolean { return this._locked !== 0 && this._locked !== LOGIN._playerID; }
+    public get isLocked(): boolean { return this._locked !== 0 && this._locked !== getLOGIN()._playerID; }
     public get isProtected(): number { return this._protected; }
     public set isProtected(value: number) { this._protected = value; }
     public get isDirty(): boolean { return this._dirty; }
@@ -146,9 +149,9 @@ export class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
         this._processed = false;
         this._base = serverData.b;
         if (serverData.bid) {
-            if (this._baseID !== 0 && this._baseID === GLOBAL._homeBaseID) {
+            if (this._baseID !== 0 && this._baseID === getGLOBAL()._homeBaseID) {
                 MapRoom._homeCell = this;
-            } else if (this.X === GLOBAL._mapHome.x && this.Y === GLOBAL._mapHome.y) {
+            } else if (this.X === getGLOBAL()._mapHome.x && this.Y === getGLOBAL()._mapHome.y) {
                 MapRoom._homeCell = this;
             }
             this._baseID = serverData.bid;
@@ -173,7 +176,7 @@ export class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
         this._mine = serverData.mine;
         if (serverData.f) {
             this._flingerLevel = new SecNum(serverData.f);
-            this._flingerRange = new SecNum(BUILDING5.getFlingerRange(serverData.f, this.isMainBase));
+            this._flingerRange = new SecNum(getBUILDING5().getFlingerRange(serverData.f, this.isMainBase));
         } else {
             this._flingerRange = new SecNum(0);
             this._flingerLevel = new SecNum(0);
@@ -205,7 +208,7 @@ export class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
             if (!this._hpMonsterData.saved) this._hpMonsterData.saved = 0;
             if (!this._hpMonsterData.space) this._hpMonsterData.space = 0;
         } else {
-            this._hpMonsterData = { "hcc": [], "h": [], "hstage": [], "hid": [], "overdrivepower": 1, "overdrivetime": 0, "saved": GLOBAL.Timestamp() - 5, "housed": {}, "space": 0 };
+            this._hpMonsterData = { "hcc": [], "h": [], "hstage": [], "hid": [], "overdrivepower": 1, "overdrivetime": 0, "saved": getGLOBAL().Timestamp() - 5, "housed": {}, "space": 0 };
         }
         if (this._hpMonsterData) this.SecureMonsterData();
         this._monsters = {};
@@ -225,7 +228,7 @@ export class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
         const startTime = getTimer();
         if (this._monsterData) {
             const savedTime = Math.floor(this._monsterData.saved);
-            for (let t = savedTime; t < GLOBAL.Timestamp(); t++) {
+            for (let t = savedTime; t < getGLOBAL().Timestamp(); t++) {
                 if (this.Tick(t)) break;
             }
         }
@@ -293,7 +296,7 @@ export class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
                     this.mc.mcPlayer.mcFlag.txtAlliance.y = this._soloProps.txtAllyY;
                     this.mc.mcPlayer.mcFlag.txtAlliance.htmlText = "";
                 }
-                this.mc.mcPlayer.mcTruce.visible = this._truce > GLOBAL.Timestamp();
+                this.mc.mcPlayer.mcTruce.visible = this._truce > getGLOBAL().Timestamp();
             }
         } else {
             this.mc.mcPlayer.visible = false;
@@ -318,7 +321,7 @@ export class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
             this.mc.mcGlow.gotoAndStop(1);
         }
         if (this._monsterData) {
-            if (Boolean(this._monsterData.finishtime) && this._monsterData.finishtime > GLOBAL.Timestamp()) this._workerBusy = true;
+            if (Boolean(this._monsterData.finishtime) && this._monsterData.finishtime > getGLOBAL().Timestamp()) this._workerBusy = true;
             else this._workerBusy = false;
         }
         if (!this._workerBusy && this._base === 3 && Boolean(this._mine)) this.mc.mcPlayer.mcWorker.visible = true;
@@ -363,19 +366,19 @@ export class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
         if (!this._mine) { this.mc.mcPlayer.mcWorker.visible = false; return true; }
         if (!this._updated) return true;
         if (Boolean(this._monsterData) && Boolean(this._resources)) {
-            if (Boolean(this._monsterData.finishtime) && this._monsterData.finishtime > GLOBAL.Timestamp()) this._workerBusy = true;
+            if (Boolean(this._monsterData.finishtime) && this._monsterData.finishtime > getGLOBAL().Timestamp()) this._workerBusy = true;
             else this._workerBusy = false;
             if (!this._workerBusy && this._base === 3 && Boolean(this._mine)) this.mc.mcPlayer.mcWorker.visible = true;
             else this.mc.mcPlayer.mcWorker.visible = false;
             this._ticks += 1;
             if (timestamp) { this._monsterData.saved = timestamp; this._hpMonsterData.saved = timestamp; }
-            else { this._monsterData.saved = GLOBAL.Timestamp(); this._hpMonsterData.saved = GLOBAL.Timestamp(); }
+            else { this._monsterData.saved = getGLOBAL().Timestamp(); this._hpMonsterData.saved = getGLOBAL().Timestamp(); }
             if (this._monsterData.hcount === 0) return true;
             if (this._monsterData.overdrivetime.Get() > 0) { this._monsterData.overdrivetime.Add(-1); --this._hpMonsterData.overdrivetime; }
             let usedSpace = 0;
             for (const creatureType in this._monsterData.housed) {
                 if (this._monsterData.housed[creatureType].Get() > 0) {
-                    usedSpace += this._monsterData.housed[creatureType].Get() * CREATURES.GetProperty(creatureType, "cStorage");
+                    usedSpace += this._monsterData.housed[creatureType].Get() * getCREATURES().GetProperty(creatureType, "cStorage");
                 } else {
                     delete this._monsterData.housed[creatureType];
                     delete this._hpMonsterData.housed[creatureType];
@@ -408,8 +411,8 @@ export class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
                                     this._monsterData.h[i][2].splice(0, 1);
                                     this._hpMonsterData.h[i][2].splice(0, 1);
                                 }
-                                this._monsterData.h[i] = [creatureType, new SecNum(CREATURES.GetProperty(creatureType, "cTime")), queue];
-                                this._hpMonsterData.h[i] = [creatureType, CREATURES.GetProperty(creatureType, "cTime"), hpQueue];
+                                this._monsterData.h[i] = [creatureType, new SecNum(getCREATURES().GetProperty(creatureType, "cTime")), queue];
+                                this._hpMonsterData.h[i] = [creatureType, getCREATURES().GetProperty(creatureType, "cTime"), hpQueue];
                                 this._monsterData.hstage[i].Set(1);
                                 this._hpMonsterData.hstage[i] = 1;
                                 complete = false;
@@ -425,10 +428,10 @@ export class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
                             this._monsterData.hstage[i].Set(0);
                             this._hpMonsterData.hstage[i] = 0;
                         }
-                    } else if (h[1].Get() <= 0 && (this._monsterData.hstage[i].Get() === 1 || this._monsterData.hstage[i].Get() === 2) && CREATURES.GetProperty(h[0], "cStorage") <= this._monsterData.space.Get() - usedSpace) {
+                    } else if (h[1].Get() <= 0 && (this._monsterData.hstage[i].Get() === 1 || this._monsterData.hstage[i].Get() === 2) && getCREATURES().GetProperty(h[0], "cStorage") <= this._monsterData.space.Get() - usedSpace) {
                         if (this._monsters[h[0]]) { this._monsters[h[0]].Add(1); this._hpMonsters[h[0]] += 1; complete = false; }
                         else { this._monsters[h[0]] = new SecNum(1); this._hpMonsters[h[0]] = 1; complete = false; }
-                        usedSpace += CREATURES.GetProperty(h[0], "cStorage");
+                        usedSpace += getCREATURES().GetProperty(h[0], "cStorage");
                         this.Indicate();
                         if (h.length > 2) {
                             const queue = h[2];
@@ -437,8 +440,8 @@ export class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
                                 const creatureType = String(queue[0][0]);
                                 queue[0][1].Add(-1);
                                 hpQueue[0][1] -= 1;
-                                this._monsterData.h[i] = [creatureType, new SecNum(CREATURES.GetProperty(creatureType, "cTime")), queue];
-                                this._hpMonsterData.h[i] = [creatureType, CREATURES.GetProperty(creatureType, "cTime"), hpQueue];
+                                this._monsterData.h[i] = [creatureType, new SecNum(getCREATURES().GetProperty(creatureType, "cTime")), queue];
+                                this._hpMonsterData.h[i] = [creatureType, getCREATURES().GetProperty(creatureType, "cTime"), hpQueue];
                                 if (queue[0][1].Get() === 0) { queue.splice(0, 1); hpQueue.splice(0, 1); }
                                 this._monsterData.hstage[i].Set(1);
                                 this._hpMonsterData.hstage[i] = 1;
@@ -455,14 +458,14 @@ export class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
                             this._monsterData.hstage[i].Set(0);
                             this._hpMonsterData.hstage[i] = 0;
                         }
-                    } else if (h[1].Get() <= 0 && (this._monsterData.hstage[i].Get() === 1 || this._monsterData.hstage[i].Get() === 2) && CREATURES.GetProperty(h[0], "cStorage") > this._monsterData.space.Get() - usedSpace) {
+                    } else if (h[1].Get() <= 0 && (this._monsterData.hstage[i].Get() === 1 || this._monsterData.hstage[i].Get() === 2) && getCREATURES().GetProperty(h[0], "cStorage") > this._monsterData.space.Get() - usedSpace) {
                         this._monsterData.hstage[i].Set(2);
                         this._hpMonsterData.hstage[i] = 2;
                     }
                 } else if (Boolean(this._monsterData.hcc) && this._monsterData.hcc.length > 0) {
-                    this._monsterData.h[i] = [this._monsterData.hcc[0][0], new SecNum(CREATURES.GetProperty(this._monsterData.hcc[0][0], "cTime"))];
+                    this._monsterData.h[i] = [this._monsterData.hcc[0][0], new SecNum(getCREATURES().GetProperty(this._monsterData.hcc[0][0], "cTime"))];
                     this._monsterData.hcc[0][1].Add(-1);
-                    this._hpMonsterData.h[i] = [this._hpMonsterData.hcc[0][0], CREATURES.GetProperty(this._hpMonsterData.hcc[0][0], "cTime")];
+                    this._hpMonsterData.h[i] = [this._hpMonsterData.hcc[0][0], getCREATURES().GetProperty(this._hpMonsterData.hcc[0][0], "cTime")];
                     this._hpMonsterData.hcc[0][1] -= 1;
                     if (this._monsterData.hcc[0][1].Get() <= 0) { (this._monsterData.hcc as Array<any>).shift(); (this._hpMonsterData.hcc as Array<any>).shift(); }
                     this._monsterData.hstage[i].Set(1);
@@ -471,7 +474,7 @@ export class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
                 }
             }
             if (complete) {
-                if (this._monsterData) { this._monsterData.saved = GLOBAL.Timestamp(); this._hpMonsterData.saved = GLOBAL.Timestamp(); }
+                if (this._monsterData) { this._monsterData.saved = getGLOBAL().Timestamp(); this._hpMonsterData.saved = getGLOBAL().Timestamp(); }
             }
             return complete;
         }
@@ -553,7 +556,7 @@ export class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
         if (Boolean(MapRoom._mc) && MapRoom._mc._dragged) return;
         if (MapRoom._inviteBaseID === this._baseID) return;
         MapRoom._currentPosition = new Point(this.X, this.Y);
-        if (GLOBAL._local) {
+        if (getGLOBAL()._local) {
             let debug = "MapRoomCell.Click - X " + this.X + " Y " + this.Y + " H " + this._height + " B " + this._base + " ID " + this._baseID + " UID " + this._userID + " FBID " + this._facebookID + " Mine " + this._mine + " Name " + this._name + " d " + this._destroyed + " dm " + this._damage + " p " + this._protected + " fr " + this._friend + " busy " + this._workerBusy;
             if (this._flingerRange) debug += " f " + this._flingerRange.Get();
             if (this._hpMonsterData) debug += " monsterdata " + JSON.encode(this._hpMonsterData);
@@ -574,28 +577,28 @@ export class MapRoomCell extends MapRoomCell_CLIP implements IMapRoomCell {
         if (!this._monsterData || !this._hpMonsterData) return true;
         let valid = true;
         const logType = "err";
-        if (this._monsterData.overdrivepower.Get() !== this._hpMonsterData.overdrivepower) { LOGGER.Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") overdrive power " + this._monsterData.overdrivepower.Get() + " " + this._hpMonsterData.overdrivepower); valid = false; }
-        if (this._monsterData.overdrivetime.Get() !== this._hpMonsterData.overdrivetime) { LOGGER.Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") overdrive time " + this._monsterData.overdrivetime.Get() + " " + this._hpMonsterData.overdrivetime); valid = false; }
+        if (this._monsterData.overdrivepower.Get() !== this._hpMonsterData.overdrivepower) { getLOGGER().Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") overdrive power " + this._monsterData.overdrivepower.Get() + " " + this._hpMonsterData.overdrivepower); valid = false; }
+        if (this._monsterData.overdrivetime.Get() !== this._hpMonsterData.overdrivetime) { getLOGGER().Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") overdrive time " + this._monsterData.overdrivetime.Get() + " " + this._hpMonsterData.overdrivetime); valid = false; }
         for (const key in this._hpMonsterData.housed) {
-            if (Boolean(this._monsterData.housed[key]) && this._monsterData.housed[key].Get() !== this._hpMonsterData.housed[key]) { LOGGER.Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") housed " + key + " " + this._monsterData.housed[key] + " " + this._hpMonsterData.housed[key]); valid = false; }
+            if (Boolean(this._monsterData.housed[key]) && this._monsterData.housed[key].Get() !== this._hpMonsterData.housed[key]) { getLOGGER().Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") housed " + key + " " + this._monsterData.housed[key] + " " + this._hpMonsterData.housed[key]); valid = false; }
         }
         for (let i = 0; i < this._monsterData.hcount; i++) {
-            if (this._monsterData.h[i].length !== this._hpMonsterData.h[i].length) { LOGGER.Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") hatchery array length mismatch " + this._monsterData.h[i].length + " " + this._hpMonsterData.h[i].length); valid = false; }
+            if (this._monsterData.h[i].length !== this._hpMonsterData.h[i].length) { getLOGGER().Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") hatchery array length mismatch " + this._monsterData.h[i].length + " " + this._hpMonsterData.h[i].length); valid = false; }
             else if (this._monsterData.h[i].length >= 2) {
-                if (this._monsterData.h[i][1].Get() !== this._hpMonsterData.h[i][1]) { LOGGER.Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") num monsters producing (now) " + this._monsterData.h[i][1].Get() + " " + this._hpMonsterData.h[i][1]); valid = false; }
+                if (this._monsterData.h[i][1].Get() !== this._hpMonsterData.h[i][1]) { getLOGGER().Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") num monsters producing (now) " + this._monsterData.h[i][1].Get() + " " + this._hpMonsterData.h[i][1]); valid = false; }
                 if (this._monsterData.h[i].length > 2) {
                     if (this._monsterData.h[i][2].length !== this._hpMonsterData.h[i][2].length) valid = false;
                     const len = this._monsterData.h[i][2].length;
                     for (let j = 0; j < len; j++) {
-                        if (this._monsterData.h[i][2][j][1].Get() !== this._hpMonsterData.h[i][2][j][1]) { LOGGER.Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") num monsters producing (now) " + this._monsterData.h[i][2][j][1].Get() + " " + this._hpMonsterData.h[i][2][j][1]); valid = false; }
+                        if (this._monsterData.h[i][2][j][1].Get() !== this._hpMonsterData.h[i][2][j][1]) { getLOGGER().Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") num monsters producing (now) " + this._monsterData.h[i][2][j][1].Get() + " " + this._hpMonsterData.h[i][2][j][1]); valid = false; }
                     }
                 }
             }
-            if (this._monsterData.hstage[i].Get() !== this._hpMonsterData.hstage[i]) { LOGGER.Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") production stage mismatch"); }
+            if (this._monsterData.hstage[i].Get() !== this._hpMonsterData.hstage[i]) { getLOGGER().Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") production stage mismatch"); }
         }
         const hccLen = this._monsterData.hcc.length;
-        if (hccLen !== this._hpMonsterData.hcc.length) { LOGGER.Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") HCC queue length mismatch " + hccLen + " " + this._hpMonsterData.hcc.length); valid = false; }
-        else { for (let i = 0; i < hccLen; i++) { if (this._monsterData.hcc[i][1].Get() !== this._hpMonsterData.hcc[i][1]) { LOGGER.Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") HCC queue size " + this._monsterData.hcc[i][1].Get() + " " + this._hpMonsterData.hcc[i][1]); valid = false; } } }
+        if (hccLen !== this._hpMonsterData.hcc.length) { getLOGGER().Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") HCC queue length mismatch " + hccLen + " " + this._hpMonsterData.hcc.length); valid = false; }
+        else { for (let i = 0; i < hccLen; i++) { if (this._monsterData.hcc[i][1].Get() !== this._hpMonsterData.hcc[i][1]) { getLOGGER().Log(logType, "MapRoomCell.Check (" + this.X + "," + this.Y + ") HCC queue size " + this._monsterData.hcc[i][1].Get() + " " + this._hpMonsterData.hcc[i][1]); valid = false; } } }
         return valid;
     }
 

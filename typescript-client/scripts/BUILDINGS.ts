@@ -1,10 +1,13 @@
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
 import MouseEvent from 'openfl/events/MouseEvent';
-import { BASE } from './BASE';
-import { BFOUNDATION } from './BFOUNDATION';
 import { BUILDINGSPOPUP } from './BUILDINGSPOPUP';
-import { GLOBAL } from './GLOBAL';
-import { SOUNDS } from './SOUNDS';
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+
 
 /**
  * BUILDINGS - Buildings Menu Controller
@@ -31,17 +34,17 @@ export class BUILDINGS {
     }
 
     public static Show(event: MouseEvent | null = null): void {
-        if (MapRoomManager.instance.isInMapRoom3 && !BASE.isMainYardOrInfernoMainYard) return;
-        GLOBAL.BlockerAdd();
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-            if (GLOBAL._newBuilding) {
-                (GLOBAL._newBuilding as BFOUNDATION).Cancel();
+        if (getMapRoomManager().instance.isInMapRoom3 && !getBASE().isMainYardOrInfernoMainYard) return;
+        getGLOBAL().BlockerAdd();
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+            if (getGLOBAL()._newBuilding) {
+                (getGLOBAL()._newBuilding as BFOUNDATION).Cancel();
             }
             if (!BUILDINGS._open) {
-                SOUNDS.Play("click1");
-                BASE.BuildingDeselect();
+                getSOUNDS().Play("click1");
+                getBASE().BuildingDeselect();
                 BUILDINGS._open = true;
-                BUILDINGS._mc = GLOBAL._layerWindows.addChild(new BUILDINGSPOPUP()) as BUILDINGSPOPUP;
+                BUILDINGS._mc = getGLOBAL()._layerWindows.addChild(new BUILDINGSPOPUP()) as BUILDINGSPOPUP;
                 BUILDINGS._mc.Center();
                 BUILDINGS._mc.ScaleUp();
             }
@@ -52,13 +55,13 @@ export class BUILDINGS {
     }
 
     public static Hide(event: MouseEvent | null = null): void {
-        GLOBAL.BlockerRemove();
+        getGLOBAL().BlockerRemove();
         if (BUILDINGS._open) {
-            SOUNDS.Play("close");
+            getSOUNDS().Play("close");
             BUILDINGS._open = false;
             BUILDINGS._mc!.HideInfo();
             BUILDINGS._mc!._buildingInfoMC = null;
-            GLOBAL._layerWindows.removeChild(BUILDINGS._mc!);
+            getGLOBAL()._layerWindows.removeChild(BUILDINGS._mc!);
             BUILDINGS._mc = null;
         }
     }

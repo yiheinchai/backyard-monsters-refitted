@@ -1,13 +1,16 @@
 import { AttackEvent } from "../../events/AttackEvent";
-import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
 import { ReplayableEvent } from "../ReplayableEvent";
 import { ReplayableEventHandler } from "../ReplayableEventHandler";
 
-import { GLOBAL } from "../../../../GLOBAL";
-import { KEYS } from "../../../../KEYS";
-import { BASE } from "../../../../BASE";
-import { HOUSING } from "../../../../HOUSING";
-import { LOGGER } from "../../../../LOGGER";
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../../maproom_manager/MapRoomManager").MapRoomManager; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getBASE(): any { return require("../../../../BASE").BASE; }
+function getHOUSING(): any { return require("../../../../HOUSING").HOUSING; }
+function getLOGGER(): any { return require("../../../../LOGGER").LOGGER; }
+
+
 
 /**
  * Yard crawl - event where player destroys a series of bases.
@@ -19,7 +22,7 @@ export class YardCrawl extends ReplayableEvent {
 
     constructor() {
         super();
-        this._buttonCopy = KEYS.Get("btn_attack");
+        this._buttonCopy = getKEYS().Get("btn_attack");
     }
 
     public override set score(value: number) {
@@ -57,35 +60,35 @@ export class YardCrawl extends ReplayableEvent {
         if (!this._intactBaseList || this._intactBaseList.length === 0) {
             return;
         }
-        const hasMonsters: boolean = HOUSING._housingUsed.Get() > 0;
-        if (!GLOBAL._bMap || !GLOBAL._bFlinger || !GLOBAL._bHousing || !hasMonsters) {
-            GLOBAL.Message("You need a working Maproom, Flinger, Housing and some monsters to participate in this event");
+        const hasMonsters: boolean = getHOUSING()._housingUsed.Get() > 0;
+        if (!getGLOBAL()._bMap || !getGLOBAL()._bFlinger || !getGLOBAL()._bHousing || !hasMonsters) {
+            getGLOBAL().Message("You need a working Maproom, Flinger, Housing and some monsters to participate in this event");
             return;
         }
         let baseUrl: string | null = null;
-        if (MapRoomManager.instance.isInMapRoom2or3) {
-            MapRoomManager.instance.mapRoomVersion = MapRoomManager.MAP_ROOM_VERSION_1;
-            baseUrl = GLOBAL._infBaseURL;
+        if (getMapRoomManager().instance.isInMapRoom2or3) {
+            getMapRoomManager().instance.mapRoomVersion = getMapRoomManager().MAP_ROOM_VERSION_1;
+            baseUrl = getGLOBAL()._infBaseURL;
         }
         const baseId: number = parseInt(this._intactBaseList[0].id);
-        LOGGER.StatB({
+        getLOGGER().StatB({
             "st1": "ERS",
             "st2": this._name,
             "st3": "Attack_Num_" + baseId,
             "value": baseId
         }, "Attack_Start");
-        GLOBAL.eventDispatcher.addEventListener(AttackEvent.ATTACK_OVER, this.finishedAttack.bind(this));
-        BASE.LoadBase(baseUrl, 0, baseId, "wmattack");
+        getGLOBAL().eventDispatcher.addEventListener(AttackEvent.ATTACK_OVER, this.finishedAttack.bind(this));
+        getBASE().LoadBase(baseUrl, 0, baseId, "wmattack");
     }
 
     protected finishedAttack(event: AttackEvent): void {
         const baseId: number = parseInt(this._intactBaseList[0].id);
-        LOGGER.StatB({
+        getLOGGER().StatB({
             "st1": "ERS",
             "st2": this._name,
             "st3": "Attack_Num_" + baseId,
             "value": baseId
         }, event.wasBaseDestroyed ? "Attack_Success" : "Attack_Fail");
-        GLOBAL.eventDispatcher.removeEventListener(AttackEvent.ATTACK_OVER, this.finishedAttack.bind(this));
+        getGLOBAL().eventDispatcher.removeEventListener(AttackEvent.ATTACK_OVER, this.finishedAttack.bind(this));
     }
 }

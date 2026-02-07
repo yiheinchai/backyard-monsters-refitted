@@ -1,6 +1,9 @@
 import { KeywordMessage } from "../../../../frontPage/messages/KeywordMessage";
 
-import { GLOBAL } from "../../../../../../GLOBAL";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../../../GLOBAL").GLOBAL; }
+
+
 
 /**
  * Spurtz cannon reward message 3 - third reward message for Brukkarg War.
@@ -11,7 +14,7 @@ export class SpurtzCannonRewardMessage3 extends KeywordMessage {
     }
 
     protected override onButtonClick(): void {
-        GLOBAL.Brag(
+        getGLOBAL().Brag(
             "event5-reward",
             "event_bruwarreward3_streamtitle",
             "event_bruwarreward3_streamdesc",

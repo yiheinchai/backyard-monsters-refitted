@@ -10,49 +10,24 @@ import { ParticleText } from './com/monsters/effects/particles/ParticleText';
 import { EnumYardType } from './com/monsters/enums/EnumYardType';
 import { AttackEvent } from './com/monsters/events/AttackEvent';
 import { IAttackable } from './com/monsters/interfaces/IAttackable';
-import { InstanceManager } from './com/monsters/managers/InstanceManager';
 import { MapRoom3AttackFinishedPopup } from './com/monsters/maproom3/popups/MapRoom3AttackFinishedPopup';
 import { popup_attackend } from './com/monsters/maproom_advanced/popup_attackend';
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
-import { MonsterBase } from './com/monsters/monsters/MonsterBase';
 import { ChampionBase } from './com/monsters/monsters/champions/ChampionBase';
 import { Krallen } from './com/monsters/monsters/champions/Krallen';
 import { MonsterData } from './com/monsters/player/MonsterData';
 import { Player } from './com/monsters/player/Player';
-import { SiegeWeapons } from './com/monsters/siege/SiegeWeapons';
 import { ParticleLoot } from './ParticleLoot';
 import { ParticleVacuumLoot } from './ParticleVacuumLoot';
 
 import { ACHIEVEMENTS } from './ACHIEVEMENTS';
-import { BASE } from './BASE';
-import { BFOUNDATION } from './BFOUNDATION';
-import { BMUSHROOM } from './BMUSHROOM';
-import { BUILDING14 } from './BUILDING14';
-import { CHAMPIONCAGE } from './CHAMPIONCAGE';
-import { CREATURELOCKER } from './CREATURELOCKER';
-import { CREATURES } from './CREATURES';
-import { CREEPS } from './CREEPS';
 import { DROPZONE } from './DROPZONE';
-import { GLOBAL } from './GLOBAL';
 import { INFERNO_DESCENT_POPUPS } from './INFERNO_DESCENT_POPUPS';
 import { INFERNO_EMERGENCE_EVENT } from './INFERNO_EMERGENCE_EVENT';
 import { INFERNO_EMERGENCE_POPUPS } from './INFERNO_EMERGENCE_POPUPS';
-import { INFERNOPORTAL } from './INFERNOPORTAL';
-import { KEYS } from './KEYS';
-import { LOGGER } from './LOGGER';
-import { LOGIN } from './LOGIN';
-import { MAP } from './MAP';
 import { MAPROOM } from './MAPROOM';
 import { MAPROOM_DESCENT } from './MAPROOM_DESCENT';
-import { POPUPS } from './POPUPS';
 import { POWERUPS } from './POWERUPS';
-import { SOUNDS } from './SOUNDS';
-import { SPECIALEVENT } from './SPECIALEVENT';
-import { STORE } from './STORE';
 import { TRIBES } from './com/monsters/ai/TRIBES';
-import { TUTORIAL } from './TUTORIAL';
-import { UI2 } from './UI2';
-import { WMATTACK } from './WMATTACK';
 import { WMBASE } from './com/monsters/ai/WMBASE';
 import { YARD_PROPS } from './YARD_PROPS';
 import { frame } from './frame';
@@ -60,6 +35,34 @@ import { popup_attack_log } from './popup_attack_log';
 import { popup_damaged_ai } from './popup_damaged_ai';
 import { popup_defense } from './popup_defense';
 import { popup_taunt_friend } from './popup_taunt_friend';
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getSiegeWeapons(): any { return require("./com/monsters/siege/SiegeWeapons").SiegeWeapons; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBMUSHROOM(): any { return require("./BMUSHROOM").BMUSHROOM; }
+function getBUILDING14(): any { return require("./BUILDING14").BUILDING14; }
+function getCHAMPIONCAGE(): any { return require("./CHAMPIONCAGE").CHAMPIONCAGE; }
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getINFERNOPORTAL(): any { return require("./INFERNOPORTAL").INFERNOPORTAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getLOGIN(): any { return require("./LOGIN").LOGIN; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getSPECIALEVENT(): any { return require("./SPECIALEVENT").SPECIALEVENT; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+function getUI2(): any { return require("./UI2").UI2; }
+function getWMATTACK(): any { return require("./WMATTACK").WMATTACK; }
+
 
 /**
  * ATTACK - Handles attack mode combat, loot, and creature management
@@ -115,11 +118,11 @@ export class ATTACK {
     }
     
     public static get hasCreaturesToAttackWith(): boolean {
-        const creatures = CREATURELOCKER._creatures;
+        const creatures = getCREATURELOCKER()._creatures;
         const available = ATTACK._curCreaturesAvailable;
-        const guardianData = GLOBAL._playerGuardianData;
+        const guardianData = getGLOBAL()._playerGuardianData;
         
-        if (GLOBAL._loadmode === GLOBAL.mode || (GLOBAL._loadmode !== GLOBAL.mode && !MAPROOM_DESCENT.DescentPassed)) {
+        if (getGLOBAL()._loadmode === getGLOBAL().mode || (getGLOBAL()._loadmode !== getGLOBAL().mode && !MAPROOM_DESCENT.DescentPassed)) {
             for (const guardian of guardianData) {
                 if (guardian && guardian.hp.Get() > 0 && guardian.status === ChampionBase.k_CHAMPION_STATUS_NORMAL) {
                     return true;
@@ -145,7 +148,7 @@ export class ATTACK {
         ATTACK._flingerBucket = {};
         ATTACK._flingCount = 0;
         ATTACK._log = [];
-        ATTACK._attackStart = GLOBAL.Timestamp();
+        ATTACK._attackStart = getGLOBAL().Timestamp();
         ATTACK._flungSpace = new SecNum(0);
         ATTACK._loot = {
             r1: new SecNum(0),
@@ -174,26 +177,26 @@ export class ATTACK {
         ATTACK._acted = false;
         ATTACK._flingValue = 0;
         
-        if (GLOBAL._attackersCatapult && 
-            (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || 
-             GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK || 
-             GLOBAL.mode === GLOBAL.e_BASE_MODE.VIEW || 
-             GLOBAL.mode === GLOBAL.e_BASE_MODE.WMVIEW)) {
+        if (getGLOBAL()._attackersCatapult && 
+            (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || 
+             getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK || 
+             getGLOBAL().mode === getGLOBAL().e_BASE_MODE.VIEW || 
+             getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMVIEW)) {
             ResourceBombs.Setup();
         }
         
-        if (!MapRoomManager.instance.isInMapRoom2) {
+        if (!getMapRoomManager().instance.isInMapRoom2) {
             ATTACK._curCreaturesAvailable = {};
-            const player: Player = GLOBAL.attackingPlayer || GLOBAL.player;
+            const player: Player = getGLOBAL().attackingPlayer || getGLOBAL().player;
             const monsterCount = player.monsterList.length;
             
             for (let i = 0; i < monsterCount; i++) {
                 ATTACK._curCreaturesAvailable[player.monsterList[i].m_creatureID] = player.monsterList[i].numHealthyHousedCreeps;
             }
-        } else if (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
-            GLOBAL._attackerMapCreaturesStart = {};
+        } else if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
+            getGLOBAL()._attackerMapCreaturesStart = {};
             for (const creatureID in ATTACK._curCreaturesAvailable) {
-                GLOBAL._attackerMapCreaturesStart[creatureID] = new SecNum(ATTACK._curCreaturesAvailable[creatureID]);
+                getGLOBAL()._attackerMapCreaturesStart[creatureID] = new SecNum(ATTACK._curCreaturesAvailable[creatureID]);
             }
         }
     }
@@ -201,13 +204,13 @@ export class ATTACK {
     public static AttackData(): { champions: any[]; monsters: any[] } {
         const attackPayload: { champions: any[]; monsters: any[] } = { champions: [], monsters: [] };
         
-        for (let i = 0; i < GLOBAL._playerGuardianData.length; i++) {
-            const guardianData = GLOBAL._playerGuardianData[i];
+        for (let i = 0; i < getGLOBAL()._playerGuardianData.length; i++) {
+            const guardianData = getGLOBAL()._playerGuardianData[i];
             const guardianKey = "G" + guardianData.t;
             
             attackPayload.champions.push({
                 type: guardianKey,
-                stats: CHAMPIONCAGE._guardians[guardianKey].props
+                stats: getCHAMPIONCAGE()._guardians[guardianKey].props
             });
         }
         
@@ -215,7 +218,7 @@ export class ATTACK {
             attackPayload.monsters.push({
                 id: creatureID,
                 count: ATTACK._curCreaturesAvailable[creatureID],
-                stats: CREATURELOCKER._creatures[creatureID].props
+                stats: getCREATURELOCKER()._creatures[creatureID].props
             });
         }
         
@@ -236,10 +239,10 @@ export class ATTACK {
         let hasCreatures = false;
         let creatureCount = 0;
         
-        for (let i = 0; i < GLOBAL._playerGuardianData.length; i++) {
-            if (GLOBAL._playerGuardianData[i] && 
-                GLOBAL._playerGuardianData[i].hp.Get() > 0 && 
-                GLOBAL._playerGuardianData[i].status === ChampionBase.k_CHAMPION_STATUS_NORMAL) {
+        for (let i = 0; i < getGLOBAL()._playerGuardianData.length; i++) {
+            if (getGLOBAL()._playerGuardianData[i] && 
+                getGLOBAL()._playerGuardianData[i].hp.Get() > 0 && 
+                getGLOBAL()._playerGuardianData[i].status === ChampionBase.k_CHAMPION_STATUS_NORMAL) {
                 creatureCount++;
             }
         }
@@ -250,7 +253,7 @@ export class ATTACK {
         
         let hasBombs = false;
         for (const bomb of Object.values(ResourceBombs._bombs)) {
-            if (bomb.catapultLevel <= GLOBAL._attackersCatapult) {
+            if (bomb.catapultLevel <= getGLOBAL()._attackersCatapult) {
                 if (bomb.resource === 3) {
                     if (!bomb.used && creatureCount > 0) {
                         hasBombs = true;
@@ -274,9 +277,9 @@ export class ATTACK {
         hasCreatures = creatureCount > 0;
         
         let hasBuildings = false;
-        const buildings = InstanceManager.getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
         for (const building of buildings) {
-            if (!(building instanceof BMUSHROOM) && 
+            if (!(building instanceof getBMUSHROOM()) && 
                 building._class !== "wall" && 
                 building._class !== "trap" && 
                 building._class !== "enemy" && 
@@ -288,11 +291,11 @@ export class ATTACK {
             }
         }
         
-        if (!ATTACK._sentOver && (!hasBuildings || !CREEPS._creepCount)) {
+        if (!ATTACK._sentOver && (!hasBuildings || !getCREEPS()._creepCount)) {
             if (ATTACK._countdown < 0 || !hasBuildings || (!hasCreatures && !hasBombs)) {
                 ATTACK._sentOver = true;
-                if (BASE._saveOver !== 1) {
-                    BASE.Save(1, false, true);
+                if (getBASE()._saveOver !== 1) {
+                    getBASE().Save(1, false, true);
                 }
                 ATTACK.m_waitingForSaveToComplete = true;
             }
@@ -300,8 +303,8 @@ export class ATTACK {
     }
     
     public static ShowLog(delay: number = 0): void {
-        let shouldShowTaunt: boolean = BASE._isProtected > 0;
-        const townHallInstances = InstanceManager.getInstancesByClass(BUILDING14) as BUILDING14[];
+        let shouldShowTaunt: boolean = getBASE()._isProtected > 0;
+        const townHallInstances = getInstanceManager().getInstancesByClass(getBUILDING14()) as BUILDING14[];
         
         for (const townHall of townHallInstances) {
             if (townHall.health === 0) {
@@ -311,7 +314,7 @@ export class ATTACK {
         
         ATTACK._shownLog = false;
         
-        if (!ATTACK._logOpen && GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK) {
+        if (!ATTACK._logOpen && getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK) {
             ATTACK._logOpen = true;
             ATTACK._shownLog = true;
             
@@ -344,16 +347,16 @@ export class ATTACK {
                 };
                 
                 (ATTACK._attackLog.mcFrame as frame).Setup(false);
-                ATTACK._attackLog.title_txt.htmlText = "<b>" + KEYS.Get("attack_log_title") + "</b>";
-                GLOBAL._layerMessages.addChild(ATTACK._attackLog);
+                ATTACK._attackLog.title_txt.htmlText = "<b>" + getKEYS().Get("attack_log_title") + "</b>";
+                getGLOBAL()._layerMessages.addChild(ATTACK._attackLog);
                 
                 if (shouldShowTaunt && !ATTACK._taunted && MAPROOM._visitingFriend) {
                     ATTACK._attackLog.bAction.SetupKey("btn_talktrash");
                     ATTACK._attackLog.bAction.addEventListener("click", onActionDown);
                     ATTACK._attackLog.bAction.Highlight = true;
                     
-                    if (MapRoomManager.instance.isInMapRoom2) {
-                        ATTACK._attackLog.b2.Setup(KEYS.Get("btn_next"));
+                    if (getMapRoomManager().instance.isInMapRoom2) {
+                        ATTACK._attackLog.b2.Setup(getKEYS().Get("btn_next"));
                     } else {
                         ATTACK._attackLog.b2.SetupKey("btn_returnhome");
                     }
@@ -362,8 +365,8 @@ export class ATTACK {
                     ATTACK._attackLog.removeChild(ATTACK._attackLog.b2);
                     ATTACK._attackLog.bAction.Highlight = false;
                     
-                    if (MapRoomManager.instance.isInMapRoom2) {
-                        ATTACK._attackLog.bAction.Setup(KEYS.Get("btn_next"));
+                    if (getMapRoomManager().instance.isInMapRoom2) {
+                        ATTACK._attackLog.bAction.Setup(getKEYS().Get("btn_next"));
                     } else {
                         ATTACK._attackLog.bAction.SetupKey("btn_returnhome");
                     }
@@ -401,7 +404,7 @@ export class ATTACK {
         }
         
         const taunt = new popup_taunt_friend();
-        taunt.tTitle.htmlText = KEYS.Get("popup_title_tauntfriend");
+        taunt.tTitle.htmlText = getKEYS().Get("popup_title_tauntfriend");
         taunt.Resize = () => {
             taunt.x = 0;
             taunt.y = 0;
@@ -416,12 +419,12 @@ export class ATTACK {
         
         const onShare = (e: MouseEvent): void => {
             ATTACK._taunted = true;
-            GLOBAL.CallJS("sendFeed", [
+            getGLOBAL().CallJS("sendFeed", [
                 "taunt",
-                KEYS.Get("attack_taunt_streamtitle"),
-                KEYS.Get("attack_taunt_streambody"),
+                getKEYS().Get("attack_taunt_streamtitle"),
+                getKEYS().Get("attack_taunt_streambody"),
                 "taunt" + imgNumber + ".png",
-                BASE._loadedFBID
+                getBASE()._loadedFBID
             ]);
             onClose();
         };
@@ -439,7 +442,7 @@ export class ATTACK {
         };
         
         taunt.bShare.SetupKey("btn_talktrash");
-        GLOBAL._layerMessages.addChild(taunt);
+        getGLOBAL()._layerMessages.addChild(taunt);
         taunt.bShare.addEventListener("click", onShare);
         taunt.bShare.Highlight = true;
         (taunt.mcFrame as frame).Setup(true, onClose);
@@ -455,7 +458,7 @@ export class ATTACK {
     
     public static DropZone(size: number, type: number = 1): void {
         if (!ATTACK._dropZone) {
-            ATTACK._dropZone = MAP._BUILDINGBASES.addChild(new DROPZONE(size, type)) as DROPZONE;
+            ATTACK._dropZone = getMAP()._BUILDINGBASES.addChild(new DROPZONE(size, type)) as DROPZONE;
         } else {
             ATTACK._dropZone.Update(size, type);
         }
@@ -467,14 +470,14 @@ export class ATTACK {
         for (let i = 0; i < ATTACK._log.length; i++) {
             if (ATTACK._log[i].id === id) {
                 ATTACK._log[i].event = event;
-                ATTACK._log[i].time = GLOBAL.Timestamp() - ATTACK._attackStart;
+                ATTACK._log[i].time = getGLOBAL().Timestamp() - ATTACK._attackStart;
                 return;
             }
         }
         
         ATTACK._log.push({
             id: id,
-            time: GLOBAL.Timestamp() - ATTACK._attackStart,
+            time: getGLOBAL().Timestamp() - ATTACK._attackStart,
             event: event
         });
     }
@@ -487,28 +490,28 @@ export class ATTACK {
             ATTACK._log.sort((a, b) => a.time - b.time);
             
             for (let i = 0; i < ATTACK._log.length; i++) {
-                result += `<li><font color="#999999">${GLOBAL.ToTime(ATTACK._log[i].time, true)}</font>: ${ATTACK._log[i].event}</li>`;
+                result += `<li><font color="#999999">${getGLOBAL().ToTime(ATTACK._log[i].time, true)}</font>: ${ATTACK._log[i].event}</li>`;
             }
             result += "</ul>";
             
             const totalLoot = ATTACK._loot.r1.Get() + ATTACK._loot.r2.Get() + ATTACK._loot.r3.Get() + ATTACK._loot.r4.Get();
             if (totalLoot > 0) {
-                result += "<br>" + KEYS.Get("attack_log_resourceslooted") + ":<br>";
+                result += "<br>" + getKEYS().Get("attack_log_resourceslooted") + ":<br>";
                 const lootItems: [number, string][] = [];
                 
                 if (ATTACK._loot.r1.Get() > 0) {
-                    lootItems.push([ATTACK._loot.r1.Get(), KEYS.Get(GLOBAL._resourceNames[0])]);
+                    lootItems.push([ATTACK._loot.r1.Get(), getKEYS().Get(getGLOBAL()._resourceNames[0])]);
                 }
                 if (ATTACK._loot.r2.Get() > 0) {
-                    lootItems.push([ATTACK._loot.r2.Get(), KEYS.Get(GLOBAL._resourceNames[1])]);
+                    lootItems.push([ATTACK._loot.r2.Get(), getKEYS().Get(getGLOBAL()._resourceNames[1])]);
                 }
                 if (ATTACK._loot.r3.Get() > 0) {
-                    lootItems.push([ATTACK._loot.r3.Get(), KEYS.Get(GLOBAL._resourceNames[2])]);
+                    lootItems.push([ATTACK._loot.r3.Get(), getKEYS().Get(getGLOBAL()._resourceNames[2])]);
                 }
                 if (ATTACK._loot.r4.Get() > 0) {
-                    lootItems.push([ATTACK._loot.r4.Get(), KEYS.Get(GLOBAL._resourceNames[3])]);
+                    lootItems.push([ATTACK._loot.r4.Get(), getKEYS().Get(getGLOBAL()._resourceNames[3])]);
                 }
-                result += GLOBAL.Array2String(lootItems);
+                result += getGLOBAL().Array2String(lootItems);
             }
         }
         
@@ -518,7 +521,7 @@ export class ATTACK {
     public static RemoveDropZone(): void {
         if (ATTACK._dropZone) {
             ATTACK._dropZone.Destroy();
-            MAP._BUILDINGBASES.removeChild(ATTACK._dropZone);
+            getMAP()._BUILDINGBASES.removeChild(ATTACK._dropZone);
         }
         ATTACK._dropZone = null;
     }
@@ -529,34 +532,34 @@ export class ATTACK {
         for (const creatureID in ATTACK._flingerBucket) {
             if (ATTACK._flingerBucket[creatureID].Get() > 0) {
                 if (creatureID.substr(0, 1) === "G") {
-                    const guardianIndex = GLOBAL.getPlayerGuardianIndex(parseInt(creatureID.substr(1)));
-                    const guardianLevel = GLOBAL._playerGuardianData[guardianIndex].l.Get();
+                    const guardianIndex = getGLOBAL().getPlayerGuardianIndex(parseInt(creatureID.substr(1)));
+                    const guardianLevel = getGLOBAL()._playerGuardianData[guardianIndex].l.Get();
                     const angle = Math.random() * 360 * 0.0174532925;
                     const dist = Math.random() * radius / 2;
                     const spawnPoint = { x: point.x + Math.sin(angle) * dist, y: point.y + Math.cos(angle) * dist };
                     
-                    CREEPS.SpawnGuardian(
-                        GLOBAL._playerGuardianData[guardianIndex].t,
-                        MAP._BUILDINGTOPS,
+                    getCREEPS().SpawnGuardian(
+                        getGLOBAL()._playerGuardianData[guardianIndex].t,
+                        getMAP()._BUILDINGTOPS,
                         "bounce",
                         guardianLevel,
                         new Point(spawnPoint.x, spawnPoint.y),
                         Math.random() * 360,
-                        GLOBAL._playerGuardianData[guardianIndex].hp.Get(),
-                        GLOBAL._playerGuardianData[guardianIndex].fb.Get(),
-                        GLOBAL._playerGuardianData[guardianIndex].pl.Get()
+                        getGLOBAL()._playerGuardianData[guardianIndex].hp.Get(),
+                        getGLOBAL()._playerGuardianData[guardianIndex].fb.Get(),
+                        getGLOBAL()._playerGuardianData[guardianIndex].pl.Get()
                     );
                     
-                    if (!MapRoomManager.instance.isInMapRoom3) {
-                        ATTACK._flungSpace.Add(CHAMPIONCAGE.GetGuardianProperty(creatureID.substr(0, 2), guardianLevel, "bucket"));
+                    if (!getMapRoomManager().instance.isInMapRoom3) {
+                        ATTACK._flungSpace.Add(getCHAMPIONCAGE().GetGuardianProperty(creatureID.substr(0, 2), guardianLevel, "bucket"));
                     }
                     
-                    const guardianName = "Level " + guardianLevel + " " + CHAMPIONCAGE._guardians["G" + GLOBAL._playerGuardianData[guardianIndex].t].name;
+                    const guardianName = "Level " + guardianLevel + " " + getCHAMPIONCAGE()._guardians["G" + getGLOBAL()._playerGuardianData[guardianIndex].t].name;
                     flungItems.push([1, guardianName]);
-                    CREEPS._flungGuardian[guardianIndex] = true;
+                    getCREEPS()._flungGuardian[guardianIndex] = true;
                 } else {
-                    ATTACK._flungSpace.Add(CREATURES.GetProperty(creatureID, "bucket") * ATTACK._flingerBucket[creatureID].Get());
-                    const monsterName = KEYS.Get(CREATURELOCKER._creatures[creatureID].name);
+                    ATTACK._flungSpace.Add(getCREATURES().GetProperty(creatureID, "bucket") * ATTACK._flingerBucket[creatureID].Get());
+                    const monsterName = getKEYS().Get(getCREATURELOCKER()._creatures[creatureID].name);
                     flungItems.push([ATTACK._flingerBucket[creatureID].Get(), monsterName]);
                     
                     for (let j = 0; j < ATTACK._flingerBucket[creatureID].Get(); j++) {
@@ -564,23 +567,23 @@ export class ATTACK {
                         const dist = Math.random() * radius / 2;
                         const spawnPoint = { x: point.x + Math.sin(angle) * dist, y: point.y + Math.cos(angle) * dist };
                         
-                        const monster = CREEPS.Spawn(creatureID, MAP._BUILDINGTOPS, "bounce", new Point(spawnPoint.x, spawnPoint.y), Math.random() * 360);
+                        const monster = getCREEPS().Spawn(creatureID, getMAP()._BUILDINGTOPS, "bounce", new Point(spawnPoint.x, spawnPoint.y), Math.random() * 360);
                         monster._hitLimit = Number.MAX_SAFE_INTEGER;
                         
-                        if (!MapRoomManager.instance.isInMapRoom2or3) {
-                            GLOBAL.attackingPlayer.monsterListByID(creatureID).add(-1);
-                        } else if (MapRoomManager.instance.isInMapRoom3) {
-                            GLOBAL.attackingPlayer.monsterListByID(creatureID).linkCreepToData(monster);
+                        if (!getMapRoomManager().instance.isInMapRoom2or3) {
+                            getGLOBAL().attackingPlayer.monsterListByID(creatureID).add(-1);
+                        } else if (getMapRoomManager().instance.isInMapRoom3) {
+                            getGLOBAL().attackingPlayer.monsterListByID(creatureID).linkCreepToData(monster);
                         }
                     }
                     
                     if (ALLIANCES._myAlliance) {
-                        LOGGER.Stat([28, creatureID, ATTACK._flingerBucket[creatureID].Get(), ALLIANCES._allianceID]);
+                        getLOGGER().Stat([28, creatureID, ATTACK._flingerBucket[creatureID].Get(), ALLIANCES._allianceID]);
                     } else {
-                        LOGGER.Stat([28, creatureID, ATTACK._flingerBucket[creatureID].Get()]);
+                        getLOGGER().Stat([28, creatureID, ATTACK._flingerBucket[creatureID].Get()]);
                     }
                     
-                    ATTACK._flingValue += CREATURES.GetProperty(creatureID, "cResource");
+                    ATTACK._flingValue += getCREATURES().GetProperty(creatureID, "cResource");
                 }
             }
         }
@@ -589,52 +592,52 @@ export class ATTACK {
         ATTACK._creaturesLoaded.Set(0);
         
         if (flungItems.length === 1 && flungItems[0][0] === 1) {
-            ATTACK.Log("fling" + ATTACK._flingCount, `<font color="#0000FF">${KEYS.Get("attack_log_flungin", { v1: GLOBAL.Array2String(flungItems) })}</font>`);
+            ATTACK.Log("fling" + ATTACK._flingCount, `<font color="#0000FF">${getKEYS().Get("attack_log_flungin", { v1: getGLOBAL().Array2String(flungItems) })}</font>`);
         } else {
-            ATTACK.Log("fling" + ATTACK._flingCount, `<font color="#0000FF">${KEYS.Get("attack_log_flungin_pl", { v1: GLOBAL.Array2String(flungItems) })}</font>`);
+            ATTACK.Log("fling" + ATTACK._flingCount, `<font color="#0000FF">${getKEYS().Get("attack_log_flungin_pl", { v1: getGLOBAL().Array2String(flungItems) })}</font>`);
         }
         
         ++ATTACK._flingCount;
         ATTACK._flingerBucket = {};
         ATTACK._flingerCooling = ATTACK._flingerCooldown;
-        UI2.Update();
+        getUI2().Update();
         
-        if (BASE._saveOver !== 1) {
-            BASE.Save();
+        if (getBASE()._saveOver !== 1) {
+            getBASE().Save();
         }
         
         ATTACK.RemoveDropZone();
     }
     
     public static BucketAdd(creatureID: string): boolean {
-        let capacity = GLOBAL._buildingProps[4].capacity[GLOBAL._attackersFlinger - 1];
+        let capacity = getGLOBAL()._buildingProps[4].capacity[getGLOBAL()._attackersFlinger - 1];
         
         if (MAPROOM_DESCENT.InDescent) {
-            capacity = YARD_PROPS._yardProps[4].capacity[GLOBAL._attackersFlinger - 1];
+            capacity = YARD_PROPS._yardProps[4].capacity[getGLOBAL()._attackersFlinger - 1];
         }
         
         if (POWERUPS.CheckPowers(POWERUPS.ALLIANCE_DECLAREWAR, "OFFENSE")) {
             capacity += Math.floor(capacity * 0.25);
         }
         
-        if (MapRoomManager.instance.isInMapRoom3 && ATTACK.USE_CUMULATIVE_FLINGER_CAPACITY) {
+        if (getMapRoomManager().instance.isInMapRoom3 && ATTACK.USE_CUMULATIVE_FLINGER_CAPACITY) {
             capacity -= ATTACK._flungSpace.Get();
         }
         
         if (creatureID.substr(0, 1) === "G") {
-            const guardianIndex = GLOBAL.getPlayerGuardianIndex(parseInt(creatureID.substr(1)));
-            if (!MapRoomManager.instance.isInMapRoom3) {
-                capacity -= CHAMPIONCAGE.GetGuardianProperty(creatureID.substr(0, 2), GLOBAL._playerGuardianData[guardianIndex].l.Get(), "bucket");
+            const guardianIndex = getGLOBAL().getPlayerGuardianIndex(parseInt(creatureID.substr(1)));
+            if (!getMapRoomManager().instance.isInMapRoom3) {
+                capacity -= getCHAMPIONCAGE().GetGuardianProperty(creatureID.substr(0, 2), getGLOBAL()._playerGuardianData[guardianIndex].l.Get(), "bucket");
             }
             ATTACK._flingerBucket[creatureID] = new SecNum(1);
             ATTACK._creaturesLoaded.Add(1);
-            SOUNDS.Play("click1");
+            getSOUNDS().Play("click1");
         } else if (ATTACK._curCreaturesAvailable[creatureID] > 0) {
             for (const key in ATTACK._flingerBucket) {
-                capacity -= CREATURES.GetProperty(key, "bucket") * ATTACK._flingerBucket[key].Get();
+                capacity -= getCREATURES().GetProperty(key, "bucket") * ATTACK._flingerBucket[key].Get();
             }
             
-            if (capacity >= CREATURES.GetProperty(creatureID, "bucket")) {
+            if (capacity >= getCREATURES().GetProperty(creatureID, "bucket")) {
                 ATTACK._curCreaturesAvailable[creatureID] = ATTACK._curCreaturesAvailable[creatureID] - 1;
                 ATTACK._creaturesLoaded.Add(1);
                 
@@ -642,7 +645,7 @@ export class ATTACK {
                     ATTACK._flingerBucket[creatureID] = new SecNum(0);
                 }
                 ATTACK._flingerBucket[creatureID].Add(1);
-                SOUNDS.Play("click1");
+                getSOUNDS().Play("click1");
             }
         }
         
@@ -660,7 +663,7 @@ export class ATTACK {
             }
             
             ATTACK._creaturesLoaded.Add(-1);
-            SOUNDS.Play("click1");
+            getSOUNDS().Play("click1");
             return true;
         }
         
@@ -673,22 +676,22 @@ export class ATTACK {
         for (const creatureID in ATTACK._flingerBucket) {
             if (creatureID.substr(0, 1) === "G") {
                 let guardianIndex = 0;
-                while (guardianIndex < GLOBAL._playerGuardianData.length) {
-                    if (creatureID.substr(1) === GLOBAL._playerGuardianData[guardianIndex].t) {
+                while (guardianIndex < getGLOBAL()._playerGuardianData.length) {
+                    if (creatureID.substr(1) === getGLOBAL()._playerGuardianData[guardianIndex].t) {
                         break;
                     }
                     guardianIndex++;
                 }
-                bucketSize += CHAMPIONCAGE.GetGuardianProperty(creatureID.substr(0, 2), GLOBAL._playerGuardianData[guardianIndex].l.Get(), "bucket");
+                bucketSize += getCHAMPIONCAGE().GetGuardianProperty(creatureID.substr(0, 2), getGLOBAL()._playerGuardianData[guardianIndex].l.Get(), "bucket");
             } else {
-                bucketSize += CREATURES.GetProperty(creatureID, "bucket") * ATTACK._flingerBucket[creatureID].Get();
+                bucketSize += getCREATURES().GetProperty(creatureID, "bucket") * ATTACK._flingerBucket[creatureID].Get();
             }
         }
         
         ResourceBombs.BombRemove();
         
-        if (UI2._top && UI2._top._siegeweapon) {
-            UI2._top._siegeweapon.Cancel();
+        if (getUI2()._top && getUI2()._top._siegeweapon) {
+            getUI2()._top._siegeweapon.Cancel();
         }
         
         if (bucketSize === 0) {
@@ -701,7 +704,7 @@ export class ATTACK {
             ATTACK.DropZone(bucketSize, 1);
         }
         
-        UI2.Update();
+        getUI2().Update();
     }
     
     public static Loot(
@@ -713,8 +716,8 @@ export class ATTACK {
         building: BFOUNDATION | null = null,
         vacuum: boolean = false
     ): number {
-        if (LOGIN._playerLevel < 20) {
-            amount += amount * Math.max(0, (20 - LOGIN._playerLevel) * 0.03);
+        if (getLOGIN()._playerLevel < 20) {
+            amount += amount * Math.max(0, (20 - getLOGIN()._playerLevel) * 0.03);
         }
         
         ATTACK._loot["r" + resourceType].Add(amount);
@@ -734,9 +737,9 @@ export class ATTACK {
         }
         
         let actualGain = amount;
-        const maxResource = GLOBAL._resources["r" + resourceType + "max"];
-        const currentResource = GLOBAL._resources["r" + resourceType].Get();
-        const krallen = CREEPS.krallen;
+        const maxResource = getGLOBAL()._resources["r" + resourceType + "max"];
+        const currentResource = getGLOBAL()._resources["r" + resourceType].Get();
+        const krallen = getCREEPS().krallen;
         
         let adjustedMax = maxResource;
         if (krallen) {
@@ -744,7 +747,7 @@ export class ATTACK {
         }
         
         if (currentResource + amount > adjustedMax) {
-            if ((BASE.isInfernoMainYardOrOutpost && MAPROOM_DESCENT.DescentPassed) || GLOBAL.mode === GLOBAL._loadmode) {
+            if ((getBASE().isInfernoMainYardOrOutpost && MAPROOM_DESCENT.DescentPassed) || getGLOBAL().mode === getGLOBAL()._loadmode) {
                 actualGain = adjustedMax - currentResource;
                 if (actualGain < 0) {
                     actualGain = 0;
@@ -752,8 +755,8 @@ export class ATTACK {
             }
         }
         
-        GLOBAL._resources["r" + resourceType].Add(actualGain);
-        GLOBAL._hpResources["r" + resourceType] += actualGain;
+        getGLOBAL()._resources["r" + resourceType].Add(actualGain);
+        getGLOBAL()._hpResources["r" + resourceType] += actualGain;
         
         if (ATTACK._deltaLoot["r" + resourceType]) {
             ATTACK._deltaLoot["r" + resourceType].Add(actualGain);
@@ -766,9 +769,9 @@ export class ATTACK {
         ATTACK._deltaLoot.dirty = true;
         ATTACK._hpDeltaLoot.dirty = true;
         
-        if (GLOBAL._render && building) {
+        if (getGLOBAL()._render && building) {
             let particleType = resourceType;
-            if (BASE.isInfernoMainYardOrOutpost) {
+            if (getBASE().isInfernoMainYardOrOutpost) {
                 particleType += 4;
             }
             
@@ -794,8 +797,8 @@ export class ATTACK {
                     }
                     
                     if (ATTACK._deltaLoot["r" + i].Get() !== ATTACK._hpDeltaLoot["r" + i]) {
-                        LOGGER.Log("log", "ATTACK.SaveDeltaLoot delta loot mismatch secure " + ATTACK._deltaLoot["r" + i].Get() + " unsecure " + ATTACK._hpDeltaLoot["r" + i]);
-                        GLOBAL.ErrorMessage("ATTACK.SaveDeltaLoot");
+                        getLOGGER().Log("log", "ATTACK.SaveDeltaLoot delta loot mismatch secure " + ATTACK._deltaLoot["r" + i].Get() + " unsecure " + ATTACK._hpDeltaLoot["r" + i]);
+                        getGLOBAL().ErrorMessage("ATTACK.SaveDeltaLoot");
                     }
                 }
             }
@@ -832,7 +835,7 @@ export class ATTACK {
         }
         
         const point = new Point(target?.x || 0, target?.y || 0);
-        if (target && target instanceof MonsterBase) {
+        if (target && target instanceof getMonsterBase()) {
             point.y -= (target as MonsterBase)._altitude;
         }
         
@@ -867,15 +870,15 @@ export class ATTACK {
     }
     
     public static RetreatAll(): void {
-        for (const key in CREEPS._creeps) {
-            CREEPS._creeps[key].changeModeRetreat();
+        for (const key in getCREEPS()._creeps) {
+            getCREEPS()._creeps[key].changeModeRetreat();
         }
         
-        if (BASE._saveOver !== 1) {
-            BASE.Save(1, false, true);
+        if (getBASE()._saveOver !== 1) {
+            getBASE().Save(1, false, true);
         }
         
-        GLOBAL.Message(KEYS.Get("attack_msg_attackover"));
+        getGLOBAL().Message(getKEYS().Get("attack_msg_attackover"));
     }
     
     private static BucketClear(): void {
@@ -889,26 +892,26 @@ export class ATTACK {
     }
     
     private static updateCreepAttackToPlayerSavingFunction(): void {
-        const creepCount = CREEPS.m_attackingCreeps.length;
+        const creepCount = getCREEPS().m_attackingCreeps.length;
         
         for (let i = 0; i < creepCount; i++) {
-            if (!CREEPS.m_attackingCreeps[i].isDisposable) {
-                const monsterData = GLOBAL.attackingPlayer.monsterListByID(CREEPS.m_attackingCreeps[i]._creatureID);
+            if (!getCREEPS().m_attackingCreeps[i].isDisposable) {
+                const monsterData = getGLOBAL().attackingPlayer.monsterListByID(getCREEPS().m_attackingCreeps[i]._creatureID);
                 
                 if (monsterData) {
                     let j = 0;
                     while (j < monsterData.m_creeps.length && 
-                           monsterData.m_creeps[j].health < (CREEPS.m_attackingCreeps[i] as MonsterBase).maxHealth) {
+                           monsterData.m_creeps[j].health < (getCREEPS().m_attackingCreeps[i] as MonsterBase).maxHealth) {
                         j++;
                     }
                     
-                    const currentHealth = (CREEPS.m_attackingCreeps[i] as MonsterBase).health;
+                    const currentHealth = (getCREEPS().m_attackingCreeps[i] as MonsterBase).health;
                     monsterData.m_creeps[j].health = currentHealth > 0 ? currentHealth : 1;
                 }
             }
         }
         
-        BASE.SaveB();
+        getBASE().SaveB();
     }
     
     public static End(): void {
@@ -916,29 +919,29 @@ export class ATTACK {
         ATTACK.BucketClear();
         
         if (!ATTACK._sentOver) {
-            if (BASE._saveOver !== 1) {
-                BASE.Save(1, false, true);
+            if (getBASE()._saveOver !== 1) {
+                getBASE().Save(1, false, true);
             }
             ATTACK._sentOver = true;
         }
         
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.IATTACK) {
-            if (CREEPS._guardian && CREEPS._guardian.health > 0) {
-                LOGGER.Stat([53, CREEPS._guardian._creatureID, 1]);
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.IATTACK) {
+            if (getCREEPS()._guardian && getCREEPS()._guardian.health > 0) {
+                getLOGGER().Stat([53, getCREEPS()._guardian._creatureID, 1]);
             }
-            if (CREATURES._guardian && CREATURES._guardian.health > 0) {
-                LOGGER.Stat([55, CREATURES._guardian._creatureID, 1]);
+            if (getCREATURES()._guardian && getCREATURES()._guardian.health > 0) {
+                getLOGGER().Stat([55, getCREATURES()._guardian._creatureID, 1]);
             }
         }
         
-        for (const key in CREEPS._creeps) {
-            CREEPS._creeps[key].changeModeRetreat();
+        for (const key in getCREEPS()._creeps) {
+            getCREEPS()._creeps[key].changeModeRetreat();
         }
         
-        SiegeWeapons.deactivateWeapon();
+        getSiegeWeapons().deactivateWeapon();
         
-        if (MapRoomManager.instance.isInMapRoom2or3 && BASE.isMainYardOrInfernoMainYard && 
-            (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK)) {
+        if (getMapRoomManager().instance.isInMapRoom2or3 && getBASE().isMainYardOrInfernoMainYard && 
+            (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK)) {
             ATTACK._logOpen = false;
             ATTACK.ShowLog();
             ATTACK._shownFinal = false;
@@ -949,7 +952,7 @@ export class ATTACK {
         }
         
         const totalLoot = ATTACK._loot.r1.Get() + ATTACK._loot.r2.Get() + ATTACK._loot.r3.Get() + ATTACK._loot.r4.Get();
-        LOGGER.KongStat([3, totalLoot]);
+        getLOGGER().KongStat([3, totalLoot]);
     }
     
     public static ShowComplete(): void {
@@ -960,13 +963,13 @@ export class ATTACK {
         const damagePercent = ATTACK.CalculateBaseDamagePercent();
         const isVictory = damagePercent >= BYMConfig.k_sVICTORY_THRESHOLD;
         
-        if (BASE.isMainYard) {
-            GLOBAL.ShowMap();
-        } else if (BASE.isOutpost) {
+        if (getBASE().isMainYard) {
+            getGLOBAL().ShowMap();
+        } else if (getBASE().isOutpost) {
             if (!isVictory) {
                 MapRoom3AttackFinishedPopup.instance.Show(isVictory);
             }
-        } else if (GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
+        } else if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
             WMBASE._destroyed = isVictory;
             MapRoom3AttackFinishedPopup.instance.Show(isVictory);
         }
@@ -979,11 +982,11 @@ export class ATTACK {
         let currentHealth = 0;
         let maxHealth = 0;
         
-        const buildings = InstanceManager.getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
         for (const building of buildings) {
             if (building._class !== "wall" && 
                 !((building._class as any) === "trap" && (building._class as any) === "enemy" && building._fired) &&
-                !(building._type === 53 && building._expireTime < GLOBAL.Timestamp())) {
+                !(building._type === 53 && building._expireTime < getGLOBAL().Timestamp())) {
                 currentHealth += building.health;
                 maxHealth += building.maxHealth;
             }
@@ -991,34 +994,34 @@ export class ATTACK {
         
         const damagePercent = 100 - (100 / maxHealth * currentHealth);
         
-        if (MapRoomManager.instance.isInMapRoom3 && !isInDescent && !BASE.isInfernoMainYardOrOutpost) {
+        if (getMapRoomManager().instance.isInMapRoom3 && !isInDescent && !getBASE().isInfernoMainYardOrOutpost) {
             ATTACK.EndBForMapRoom3();
             return;
         }
         
         let isVictory = false;
         
-        if (MapRoomManager.instance.isInMapRoom2 && !isInDescent) {
-            if ((BASE.isOutpostMapRoom2Only || GLOBAL._loadmode === GLOBAL.e_BASE_MODE.WMATTACK) && 
+        if (getMapRoomManager().instance.isInMapRoom2 && !isInDescent) {
+            if ((getBASE().isOutpostMapRoom2Only || getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.WMATTACK) && 
                 damagePercent >= BYMConfig.k_sVICTORY_THRESHOLD) {
                 isVictory = true;
-                if (GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
+                if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
                     WMBASE._destroyed = true;
                 }
-            } else if ((BASE.isMainYardInfernoOnly || GLOBAL._loadmode === GLOBAL.e_BASE_MODE.IWMATTACK) && 
+            } else if ((getBASE().isMainYardInfernoOnly || getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.IWMATTACK) && 
                        damagePercent >= BYMConfig.k_sVICTORY_THRESHOLD) {
                 isVictory = true;
-                if (GLOBAL._loadmode === GLOBAL.e_BASE_MODE.IWMATTACK) {
+                if (getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.IWMATTACK) {
                     WMBASE._destroyed = true;
                 }
             }
-        } else if (GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.IWMATTACK) {
-            const townHalls = InstanceManager.getInstancesByClass(BUILDING14) as BUILDING14[];
+        } else if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.IWMATTACK) {
+            const townHalls = getInstanceManager().getInstancesByClass(getBUILDING14()) as BUILDING14[];
             
             for (const townHall of townHalls) {
                 if (townHall.health === 0 && townHall._repairing === 0 &&
-                    (GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.IWMATTACK)) {
-                    if (TRIBES.TribeForBaseID(BASE._wmID).id === 2) {
+                    (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.IWMATTACK)) {
+                    if (TRIBES.TribeForBaseID(getBASE()._wmID).id === 2) {
                         ACHIEVEMENTS.Check("wm2hall", 1);
                     }
                     if (!MAPROOM_DESCENT.InDescent) {
@@ -1043,74 +1046,74 @@ export class ATTACK {
             }
         }
         
-        if (BASE.isInfernoMainYardOrOutpost) {
-            SOUNDS.PlayMusic("musicibuild");
+        if (getBASE().isInfernoMainYardOrOutpost) {
+            getSOUNDS().PlayMusic("musicibuild");
         } else {
-            SOUNDS.PlayMusic("musicbuild");
+            getSOUNDS().PlayMusic("musicbuild");
         }
         
-        GLOBAL.eventDispatcher.dispatchEvent(new AttackEvent(AttackEvent.ATTACK_OVER, isVictory, BASE._wmID, ATTACK._loot));
+        getGLOBAL().eventDispatcher.dispatchEvent(new AttackEvent(AttackEvent.ATTACK_OVER, isVictory, getBASE()._wmID, ATTACK._loot));
         
-        if ((MapRoomManager.instance.isInMapRoom2 && BASE.isOutpostMapRoom2Only) || 
-            GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK || 
-            GLOBAL.mode === GLOBAL.e_BASE_MODE.IWMATTACK) {
+        if ((getMapRoomManager().instance.isInMapRoom2 && getBASE().isOutpostMapRoom2Only) || 
+            getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK || 
+            getGLOBAL().mode === getGLOBAL().e_BASE_MODE.IWMATTACK) {
             const popup = new popup_attackend(isVictory);
             popup.mcFrame.Setup(false);
-            POPUPS.Push(popup);
+            getPOPUPS().Push(popup);
             
-            if (MapRoomManager.instance.isInMapRoom2 && !GLOBAL.m_mapRoomFunctional) {
-                GLOBAL.Message(KEYS.Get("map_msg_damaged"));
+            if (getMapRoomManager().instance.isInMapRoom2 && !getGLOBAL().m_mapRoomFunctional) {
+                getGLOBAL().Message(getKEYS().Get("map_msg_damaged"));
             }
-        } else if (MapRoomManager.instance.isInMapRoom2) {
-            GLOBAL.ShowMap();
-        } else if (GLOBAL._loadmode === GLOBAL.mode) {
-            BASE.LoadBase(null, 0, 0, GLOBAL.e_BASE_MODE.BUILD, false, EnumYardType.MAIN_YARD);
+        } else if (getMapRoomManager().instance.isInMapRoom2) {
+            getGLOBAL().ShowMap();
+        } else if (getGLOBAL()._loadmode === getGLOBAL().mode) {
+            getBASE().LoadBase(null, 0, 0, getGLOBAL().e_BASE_MODE.BUILD, false, EnumYardType.MAIN_YARD);
         } else if (MAPROOM_DESCENT.InDescent) {
-            BASE.LoadBase(null, 0, 0, GLOBAL.e_BASE_MODE.BUILD, false, EnumYardType.MAIN_YARD);
+            getBASE().LoadBase(null, 0, 0, getGLOBAL().e_BASE_MODE.BUILD, false, EnumYardType.MAIN_YARD);
         } else {
-            BASE.LoadBase(GLOBAL._infBaseURL, 0, 0, "ibuild", false, EnumYardType.INFERNO_YARD);
+            getBASE().LoadBase(getGLOBAL()._infBaseURL, 0, 0, "ibuild", false, EnumYardType.INFERNO_YARD);
         }
     }
     
     public static WellDefended(wildMonsters: boolean = true, attackersName: string = ""): void {
-        const tribe = TRIBES.TribeForBaseID(WMATTACK._attackersBaseID);
+        const tribe = TRIBES.TribeForBaseID(getWMATTACK()._attackersBaseID);
         
-        const activeEvent = SPECIALEVENT.getActiveSpecialEvent();
+        const activeEvent = getSPECIALEVENT().getActiveSpecialEvent();
         if (activeEvent.active) {
             activeEvent.EndRound(true);
             return;
         }
         
         if (INFERNO_EMERGENCE_EVENT.isAttackActive) {
-            INFERNO_EMERGENCE_POPUPS.ShowStagePassed(INFERNOPORTAL.building._lvl.Get());
+            INFERNO_EMERGENCE_POPUPS.ShowStagePassed(getINFERNOPORTAL().building._lvl.Get());
             return;
         }
         
         const Post = (): void => {
             if (wildMonsters) {
-                GLOBAL.CallJS("sendFeed", [
+                getGLOBAL().CallJS("sendFeed", [
                     "defense-wild",
-                    KEYS.Get("ai_gooddefense_streamtitle", { v1: tribe.name }),
-                    KEYS.Get("ai_gooddefense", { v1: tribe.name }),
+                    getKEYS().Get("ai_gooddefense_streamtitle", { v1: tribe.name }),
+                    getKEYS().Get("ai_gooddefense", { v1: tribe.name }),
                     tribe.streampostpic
                 ]);
             } else {
-                GLOBAL.CallJS("sendFeed", [
+                getGLOBAL().CallJS("sendFeed", [
                     "defense-human",
-                    KEYS.Get("attack_gooddefense_streamtitle", { v1: attackersName }),
-                    KEYS.Get("attack_gooddefense_streambody"),
+                    getKEYS().Get("attack_gooddefense_streamtitle", { v1: attackersName }),
+                    getKEYS().Get("attack_gooddefense_streambody"),
                     "defense2.png"
                 ]);
             }
-            POPUPS.Next();
+            getPOPUPS().Next();
         };
         
         const popupMC = new popup_defense();
         
         if (wildMonsters) {
-            popupMC.tText.htmlText = "<b>" + KEYS.Get("ai_gooddefense", { v1: tribe.name }) + "</b>";
+            popupMC.tText.htmlText = "<b>" + getKEYS().Get("ai_gooddefense", { v1: tribe.name }) + "</b>";
         } else {
-            popupMC.tText.htmlText = "<b>" + KEYS.Get("attack_gooddefense", { v1: attackersName }) + "</b>";
+            popupMC.tText.htmlText = "<b>" + getKEYS().Get("attack_gooddefense", { v1: attackersName }) + "</b>";
         }
         
         popupMC.bAction.SetupKey("btn_brag");
@@ -1118,62 +1121,62 @@ export class ATTACK {
         popupMC.bAction.Highlight = true;
         
         if (wildMonsters) {
-            POPUPS.Push(popupMC, null, null, null, tribe.splash.split("popups/").join(""));
+            getPOPUPS().Push(popupMC, null, null, null, tribe.splash.split("popups/").join(""));
         } else {
-            POPUPS.Push(popupMC, null, null, null, "defense2.png");
+            getPOPUPS().Push(popupMC, null, null, null, "defense2.png");
         }
     }
     
     public static PoorDefense(): void {
         if (INFERNO_EMERGENCE_EVENT.isAttackActive) {
-            INFERNO_EMERGENCE_POPUPS.ShowStagePassed(INFERNOPORTAL.building._lvl.Get());
+            INFERNO_EMERGENCE_POPUPS.ShowStagePassed(getINFERNOPORTAL().building._lvl.Get());
             return;
         }
         
-        if (TUTORIAL._stage > 40) {
+        if (getTUTORIAL()._stage > 40) {
             const mc = new popup_damaged_ai();
             
             const RepairAll = (event?: MouseEvent): void => {
                 mc.bAction.removeEventListener("click", RepairAll);
                 mc.bAction2.removeEventListener("click", RepairNow);
                 
-                const buildings = InstanceManager.getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+                const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
                 for (const building of buildings) {
                     if (building.health < building.maxHealth && building._repairing === 0) {
                         building.Repair();
                     }
                 }
                 
-                SOUNDS.Play("repair1", 0.25);
-                POPUPS.Next();
+                getSOUNDS().Play("repair1", 0.25);
+                getPOPUPS().Next();
             };
             
             const RepairNow = (event?: MouseEvent): void => {
                 mc.bAction.removeEventListener("click", RepairAll);
                 mc.bAction2.removeEventListener("click", RepairNow);
                 
-                const buildings = InstanceManager.getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+                const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
                 for (const building of buildings) {
                     if (building.health < building.maxHealth && building._repairing === 0) {
                         building.Repair();
                     }
                 }
                 
-                STORE.ShowB(3, 1, ["FIX"], true);
-                POPUPS.Next();
+                getSTORE().ShowB(3, 1, ["FIX"], true);
+                getPOPUPS().Next();
             };
             
             (mc.mcFrame as frame).Setup(false);
-            mc.tA.htmlText = "<b>" + KEYS.Get("ai_poordefense_ta") + "</b>";
-            mc.tB.htmlText = "<b>" + KEYS.Get("ai_poordefense_tb") + "</b>";
-            mc.tC.htmlText = KEYS.Get("ai_poordefense_tc");
+            mc.tA.htmlText = "<b>" + getKEYS().Get("ai_poordefense_ta") + "</b>";
+            mc.tB.htmlText = "<b>" + getKEYS().Get("ai_poordefense_tb") + "</b>";
+            mc.tC.htmlText = getKEYS().Get("ai_poordefense_tc");
             mc.bAction.SetupKey("ai_repairdamage_btn");
             mc.bAction.addEventListener("click", RepairAll);
             mc.bAction2.SetupKey("pop_damaged_repairnow_btn");
             mc.bAction2.addEventListener("click", RepairNow);
             mc.bAction2.Highlight = true;
             
-            POPUPS.Push(mc, null, null, "shotgun", "military.png");
+            getPOPUPS().Push(mc, null, null, "shotgun", "military.png");
         }
     }
     
@@ -1181,12 +1184,12 @@ export class ATTACK {
         let maxHealth = 0;
         let currentHealth = 0;
         
-        const buildings = InstanceManager.getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
         
         for (const building of buildings) {
             if (building._class !== "wall" && 
                 !((building._class as any) === "trap" && (building._class as any) === "enemy" && building._fired) &&
-                !(building._type === 53 && building._expireTime < GLOBAL.Timestamp())) {
+                !(building._type === 53 && building._expireTime < getGLOBAL().Timestamp())) {
                 currentHealth += building.health;
                 maxHealth += building.maxHealth;
             }

@@ -1,7 +1,10 @@
-import { Console } from "../../../debug/Console";
 import { Component } from "../Component";
 
-import { GLOBAL } from "../../../../../GLOBAL";
+// Lazy imports to break circular dependency chains
+function getConsole(): any { return require("../../../debug/Console").Console; }
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+
+
 
 /**
  * Temporary component - wraps a component and removes it after a duration.
@@ -18,9 +21,9 @@ export class TemporaryComponent extends Component {
         super();
         this.m_temporaryComponent = component;
         this.m_durationInSeconds = durationInSeconds;
-        this.m_timeToRemove = GLOBAL.Timestamp() + durationInSeconds;
+        this.m_timeToRemove = getGLOBAL().Timestamp() + durationInSeconds;
         if (this.m_durationInSeconds <= 1) {
-            Console.warning("You tried to add a component(" + component + ") that will be instatly removed... why would you do that?");
+            getConsole().warning("You tried to add a component(" + component + ") that will be instatly removed... why would you do that?");
         }
     }
 
@@ -33,11 +36,11 @@ export class TemporaryComponent extends Component {
     }
 
     public override tick(delta: number = 1): void {
-        // Cache timestamp to avoid repeated GLOBAL.Timestamp() calls
+        // Cache timestamp to avoid repeated getGLOBAL().Timestamp() calls
         // Only update cache once per frame, reuse for all TemporaryComponent instances
-        if (TemporaryComponent.s_lastCacheFrame !== GLOBAL._frameNumber) {
-            TemporaryComponent.s_cachedTimestamp = GLOBAL.Timestamp();
-            TemporaryComponent.s_lastCacheFrame = GLOBAL._frameNumber;
+        if (TemporaryComponent.s_lastCacheFrame !== getGLOBAL()._frameNumber) {
+            TemporaryComponent.s_cachedTimestamp = getGLOBAL().Timestamp();
+            TemporaryComponent.s_lastCacheFrame = getGLOBAL()._frameNumber;
         }
 
         if (TemporaryComponent.s_cachedTimestamp >= this.m_timeToRemove) {

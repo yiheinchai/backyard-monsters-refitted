@@ -4,9 +4,12 @@ import Event from 'openfl/events/Event';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BRESOURCE } from './BRESOURCE';
-import { BASE } from './BASE';
-import { CREEPS } from './CREEPS';
-import { GLOBAL } from './GLOBAL';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+
 
 /**
  * BUILDING4 - Goo Factory (Resource Gatherer for Goo)
@@ -26,7 +29,7 @@ export class BUILDING4 extends BRESOURCE {
         this._gridCost = [[new Rectangle(0, 0, 70, 70), 10], [new Rectangle(10, 10, 50, 50), 200]];
         this._spoutPoint = new Point(-1, -31);
         this._spoutHeight = 65;
-        if (BASE.isInfernoMainYardOrOutpost) {
+        if (getBASE().isInfernoMainYardOrOutpost) {
             this._animRandomStart = false;
         }
         this.SetProps();
@@ -34,11 +37,11 @@ export class BUILDING4 extends BRESOURCE {
 
     public override TickFast(event: Event | null = null): void {
         super.TickFast(event);
-        if (GLOBAL._render && this._animLoaded && 
+        if (getGLOBAL()._render && this._animLoaded && 
             this._countdownBuild.Get() + this._countdownUpgrade.Get() + this._countdownFortify.Get() === 0 && 
             this._producing && this._canFunction) {
-            if ((GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === "help" || GLOBAL.mode === "view") && 
-                this._frameNumber % 3 === 0 && CREEPS._creepCount === 0) {
+            if ((getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode === "help" || getGLOBAL().mode === "view") && 
+                this._frameNumber % 3 === 0 && getCREEPS()._creepCount === 0) {
                 this.AnimFrame();
             } else if (this._frameNumber % 10 === 0) {
                 this.AnimFrame();

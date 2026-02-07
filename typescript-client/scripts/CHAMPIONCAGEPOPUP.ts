@@ -15,15 +15,18 @@ import { ChampionBase } from './com/monsters/monsters/champions/ChampionBase';
 import { ReplayableEventHandler } from './com/monsters/replayableEvents/ReplayableEventHandler';
 import { VideoUtils } from './com/monsters/utils/VideoUtils';
 import { GUARDIANCAGEPOPUP_CLIP } from './GUARDIANCAGEPOPUP_CLIP';
-import { CHAMPIONCAGE } from './CHAMPIONCAGE';
-import { CREATURES } from './CREATURES';
-import { CREATURELOCKER } from './CREATURELOCKER';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { BASE } from './BASE';
-import { POPUPS } from './POPUPS';
 import { POPUPSETTINGS } from './POPUPSETTINGS';
 import { bubblepopupDownBuff } from './bubblepopupDownBuff';
+
+// Lazy imports to break circular dependency chains
+function getCHAMPIONCAGE(): any { return require("./CHAMPIONCAGE").CHAMPIONCAGE; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+
 
 export class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP {
     public static _page: number = 0;
@@ -93,8 +96,8 @@ export class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP {
     constructor() {
         super();
         this._timer = new Timer(1000);
-        this.tTitle.htmlText = KEYS.Get("gcage_title");
-        CHAMPIONCAGEPOPUP._bCage = GLOBAL._bCage as CHAMPIONCAGE;
+        this.tTitle.htmlText = getKEYS().Get("gcage_title");
+        CHAMPIONCAGEPOPUP._bCage = getGLOBAL()._bCage as CHAMPIONCAGE;
         CHAMPIONCAGEPOPUP.page1Assets = [this.mcImage, this.tEvoStage, this.damage_txt, this.tDamage, this.bDamage, this.health_txt, this.tHealth, this.bHealth, this.speed_txt, this.tSpeed, this.bSpeed, this.buff_txt, this.tBuff, this.bBuff, this.tEvoDesc, this.tHP, this.barHP, this.bHeal];
         CHAMPIONCAGEPOPUP.page2Assets = [this.barDNA, this.barDNA_bg, this.barDNA_mask, this.mcCurrGuardian, this.mcNextGuardian, this.tNextFeed, this.tFeedsFrom, this.mcInstant, this.mcFeed1, this.mcFeed2, this.gFeedBG, this.bEvolve, this.bFeedTimer, this.tNextFeedTitle];
         CHAMPIONCAGEPOPUP.page3Assets = [this.p3_mcImage, this.p3_tDescription, this.p3_tDescription2, this.p3_tKothLevel, this.p3_gRankBG, this.p3_damage_txt, this.p3_health_txt, this.p3_speed_txt, this.p3_buff_txt, this.p3_abilities_txt, this.p3_tDamage, this.p3_tHealth, this.p3_tSpeed, this.p3_tBuff, this.p3_bDamage, this.p3_bHealth, this.p3_bSpeed, this.p3_bBuff, this.p3_mcAbility1, this.p3_bTimeleft, this.p3_tTimeleft, this.p3_tLootLeft, this.p3_bLootLeft, this.p3_bHP, this.p3_tHP, this.p3_bHeal, this.p3_mcLootMark1, this.p3_mcLootMark2, this.p3_timeleft_txt, this.p3_looted_txt];
@@ -120,13 +123,13 @@ export class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP {
     }
 
     public static FeedClick(param1: MouseEvent): void {
-        CHAMPIONCAGEPOPUP._bCage.FeedGuardian(CREATURES._guardian._creatureID, CREATURES._guardian._level.Get(), false);
-        CHAMPIONCAGE.Hide(param1);
+        CHAMPIONCAGEPOPUP._bCage.FeedGuardian(getCREATURES()._guardian._creatureID, getCREATURES()._guardian._level.Get(), false);
+        getCHAMPIONCAGE().Hide(param1);
     }
 
     public Setup(param1: number = 0): void {
-        if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
-            if (GLOBAL._bCage) {
+        if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD) {
+            if (getGLOBAL()._bCage) {
                 this.UpdateVars();
                 this.b1.SetupKey("btn_champion", false, 0, 0);
                 this.b1.addEventListener(MouseEvent.CLICK, this.SwitchClick(0));
@@ -147,7 +150,7 @@ export class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP {
                 this._timer.start();
                 this.Switch(param1);
             } else {
-                GLOBAL.Message(KEYS.Get("cage_notbuilt"));
+                getGLOBAL().Message(getKEYS().Get("cage_notbuilt"));
             }
         }
     }
@@ -195,11 +198,11 @@ export class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP {
         const _loc3_: string = "";
         switch (param1) {
             case this.p3_mcLootMark1:
-                _loc2_ = KEYS.Get("krallenquota1_tooltip", { "v1": GLOBAL.FormatNumber(this.kothLootThresholds[0]) });
+                _loc2_ = getKEYS().Get("krallenquota1_tooltip", { "v1": getGLOBAL().FormatNumber(this.kothLootThresholds[0]) });
                 _loc4_ = this.p3_mcLootMark1;
                 break;
             case this.p3_mcLootMark2:
-                _loc2_ = KEYS.Get("krallenquota2_tooltip", { "v1": GLOBAL.FormatNumber(this.kothLootThresholds[1]) });
+                _loc2_ = getKEYS().Get("krallenquota2_tooltip", { "v1": getGLOBAL().FormatNumber(this.kothLootThresholds[1]) });
                 _loc4_ = this.p3_mcLootMark2;
                 break;
             default:
@@ -247,9 +250,9 @@ export class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP {
         switch (param1) {
             case this.p3_mcAbility1:
                 if (this.kothPowerLevel >= 2) {
-                    _loc2_ = KEYS.Get("krallen_lootbuffactive_tooltip");
+                    _loc2_ = getKEYS().Get("krallen_lootbuffactive_tooltip");
                 } else {
-                    _loc2_ = KEYS.Get("krallen_lootbuff_tooltip", { "v1": GLOBAL.FormatNumber(this.kothLootThresholds[1]) });
+                    _loc2_ = getKEYS().Get("krallen_lootbuff_tooltip", { "v1": getGLOBAL().FormatNumber(this.kothLootThresholds[1]) });
                 }
                 _loc4_ = this.p3_mcAbility1;
                 if (this._kothToolTipAbility1 || this._kothToolTipAbility2) {
@@ -285,23 +288,23 @@ export class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP {
     }
 
     public UpdateVars(): void {
-        if (CREATURES._guardian) {
-            this.guard = CREATURES._guardian;
-            this.guardType = CREATURES._guardian._type;
-            this.guardLevel = CREATURES._guardian._level.Get();
-            this.foodBonus = CREATURES._guardian._foodBonus.Get();
-            this.guardID = CREATURES._guardian._creatureID;
-            this.totalFeeds = CHAMPIONCAGE.GetGuardianProperty(this.guardID, this.guardLevel, "feedCount");
-            this.currFeeds = CREATURES._guardian._feeds.Get();
+        if (getCREATURES()._guardian) {
+            this.guard = getCREATURES()._guardian;
+            this.guardType = getCREATURES()._guardian._type;
+            this.guardLevel = getCREATURES()._guardian._level.Get();
+            this.foodBonus = getCREATURES()._guardian._foodBonus.Get();
+            this.guardID = getCREATURES()._guardian._creatureID;
+            this.totalFeeds = getCHAMPIONCAGE().GetGuardianProperty(this.guardID, this.guardLevel, "feedCount");
+            this.currFeeds = getCREATURES()._guardian._feeds.Get();
         }
-        if (CREATURES._krallen) {
-            this.koth = CREATURES._krallen;
-            this.kothType = CREATURES._krallen._type;
-            this.kothLevel = CREATURES._krallen._level.Get();
+        if (getCREATURES()._krallen) {
+            this.koth = getCREATURES()._krallen;
+            this.kothType = getCREATURES()._krallen._type;
+            this.kothLevel = getCREATURES()._krallen._level.Get();
             this.kothWins = KOTHHandler.instance.wins;
-            this.kothBonus = CREATURES._krallen._powerLevel.Get();
-            this.kothPowerLevel = CREATURES._krallen._powerLevel.Get();
-            this.kothID = CREATURES._krallen._creatureID;
+            this.kothBonus = getCREATURES()._krallen._powerLevel.Get();
+            this.kothPowerLevel = getCREATURES()._krallen._powerLevel.Get();
+            this.kothID = getCREATURES()._krallen._creatureID;
         }
     }
 
@@ -342,12 +345,12 @@ export class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP {
             this.bSpeed["mcBuff" + i].width = 0;
             this.bBuff["mcBuff" + i].width = 0;
         }
-        if (CREATURES._guardian) {
+        if (getCREATURES()._guardian) {
             if (param1 == 0) {
                 this.UpdatePortrait();
                 this.UpdateStats();
                 this.bHeal.SetupKey("btn_healchampion", false, 0, 0);
-                if (CREATURES._guardian.health >= CREATURES._guardian.maxHealth) {
+                if (getCREATURES()._guardian.health >= getCREATURES()._guardian.maxHealth) {
                     this.bHeal.Enabled = false;
                 } else {
                     this.bHeal.Enabled = true;
@@ -372,8 +375,8 @@ export class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP {
     }
 
     private hasKoth(): boolean {
-        for (let i = 0; i < GLOBAL._playerGuardianData.length; i++) {
-            if (GLOBAL._playerGuardianData[i].t == 5) return true;
+        for (let i = 0; i < getGLOBAL()._playerGuardianData.length; i++) {
+            if (getGLOBAL()._playerGuardianData[i].t == 5) return true;
         }
         return false;
     }
@@ -432,13 +435,13 @@ export class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP {
         const UpdatePortraitIcon = (param1: string, param2: BitmapData): void => {
             this.mcImage.addChild(new Bitmap(param2));
         };
-        if (CREATURES._guardian) {
+        if (getCREATURES()._guardian) {
             if (this.mcImage) {
                 while (this.mcImage.numChildren) {
                     this.mcImage.removeChildAt(0);
                 }
             }
-            ImageCache.GetImageWithCallBack("monsters/G" + CREATURES._guardian._type + "_L" + CREATURES._guardian._level.Get() + "-250.png", UpdatePortraitIcon);
+            ImageCache.GetImageWithCallBack("monsters/G" + getCREATURES()._guardian._type + "_L" + getCREATURES()._guardian._level.Get() + "-250.png", UpdatePortraitIcon);
         }
     }
 
@@ -455,46 +458,46 @@ export class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP {
     }
 
     private UpdateDNA(): void {
-        if (CREATURES._guardian) {
+        if (getCREATURES()._guardian) {
             if (this.mcCurrGuardian.numChildren == 0) {
-                ImageCache.loadImageAndAddChild("monsters/G" + CREATURES._guardian._type + "_L" + CREATURES._guardian._level.Get() + "-150.png", this.mcCurrGuardian);
-                ImageCache.loadImageAndAddChild("monsters/G" + CREATURES._guardian._type + "_L" + (CREATURES._guardian._level.Get() + 1) + "-150G.png", this.mcNextGuardian);
+                ImageCache.loadImageAndAddChild("monsters/G" + getCREATURES()._guardian._type + "_L" + getCREATURES()._guardian._level.Get() + "-150.png", this.mcCurrGuardian);
+                ImageCache.loadImageAndAddChild("monsters/G" + getCREATURES()._guardian._type + "_L" + (getCREATURES()._guardian._level.Get() + 1) + "-150G.png", this.mcNextGuardian);
             }
             const _loc2_: number = -517;
             const _loc3_: number = 222;
             const _loc4_: number = this.currFeeds / this.totalFeeds;
             this.barDNA_mask.x = _loc2_ + _loc4_ * _loc3_;
-            const _loc5_: number = CREATURES._guardian._feedTime.Get();
-            if (_loc5_ < GLOBAL.Timestamp()) {
-                this.tNextFeedTitle.htmlText = "<b>" + KEYS.Get("gcage_hungry") + "</b>";
-                this.tNextFeed.htmlText = GLOBAL.ToTime(_loc5_ + CHAMPIONCAGE.STARVETIMER - GLOBAL.Timestamp());
+            const _loc5_: number = getCREATURES()._guardian._feedTime.Get();
+            if (_loc5_ < getGLOBAL().Timestamp()) {
+                this.tNextFeedTitle.htmlText = "<b>" + getKEYS().Get("gcage_hungry") + "</b>";
+                this.tNextFeed.htmlText = getGLOBAL().ToTime(_loc5_ + getCHAMPIONCAGE().STARVETIMER - getGLOBAL().Timestamp());
             } else {
-                this.tNextFeedTitle.htmlText = "<b>" + KEYS.Get("gcage_nextFeedIn") + "</b>";
-                this.tNextFeed.htmlText = GLOBAL.ToTime(CREATURES._guardian._feedTime.Get() - GLOBAL.Timestamp());
+                this.tNextFeedTitle.htmlText = "<b>" + getKEYS().Get("gcage_nextFeedIn") + "</b>";
+                this.tNextFeed.htmlText = getGLOBAL().ToTime(getCREATURES()._guardian._feedTime.Get() - getGLOBAL().Timestamp());
             }
-            this.tFeedsFrom.htmlText = Math.max(0, this.totalFeeds - this.currFeeds) + KEYS.Get("gcage_feedsFromEvo");
+            this.tFeedsFrom.htmlText = Math.max(0, this.totalFeeds - this.currFeeds) + getKEYS().Get("gcage_feedsFromEvo");
         }
     }
 
     private UpdateStats(): void {
         this.UpdateVars();
-        if (CREATURES._guardian) {
-            this.tEvoStage.htmlText = "<b>" + KEYS.Get("gcage_evo") + "</b> Stage " + CREATURES._guardian._level.Get();
-            this.damage_txt.htmlText = "<b>" + KEYS.Get("gcage_labelDamage") + "</b>";
-            this.health_txt.htmlText = "<b>" + KEYS.Get("gcage_labelHealth") + "</b>";
-            this.speed_txt.htmlText = "<b>" + KEYS.Get("gcage_labelSpeed") + "</b>";
-            this.buff_txt.htmlText = "<b>" + KEYS.Get("gcage_labelBuff") + "</b>";
+        if (getCREATURES()._guardian) {
+            this.tEvoStage.htmlText = "<b>" + getKEYS().Get("gcage_evo") + "</b> Stage " + getCREATURES()._guardian._level.Get();
+            this.damage_txt.htmlText = "<b>" + getKEYS().Get("gcage_labelDamage") + "</b>";
+            this.health_txt.htmlText = "<b>" + getKEYS().Get("gcage_labelHealth") + "</b>";
+            this.speed_txt.htmlText = "<b>" + getKEYS().Get("gcage_labelSpeed") + "</b>";
+            this.buff_txt.htmlText = "<b>" + getKEYS().Get("gcage_labelBuff") + "</b>";
             
-            let _loc1_ = CHAMPIONCAGE.GetGuardianProperty(this.guardID, this.guardLevel, "damage");
-            let _loc2_ = CHAMPIONCAGE.GetGuardianProperty(this.guardID, this.guardLevel, "health");
-            let _loc3_ = CHAMPIONCAGE.GetGuardianProperty(this.guardID, this.guardLevel, "speed");
-            let _loc4_ = CHAMPIONCAGE.GetGuardianProperty(this.guardID, this.guardLevel, "buffs") * 100;
+            let _loc1_ = getCHAMPIONCAGE().GetGuardianProperty(this.guardID, this.guardLevel, "damage");
+            let _loc2_ = getCHAMPIONCAGE().GetGuardianProperty(this.guardID, this.guardLevel, "health");
+            let _loc3_ = getCHAMPIONCAGE().GetGuardianProperty(this.guardID, this.guardLevel, "speed");
+            let _loc4_ = getCHAMPIONCAGE().GetGuardianProperty(this.guardID, this.guardLevel, "buffs") * 100;
             
             if (this.foodBonus > 0) {
-                _loc1_ += CHAMPIONCAGE.GetGuardianProperty(this.guardID, this.foodBonus, "bonusDamage");
-                _loc2_ += CHAMPIONCAGE.GetGuardianProperty(this.guardID, this.foodBonus, "bonusHealth");
-                _loc3_ += CHAMPIONCAGE.GetGuardianProperty(this.guardID, this.foodBonus, "bonusSpeed");
-                _loc4_ += CHAMPIONCAGE.GetGuardianProperty(this.guardID, this.foodBonus, "bonusBuffs") * 100;
+                _loc1_ += getCHAMPIONCAGE().GetGuardianProperty(this.guardID, this.foodBonus, "bonusDamage");
+                _loc2_ += getCHAMPIONCAGE().GetGuardianProperty(this.guardID, this.foodBonus, "bonusHealth");
+                _loc3_ += getCHAMPIONCAGE().GetGuardianProperty(this.guardID, this.foodBonus, "bonusSpeed");
+                _loc4_ += getCHAMPIONCAGE().GetGuardianProperty(this.guardID, this.foodBonus, "bonusBuffs") * 100;
             }
             
             const _loc9_ = Math.floor(_loc3_ * 10) / 10;
@@ -514,19 +517,19 @@ export class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP {
     }
 
     public Tick(): void {
-        if (!CREATURES._guardian) return;
-        const _loc1_: number = CREATURES._guardian._feedTime.Get();
-        if (_loc1_ < GLOBAL.Timestamp()) {
+        if (!getCREATURES()._guardian) return;
+        const _loc1_: number = getCREATURES()._guardian._feedTime.Get();
+        if (_loc1_ < getGLOBAL().Timestamp()) {
             if (CHAMPIONCAGEPOPUP._page == 1) this.Switch(1);
-            this.tNextFeedTitle.htmlText = "<b>" + KEYS.Get("gcage_hungry") + "</b>";
-            this.tNextFeed.htmlText = GLOBAL.ToTime(_loc1_ + CHAMPIONCAGE.STARVETIMER - GLOBAL.Timestamp());
+            this.tNextFeedTitle.htmlText = "<b>" + getKEYS().Get("gcage_hungry") + "</b>";
+            this.tNextFeed.htmlText = getGLOBAL().ToTime(_loc1_ + getCHAMPIONCAGE().STARVETIMER - getGLOBAL().Timestamp());
             (this.bFeedTimer as any).mcBar.width = 0;
         } else {
-            this.tNextFeedTitle.htmlText = "<b>" + KEYS.Get("gcage_nextFeedIn") + "</b>";
-            this.tNextFeed.htmlText = GLOBAL.ToTime(CREATURES._guardian._feedTime.Get() - GLOBAL.Timestamp());
+            this.tNextFeedTitle.htmlText = "<b>" + getKEYS().Get("gcage_nextFeedIn") + "</b>";
+            this.tNextFeed.htmlText = getGLOBAL().ToTime(getCREATURES()._guardian._feedTime.Get() - getGLOBAL().Timestamp());
         }
         this.UpdateStats();
-        if (CREATURES._guardian.health >= CREATURES._guardian.maxHealth) {
+        if (getCREATURES()._guardian.health >= getCREATURES()._guardian.maxHealth) {
             this.bHeal.removeEventListener(MouseEvent.CLICK, this.HealClick.bind(this));
             this.bHeal.Enabled = false;
         }
@@ -540,71 +543,71 @@ export class CHAMPIONCAGEPOPUP extends GUARDIANCAGEPOPUP_CLIP {
     }
 
     public HealClick(param1: MouseEvent): void {
-        if (CREATURES._guardian.health < CREATURES._guardian.maxHealth) {
-            CHAMPIONCAGE.HealGuardian();
+        if (getCREATURES()._guardian.health < getCREATURES()._guardian.maxHealth) {
+            getCHAMPIONCAGE().HealGuardian();
         }
         this.Switch(0);
     }
 
     public kothHealClick(param1: MouseEvent = null): void {
-        if (CREATURES._krallen && CREATURES._krallen.health < CREATURES._krallen.maxHealth) {
-            CHAMPIONCAGE.HealGuardian(5);
+        if (getCREATURES()._krallen && getCREATURES()._krallen.health < getCREATURES()._krallen.maxHealth) {
+            getCHAMPIONCAGE().HealGuardian(5);
         }
         this.Switch(2);
     }
 
     public EvolveClick(param1: MouseEvent): void {
         let _loc2_: number = 0;
-        if (CREATURES._guardian._level.Get() < 6) {
-            _loc2_ = CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID, CREATURES._guardian._level.Get(), "feedShiny");
+        if (getCREATURES()._guardian._level.Get() < 6) {
+            _loc2_ = getCHAMPIONCAGE().GetGuardianProperty(getCREATURES()._guardian._creatureID, getCREATURES()._guardian._level.Get(), "feedShiny");
             _loc2_ *= 2;
-            _loc2_ *= CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID, CREATURES._guardian._level.Get(), "feedCount") - CREATURES._guardian._feeds.Get();
+            _loc2_ *= getCHAMPIONCAGE().GetGuardianProperty(getCREATURES()._guardian._creatureID, getCREATURES()._guardian._level.Get(), "feedCount") - getCREATURES()._guardian._feeds.Get();
             this.EvolveClickB();
-        } else if (CREATURES._guardian._level.Get() == 6) {
-            _loc2_ = CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID, CREATURES._guardian._foodBonus.Get(), "bonusFeedShiny");
+        } else if (getCREATURES()._guardian._level.Get() == 6) {
+            _loc2_ = getCHAMPIONCAGE().GetGuardianProperty(getCREATURES()._guardian._creatureID, getCREATURES()._guardian._foodBonus.Get(), "bonusFeedShiny");
             _loc2_ *= 2;
             this.EvolveClickB();
         }
     }
 
     public EvolveClickB(): void {
-        if (CREATURES._guardian._level.Get() < 6) {
-            let _loc1_ = CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID, CREATURES._guardian._level.Get(), "feedShiny");
+        if (getCREATURES()._guardian._level.Get() < 6) {
+            let _loc1_ = getCHAMPIONCAGE().GetGuardianProperty(getCREATURES()._guardian._creatureID, getCREATURES()._guardian._level.Get(), "feedShiny");
             _loc1_ *= 2;
-            _loc1_ *= CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID, CREATURES._guardian._level.Get(), "feedCount") - CREATURES._guardian._feeds.Get();
-            if (BASE._credits.Get() < _loc1_) {
-                POPUPS.DisplayGetShiny();
+            _loc1_ *= getCHAMPIONCAGE().GetGuardianProperty(getCREATURES()._guardian._creatureID, getCREATURES()._guardian._level.Get(), "feedCount") - getCREATURES()._guardian._feeds.Get();
+            if (getBASE()._credits.Get() < _loc1_) {
+                getPOPUPS().DisplayGetShiny();
                 return;
             }
-            CREATURES._guardian.levelSet(CREATURES._guardian._level.Get() + 1, _loc1_);
-            BASE.Purchase("IEV", _loc1_, "cage");
-            CHAMPIONCAGE.Hide();
-            BASE.Save(0, false, true);
+            getCREATURES()._guardian.levelSet(getCREATURES()._guardian._level.Get() + 1, _loc1_);
+            getBASE().Purchase("IEV", _loc1_, "cage");
+            getCHAMPIONCAGE().Hide();
+            getBASE().Save(0, false, true);
         }
     }
 
     public InstantClick(param1: MouseEvent): void {
-        const _loc2_ = CREATURES._guardian._feedTime.Get() < GLOBAL.Timestamp();
-        if (CREATURES._guardian._level.Get() <= 6) {
-            CHAMPIONCAGEPOPUP._bCage.FeedGuardian(CREATURES._guardian._creatureID, CREATURES._guardian._level.Get(), true, !_loc2_);
-            CHAMPIONCAGE.Hide(param1);
+        const _loc2_ = getCREATURES()._guardian._feedTime.Get() < getGLOBAL().Timestamp();
+        if (getCREATURES()._guardian._level.Get() <= 6) {
+            CHAMPIONCAGEPOPUP._bCage.FeedGuardian(getCREATURES()._guardian._creatureID, getCREATURES()._guardian._level.Get(), true, !_loc2_);
+            getCHAMPIONCAGE().Hide(param1);
         }
     }
 
     public CantFeedClick(param1: MouseEvent): void {
-        if (CREATURES._guardian._level.Get() <= 6 && CREATURES._guardian._foodBonus.Get() < 3) {
-            GLOBAL.Message(KEYS.Get("gcage_msgNotHungry"));
-        } else if (CREATURES._guardian._level.Get() == 6 && CREATURES._guardian._foodBonus.Get() >= 3) {
-            GLOBAL.Message(KEYS.Get("gcage_msgFullBuff"));
+        if (getCREATURES()._guardian._level.Get() <= 6 && getCREATURES()._guardian._foodBonus.Get() < 3) {
+            getGLOBAL().Message(getKEYS().Get("gcage_msgNotHungry"));
+        } else if (getCREATURES()._guardian._level.Get() == 6 && getCREATURES()._guardian._foodBonus.Get() >= 3) {
+            getGLOBAL().Message(getKEYS().Get("gcage_msgFullBuff"));
         }
     }
 
     public CantInstantClick(param1: MouseEvent): void {
-        GLOBAL.Message(KEYS.Get("gcage_msgFullBuff"));
+        getGLOBAL().Message(getKEYS().Get("gcage_msgFullBuff"));
     }
 
     public Hide(param1: MouseEvent = null): void {
-        CHAMPIONCAGE.Hide(param1);
+        getCHAMPIONCAGE().Hide(param1);
     }
 
     public Center(): void {

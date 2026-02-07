@@ -6,23 +6,26 @@ import Point from "openfl/geom/Point";
 
 import { SpriteData } from "./com/monsters/display/SpriteData";
 import { ProjectileEvent } from "./com/monsters/events/ProjectileEvent";
-import { InstanceManager } from "./com/monsters/managers/InstanceManager";
 import { DummyTarget } from "./com/monsters/monsters/DummyTarget";
-import { MonsterBase } from "./com/monsters/monsters/MonsterBase";
-import { Vacuum } from "./com/monsters/siege/weapons/Vacuum";
-import { VacuumHose } from "./com/monsters/siege/weapons/VacuumHose";
 
-import { ATTACK } from "./ATTACK";
-import { BFOUNDATION } from "./BFOUNDATION";
-import { BTOWER } from "./BTOWER";
-import { BWALL } from "./BWALL";
-import { FIREBALLS } from "./FIREBALLS";
 import { FIREBALL_CLIP } from "./FIREBALL_CLIP";
-import { GLOBAL } from "./GLOBAL";
 import { ProjectileBase } from "./ProjectileBase";
-import { SPRITES } from "./SPRITES";
-import { SpurtzCannon } from "./SpurtzCannon";
-import { Targeting } from "./Targeting";
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getVacuum(): any { return require("./com/monsters/siege/weapons/Vacuum").Vacuum; }
+function getVacuumHose(): any { return require("./com/monsters/siege/weapons/VacuumHose").VacuumHose; }
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBTOWER(): any { return require("./BTOWER").BTOWER; }
+function getBWALL(): any { return require("./BWALL").BWALL; }
+function getFIREBALLS(): any { return require("./FIREBALLS").FIREBALLS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getSPRITES(): any { return require("./SPRITES").SPRITES; }
+function getSpurtzCannon(): any { return require("./SpurtzCannon").SpurtzCannon; }
+function getTargeting(): any { return require("./Targeting").Targeting; }
+
 
 export class FIREBALL extends ProjectileBase {
     public static readonly TYPE_FIREBALL: string = "fireball";
@@ -73,7 +76,7 @@ export class FIREBALL extends ProjectileBase {
                     this._graphicName = FIREBALL.ROCKET_GRAPHIC_NAME;
                     break;
                 case FIREBALL.TYPE_SPURTZ:
-                    this._graphicName = SpurtzCannon.SPURTZ_PROJECTILE;
+                    this._graphicName = getSpurtzCannon().SPURTZ_PROJECTILE;
                     this._targetType = 3;
                     break;
             }
@@ -83,7 +86,7 @@ export class FIREBALL extends ProjectileBase {
                 this._acceleration = 0.05;
             }
 
-            _loc2_ = SPRITES.GetSpriteDescriptor(this._graphicName) as SpriteData;
+            _loc2_ = getSPRITES().GetSpriteDescriptor(this._graphicName) as SpriteData;
             this._bitmapData = new BitmapData(_loc2_.width, _loc2_.height, true, 16777215);
             _loc3_ = new Bitmap(this._bitmapData);
             _loc3_.x = -(_loc2_.width * 0.5);
@@ -97,7 +100,7 @@ export class FIREBALL extends ProjectileBase {
 
         if (this._targetType == 1) {
             if (!this._targetCreep) {
-                FIREBALLS.Remove(this._id);
+                getFIREBALLS().Remove(this._id);
                 return true;
             }
             if (this._targetCreep._movement && this._targetCreep._movement == "fly") {
@@ -151,7 +154,7 @@ export class FIREBALL extends ProjectileBase {
                 this.Splash();
             } else if (this._targetType == 1) {
                 if (this._targetCreep.dead) {
-                    FIREBALLS.Remove(this._id);
+                    getFIREBALLS().Remove(this._id);
                     return true;
                 }
 
@@ -168,14 +171,14 @@ export class FIREBALL extends ProjectileBase {
                     }
                     this._targetCreep.modifyHealth(-_loc2_);
                 }
-                ATTACK.Damage(this._startPoint.x, this._startPoint.y, _loc2_);
+                getATTACK().Damage(this._startPoint.x, this._startPoint.y, _loc2_);
             } else if (this._targetType == 2) {
                 if (this._targetBuilding.health > 0) {
                     this._targetBuilding.modifyHealth(this._damage, new DummyTarget(this._startPoint.x, this._startPoint.y));
                 }
             } else if (this._targetType != 3) {
                 if (this._targetType == 4) {
-                    _loc3_ = Vacuum.getHose();
+                    _loc3_ = getVacuum().getHose();
                     if (_loc3_ && this._targetCreep == _loc3_) {
                         _loc3_.modifyHealth(-this._damage);
                     }
@@ -191,7 +194,7 @@ export class FIREBALL extends ProjectileBase {
             }
 
             if (this._targetBuilding == null) {
-                FIREBALLS.Remove(this._id);
+                getFIREBALLS().Remove(this._id);
                 return true;
             }
         }
@@ -203,7 +206,7 @@ export class FIREBALL extends ProjectileBase {
         let _loc1_: number = NaN;
         let _loc2_: number = NaN;
 
-        if (GLOBAL._render) {
+        if (getGLOBAL()._render) {
             this._graphic.x = Math.floor(this._tmpX);
             this._graphic.y = Math.floor(this._tmpY);
         }
@@ -211,7 +214,7 @@ export class FIREBALL extends ProjectileBase {
         if (this._graphicName) {
             _loc1_ = Math.atan2(this._targetPoint.y - this._tmpY, this._targetPoint.x - this._tmpX);
             _loc2_ = _loc1_ * (180 / Math.PI);
-            SPRITES.GetSprite(this._bitmapData, this._graphicName, "", _loc2_, this._frameNumber);
+            getSPRITES().GetSprite(this._bitmapData, this._graphicName, "", _loc2_, this._frameNumber);
         }
     }
 
@@ -224,9 +227,9 @@ export class FIREBALL extends ProjectileBase {
         let _loc6_: any[] = null;
 
         if (this._targetCreep._movement == "fly") {
-            _loc6_ = Targeting.getCreepsInRange(this._splash, new Point(this._tmpX, this._tmpY), Targeting.getOldStyleTargets(2));
+            _loc6_ = getTargeting().getCreepsInRange(this._splash, new Point(this._tmpX, this._tmpY), getTargeting().getOldStyleTargets(2));
         } else {
-            _loc6_ = Targeting.getCreepsInRange(this._splash, new Point(this._tmpX, this._tmpY), Targeting.getOldStyleTargets(0));
+            _loc6_ = getTargeting().getCreepsInRange(this._splash, new Point(this._tmpX, this._tmpY), getTargeting().getOldStyleTargets(0));
         }
 
         let _loc7_: number = 0;
@@ -278,7 +281,7 @@ export class FIREBALL extends ProjectileBase {
             _loc8_++;
         }
 
-        ATTACK.Damage(this._startPoint.x, this._startPoint.y, _loc7_);
+        getATTACK().Damage(this._startPoint.x, this._startPoint.y, _loc7_);
     }
 
     private FindGlaiveTarget(): void {
@@ -294,10 +297,10 @@ export class FIREBALL extends ProjectileBase {
         const _loc4_: any[] = [];
         _loc1_ = new Point(this._graphic.x, this._graphic.y);
         const _loc6_: number = 100;
-        let _loc7_: any = InstanceManager.getInstancesByClass(BFOUNDATION);
+        let _loc7_: any = getInstanceManager().getInstancesByClass(getBFOUNDATION());
 
         for (_loc5_ of _loc7_) {
-            if (_loc5_.isTargetable && _loc5_._class != "wall" && _loc5_._class != "mushroom" && _loc5_._class != "decoration" && _loc5_._class != "immovable" && _loc5_.health > 0 && _loc5_._class != "enemy" && _loc5_._class != "trap" && !(_loc5_ instanceof BTOWER && (_loc5_ as BTOWER).isJard)) {
+            if (_loc5_.isTargetable && _loc5_._class != "wall" && _loc5_._class != "mushroom" && _loc5_._class != "decoration" && _loc5_._class != "immovable" && _loc5_.health > 0 && _loc5_._class != "enemy" && _loc5_._class != "trap" && !(_loc5_ instanceof getBTOWER() && (_loc5_ as BTOWER).isJard)) {
                 _loc2_ = new Point(_loc5_._mc.x, _loc5_._mc.y + _loc5_._footprint[0].height / 2);
                 _loc3_ = Point.distance(_loc1_, _loc2_);
 
@@ -312,7 +315,7 @@ export class FIREBALL extends ProjectileBase {
         }
 
         if (_loc4_.length == 0) {
-            _loc7_ = InstanceManager.getInstancesByClass(BWALL);
+            _loc7_ = getInstanceManager().getInstancesByClass(getBWALL());
             for (_loc5_ of _loc7_) {
                 _loc2_ = new Point(_loc5_._mc.x, _loc5_._mc.y + _loc5_._footprint[0].height / 2);
                 _loc3_ = Point.distance(_loc1_, _loc2_);

@@ -6,24 +6,27 @@ import { TweenLite, Expo } from "gs/TweenLite";
 
 import { SpriteData } from "../../display/SpriteData";
 import { SpriteSheetAnimation } from "../../display/SpriteSheetAnimation";
-import { InstanceManager } from "../../managers/InstanceManager";
 import { ChampionBase } from "../../monsters/champions/ChampionBase";
 import { DecoyEffect } from "../../monsters/components/statusEffects/DecoyEffect";
 import { CreepBase } from "../../monsters/creeps/CreepBase";
 import { SiegeWeaponProperty } from "../SiegeWeaponProperty";
 import { SiegeWeapon } from "./SiegeWeapon";
 
-import { BASE } from "../../../../BASE";
-import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { BUILDING22 } from "../../../../BUILDING22";
-import { BMUSHROOM } from "../../../../BMUSHROOM";
-import { CREATURES } from "../../../../CREATURES";
 import { DROPZONE } from "../../../../DROPZONE";
-import { GLOBAL } from "../../../../GLOBAL";
-import { MAP } from "../../../../MAP";
-import { SOUNDS } from "../../../../SOUNDS";
-import { SPRITES } from "../../../../SPRITES";
-import { Targeting } from "../../../../Targeting";
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("../../managers/InstanceManager").InstanceManager; }
+function getBASE(): any { return require("../../../../BASE").BASE; }
+function getBFOUNDATION(): any { return require("../../../../BFOUNDATION").BFOUNDATION; }
+function getBUILDING22(): any { return require("../../../../BUILDING22").BUILDING22; }
+function getBMUSHROOM(): any { return require("../../../../BMUSHROOM").BMUSHROOM; }
+function getCREATURES(): any { return require("../../../../CREATURES").CREATURES; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getMAP(): any { return require("../../../../MAP").MAP; }
+function getSOUNDS(): any { return require("../../../../SOUNDS").SOUNDS; }
+function getSPRITES(): any { return require("../../../../SPRITES").SPRITES; }
+function getTargeting(): any { return require("../../../../Targeting").Targeting; }
+
 
 /**
  * Decoy - siege weapon that attracts defenders and explodes.
@@ -82,9 +85,9 @@ export class Decoy extends SiegeWeapon {
     }
 
     private loadAssets(): void {
-        SPRITES.SetupSprite(Decoy.DECOY_EXPLOSION);
-        SPRITES.SetupSprite(Decoy.DECOY_FUSE);
-        SPRITES.SetupSprite(Decoy.DECOY_WAVE);
+        getSPRITES().SetupSprite(Decoy.DECOY_EXPLOSION);
+        getSPRITES().SetupSprite(Decoy.DECOY_FUSE);
+        getSPRITES().SetupSprite(Decoy.DECOY_WAVE);
     }
 
     public get damage(): number {
@@ -98,13 +101,13 @@ export class Decoy extends SiegeWeapon {
         this._container = new Sprite();
         this._container.x = x;
         this._container.y = y;
-        this.setDecoyGraphic(new SpriteSheetAnimation(SPRITES.GetSpriteDescriptor(Decoy.DECOY_WAVE) as SpriteData, 45));
-        this._fuse = new SpriteSheetAnimation(SPRITES.GetSpriteDescriptor(Decoy.DECOY_FUSE) as SpriteData, 21);
+        this.setDecoyGraphic(new SpriteSheetAnimation(getSPRITES().GetSpriteDescriptor(Decoy.DECOY_WAVE) as SpriteData, 45));
+        this._fuse = new SpriteSheetAnimation(getSPRITES().GetSpriteDescriptor(Decoy.DECOY_FUSE) as SpriteData, 21);
         this._fuse.x = this.decoyGraphic!.x + -8;
         this._fuse.y = this.decoyGraphic!.y + 30;
         this._fuse.render();
         this._container.addChild(this._fuse);
-        MAP._BUILDINGTOPS.addChild(this._container);
+        getMAP()._BUILDINGTOPS.addChild(this._container);
         TweenLite.from(this._container, 0.6, {
             "y": this._container.y - 300,
             "ease": Expo.easeIn,
@@ -112,7 +115,7 @@ export class Decoy extends SiegeWeapon {
         });
         TweenLite.delayedCall(this.duration - 0.5, this.startFuseAnimation.bind(this));
         this._attractedCreeps = [];
-        SOUNDS.Play(Decoy.LAND_SOUND);
+        getSOUNDS().Play(Decoy.LAND_SOUND);
     }
 
     private startFuseAnimation(): void {
@@ -121,7 +124,7 @@ export class Decoy extends SiegeWeapon {
 
     private onDecoyLanding(): void {
         this._isActive = true;
-        this._loopingChannel = SOUNDS.Play(Decoy.LOOPING_SOUND, 0.8, 0, Number.MAX_VALUE);
+        this._loopingChannel = getSOUNDS().Play(Decoy.LOOPING_SOUND, 0.8, 0, Number.MAX_VALUE);
         this.decoyGraphic!.play();
         this.decoyGraphic!.doesRepeat = true;
         this._container!.addEventListener(Event.ENTER_FRAME, this.onEnterFrame.bind(this));
@@ -130,9 +133,9 @@ export class Decoy extends SiegeWeapon {
 
     private ejectDefendersFromBunkers(): void {
         const buildings: Array<BFOUNDATION> = [];
-        BASE.GetBuildingOverlap(this.x, this.y, this.range, buildings);
+        getBASE().GetBuildingOverlap(this.x, this.y, this.range, buildings);
         for (let i = 0; i < buildings.length; i++) {
-            if (buildings[i] instanceof BUILDING22) {
+            if (buildings[i] instanceof getBUILDING22()) {
                 (buildings[i] as BUILDING22).EjectCreeps(new Point(this.x, this.y));
             }
         }
@@ -173,24 +176,24 @@ export class Decoy extends SiegeWeapon {
     public override onDeactivation(): void {
         const pos = new Point(this.x, this.y);
         const targets: Array<any> = this.getDefendingCreepsInRange();
-        const buildings = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const buildings = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const building of buildings) {
             const b = building as BFOUNDATION;
-            if (!(b instanceof BMUSHROOM) && GLOBAL.QuickDistance(pos, new Point(b.x, b.y)) < this.range * 0.65) {
+            if (!(b instanceof getBMUSHROOM()) && getGLOBAL().QuickDistance(pos, new Point(b.x, b.y)) < this.range * 0.65) {
                 targets.push(b);
             }
         }
-        Targeting.DealLinearAEDamage(pos, this.range, this.damage, targets);
+        getTargeting().DealLinearAEDamage(pos, this.range, this.damage, targets);
         for (let i = this._attractedCreeps.length - 1; i >= 0; i--) {
             const creep = this._attractedCreeps[i];
             this.detractCreep(creep, i);
         }
-        SOUNDS.Play(Decoy.EXPLOSION_SOUND);
+        getSOUNDS().Play(Decoy.EXPLOSION_SOUND);
         if (this._loopingChannel) {
             this._loopingChannel.stop();
         }
         this._container!.removeChild(this._fuse!);
-        this.setDecoyGraphic(new SpriteSheetAnimation(SPRITES.GetSpriteDescriptor(Decoy.DECOY_EXPLOSION) as SpriteData, 33));
+        this.setDecoyGraphic(new SpriteSheetAnimation(getSPRITES().GetSpriteDescriptor(Decoy.DECOY_EXPLOSION) as SpriteData, 33));
         this.decoyGraphic!.play();
         this._isActive = false;
     }
@@ -225,16 +228,16 @@ export class Decoy extends SiegeWeapon {
             return [];
         }
         const pos = new Point(this.x, this.y);
-        const creatures = CREATURES._creatures;
-        if (CREATURES._guardian) {
-            if (GLOBAL.QuickDistance(new Point(CREATURES._guardian._mc.x, CREATURES._guardian._mc.y), pos) <= this.range) {
-                result.push(CREATURES._guardian);
+        const creatures = getCREATURES()._creatures;
+        if (getCREATURES()._guardian) {
+            if (getGLOBAL().QuickDistance(new Point(getCREATURES()._guardian._mc.x, getCREATURES()._guardian._mc.y), pos) <= this.range) {
+                result.push(getCREATURES()._guardian);
             }
         }
         for (const key in creatures) {
             const creep = creatures[key];
             if (!(creep._behaviour !== "defend" && creep._behaviour !== "bunker" && creep._behaviour !== "decoy" && !(creep instanceof ChampionBase))) {
-                const dist = GLOBAL.QuickDistance(new Point(creep._mc.x, creep._mc.y), pos);
+                const dist = getGLOBAL().QuickDistance(new Point(creep._mc.x, creep._mc.y), pos);
                 if (dist <= this.range) {
                     result.push(creep);
                     if (result.length >= maxCount) {

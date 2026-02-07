@@ -7,9 +7,12 @@ import { KOTHStartMessage } from "../../frontPage/messages/events/kingOfTheHill/
 import { KOTHHandler } from "../../kingOfTheHill/KOTHHandler";
 import { ReplayableEvent } from "../ReplayableEvent";
 
-import { GLOBAL } from "../../../../GLOBAL";
-import { KEYS } from "../../../../KEYS";
-import { CHAMPIONCAGE } from "../../../../CHAMPIONCAGE";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getCHAMPIONCAGE(): any { return require("../../../../CHAMPIONCAGE").CHAMPIONCAGE; }
+
+
 
 /**
  * King of the Hill - looting event with Krallen champion rewards.
@@ -21,7 +24,7 @@ export class KingOfTheHill extends ReplayableEvent {
         this._progress = -1;
         this._priority = 0;
         this._id = 4;
-        this._buttonCopy = KEYS.Get("btn_info");
+        this._buttonCopy = getKEYS().Get("btn_info");
         this._titleImage = "events/koth/koth_title.png";
         this._imageURL = "events/koth/koth_reward.png";
         this._messages = [
@@ -41,10 +44,10 @@ export class KingOfTheHill extends ReplayableEvent {
 
     public override pressedActionButton(): void {
         if (!KOTHHandler.instance.doesQualify) {
-            GLOBAL.Message(KEYS.Get("msg_krallen_nomr2"));
+            getGLOBAL().Message(getKEYS().Get("msg_krallen_nomr2"));
             return;
         }
-        CHAMPIONCAGE.ShowKrallenTab();
+        getCHAMPIONCAGE().ShowKrallenTab();
     }
 
     public override set score(value: number) {

@@ -1,10 +1,13 @@
-import { Console } from "../../debug/Console";
 import { ChampionBase } from "../../monsters/champions/ChampionBase";
 import { Krallen } from "../../monsters/champions/Krallen";
 import { Reward } from "../../rewarding/Reward";
 
-import { GLOBAL } from "../../../../GLOBAL";
-import { CREATURES } from "../../../../CREATURES";
+// Lazy imports to break circular dependency chains
+function getConsole(): any { return require("../../debug/Console").Console; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getCREATURES(): any { return require("../../../../CREATURES").CREATURES; }
+
+
 
 /**
  * Krallen buff reward - King of the Hill reward that buffs Krallen champion.
@@ -32,16 +35,16 @@ export class KrallenBuffReward extends Reward {
     }
 
     public override canBeApplied(): boolean {
-        return GLOBAL.isAtHome();
+        return getGLOBAL().isAtHome();
     }
 
     private updateChampionBuff(level: number): void {
-        const champion: ChampionBase = CREATURES.getGuardian(Krallen.TYPE);
+        const champion: ChampionBase = getCREATURES().getGuardian(Krallen.TYPE);
         if (champion) {
             champion.levelSet(level);
             champion.export();
         } else {
-            Console.warning("You are trying to setup the Krallen buff but you dont own a Krallen");
+            getConsole().warning("You are trying to setup the Krallen buff but you dont own a Krallen");
         }
     }
 }

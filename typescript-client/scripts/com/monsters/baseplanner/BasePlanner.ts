@@ -13,13 +13,16 @@ import { BaseTemplate } from "./BaseTemplate";
 import { BuildingItem } from "./components/BuildingItem";
 import { PlannerNode } from "./PlannerNode";
 import { PlannerTemplate } from "./PlannerTemplate";
-import { InstanceManager } from "../managers/InstanceManager";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { PLANNER } from "../../../PLANNER";
-import { POPUPS } from "../../../POPUPS";
-import { SOUNDS } from "../../../SOUNDS";
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("../managers/InstanceManager").InstanceManager; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getPLANNER(): any { return require("../../../PLANNER").PLANNER; }
+function getPOPUPS(): any { return require("../../../POPUPS").POPUPS; }
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+
+
 
 /**
  * BasePlanner - main controller for the base layout planner.
@@ -41,12 +44,12 @@ export class BasePlanner {
     }
 
     public setup(showPopup: boolean = true): void {
-        BasePlanner.canSave = !BASE.isOutpost;
+        BasePlanner.canSave = !getBASE().isOutpost;
         this.service = new BasePlannerService();
         this.service.loadTemplates();
         this.service.addEventListener(BasePlannerServiceEvent.LOADED_TEMPLATES_LIST, this.loadedTemplateList.bind(this));
         this._activeTemplate = new PlannerTemplate();
-        this.setActiveTemplate(BASE.getTemplate());
+        this.setActiveTemplate(getBASE().getTemplate());
         this.show();
     }
 
@@ -71,13 +74,13 @@ export class BasePlanner {
     }
 
     public show(event: MouseEvent | null = null): void {
-        BASE.BuildingDeselect();
+        getBASE().BuildingDeselect();
         if (!this.popup) {
             this.popup = new BasePlannerPopup(this._activeTemplate!);
             this.popup.addEventListener(BasePlannerEvent.APPLY, this.clickedApply.bind(this));
             this.popup.addEventListener(BasePlannerEvent.SAVE, this.clickedSave.bind(this));
             this.popup.addEventListener(BasePlannerEvent.LOAD, this.clickedLoad.bind(this));
-            GLOBAL._layerWindows.addChild(this.popup);
+            getGLOBAL()._layerWindows.addChild(this.popup);
             this.popup.hasBeenSaved = true;
         }
     }
@@ -85,7 +88,7 @@ export class BasePlanner {
     private clickedSave(event: Event): void {
         this.popup!.removeSelection();
         if (this._transferPopup) {
-            POPUPS.Remove(this._transferPopup);
+            getPOPUPS().Remove(this._transferPopup);
         }
         this.service!.loadTemplates();
         this._transferPopup = new BasePlannerSavePopup();
@@ -94,13 +97,13 @@ export class BasePlanner {
         }
         this._transferPopup.addEventListener(BasePlannerEvent.SAVE, this.saveTemplate.bind(this), false, 0, true);
         this._transferPopup.addEventListener(Event.CLOSE, this.closedTransferPopup.bind(this));
-        POPUPS.Add(this._transferPopup, 1);
+        getPOPUPS().Add(this._transferPopup, 1);
     }
 
     private clickedLoad(event: Event): void {
         this.popup!.removeSelection();
         if (this._transferPopup) {
-            POPUPS.Remove(this._transferPopup);
+            getPOPUPS().Remove(this._transferPopup);
         }
         this.service!.loadTemplates();
         this._transferPopup = new BasePlannerLoadPopup();
@@ -109,7 +112,7 @@ export class BasePlanner {
         }
         this._transferPopup.addEventListener(BasePlannerEvent.LOAD, this.loadTemplate.bind(this), false, 0, true);
         this._transferPopup.addEventListener(Event.CLOSE, this.closedTransferPopup.bind(this));
-        POPUPS.Add(this._transferPopup, 1);
+        getPOPUPS().Add(this._transferPopup, 1);
     }
 
     private clickedApply(event: Event): void {
@@ -117,12 +120,12 @@ export class BasePlanner {
             const node = this._activeTemplate!.inventoryData[i];
             if (node.building._id !== PlannerTemplate._DECORATION_ID && node.category === BuildingItem.TYPE_DECORATION) {
                 node.building.RecycleC();
-                InstanceManager.removeInstance(node.building);
+                getInstanceManager().removeInstance(node.building);
             }
         }
-        BASE.applyTemplate(this._activeTemplate!.exportData());
-        PLANNER.Hide();
-        BASE.Save();
+        getBASE().applyTemplate(this._activeTemplate!.exportData());
+        getPLANNER().Hide();
+        getBASE().Save();
     }
 
     protected loadTemplate(event: BasePlannerTransferEvent): void {
@@ -141,7 +144,7 @@ export class BasePlanner {
     }
 
     protected closedTransferPopup(event: Event | null = null): void {
-        POPUPS.Remove(this._transferPopup!);
+        getPOPUPS().Remove(this._transferPopup!);
         this._transferPopup!.clear();
         this._transferPopup!.removeEventListener(Event.CLOSE, this.closedTransferPopup.bind(this));
         this._transferPopup = null;
@@ -153,8 +156,8 @@ export class BasePlanner {
             this.popup.removeEventListener(BasePlannerEvent.SAVE, this.clickedSave.bind(this));
             this.popup.removeEventListener(BasePlannerEvent.LOAD, this.clickedLoad.bind(this));
             this.popup.Remove();
-            SOUNDS.Play("close");
-            GLOBAL._layerWindows.removeChild(this.popup);
+            getSOUNDS().Play("close");
+            getGLOBAL()._layerWindows.removeChild(this.popup);
             this.popup = null;
         }
         if (this._transferPopup) {

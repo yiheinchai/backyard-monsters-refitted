@@ -7,7 +7,14 @@ import { ArmorPropertyModifier } from "./ArmorPropertyModifier";
 export class BeastMode {
     public static readonly k_color: number = 255;
     public static readonly k_value: number = 0.3;
-    public static readonly k_armorModifier: IPropertyModifier = new ArmorPropertyModifier(BeastMode.k_value);
+    private static _armorModifier: IPropertyModifier | null = null;
+
+    public static get k_armorModifier(): IPropertyModifier {
+        if (!BeastMode._armorModifier) {
+            BeastMode._armorModifier = new ArmorPropertyModifier(BeastMode.k_value);
+        }
+        return BeastMode._armorModifier;
+    }
 
     constructor() {}
 }

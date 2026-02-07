@@ -8,28 +8,31 @@ import Point from "openfl/geom/Point";
 
 import { ImageCache } from "./com/monsters/display/ImageCache";
 import { ScrollSet } from "./com/monsters/display/ScrollSet";
-import { InstanceManager } from "./com/monsters/managers/InstanceManager";
 import { SubscriptionHandler } from "./com/monsters/subscriptions/SubscriptionHandler";
 import { TweenLite } from "./gs/TweenLite";
 import { Circ } from "./gs/easing/Circ";
 
-import { BASE } from "./BASE";
-import { BRESOURCE } from "./BRESOURCE";
-import { BUILDING13 } from "./BUILDING13";
-import { CREATURELOCKER } from "./CREATURELOCKER";
-import { CREATURES } from "./CREATURES";
-import { GLOBAL } from "./GLOBAL";
 import { HATCHERYCC } from "./HATCHERYCC";
 import { HATCHERYCCPOPUP_CLIP } from "./HATCHERYCCPOPUP_CLIP";
 import { HatcheryCCMonsterIcon_CLIP } from "./HatcheryCCMonsterIcon_CLIP";
-import { HOUSING } from "./HOUSING";
-import { KEYS } from "./KEYS";
-import { POPUPS } from "./POPUPS";
 import { POPUPSETTINGS } from "./POPUPSETTINGS";
-import { ResourcePackages } from "./ResourcePackages";
-import { SOUNDS } from "./SOUNDS";
-import { STORE } from "./STORE";
 import { frame } from "./frame";
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getBRESOURCE(): any { return require("./BRESOURCE").BRESOURCE; }
+function getBUILDING13(): any { return require("./BUILDING13").BUILDING13; }
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getHOUSING(): any { return require("./HOUSING").HOUSING; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getResourcePackages(): any { return require("./ResourcePackages").ResourcePackages; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+
 
 export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
     private _tick: number = 0;
@@ -53,28 +56,28 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
         
         this.setupSubscriptions(HATCHERYCC.queueLimit > HATCHERYCC.DEFAULT_QUEUE_LIMIT);
         
-        (this.bSpeedup as any).tName.htmlText = "<b>" + KEYS.Get("btn_speedup") + "</b>";
+        (this.bSpeedup as any).tName.htmlText = "<b>" + getKEYS().Get("btn_speedup") + "</b>";
         this.bSpeedup.mouseChildren = false;
         
-        if (!BASE.isInfernoMainYardOrOutpost) {
-            this.bSpeedup.addEventListener(MouseEvent.CLICK, STORE.Show(3, 2, ["HOD", "HOD2", "HOD3"]));
+        if (!getBASE().isInfernoMainYardOrOutpost) {
+            this.bSpeedup.addEventListener(MouseEvent.CLICK, getSTORE().Show(3, 2, ["HOD", "HOD2", "HOD3"]));
         } else {
-            this.bSpeedup.addEventListener(MouseEvent.CLICK, STORE.Show(3, 2, ["HODI", "HOD2I", "HOD3I"]));
+            this.bSpeedup.addEventListener(MouseEvent.CLICK, getSTORE().Show(3, 2, ["HODI", "HOD2I", "HOD3I"]));
         }
         this.bSpeedup.buttonMode = true;
         
-        (this.bFinish as any).tName.htmlText = "<b>" + KEYS.Get("str_finishnow") + "</b>";
+        (this.bFinish as any).tName.htmlText = "<b>" + getKEYS().Get("str_finishnow") + "</b>";
         this.bFinish.mouseChildren = false;
         this.bFinish.addEventListener(MouseEvent.CLICK, this.FinishNow.bind(this));
         this.bFinish.buttonMode = true;
         
-        (this.bTopup as any).tName.htmlText = "<b>" + KEYS.Get("btn_topup2") + "</b>";
+        (this.bTopup as any).tName.htmlText = "<b>" + getKEYS().Get("btn_topup2") + "</b>";
         this.bTopup.mouseChildren = false;
         
-        if (!BASE.isInfernoMainYardOrOutpost) {
-            this.bTopup.addEventListener(MouseEvent.CLICK, STORE.Show(2, 4, ["BR41", "BR42", "BR43"]));
+        if (!getBASE().isInfernoMainYardOrOutpost) {
+            this.bTopup.addEventListener(MouseEvent.CLICK, getSTORE().Show(2, 4, ["BR41", "BR42", "BR43"]));
         } else {
-            this.bTopup.addEventListener(MouseEvent.CLICK, STORE.Show(2, 4, ["BR41I", "BR42I", "BR43I"]));
+            this.bTopup.addEventListener(MouseEvent.CLICK, getSTORE().Show(2, 4, ["BR41I", "BR42I", "BR43I"]));
         }
         this.bTopup.buttonMode = true;
         
@@ -98,18 +101,18 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
         const _loc6_: number = 5;
         this._monsterSlots = [];
         
-        _loc7_ = CREATURELOCKER.GetSortedCreatures(true);
-        let _loc8_: number = !BASE.isInfernoMainYardOrOutpost ? CREATURELOCKER.maxCreatures("above") : CREATURELOCKER.maxCreatures("inferno");
+        _loc7_ = getCREATURELOCKER().GetSortedCreatures(true);
+        let _loc8_: number = !getBASE().isInfernoMainYardOrOutpost ? getCREATURELOCKER().maxCreatures("above") : getCREATURELOCKER().maxCreatures("inferno");
         
-        if (!BASE.isInfernoMainYardOrOutpost && HATCHERYCC.doesShowInfernoCreeps) {
-            _loc8_ = CREATURELOCKER.maxCreatures();
+        if (!getBASE().isInfernoMainYardOrOutpost && HATCHERYCC.doesShowInfernoCreeps) {
+            _loc8_ = getCREATURELOCKER().maxCreatures();
         }
         
         _loc9_ = 0;
         while (_loc9_ < _loc7_.length) {
             _loc1_ = String(_loc7_[_loc9_].id);
             
-            if (CREATURELOCKER._creatures && CREATURELOCKER._creatures[_loc1_] && CREATURELOCKER._creatures[_loc1_].blocked == true) {
+            if (getCREATURELOCKER()._creatures && getCREATURELOCKER()._creatures[_loc1_] && getCREATURELOCKER()._creatures[_loc1_].blocked == true) {
                 _loc3_++;
             } else {
                 _loc10_ = new HatcheryCCMonsterIcon_CLIP();
@@ -129,14 +132,14 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
                 ImageCache.GetImageWithCallBack("monsters/" + _loc1_ + "-medium.jpg", this.MonsterIconLoaded.bind(this), true, 1, "", [_loc11_]);
                 
                 _loc12_ = (_loc10_ as any).mcLevel;
-                if (GLOBAL.player.m_upgrades[_loc1_] && GLOBAL.player.m_upgrades[_loc1_].level > 1) {
+                if (getGLOBAL().player.m_upgrades[_loc1_] && getGLOBAL().player.m_upgrades[_loc1_].level > 1) {
                     _loc12_.visible = true;
-                    (_loc12_ as any).tLevel.htmlText = "<b>" + GLOBAL.player.m_upgrades[_loc1_].level + "</b>";
+                    (_loc12_ as any).tLevel.htmlText = "<b>" + getGLOBAL().player.m_upgrades[_loc1_].level + "</b>";
                 } else {
                     _loc12_.visible = false;
                 }
                 
-                if (!(CREATURELOCKER._lockerData[_loc1_] && CREATURELOCKER._lockerData[_loc1_].t == 2)) {
+                if (!(getCREATURELOCKER()._lockerData[_loc1_] && getCREATURELOCKER()._lockerData[_loc1_].t == 2)) {
                     _loc11_.alpha = 0.75;
                     _loc12_.visible = false;
                 }
@@ -156,22 +159,22 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
             _loc9_++;
         }
         
-        this.title_txt.htmlText = KEYS.Get("hcc_title");
-        (this.mcMonsterInfo as any).speed_txt.htmlText = "<b>" + KEYS.Get("mon_att_speed") + "</b>";
-        (this.mcMonsterInfo as any).health_txt.htmlText = "<b>" + KEYS.Get("mon_att_health") + "</b>";
-        (this.mcMonsterInfo as any).damage_txt.htmlText = "<b>" + KEYS.Get("mon_att_damage") + "</b>";
-        (this.mcMonsterInfo as any).goo_txt.htmlText = "<b>" + KEYS.Get("mon_att_cost", { "v1": KEYS.Get(BRESOURCE.GetResourceNameKey(3)) }) + "</b>";
-        (this.mcMonsterInfo as any).housing_txt.htmlText = "<b>" + KEYS.Get("mon_att_housing") + "</b>";
-        (this.mcMonsterInfo as any).time_txt.htmlText = "<b>" + KEYS.Get("mon_att_time") + "</b>";
+        this.title_txt.htmlText = getKEYS().Get("hcc_title");
+        (this.mcMonsterInfo as any).speed_txt.htmlText = "<b>" + getKEYS().Get("mon_att_speed") + "</b>";
+        (this.mcMonsterInfo as any).health_txt.htmlText = "<b>" + getKEYS().Get("mon_att_health") + "</b>";
+        (this.mcMonsterInfo as any).damage_txt.htmlText = "<b>" + getKEYS().Get("mon_att_damage") + "</b>";
+        (this.mcMonsterInfo as any).goo_txt.htmlText = "<b>" + getKEYS().Get("mon_att_cost", { "v1": getKEYS().Get(getBRESOURCE().GetResourceNameKey(3)) }) + "</b>";
+        (this.mcMonsterInfo as any).housing_txt.htmlText = "<b>" + getKEYS().Get("mon_att_housing") + "</b>";
+        (this.mcMonsterInfo as any).time_txt.htmlText = "<b>" + getKEYS().Get("mon_att_time") + "</b>";
         
-        this.hatlabel1_txt.htmlText = "<b>" + KEYS.Get("hcc_hatcherynum", { "v1": 1 }) + "</b>";
-        this.hatlabel2_txt.htmlText = "<b>" + KEYS.Get("hcc_hatcherynum", { "v1": 2 }) + "</b>";
-        this.hatlabel3_txt.htmlText = "<b>" + KEYS.Get("hcc_hatcherynum", { "v1": 3 }) + "</b>";
-        this.hatlabel4_txt.htmlText = "<b>" + KEYS.Get("hcc_hatcherynum", { "v1": 4 }) + "</b>";
-        this.hatlabel5_txt.htmlText = "<b>" + KEYS.Get("hcc_hatcherynum", { "v1": 5 }) + "</b>";
+        this.hatlabel1_txt.htmlText = "<b>" + getKEYS().Get("hcc_hatcherynum", { "v1": 1 }) + "</b>";
+        this.hatlabel2_txt.htmlText = "<b>" + getKEYS().Get("hcc_hatcherynum", { "v1": 2 }) + "</b>";
+        this.hatlabel3_txt.htmlText = "<b>" + getKEYS().Get("hcc_hatcherynum", { "v1": 3 }) + "</b>";
+        this.hatlabel4_txt.htmlText = "<b>" + getKEYS().Get("hcc_hatcherynum", { "v1": 4 }) + "</b>";
+        this.hatlabel5_txt.htmlText = "<b>" + getKEYS().Get("hcc_hatcherynum", { "v1": 5 }) + "</b>";
         
-        this.tHousingLabel.htmlText = "<b>" + KEYS.Get("hcc_housingspace") + "</b>";
-        this.tGooLabel.htmlText = "<b>" + KEYS.Get("hcc_goousage") + "</b>";
+        this.tHousingLabel.htmlText = "<b>" + getKEYS().Get("hcc_housingspace") + "</b>";
+        this.tGooLabel.htmlText = "<b>" + getKEYS().Get("hcc_goousage") + "</b>";
         
         this.addEventListener(MouseEvent.MOUSE_UP, this.ClearEvents.bind(this));
         (this.mcFrame as frame).Setup(true, null);
@@ -185,11 +188,11 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
             
             if (HATCHERYCC.doesShowInfernoCreeps) {
                 this.gotoAndStop("v2");
-                this.tMagmaLabel.htmlText = "<b>" + KEYS.Get("hcc_magmausage") + "</b>";
-                (this.bTopupMagma as any).tName.htmlText = "<b>" + KEYS.Get("btn_topup2") + "</b>";
+                this.tMagmaLabel.htmlText = "<b>" + getKEYS().Get("hcc_magmausage") + "</b>";
+                (this.bTopupMagma as any).tName.htmlText = "<b>" + getKEYS().Get("btn_topup2") + "</b>";
                 this.bTopupMagma.buttonMode = true;
                 this.bTopupMagma.gotoAndStop(1);
-                this.bTopupMagma.addEventListener(MouseEvent.CLICK, STORE.Show(2, 4, ["BR41I", "BR42I", "BR43I"]));
+                this.bTopupMagma.addEventListener(MouseEvent.CLICK, getSTORE().Show(2, 4, ["BR41I", "BR42I", "BR43I"]));
             }
         } else {
             this.gotoAndStop("v1");
@@ -223,7 +226,7 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
     public MonsterInfoB(creatureID: string): void {
         let currentCreature: string = null;
         let damageShown: number = 0;
-        const creature: any = CREATURELOCKER._creatures[creatureID];
+        const creature: any = getCREATURELOCKER()._creatures[creatureID];
         let speed: number = 0;
         let health: number = 0;
         let damage: number = 0;
@@ -231,36 +234,36 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
         let cResource: number = 0;
         let cStorage: number = 0;
         
-        for (currentCreature in CREATURELOCKER._creatures) {
-            if (CREATURES.GetProperty(currentCreature, "speed") > speed) {
-                speed = CREATURES.GetProperty(currentCreature, "speed");
+        for (currentCreature in getCREATURELOCKER()._creatures) {
+            if (getCREATURES().GetProperty(currentCreature, "speed") > speed) {
+                speed = getCREATURES().GetProperty(currentCreature, "speed");
             }
-            if (CREATURES.GetProperty(currentCreature, "health") > health) {
-                health = CREATURES.GetProperty(currentCreature, "health");
+            if (getCREATURES().GetProperty(currentCreature, "health") > health) {
+                health = getCREATURES().GetProperty(currentCreature, "health");
             }
-            if (CREATURES.GetProperty(currentCreature, "damage") > damage) {
-                damage = CREATURES.GetProperty(currentCreature, "damage");
+            if (getCREATURES().GetProperty(currentCreature, "damage") > damage) {
+                damage = getCREATURES().GetProperty(currentCreature, "damage");
             }
-            if (CREATURES.GetProperty(currentCreature, "cTime") > cTime) {
-                cTime = CREATURES.GetProperty(currentCreature, "cTime");
+            if (getCREATURES().GetProperty(currentCreature, "cTime") > cTime) {
+                cTime = getCREATURES().GetProperty(currentCreature, "cTime");
             }
-            if (CREATURES.GetProperty(currentCreature, "cResource") > cResource) {
-                cResource = CREATURES.GetProperty(currentCreature, "cResource");
+            if (getCREATURES().GetProperty(currentCreature, "cResource") > cResource) {
+                cResource = getCREATURES().GetProperty(currentCreature, "cResource");
             }
-            if (CREATURES.GetProperty(currentCreature, "cStorage") > cStorage) {
-                cStorage = CREATURES.GetProperty(currentCreature, "cStorage");
+            if (getCREATURES().GetProperty(currentCreature, "cStorage") > cStorage) {
+                cStorage = getCREATURES().GetProperty(currentCreature, "cStorage");
             }
         }
         
-        damageShown = CREATURES.GetProperty(creatureID, "damage");
+        damageShown = getCREATURES().GetProperty(creatureID, "damage");
         
         TweenLite.to((this.mcMonsterInfo as any).bSpeed.mcBar, 0.4, {
-            "width": 100 / speed * CREATURES.GetProperty(creatureID, "speed"),
+            "width": 100 / speed * getCREATURES().GetProperty(creatureID, "speed"),
             "ease": Circ.easeInOut,
             "delay": 0
         });
         TweenLite.to((this.mcMonsterInfo as any).bHealth.mcBar, 0.4, {
-            "width": 100 / health * CREATURES.GetProperty(creatureID, "health"),
+            "width": 100 / health * getCREATURES().GetProperty(creatureID, "health"),
             "ease": Circ.easeInOut,
             "delay": 0.05
         });
@@ -270,52 +273,52 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
             "delay": 0.1
         });
         TweenLite.to((this.mcMonsterInfo as any).bResource.mcBar, 0.4, {
-            "width": 100 / cResource * CREATURES.GetProperty(creatureID, "cResource"),
+            "width": 100 / cResource * getCREATURES().GetProperty(creatureID, "cResource"),
             "ease": Circ.easeInOut,
             "delay": 0.15
         });
         TweenLite.to((this.mcMonsterInfo as any).bStorage.mcBar, 0.4, {
-            "width": 100 / cStorage * CREATURES.GetProperty(creatureID, "cStorage"),
+            "width": 100 / cStorage * getCREATURES().GetProperty(creatureID, "cStorage"),
             "ease": Circ.easeInOut,
             "delay": 0.2
         });
         TweenLite.to((this.mcMonsterInfo as any).bTime.mcBar, 0.4, {
-            "width": 100 / cTime * CREATURES.GetProperty(creatureID, "cTime"),
+            "width": 100 / cTime * getCREATURES().GetProperty(creatureID, "cTime"),
             "ease": Circ.easeInOut,
             "delay": 0.25
         });
         
-        (this.mcMonsterInfo as any).tSpeed.htmlText = KEYS.Get("mon_statsspeed", { "v1": CREATURES.GetProperty(creatureID, "speed") });
-        (this.mcMonsterInfo as any).tHealth.htmlText = GLOBAL.FormatNumber(CREATURES.GetProperty(creatureID, "health"));
+        (this.mcMonsterInfo as any).tSpeed.htmlText = getKEYS().Get("mon_statsspeed", { "v1": getCREATURES().GetProperty(creatureID, "speed") });
+        (this.mcMonsterInfo as any).tHealth.htmlText = getGLOBAL().FormatNumber(getCREATURES().GetProperty(creatureID, "health"));
         
         if (damageShown > 0) {
             (this.mcMonsterInfo as any).tDamage.htmlText = String(damageShown);
         } else {
-            (this.mcMonsterInfo as any).tDamage.htmlText = -damageShown + " (" + KEYS.Get("str_heal") + ")";
+            (this.mcMonsterInfo as any).tDamage.htmlText = -damageShown + " (" + getKEYS().Get("str_heal") + ")";
         }
         
         const v2: string = (creature.id.charAt(0) == "I")
-            ? KEYS.Get(BRESOURCE.GetResourceNameKey(7))
-            : KEYS.Get(BRESOURCE.GetResourceNameKey(3));
+            ? getKEYS().Get(getBRESOURCE().GetResourceNameKey(7))
+            : getKEYS().Get(getBRESOURCE().GetResourceNameKey(3));
         
-        (this.mcMonsterInfo as any).tResource.htmlText = KEYS.Get("mon_att_costvalue", {
-            "v1": GLOBAL.FormatNumber(CREATURES.GetProperty(creatureID, "cResource")),
+        (this.mcMonsterInfo as any).tResource.htmlText = getKEYS().Get("mon_att_costvalue", {
+            "v1": getGLOBAL().FormatNumber(getCREATURES().GetProperty(creatureID, "cResource")),
             "v2": v2
         });
-        (this.mcMonsterInfo as any).tStorage.htmlText = KEYS.Get("mon_att_housingvalue", { "v1": CREATURES.GetProperty(creatureID, "cStorage") });
-        (this.mcMonsterInfo as any).tTime.htmlText = GLOBAL.ToTime(CREATURES.GetProperty(creatureID, "cTime"), true);
+        (this.mcMonsterInfo as any).tStorage.htmlText = getKEYS().Get("mon_att_housingvalue", { "v1": getCREATURES().GetProperty(creatureID, "cStorage") });
+        (this.mcMonsterInfo as any).tTime.htmlText = getGLOBAL().ToTime(getCREATURES().GetProperty(creatureID, "cTime"), true);
         
         let level: number = 1;
-        if (GLOBAL.player.m_upgrades[creatureID] && GLOBAL.player.m_upgrades[creatureID].level > 1) {
-            level = Number(GLOBAL.player.m_upgrades[creatureID].level);
+        if (getGLOBAL().player.m_upgrades[creatureID] && getGLOBAL().player.m_upgrades[creatureID].level > 1) {
+            level = Number(getGLOBAL().player.m_upgrades[creatureID].level);
         }
         
-        (this.mcMonsterInfo as any).tDescription.htmlText = "<b>" + KEYS.Get("hatcherypopup_level", { "v1": level }) + " " + KEYS.Get(creature.name) + "</b><br>" + KEYS.Get(creature.description);
+        (this.mcMonsterInfo as any).tDescription.htmlText = "<b>" + getKEYS().Get("hatcherypopup_level", { "v1": level }) + " " + getKEYS().Get(creature.name) + "</b><br>" + getKEYS().Get(creature.description);
         
-        if (CREATURELOCKER._lockerData[creatureID] && CREATURELOCKER._lockerData[creatureID].t == 2) {
+        if (getCREATURELOCKER()._lockerData[creatureID] && getCREATURELOCKER()._lockerData[creatureID].t == 2) {
             (this.mcMonsterInfo as any).mcLocked.visible = false;
         } else {
-            (this.mcMonsterInfo as any).mcLocked.tText.htmlText = "<b>" + KEYS.Get("hat_unlockinlocker", { "v1": KEYS.Get(CREATURELOCKER._creatures[creatureID].name) }) + "</b>";
+            (this.mcMonsterInfo as any).mcLocked.tText.htmlText = "<b>" + getKEYS().Get("hat_unlockinlocker", { "v1": getKEYS().Get(getCREATURELOCKER()._creatures[creatureID].name) }) + "</b>";
             (this.mcMonsterInfo as any).mcLocked.visible = true;
         }
         
@@ -333,7 +336,7 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
     public QueueAdd(param1: string): Function {
         const targetID: string = param1;
         return (param1: MouseEvent = null): void => {
-            if (!SubscriptionHandler.instance.isSubscriptionActive && SubscriptionHandler.isEnabledForAll && BASE.isInfernoCreep(targetID)) {
+            if (!SubscriptionHandler.instance.isSubscriptionActive && SubscriptionHandler.isEnabledForAll && getBASE().isInfernoCreep(targetID)) {
                 SubscriptionHandler.instance.showPromoPopup();
                 return;
             }
@@ -355,12 +358,12 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
         const _loc2_: string = this._monsterID;
         const _loc3_: number = 7;
         
-        if (!BASE.Charge(4, CREATURES.GetProperty(_loc2_, "cResource"), true, BASE.isInfernoCreep(_loc2_))) {
+        if (!getBASE().Charge(4, getCREATURES().GetProperty(_loc2_, "cResource"), true, getBASE().isInfernoCreep(_loc2_))) {
             return;
         }
         
-        if (CREATURELOCKER._lockerData[_loc2_] && CREATURELOCKER._lockerData[_loc2_].t == 2) {
-            _loc4_ = GLOBAL._bHatcheryCC._monsterQueue;
+        if (getCREATURELOCKER()._lockerData[_loc2_] && getCREATURELOCKER()._lockerData[_loc2_].t == 2) {
+            _loc4_ = getGLOBAL()._bHatcheryCC._monsterQueue;
             
             if (_loc4_.length > 0 && _loc4_[_loc4_.length - 1][0] == _loc2_) {
                 if (_loc4_[_loc4_.length - 1][1] < HATCHERYCC.queueLimit) {
@@ -370,17 +373,17 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
                     _loc4_.push([_loc2_, 1]);
                     this.Charge(_loc2_);
                 } else {
-                    SOUNDS.Play("error1");
+                    getSOUNDS().Play("error1");
                 }
             } else if (_loc4_.length < _loc3_) {
                 _loc4_.push([_loc2_, 1]);
                 this.Charge(_loc2_);
             } else {
-                SOUNDS.Play("error1");
+                getSOUNDS().Play("error1");
             }
             
             this.Update();
-            GLOBAL._bHatcheryCC.Tick(1);
+            getGLOBAL()._bHatcheryCC.Tick(1);
         }
     }
 
@@ -394,48 +397,48 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
             return;
         }
         
-        if (GLOBAL._bHatcheryCC && GLOBAL._bHatcheryCC._finishCost.Get() > 0) {
-            if (BASE._credits.Get() >= GLOBAL._bHatcheryCC._finishCost.Get()) {
+        if (getGLOBAL()._bHatcheryCC && getGLOBAL()._bHatcheryCC._finishCost.Get() > 0) {
+            if (getBASE()._credits.Get() >= getGLOBAL()._bHatcheryCC._finishCost.Get()) {
                 _loc2_ = [];
-                _loc4_ = GLOBAL._bHatcheryCC._finishQueue;
+                _loc4_ = getGLOBAL()._bHatcheryCC._finishQueue;
                 
                 for (_loc5_ in _loc4_) {
                     if (_loc4_[_loc5_] > 0) {
-                        _loc3_ = KEYS.Get(CREATURELOCKER._creatures[_loc5_].name);
+                        _loc3_ = getKEYS().Get(getCREATURELOCKER()._creatures[_loc5_].name);
                         _loc2_.push([_loc4_[_loc5_], _loc3_]);
                     }
                 }
                 
-                GLOBAL.Array2String(_loc2_);
+                getGLOBAL().Array2String(_loc2_);
                 
-                if (GLOBAL._bHatcheryCC._finishAll) {
-                    GLOBAL.Message(KEYS.Get("msg_finishqueue", {
-                        "v1": GLOBAL.Array2String(_loc2_),
-                        "v2": GLOBAL._bHatcheryCC._finishCost.Get()
-                    }), KEYS.Get("str_finishnow"), this.DoFinish.bind(this));
+                if (getGLOBAL()._bHatcheryCC._finishAll) {
+                    getGLOBAL().Message(getKEYS().Get("msg_finishqueue", {
+                        "v1": getGLOBAL().Array2String(_loc2_),
+                        "v2": getGLOBAL()._bHatcheryCC._finishCost.Get()
+                    }), getKEYS().Get("str_finishnow"), this.DoFinish.bind(this));
                 } else {
-                    GLOBAL.Message(KEYS.Get("msg_fillhousing", {
-                        "v1": GLOBAL.Array2String(_loc2_),
-                        "v2": GLOBAL._bHatcheryCC._finishCost.Get()
-                    }), KEYS.Get("str_finishnow"), this.DoFinish.bind(this));
+                    getGLOBAL().Message(getKEYS().Get("msg_fillhousing", {
+                        "v1": getGLOBAL().Array2String(_loc2_),
+                        "v2": getGLOBAL()._bHatcheryCC._finishCost.Get()
+                    }), getKEYS().Get("str_finishnow"), this.DoFinish.bind(this));
                 }
             } else {
-                POPUPS.DisplayGetShiny(param1);
+                getPOPUPS().DisplayGetShiny(param1);
             }
-        } else if (GLOBAL._bHatcheryCC._finishCost.Get() <= 0) {
-            GLOBAL.Message(KEYS.Get("msg_housingfull"));
+        } else if (getGLOBAL()._bHatcheryCC._finishCost.Get() <= 0) {
+            getGLOBAL().Message(getKEYS().Get("msg_housingfull"));
         }
     }
 
     private DoFinish(): void {
-        GLOBAL._bHatcheryCC.FinishNow();
+        getGLOBAL()._bHatcheryCC.FinishNow();
     }
 
     private Charge(param1: string): void {
-        const _loc2_: boolean = BASE.isInfernoCreep(param1);
-        BASE.Charge(4, CREATURES.GetProperty(param1, "cResource"), false, _loc2_);
-        ResourcePackages.Create(_loc2_ ? 8 : 4, GLOBAL._bHatcheryCC, CREATURES.GetProperty(param1, "cResource"), true);
-        BASE.Save();
+        const _loc2_: boolean = getBASE().isInfernoCreep(param1);
+        getBASE().Charge(4, getCREATURES().GetProperty(param1, "cResource"), false, _loc2_);
+        getResourcePackages().Create(_loc2_ ? 8 : 4, getGLOBAL()._bHatcheryCC, getCREATURES().GetProperty(param1, "cResource"), true);
+        getBASE().Save();
     }
 
     public QueueRemove(param1: number): Function {
@@ -455,19 +458,19 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
             return;
         }
         
-        const _loc2_: any[] = GLOBAL._bHatcheryCC._monsterQueue;
+        const _loc2_: any[] = getGLOBAL()._bHatcheryCC._monsterQueue;
         
         if (_loc2_.length >= this._monsterIndex) {
-            BASE.Fund(4, CREATURES.GetProperty(_loc2_[this._monsterIndex - 1][0], "cResource"), false, null, BASE.isInfernoCreep(_loc2_[this._monsterIndex - 1][0]));
+            getBASE().Fund(4, getCREATURES().GetProperty(_loc2_[this._monsterIndex - 1][0], "cResource"), false, null, getBASE().isInfernoCreep(_loc2_[this._monsterIndex - 1][0]));
             --_loc2_[this._monsterIndex - 1][1];
             
             if (_loc2_[this._monsterIndex - 1][1] <= 0) {
                 _loc2_.splice(this._monsterIndex - 1, 1);
             }
             
-            BASE.Save();
+            getBASE().Save();
         } else {
-            SOUNDS.Play("error1");
+            getSOUNDS().Play("error1");
         }
         
         this.Update();
@@ -483,11 +486,11 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
         return (param1: MouseEvent = null): void => {
             let _loc4_: any = undefined;
             let _loc2_: number = 1;
-            const _loc3_: any = InstanceManager.getInstancesByClass(BUILDING13);
+            const _loc3_: any = getInstanceManager().getInstancesByClass(getBUILDING13());
             
             for (_loc4_ of _loc3_) {
                 if (_loc4_._inProduction != "" && _loc2_ == n) {
-                    BASE.Fund(4, CREATURES.GetProperty(_loc4_._inProduction, "cResource"), false, null, BASE.isInfernoCreep(_loc4_._inProduction));
+                    getBASE().Fund(4, getCREATURES().GetProperty(_loc4_._inProduction, "cResource"), false, null, getBASE().isInfernoCreep(_loc4_._inProduction));
                     _loc4_._inProduction = "";
                     _loc4_.ResetProduction();
                 }
@@ -501,7 +504,7 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
         let _loc9_: BUILDING13 = null;
         let _loc10_: number = 0;
         const _loc1_: number = 7;
-        const _loc2_: any[] = GLOBAL._bHatcheryCC._monsterQueue;
+        const _loc2_: any[] = getGLOBAL()._bHatcheryCC._monsterQueue;
         let _loc3_: number = 1;
         
         while (_loc3_ <= _loc1_) {
@@ -521,24 +524,24 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
             _loc3_++;
         }
         
-        HOUSING.HousingSpace();
+        getHOUSING().HousingSpace();
         let _loc4_: number = 0;
-        let _loc5_: number = 100 / HOUSING._housingCapacity.Get() * HOUSING._housingUsed.Get();
-        (this.mcStorage as any).mcBar.width = 535 / HOUSING._housingCapacity.Get() * HOUSING._housingUsed.Get();
+        let _loc5_: number = 100 / getHOUSING()._housingCapacity.Get() * getHOUSING()._housingUsed.Get();
+        (this.mcStorage as any).mcBar.width = 535 / getHOUSING()._housingCapacity.Get() * getHOUSING()._housingUsed.Get();
         
-        let _loc6_: string = "<b>" + GLOBAL.FormatNumber(HOUSING._housingUsed.Get()) + " / " + GLOBAL.FormatNumber(HOUSING._housingCapacity.Get()) + "</b>";
+        let _loc6_: string = "<b>" + getGLOBAL().FormatNumber(getHOUSING()._housingUsed.Get()) + " / " + getGLOBAL().FormatNumber(getHOUSING()._housingCapacity.Get()) + "</b>";
         let _loc7_: number = 0;
-        const _loc8_: any = InstanceManager.getInstancesByClass(BUILDING13);
+        const _loc8_: any = getInstanceManager().getInstancesByClass(getBUILDING13());
         
         for (_loc9_ of _loc8_) {
             if (_loc9_._inProduction) {
-                _loc7_ += CREATURES.GetProperty(_loc9_._inProduction, "cStorage");
+                _loc7_ += getCREATURES().GetProperty(_loc9_._inProduction, "cStorage");
             }
         }
         
         _loc10_ = 0;
         while (_loc10_ < _loc2_.length) {
-            _loc7_ += CREATURES.GetProperty(_loc2_[_loc10_][0], "cStorage") * _loc2_[_loc10_][1];
+            _loc7_ += getCREATURES().GetProperty(_loc2_[_loc10_][0], "cStorage") * _loc2_[_loc10_][1];
             _loc10_++;
         }
         
@@ -560,73 +563,73 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
             _loc6_ += "<br>";
         }
         
-        if (_loc7_ > 0 && GLOBAL._hatcheryOverdrivePower.Get() < 10) {
+        if (_loc7_ > 0 && getGLOBAL()._hatcheryOverdrivePower.Get() < 10) {
             this.bSpeedup.gotoAndStop(2);
-            _loc6_ += '<font size="9">' + KEYS.Get("hcc_queuedup", { "v1": GLOBAL.FormatNumber(HOUSING._housingUsed.Get() + _loc7_) });
+            _loc6_ += '<font size="9">' + getKEYS().Get("hcc_queuedup", { "v1": getGLOBAL().FormatNumber(getHOUSING()._housingUsed.Get() + _loc7_) });
             
-            if (HOUSING._housingUsed.Get() + _loc7_ == HOUSING._housingCapacity.Get()) {
-                _loc6_ += " " + KEYS.Get("hcc_queuedfull");
+            if (getHOUSING()._housingUsed.Get() + _loc7_ == getHOUSING()._housingCapacity.Get()) {
+                _loc6_ += " " + getKEYS().Get("hcc_queuedfull");
             }
-            if (HOUSING._housingUsed.Get() + _loc7_ > HOUSING._housingCapacity.Get()) {
-                _loc6_ += " " + KEYS.Get("hcc_queuedover");
+            if (getHOUSING()._housingUsed.Get() + _loc7_ > getHOUSING()._housingCapacity.Get()) {
+                _loc6_ += " " + getKEYS().Get("hcc_queuedover");
             }
         } else {
             this.bSpeedup.gotoAndStop(1);
-            _loc6_ += '<font size="9">' + KEYS.Get("hcc_queuedup", { "v1": GLOBAL.FormatNumber(HOUSING._housingUsed.Get() + _loc7_) });
+            _loc6_ += '<font size="9">' + getKEYS().Get("hcc_queuedup", { "v1": getGLOBAL().FormatNumber(getHOUSING()._housingUsed.Get() + _loc7_) });
             
-            if (HOUSING._housingUsed.Get() + _loc7_ == HOUSING._housingCapacity.Get()) {
-                _loc6_ += " " + KEYS.Get("hcc_queuedfull");
+            if (getHOUSING()._housingUsed.Get() + _loc7_ == getHOUSING()._housingCapacity.Get()) {
+                _loc6_ += " " + getKEYS().Get("hcc_queuedfull");
             }
-            if (HOUSING._housingUsed.Get() + _loc7_ > HOUSING._housingCapacity.Get()) {
-                _loc6_ += " " + KEYS.Get("hcc_queuedover");
+            if (getHOUSING()._housingUsed.Get() + _loc7_ > getHOUSING()._housingCapacity.Get()) {
+                _loc6_ += " " + getKEYS().Get("hcc_queuedover");
             }
         }
         
-        _loc5_ = 535 / HOUSING._housingCapacity.Get() * (HOUSING._housingUsed.Get() + _loc7_);
+        _loc5_ = 535 / getHOUSING()._housingCapacity.Get() * (getHOUSING()._housingUsed.Get() + _loc7_);
         if (_loc5_ > 535) {
             _loc5_ = 535;
         }
         (this.mcStorage as any).mcBarB.width = _loc5_;
         this.txtStorage.htmlText = _loc6_;
         
-        let _loc11_: number = Number(BASE._resources.r4.Get());
+        let _loc11_: number = Number(getBASE()._resources.r4.Get());
         _loc10_ = 0;
         while (_loc10_ < _loc2_.length) {
-            _loc11_ -= CREATURES.GetProperty(_loc2_[_loc10_][0], "cResource") * _loc2_[_loc10_][1];
+            _loc11_ -= getCREATURES().GetProperty(_loc2_[_loc10_][0], "cResource") * _loc2_[_loc10_][1];
             _loc10_++;
         }
         
         (this.mcGoo as any).mcBarB.width = 1;
-        _loc5_ = 100 / BASE._resources.r4max * BASE._resources.r4.Get();
+        _loc5_ = 100 / getBASE()._resources.r4max * getBASE()._resources.r4.Get();
         if (_loc5_ > 100) {
             _loc5_ = 100;
         }
         (this.mcGoo as any).mcBar.width = _loc5_;
-        this.txtGoo.htmlText = "<b>" + KEYS.Get("hat_gooremaining", { "v1": GLOBAL.FormatNumber(BASE._resources.r4.Get()) }) + "</b>";
+        this.txtGoo.htmlText = "<b>" + getKEYS().Get("hat_gooremaining", { "v1": getGLOBAL().FormatNumber(getBASE()._resources.r4.Get()) }) + "</b>";
         this.bTopup.gotoAndStop(1);
         
-        if (BASE._resources.r4.Get() < BASE._resources.r4max * 0.1) {
+        if (getBASE()._resources.r4.Get() < getBASE()._resources.r4max * 0.1) {
             this.bTopup.gotoAndStop(2);
         }
         
         if (HATCHERYCC.doesShowInfernoCreeps) {
-            _loc11_ = Number(BASE._iresources.r4.Get());
+            _loc11_ = Number(getBASE()._iresources.r4.Get());
             _loc10_ = 0;
             while (_loc10_ < _loc2_.length) {
-                _loc11_ -= CREATURES.GetProperty(_loc2_[_loc10_][0], "cResource") * _loc2_[_loc10_][1];
+                _loc11_ -= getCREATURES().GetProperty(_loc2_[_loc10_][0], "cResource") * _loc2_[_loc10_][1];
                 _loc10_++;
             }
             
             (this.mcMagma as any).mcBarB.width = 1;
-            _loc5_ = 100 / BASE._iresources.r4max * BASE._iresources.r4.Get();
+            _loc5_ = 100 / getBASE()._iresources.r4max * getBASE()._iresources.r4.Get();
             if (_loc5_ > 100) {
                 _loc5_ = 100;
             }
             (this.mcMagma as any).mcBar.width = _loc5_;
-            this.txtMagma.htmlText = "<b>" + KEYS.Get("hat_magmaremaining", { "v1": GLOBAL.FormatNumber(BASE._iresources.r4.Get()) }) + "</b>";
+            this.txtMagma.htmlText = "<b>" + getKEYS().Get("hat_magmaremaining", { "v1": getGLOBAL().FormatNumber(getBASE()._iresources.r4.Get()) }) + "</b>";
             this.bTopupMagma.gotoAndStop(1);
             
-            if (BASE._iresources.r4.Get() < BASE._iresources.r4max * 0.1) {
+            if (getBASE()._iresources.r4.Get() < getBASE()._iresources.r4max * 0.1) {
                 this.bTopupMagma.gotoAndStop(2);
             }
         }
@@ -690,7 +693,7 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
         
         this.RenderQueue();
         
-        const _loc1_: any[] = GLOBAL._bHatcheryCC._monsterQueue;
+        const _loc1_: any[] = getGLOBAL()._bHatcheryCC._monsterQueue;
         const _loc2_: any[] = [];
         let _loc3_: number = 1;
         const _loc5_: any[] = [];
@@ -699,10 +702,10 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
         while (_loc6_ < this._monsterSlots.length) {
             _loc11_ = String(this._monsterSlots[_loc6_].id);
             
-            if (!SubscriptionHandler.instance.isSubscriptionActive && SubscriptionHandler.isEnabledForAll && BASE.isInfernoCreep(_loc11_)) {
+            if (!SubscriptionHandler.instance.isSubscriptionActive && SubscriptionHandler.isEnabledForAll && getBASE().isInfernoCreep(_loc11_)) {
                 this._monsterSlots[_loc6_].mcMonster.alpha = 0.5;
                 this._monsterSlots[_loc6_].mcLevel.alpha = 0.5;
-            } else if (!BASE.Charge(4, CREATURES.GetProperty(_loc11_, "cResource"), true, BASE.isInfernoCreep(_loc11_))) {
+            } else if (!getBASE().Charge(4, getCREATURES().GetProperty(_loc11_, "cResource"), true, getBASE().isInfernoCreep(_loc11_))) {
                 this._monsterSlots[_loc6_].mcMonster.alpha = 0.5;
                 this._monsterSlots[_loc6_].mcLevel.alpha = 0.5;
             } else {
@@ -712,7 +715,7 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
             _loc6_++;
         }
         
-        const _loc7_: any = InstanceManager.getInstancesByClass(BUILDING13);
+        const _loc7_: any = getInstanceManager().getInstancesByClass(getBUILDING13());
         
         for (_loc8_ of _loc7_) {
             _loc4_ = (this as any)["hatchery" + _loc3_];
@@ -727,15 +730,15 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
             if (_loc8_._countdownBuild.Get() > 0) {
                 (_loc4_ as any).mcImage.visible = false;
                 (_loc4_ as any).mcLoading.visible = false;
-                (_loc4_ as any).tLabel.htmlText = '<font color="#CC0000">' + KEYS.Get("hat_slot_construction") + "</font>";
+                (_loc4_ as any).tLabel.htmlText = '<font color="#CC0000">' + getKEYS().Get("hat_slot_construction") + "</font>";
             } else if (_loc8_._countdownUpgrade.Get() > 0) {
                 (_loc4_ as any).mcImage.visible = false;
                 (_loc4_ as any).mcLoading.visible = false;
-                (_loc4_ as any).tLabel.htmlText = '<font color="#CC0000">' + KEYS.Get("hat_slot_upgrading") + "</font>";
+                (_loc4_ as any).tLabel.htmlText = '<font color="#CC0000">' + getKEYS().Get("hat_slot_upgrading") + "</font>";
             } else if (_loc8_._inProduction && _loc8_._inProduction != "") {
                 (_loc4_ as any).mcLoading.visible = true;
                 ImageCache.GetImageWithCallBack("monsters/" + _loc8_._inProduction + "-medium.jpg", this.IconLoaded.bind(this), true, 1, "", ["hatchery", _loc3_]);
-                _loc12_ = Number(CREATURELOCKER._creatures[_loc8_._inProduction].props.cTime);
+                _loc12_ = Number(getCREATURELOCKER()._creatures[_loc8_._inProduction].props.cTime);
                 _loc13_ = 100 / _loc12_ * _loc8_._countdownProduce.Get();
                 if (_loc13_ < 0) {
                     _loc13_ = 0;
@@ -743,17 +746,17 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
                 (this as any)["bProgress" + _loc3_].mcBar.width = 100 - _loc13_;
                 
                 if (_loc8_._countdownProduce.Get() > 0 && _loc8_._hasResources) {
-                    (this as any)["tProgress" + _loc3_].htmlText = "<b>" + GLOBAL.ToTime(_loc8_._countdownProduce.Get(), true) + "</b>";
+                    (this as any)["tProgress" + _loc3_].htmlText = "<b>" + getGLOBAL().ToTime(_loc8_._countdownProduce.Get(), true) + "</b>";
                 } else if (_loc8_._productionStage.Get() == 2 && _loc8_._inProduction) {
-                    (this as any)["tProgress" + _loc3_].htmlText = "<b>" + KEYS.Get("hat_status_nospace") + "</b>";
+                    (this as any)["tProgress" + _loc3_].htmlText = "<b>" + getKEYS().Get("hat_status_nospace") + "</b>";
                 } else if (_loc8_._productionStage.Get() == 3 && _loc8_._taken.Get() == 0) {
-                    if (BASE.isInfernoMainYardOrOutpost) {
+                    if (getBASE().isInfernoMainYardOrOutpost) {
                         (this as any)["tProgress" + _loc3_].htmlText = "<b>No Magma</b>";
                     } else {
-                        (this as any)["tProgress" + _loc3_].htmlText = "<b>" + KEYS.Get("hat_status_nogoo") + "</b>";
+                        (this as any)["tProgress" + _loc3_].htmlText = "<b>" + getKEYS().Get("hat_status_nogoo") + "</b>";
                     }
                 } else {
-                    (this as any)["tProgress" + _loc3_].htmlText = "<b>" + KEYS.Get("hat_status_waiting") + "</b>";
+                    (this as any)["tProgress" + _loc3_].htmlText = "<b>" + getKEYS().Get("hat_status_waiting") + "</b>";
                 }
                 
                 (this as any)["bProgress" + _loc3_].visible = true;
@@ -768,7 +771,7 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
         }
         
         _loc9_ = 5;
-        if (BASE.isOutpost) {
+        if (getBASE().isOutpost) {
             _loc9_ = 2;
         }
         
@@ -778,7 +781,7 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
             
             if (_loc10_ <= _loc9_) {
                 _loc4_.visible = true;
-                (_loc4_ as any).tLabel.htmlText = '<font color="#CC0000">' + KEYS.Get("hat_slot_buildanother") + "</font>";
+                (_loc4_ as any).tLabel.htmlText = '<font color="#CC0000">' + getKEYS().Get("hat_slot_buildanother") + "</font>";
                 (_loc4_ as any).mcLoading.visible = false;
                 (this as any)["hatcheryBG" + _loc10_].visible = true;
                 (this as any)["hatlabel" + _loc10_ + "_txt"].visible = true;
@@ -797,10 +800,10 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
             _loc10_++;
         }
         
-        if (GLOBAL._hatcheryOverdrive > 0) {
-            (this.mcOverdrive as any).t.htmlText = "<b>" + KEYS.Get("hat_xoverdrive", {
-                "v1": GLOBAL._hatcheryOverdrivePower.Get(),
-                "v2": GLOBAL.ToTime(GLOBAL._hatcheryOverdrive)
+        if (getGLOBAL()._hatcheryOverdrive > 0) {
+            (this.mcOverdrive as any).t.htmlText = "<b>" + getKEYS().Get("hat_xoverdrive", {
+                "v1": getGLOBAL()._hatcheryOverdrivePower.Get(),
+                "v2": getGLOBAL().ToTime(getGLOBAL()._hatcheryOverdrive)
             }) + "</b>";
             this.mcOverdrive.visible = true;
         } else {
@@ -824,7 +827,7 @@ export class HATCHERYCCPOPUP extends HATCHERYCCPOPUP_CLIP {
         this.gotoAndStop(this._guidePage);
         
         if (this._guidePage > 1) {
-            this.txtGuide.htmlText = KEYS.Get("hcc_tut_" + (this._guidePage - 1));
+            this.txtGuide.htmlText = getKEYS().Get("hcc_tut_" + (this._guidePage - 1));
             if (this._guidePage == 2) {
                 this.bContinue.addEventListener(MouseEvent.CLICK, this.Help.bind(this));
                 this.bContinue.SetupKey("btn_continue");

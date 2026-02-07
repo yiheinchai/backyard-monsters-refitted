@@ -18,7 +18,10 @@ import { PushPin } from "./PushPin";
 import { DescentMonsterBase_CLIP } from "./DescentMonsterBase_CLIP";
 import { Button } from "../../../Button";
 
-import { KEYS } from "../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+
+
 
 /**
  * DescentMonsterBase - represents a monster base in the Descent map.
@@ -54,7 +57,7 @@ export class DescentMonsterBase extends DescentMonsterBase_CLIP {
     constructor() {
         super();
         this.popUp = new DescentBasePopup();
-        this.popUp.tDepth.htmlText = "<b>" + KEYS.Get("descent_depthBar") + "</b>";
+        this.popUp.tDepth.htmlText = "<b>" + getKEYS().Get("descent_depthBar") + "</b>";
         this.popUp.x = 20;
         this.popUp.y = -250;
         this.addChild(this.popUp);

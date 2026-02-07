@@ -1,5 +1,4 @@
 import { ABTest } from "../../cc/tests/ABTest";
-import { Console } from "../debug/Console";
 import { EnumBaseRelationship } from "../enums/EnumBaseRelationship";
 import { EnumYardType } from "../enums/EnumYardType";
 import { MapRoom3AllianceData } from "./data/MapRoom3AllianceData";
@@ -7,17 +6,21 @@ import { MapRoom3CellData } from "./data/MapRoom3CellData";
 import { MapRoom3Data } from "./data/MapRoom3Data";
 import { MapRoom3TileSetManager } from "./tiles/MapRoom3TileSetManager";
 import { IMapRoomCell } from "../maproom_manager/IMapRoomCell";
-import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { MapRoom3 } from "./MapRoom3";
 import { MapRoom3AssetCache } from "./MapRoom3AssetCache";
 import { MapRoom3CellGraphic } from "./MapRoom3CellGraphic";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGIN } from "../../../LOGIN";
 import { PLEASEWAIT } from "../../../PLEASEWAIT";
-import { URLLoaderApi } from "../../../URLLoaderApi";
+
+// Lazy imports to break circular dependency chains
+function getConsole(): any { return require("../debug/Console").Console; }
+function getMapRoomManager(): any { return require("../maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGIN(): any { return require("../../../LOGIN").LOGIN; }
+function getURLLoaderApi(): any { return require("../../../URLLoaderApi").URLLoaderApi; }
+
 
 /**
  * MapRoom3Cell - represents a single cell in Map Room 3.
@@ -186,7 +189,7 @@ export class MapRoom3Cell implements IMapRoomCell {
     }
 
     public get isOwnedByPlayer(): boolean {
-        return this.userID === LOGIN._playerID;
+        return this.userID === getLOGIN()._playerID;
     }
 
     public get isOwnedByFacebookFriend(): boolean {
@@ -223,7 +226,7 @@ export class MapRoom3Cell implements IMapRoomCell {
     }
 
     public ClearData(): void {
-        const cellId = MapRoomManager.instance.CalculateCellId(this.cellX, this.cellY);
+        const cellId = getMapRoomManager().instance.CalculateCellId(this.cellX, this.cellY);
         const cellsInRange = MapRoom3Cell.s_CellsInAttackRange.get(cellId);
         if (cellsInRange !== undefined) {
             cellsInRange.length = 0;
@@ -241,7 +244,7 @@ export class MapRoom3Cell implements IMapRoomCell {
     }
 
     public AddCellInAttackRange(cell: MapRoom3Cell): void {
-        const cellId = MapRoomManager.instance.CalculateCellId(this.cellX, this.cellY);
+        const cellId = getMapRoomManager().instance.CalculateCellId(this.cellX, this.cellY);
         let cells = MapRoom3Cell.s_CellsInAttackRange.get(cellId);
         if (!cells) {
             cells = [];
@@ -253,7 +256,7 @@ export class MapRoom3Cell implements IMapRoomCell {
     }
 
     public AddInAttackRangeOf(cell: MapRoom3Cell): void {
-        const cellId = MapRoomManager.instance.CalculateCellId(this.cellX, this.cellY);
+        const cellId = getMapRoomManager().instance.CalculateCellId(this.cellX, this.cellY);
         let cells = MapRoom3Cell.s_InAttackRangeOfCells.get(cellId);
         if (!cells) {
             cells = [];
@@ -265,7 +268,7 @@ export class MapRoom3Cell implements IMapRoomCell {
     }
 
     public AddInRangeOfStronghold(cell: MapRoom3Cell): void {
-        const cellId = MapRoomManager.instance.CalculateCellId(this.cellX, this.cellY);
+        const cellId = getMapRoomManager().instance.CalculateCellId(this.cellX, this.cellY);
         let cells = MapRoom3Cell.s_InRangeOfStrongholds.get(cellId);
         if (!cells) {
             cells = [];
@@ -277,40 +280,40 @@ export class MapRoom3Cell implements IMapRoomCell {
     }
 
     public get hasCellsInAttackRange(): boolean {
-        const cellId = MapRoomManager.instance.CalculateCellId(this.cellX, this.cellY);
+        const cellId = getMapRoomManager().instance.CalculateCellId(this.cellX, this.cellY);
         const cells = MapRoom3Cell.s_CellsInAttackRange.get(cellId);
         return cells !== undefined && cells.length > 0;
     }
 
     public get cellsInAttackRange(): Array<MapRoom3Cell> | undefined {
-        const cellId = MapRoomManager.instance.CalculateCellId(this.cellX, this.cellY);
+        const cellId = getMapRoomManager().instance.CalculateCellId(this.cellX, this.cellY);
         return MapRoom3Cell.s_CellsInAttackRange.get(cellId);
     }
 
     public get isInAttackRange(): boolean {
-        const cellId = MapRoomManager.instance.CalculateCellId(this.cellX, this.cellY);
+        const cellId = getMapRoomManager().instance.CalculateCellId(this.cellX, this.cellY);
         const cells = MapRoom3Cell.s_InAttackRangeOfCells.get(cellId);
         return cells !== undefined && cells.length > 0;
     }
 
     public get inAttackRangeOfCells(): Array<MapRoom3Cell> | undefined {
-        const cellId = MapRoomManager.instance.CalculateCellId(this.cellX, this.cellY);
+        const cellId = getMapRoomManager().instance.CalculateCellId(this.cellX, this.cellY);
         return MapRoom3Cell.s_InAttackRangeOfCells.get(cellId);
     }
 
     public get isInRangeOfStronghold(): boolean {
-        const cellId = MapRoomManager.instance.CalculateCellId(this.cellX, this.cellY);
+        const cellId = getMapRoomManager().instance.CalculateCellId(this.cellX, this.cellY);
         const cells = MapRoom3Cell.s_InRangeOfStrongholds.get(cellId);
         return cells !== undefined && cells.length > 0;
     }
 
     public get inRangeOfStrongholds(): Array<MapRoom3Cell> | undefined {
-        const cellId = MapRoomManager.instance.CalculateCellId(this.cellX, this.cellY);
+        const cellId = getMapRoomManager().instance.CalculateCellId(this.cellX, this.cellY);
         return MapRoom3Cell.s_InRangeOfStrongholds.get(cellId);
     }
 
     public get currentBuffEffectFrame(): number {
-        const cellId = MapRoomManager.instance.CalculateCellId(this.cellX, this.cellY);
+        const cellId = getMapRoomManager().instance.CalculateCellId(this.cellX, this.cellY);
         let frame = MapRoom3Cell.s_CurrentBuffEffectFrames.get(cellId);
         if (frame === undefined) {
             frame = Math.floor(Math.random() * MapRoom3AssetCache.STRONGHOLD_BUFF_EFFECT_TOTAL_FRAMES);
@@ -320,7 +323,7 @@ export class MapRoom3Cell implements IMapRoomCell {
     }
 
     public set currentBuffEffectFrame(value: number) {
-        const cellId = MapRoomManager.instance.CalculateCellId(this.cellX, this.cellY);
+        const cellId = getMapRoomManager().instance.CalculateCellId(this.cellX, this.cellY);
         MapRoom3Cell.s_CurrentBuffEffectFrames.set(cellId, value);
     }
 
@@ -337,47 +340,47 @@ export class MapRoom3Cell implements IMapRoomCell {
     }
 
     private LoadLatestData(callback: Function): void {
-        PLEASEWAIT.Show(KEYS.Get("msg_loading"));
-        const cellId = MapRoomManager.instance.CalculateCellId(this.cellX, this.cellY);
+        PLEASEWAIT.Show(getKEYS().Get("msg_loading"));
+        const cellId = getMapRoomManager().instance.CalculateCellId(this.cellX, this.cellY);
         const vars = [["cellids", JSON.stringify([cellId])]];
-        new URLLoaderApi().load(MapRoom3Data.GetCellsRequestURL(), vars, callback);
+        new (getURLLoaderApi())().load(MapRoom3Data.GetCellsRequestURL(), vars, callback);
     }
 
     public OnLoadedForAttack(data: Record<string, any>): void {
         PLEASEWAIT.Hide();
         if (data === null || data.celldata === null || !(data.celldata instanceof Array) || data.celldata.length === 0) {
-            GLOBAL.Message(KEYS.Get("mr3_base_locked_cannot_attack"), KEYS.Get("btn_ok"));
+            getGLOBAL().Message(getKEYS().Get("mr3_base_locked_cannot_attack"), getKEYS().Get("btn_ok"));
             return;
         }
         this.Setup(data.celldata[0]);
         if (this.isLocked) {
-            GLOBAL.Message(KEYS.Get("mr3_base_locked_cannot_attack"), KEYS.Get("btn_ok"));
+            getGLOBAL().Message(getKEYS().Get("mr3_base_locked_cannot_attack"), getKEYS().Get("btn_ok"));
             return;
         }
-        GLOBAL._currentCell = this;
-        const cellId = MapRoomManager.instance.CalculateCellId(this.cellX, this.cellY);
+        getGLOBAL()._currentCell = this;
+        const cellId = getMapRoomManager().instance.CalculateCellId(this.cellX, this.cellY);
         if (this.userID === 0) {
-            BASE.LoadBase(null, 0, this.baseID, GLOBAL.e_BASE_MODE.WMVIEW, false, this.cellType, cellId);
+            getBASE().LoadBase(null, 0, this.baseID, getGLOBAL().e_BASE_MODE.WMVIEW, false, this.cellType, cellId);
         } else {
-            BASE.LoadBase(null, 0, this.baseID, this.isOwnedByFacebookFriend ? GLOBAL.e_BASE_MODE.HELP : GLOBAL.e_BASE_MODE.VIEW, false, this.cellType, cellId);
+            getBASE().LoadBase(null, 0, this.baseID, this.isOwnedByFacebookFriend ? getGLOBAL().e_BASE_MODE.HELP : getGLOBAL().e_BASE_MODE.VIEW, false, this.cellType, cellId);
         }
     }
 
     public OnLoadedForBuild(data: Record<string, any>): void {
         PLEASEWAIT.Hide();
         if (data === null || data.celldata === null || !(data.celldata instanceof Array) || data.celldata.length === 0) {
-            GLOBAL.Message(KEYS.Get("mr3_base_locked_cannot_enter"), KEYS.Get("btn_ok"));
+            getGLOBAL().Message(getKEYS().Get("mr3_base_locked_cannot_enter"), getKEYS().Get("btn_ok"));
             return;
         }
         this.Setup(data.celldata[0]);
         if (this.isLocked || this.isOwnedByPlayer === false) {
-            GLOBAL.Message(KEYS.Get("mr3_base_locked_cannot_enter"), KEYS.Get("btn_ok"));
+            getGLOBAL().Message(getKEYS().Get("mr3_base_locked_cannot_enter"), getKEYS().Get("btn_ok"));
             MapRoom3.mapRoom3Window.Refresh();
             return;
         }
-        GLOBAL._currentCell = this;
-        const cellId = MapRoomManager.instance.CalculateCellId(this.cellX, this.cellY);
-        BASE.LoadBase(null, 0, this.baseID, GLOBAL.e_BASE_MODE.BUILD, false, this.cellType, cellId);
+        getGLOBAL()._currentCell = this;
+        const cellId = getMapRoomManager().instance.CalculateCellId(this.cellX, this.cellY);
+        getBASE().LoadBase(null, 0, this.baseID, getGLOBAL().e_BASE_MODE.BUILD, false, this.cellType, cellId);
     }
 
     private CalculateAttackCosts(): Array<number> {
@@ -387,7 +390,7 @@ export class MapRoom3Cell implements IMapRoomCell {
         }
         let minDistance = Number.MAX_VALUE;
         let nearestCell: MapRoom3Cell | null = null;
-        const playerCells = MapRoomManager.instance.playerOwnedCells;
+        const playerCells = getMapRoomManager().instance.playerOwnedCells;
         const count = playerCells.length;
         for (let i = 0; i < count; i++) {
             const cell = playerCells[i] as MapRoom3Cell;
@@ -407,9 +410,9 @@ export class MapRoom3Cell implements IMapRoomCell {
         if (nearestCell === null) {
             return costs;
         }
-        const townHallLevel = GLOBAL.attackingPlayer.townHallLevel;
+        const townHallLevel = getGLOBAL().attackingPlayer.townHallLevel;
         const levelIndex = Math.min(townHallLevel, MapRoom3Cell.ATTACK_COST_MULTIPLIERS_BY_TOWN_HALL_LEVEL.length - 1);
-        const baseCost = MapRoom3Cell.ATTACK_COST_MULTIPLIERS_BY_TOWN_HALL_LEVEL[levelIndex] * MapRoomManager.instance.attackCostMultiplier.value;
+        const baseCost = MapRoom3Cell.ATTACK_COST_MULTIPLIERS_BY_TOWN_HALL_LEVEL[levelIndex] * getMapRoomManager().instance.attackCostMultiplier.value;
         const cost = minDistance * (baseCost * this.GetABTestAttackCostMultiplier());
         costs[0] = cost;
         costs[1] = cost;
@@ -429,7 +432,7 @@ export class MapRoom3Cell implements IMapRoomCell {
         if (value >= 84) {
             return 0.5;
         }
-        Console.warning("AB test on attack cost didnt work.");
+        getConsole().warning("AB test on attack cost didnt work.");
         return 1;
     }
 
@@ -455,23 +458,23 @@ export class MapRoom3Cell implements IMapRoomCell {
     public GetLocalisedCellTypeName(): string {
         switch (this.cellType) {
             case EnumYardType.PLAYER:
-                return KEYS.Get("mr3_starter_cell_name");
+                return getKEYS().Get("mr3_starter_cell_name");
             case EnumYardType.RESOURCE:
-                return KEYS.Get("mr3_resource_cell_name");
+                return getKEYS().Get("mr3_resource_cell_name");
             case EnumYardType.STRONGHOLD:
-                return KEYS.Get("mr3_stronghold_cell_name");
+                return getKEYS().Get("mr3_stronghold_cell_name");
             case EnumYardType.FORTIFICATION:
-                return KEYS.Get("mr3_fortification_cell_name");
+                return getKEYS().Get("mr3_fortification_cell_name");
             case EnumYardType.EMPTY:
             default:
                 if (this.isOwnedByWildMonster) {
-                    return KEYS.Get("mr3_wild_monster_cell_name");
+                    return getKEYS().Get("mr3_wild_monster_cell_name");
                 }
                 return "";
         }
     }
 
     public GetAllianceData(): MapRoom3AllianceData | undefined {
-        return MapRoomManager.instance.allianceDataById.get(this.allianceID);
+        return getMapRoomManager().instance.allianceDataById.get(this.allianceID);
     }
 }

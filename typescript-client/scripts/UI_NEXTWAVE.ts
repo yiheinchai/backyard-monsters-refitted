@@ -3,11 +3,14 @@ import MouseEvent from 'openfl/events/MouseEvent';
 import { UI_BOTTOM } from './com/monsters/ui/UI_BOTTOM';
 import { bubblepopupDownBuff } from './bubblepopupDownBuff';
 import { NEXTWAVEBAR_CLIP } from './NEXTWAVEBAR_CLIP';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { SPECIALEVENT } from './SPECIALEVENT';
-import { TUTORIAL } from './TUTORIAL';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getSPECIALEVENT(): any { return require("./SPECIALEVENT").SPECIALEVENT; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+
 
 export class UI_NEXTWAVE extends NEXTWAVEBAR_CLIP {
     private _popupWaveInfo: bubblepopupDownBuff;
@@ -17,39 +20,39 @@ export class UI_NEXTWAVE extends NEXTWAVEBAR_CLIP {
     }
 
     public static ShouldDisplay(): boolean {
-        if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD) {
             return false;
         }
-        if (!BASE.isMainYard) {
+        if (!getBASE().isMainYard) {
             return false;
         }
-        if (TUTORIAL._stage < TUTORIAL._endstage) {
+        if (getTUTORIAL()._stage < getTUTORIAL()._endstage) {
             return false;
         }
-        if (!SPECIALEVENT.EventActive()) {
+        if (!getSPECIALEVENT().EventActive()) {
             return false;
         }
-        if (SPECIALEVENT.wave > SPECIALEVENT.numWaves) {
+        if (getSPECIALEVENT().wave > getSPECIALEVENT().numWaves) {
             return false;
         }
-        if (SPECIALEVENT.active) {
+        if (getSPECIALEVENT().active) {
             return false;
         }
         return true;
     }
 
     private static OnBarClicked(param1: MouseEvent): void {
-        SPECIALEVENT.StartRound();
+        getSPECIALEVENT().StartRound();
     }
 
     public Setup(): void {
-        SPECIALEVENT.Setup();
+        getSPECIALEVENT().Setup();
         this.mcHit.addEventListener(MouseEvent.CLICK, UI_NEXTWAVE.OnBarClicked);
         this.mcHit.addEventListener(MouseEvent.ROLL_OVER, this.WaveShow.bind(this));
         this.mcHit.addEventListener(MouseEvent.ROLL_OUT, this.WaveHide.bind(this));
         this.mcHit.buttonMode = true;
         this.mcHit.mouseChildren = false;
-        this.SetWave(SPECIALEVENT.wave);
+        this.SetWave(getSPECIALEVENT().wave);
         this.Resize();
     }
 
@@ -61,11 +64,11 @@ export class UI_NEXTWAVE extends NEXTWAVEBAR_CLIP {
     }
 
     public WaveShow(param1: MouseEvent): void {
-        if (SPECIALEVENT.wave >= SPECIALEVENT.EVENTEND) {
+        if (getSPECIALEVENT().wave >= getSPECIALEVENT().EVENTEND) {
             return;
         }
         const _loc2_ = param1.currentTarget as MovieClip;
-        const _loc3_ = String(SPECIALEVENT.WAVES_DESC[SPECIALEVENT.wave - 1]);
+        const _loc3_ = String(getSPECIALEVENT().WAVES_DESC[getSPECIALEVENT().wave - 1]);
         const _loc4_ = "";
         if (!this._popupWaveInfo) {
             const _loc7_ = new bubblepopupDownBuff();
@@ -87,7 +90,7 @@ export class UI_NEXTWAVE extends NEXTWAVEBAR_CLIP {
     }
 
     public SetWave(param1: number): void {
-        if (param1 > SPECIALEVENT.numWaves) {
+        if (param1 > getSPECIALEVENT().numWaves) {
             this.visible = false;
             return;
         }
@@ -95,11 +98,11 @@ export class UI_NEXTWAVE extends NEXTWAVEBAR_CLIP {
             this.visible = true;
         }
         if (param1 == 31) {
-            this.tR.htmlText = KEYS.Get("wmi_bonuswave");
+            this.tR.htmlText = getKEYS().Get("wmi_bonuswave");
         } else if (param1 == 32) {
-            this.tR.htmlText = KEYS.Get("wmi_bonuswave2");
+            this.tR.htmlText = getKEYS().Get("wmi_bonuswave2");
         } else {
-            this.tR.htmlText = KEYS.Get("wmi_nextwave", { "v1": param1 });
+            this.tR.htmlText = getKEYS().Get("wmi_nextwave", { "v1": param1 });
         }
     }
 }

@@ -2,7 +2,10 @@ import { IAttackable } from "../../../interfaces/IAttackable";
 import { ITargetable } from "../../../interfaces/ITargetable";
 import { AOEDamageOnAttack } from "./AOEDamageOnAttack";
 
-import { GLOBAL } from "../../../../../GLOBAL";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+
+
 
 /**
  * AOE damage on attack once per target - deals AOE damage only once per unique target.
@@ -25,7 +28,7 @@ export class AOEDamageOnAttackOncePerTarget extends AOEDamageOnAttack {
     }
 
     public override onAttack(target: IAttackable, damageDealt: number, projectile: ITargetable | null = null): number {
-        if (GLOBAL.Timestamp() > this.m_timeAbilityIsRecharged && target !== this.m_lastTarget) {
+        if (getGLOBAL().Timestamp() > this.m_timeAbilityIsRecharged && target !== this.m_lastTarget) {
             this.dealAOEDamage(damageDealt * this.m_damageMultiplier, target);
             this.m_lastTarget = target;
         }

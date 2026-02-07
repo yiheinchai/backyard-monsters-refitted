@@ -1,5 +1,8 @@
-import { Console } from "../../../debug/Console";
 import { MultiplicationPropertyModifier } from "./MultiplicationPropertyModifier";
+
+// Lazy imports to break circular dependency chains
+function getConsole(): any { return require("../../../debug/Console").Console; }
+
 
 /**
  * Armor property modifier - reduces damage taken by a percentage.
@@ -7,7 +10,7 @@ import { MultiplicationPropertyModifier } from "./MultiplicationPropertyModifier
 export class ArmorPropertyModifier extends MultiplicationPropertyModifier {
     constructor(armorValue: number) {
         if (armorValue > 1 || armorValue <= 0) {
-            Console.warning("you are trying to add an armor multiplier of an invalid value (" + armorValue + ")");
+            getConsole().warning("you are trying to add an armor multiplier of an invalid value (" + armorValue + ")");
             armorValue = 1;
         }
         super(armorValue);

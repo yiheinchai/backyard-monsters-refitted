@@ -6,8 +6,11 @@ import { ResourceBombs } from './com/monsters/effects/ResourceBombs';
 import { CATAPULTITEM_view } from './CATAPULTITEM_view';
 import { CATAPULTPOPUP } from './CATAPULTPOPUP';
 import { bubblepopup3 } from './bubblepopup3';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+
 
 /**
  * CATAPULTITEM - Catapult item for bomb selection
@@ -67,10 +70,10 @@ export class CATAPULTITEM extends CATAPULTITEM_view {
         if (this._constant) {
             return;
         }
-        this._locked = this._props.catapultLevel > GLOBAL._attackersCatapult;
+        this._locked = this._props.catapultLevel > getGLOBAL()._attackersCatapult;
         if (!this._props.used) {
             if (!this._locked) {
-                this.Enabled = this._props.cost <= GLOBAL._attackersResources["r" + this._props.resource].Get();
+                this.Enabled = this._props.cost <= getGLOBAL()._attackersResources["r" + this._props.resource].Get();
             } else {
                 this.Enabled = false;
             }
@@ -82,20 +85,20 @@ export class CATAPULTITEM extends CATAPULTITEM_view {
     public ShowOver(): void {
         let _loc1_: string = "<b>" + this._props.name + "</b>";
         if (this._props.description) {
-            _loc1_ += "<br>" + KEYS.Get(this._props.description, {
+            _loc1_ += "<br>" + getKEYS().Get(this._props.description, {
                 "v1": this._props.speed * 100 + "%",
                 "v2": Math.round((1 - this._props.damageMult) * 100) + "%",
                 "v3": this._props.speedlength
             });
         }
-        _loc1_ += "<br>" + KEYS.Get("bomb_cost_resources", {
+        _loc1_ += "<br>" + getKEYS().Get("bomb_cost_resources", {
             "v1": CATAPULTPOPUP.Format(this._props.cost),
-            "v2": KEYS.Get(GLOBAL._resourceNames[this._props.resource - 1])
+            "v2": getKEYS().Get(getGLOBAL()._resourceNames[this._props.resource - 1])
         }) + "<br>";
-        if (this._props.catapultLevel > GLOBAL._attackersCatapult) {
-            _loc1_ += "<br>" + "<b><font color = \"#FF0000\">" + KEYS.Get("bomb_catapult_level", {"v1": this._props.catapultLevel}) + "</font></b>";
-        } else if (this._props.cost > GLOBAL._attackersResources["r" + this._props.resource].Get() && !this._props.used) {
-            _loc1_ += "<br><b><font color = \"#FF0000\">" + KEYS.Get("bomb_need_resources", {"v1": KEYS.Get(GLOBAL._resourceNames[this._props.resource - 1])}) + "</font></b>";
+        if (this._props.catapultLevel > getGLOBAL()._attackersCatapult) {
+            _loc1_ += "<br>" + "<b><font color = \"#FF0000\">" + getKEYS().Get("bomb_catapult_level", {"v1": this._props.catapultLevel}) + "</font></b>";
+        } else if (this._props.cost > getGLOBAL()._attackersResources["r" + this._props.resource].Get() && !this._props.used) {
+            _loc1_ += "<br><b><font color = \"#FF0000\">" + getKEYS().Get("bomb_need_resources", {"v1": getKEYS().Get(getGLOBAL()._resourceNames[this._props.resource - 1])}) + "</font></b>";
         }
         if (this._popup) {
             this._popup.mouseEnabled = false;

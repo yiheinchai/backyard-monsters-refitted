@@ -9,16 +9,19 @@ import { ImageCache } from './com/monsters/display/ImageCache';
 import { CREATURELOCKERPOPUP_CLIP } from './CREATURELOCKERPOPUP_CLIP';
 import { CreatureLockerItem } from './CreatureLockerItem';
 import { popup_monster } from './popup_monster';
-import { CREATURELOCKER } from './CREATURELOCKER';
-import { CREATURES } from './CREATURES';
-import { GLOBAL } from './GLOBAL';
-import { BASE } from './BASE';
-import { KEYS } from './KEYS';
-import { STORE } from './STORE';
-import { POPUPS } from './POPUPS';
 import { POPUPSETTINGS } from './POPUPSETTINGS';
-import { QUESTS } from './QUESTS';
-import { LOGGER } from './LOGGER';
+
+// Lazy imports to break circular dependency chains
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getQUESTS(): any { return require("./QUESTS").QUESTS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+
 
 export class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP {
     private static readonly _CREATURES_PER_PAGE: number = 4;
@@ -41,45 +44,45 @@ export class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP {
         this.bInstant.addEventListener(MouseEvent.CLICK, this.InstantUnlock.bind(this));
 
         let _loc1_ = 0;
-        for (const _loc2_ in CREATURELOCKER._creatures) {
+        for (const _loc2_ in getCREATURELOCKER()._creatures) {
             _loc1_++;
         }
         this._maxPages = 4;
         this.List();
 
         let _loc3_ = false;
-        if (CREATURELOCKER._unlocking != null) {
-            _loc3_ = CREATURELOCKER._unlocking.substring(0, 2) == "IC";
+        if (getCREATURELOCKER()._unlocking != null) {
+            _loc3_ = getCREATURELOCKER()._unlocking.substring(0, 2) == "IC";
         }
-        if (CREATURELOCKER._unlocking != null) {
-            CREATURELOCKER._page = CREATURELOCKER._creatures[CREATURELOCKER._unlocking].page;
-            this.ShowB(CREATURELOCKER._unlocking);
+        if (getCREATURELOCKER()._unlocking != null) {
+            getCREATURELOCKER()._page = getCREATURELOCKER()._creatures[getCREATURELOCKER()._unlocking].page;
+            this.ShowB(getCREATURELOCKER()._unlocking);
         } else {
-            const _loc4_ = CREATURELOCKER._popupCreatureID;
-            const _loc5_ = CREATURELOCKER._page;
-            CREATURELOCKER._page = CREATURELOCKER._creatures[CREATURELOCKER._popupCreatureID].page;
-            this.ShowB(CREATURELOCKER._popupCreatureID);
+            const _loc4_ = getCREATURELOCKER()._popupCreatureID;
+            const _loc5_ = getCREATURELOCKER()._page;
+            getCREATURELOCKER()._page = getCREATURELOCKER()._creatures[getCREATURELOCKER()._popupCreatureID].page;
+            this.ShowB(getCREATURELOCKER()._popupCreatureID);
         }
-        this.title_txt.htmlText = KEYS.Get(GLOBAL._bLocker._buildingProps.name);
-        this.prod_label_txt.htmlText = KEYS.Get("cloc_prodstats_label");
-        this.speed_txt.htmlText = "<b>" + KEYS.Get("mon_att_speed") + "</b>";
-        this.health_txt.htmlText = "<b>" + KEYS.Get("mon_att_health") + "</b>";
-        this.damage_txt.htmlText = "<b>" + KEYS.Get("mon_att_damage") + "</b>";
-        this.goo_txt.htmlText = "<b>" + KEYS.Get("moni_att_cost") + "</b>";
-        this.housing_txt.htmlText = "<b>" + KEYS.Get("mon_att_housing") + "</b>";
-        this.time_txt.htmlText = "<b>" + KEYS.Get("mon_att_time") + "</b>";
+        this.title_txt.htmlText = getKEYS().Get(getGLOBAL()._bLocker._buildingProps.name);
+        this.prod_label_txt.htmlText = getKEYS().Get("cloc_prodstats_label");
+        this.speed_txt.htmlText = "<b>" + getKEYS().Get("mon_att_speed") + "</b>";
+        this.health_txt.htmlText = "<b>" + getKEYS().Get("mon_att_health") + "</b>";
+        this.damage_txt.htmlText = "<b>" + getKEYS().Get("mon_att_damage") + "</b>";
+        this.goo_txt.htmlText = "<b>" + getKEYS().Get("moni_att_cost") + "</b>";
+        this.housing_txt.htmlText = "<b>" + getKEYS().Get("mon_att_housing") + "</b>";
+        this.time_txt.htmlText = "<b>" + getKEYS().Get("mon_att_time") + "</b>";
     }
 
     public PagePrevious(param1: MouseEvent): void {
-        if (CREATURELOCKER._page > this._minPages) {
-            --CREATURELOCKER._page;
+        if (getCREATURELOCKER()._page > this._minPages) {
+            --getCREATURELOCKER()._page;
         }
         this.List();
     }
 
     public PageNext(param1: MouseEvent): void {
-        if (CREATURELOCKER._page < this._maxPages) {
-            ++CREATURELOCKER._page;
+        if (getCREATURELOCKER()._page < this._maxPages) {
+            ++getCREATURELOCKER()._page;
         }
         this.List();
     }
@@ -94,20 +97,20 @@ export class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP {
     }
 
     public List(): void {
-        if (CREATURELOCKER._page > this._minPages) {
+        if (getCREATURELOCKER()._page > this._minPages) {
             this.enableButton(this.bPrevious);
         } else {
             this.disableButton(this.bPrevious);
         }
-        if (CREATURELOCKER._page < this._maxPages) {
+        if (getCREATURELOCKER()._page < this._maxPages) {
             this.enableButton(this.bNext);
         } else {
             this.disableButton(this.bNext);
         }
         this._tempCreatureList = [];
-        for (const _loc1_ in CREATURELOCKER.GetAppropriateCreatures()) {
-            const _loc4_ = CREATURELOCKER._creatures[_loc1_];
-            if (!_loc4_.blocked && _loc4_.page == CREATURELOCKER._page) {
+        for (const _loc1_ in getCREATURELOCKER().GetAppropriateCreatures()) {
+            const _loc4_ = getCREATURELOCKER()._creatures[_loc1_];
+            if (!_loc4_.blocked && _loc4_.page == getCREATURELOCKER()._page) {
                 _loc4_.id = _loc1_;
                 this._tempCreatureList.push(_loc4_);
             }
@@ -123,26 +126,26 @@ export class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP {
         for (let _loc3_ = 0; _loc3_ < this._tempCreatureList.length; _loc3_++) {
             const _loc4_ = this._tempCreatureList[_loc3_];
             const _loc1_ = String(_loc4_.id);
-            const _loc5_ = CREATURELOCKER._lockerData[_loc1_];
+            const _loc5_ = getCREATURELOCKER()._lockerData[_loc1_];
             const _loc6_ = this._mcList.addChild(new CreatureLockerItem()) as CreatureLockerItem;
             _loc6_.y = _loc2_;
             _loc2_ += 40;
-            let _loc7_ = "<b>" + KEYS.Get(_loc4_.name) + "</b>";
+            let _loc7_ = "<b>" + getKEYS().Get(_loc4_.name) + "</b>";
             if (_loc5_) {
                 if (_loc5_.t == 1) {
-                    _loc7_ += "<br>" + GLOBAL.ToTime(_loc5_.e - GLOBAL.Timestamp());
+                    _loc7_ += "<br>" + getGLOBAL().ToTime(_loc5_.e - getGLOBAL().Timestamp());
                 } else {
-                    _loc7_ += "<br><font color=\"#333333\">" + KEYS.Get("mon_unlocked") + "</font>";
+                    _loc7_ += "<br><font color=\"#333333\">" + getKEYS().Get("mon_unlocked") + "</font>";
                 }
             } else {
-                _loc7_ += "<br><font color=\"#CC0000\">" + KEYS.Get("mon_locked") + "</font>";
+                _loc7_ += "<br><font color=\"#CC0000\">" + getKEYS().Get("mon_locked") + "</font>";
             }
             _loc6_.tLabel.htmlText = _loc7_;
             _loc6_.addEventListener(MouseEvent.MOUSE_DOWN, this.Show(_loc1_) as (arg0: unknown) => void);
             _loc6_.buttonMode = true;
             _loc6_.mouseChildren = false;
             _loc6_.mouseEnabled = true;
-            if (CREATURELOCKER._unlocking == _loc1_) {
+            if (getCREATURELOCKER()._unlocking == _loc1_) {
                 _loc6_.gotoAndStop(2);
             } else {
                 _loc6_.gotoAndStop(1);
@@ -150,7 +153,7 @@ export class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP {
             _loc6_.mcTick.visible = false;
             if (_loc5_) {
                 if (_loc5_.t == 1) {
-                    _loc6_.mcBar.width = 156 / (_loc5_.e - _loc5_.s) * (GLOBAL.Timestamp() - _loc5_.s);
+                    _loc6_.mcBar.width = 156 / (_loc5_.e - _loc5_.s) * (getGLOBAL().Timestamp() - _loc5_.s);
                 } else if (_loc5_.t == 2) {
                     _loc6_.mcTick.visible = true;
                     _loc6_.mcBar.visible = false;
@@ -174,32 +177,32 @@ export class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP {
 
         this._creatureID = creatureID;
         if (!creatureID) {
-            creatureID = CREATURELOCKER.getFirstCreatureID();
+            creatureID = getCREATURELOCKER().getFirstCreatureID();
         }
-        CREATURELOCKER._popupCreatureID = this._creatureID;
+        getCREATURELOCKER()._popupCreatureID = this._creatureID;
         this.List();
-        const data = CREATURELOCKER._creatures[this._creatureID];
-        this.tDescription.htmlText = "<b>" + KEYS.Get(data.name) + "</b><br>" + KEYS.Get(data.description);
+        const data = getCREATURELOCKER()._creatures[this._creatureID];
+        this.tDescription.htmlText = "<b>" + getKEYS().Get(data.name) + "</b><br>" + getKEYS().Get(data.description);
 
         let str = "";
-        if (CREATURELOCKER._unlocking != null) {
-            str = KEYS.Get("mon_infounlocking");
-        } else if (CREATURELOCKER._lockerData[this._creatureID] && CREATURELOCKER._lockerData[this._creatureID].t == 2) {
-            str = KEYS.Get(BASE.isInfernoMainYardOrOutpost ? "inf_mon_infounlocked" : "mon_infounlocked");
+        if (getCREATURELOCKER()._unlocking != null) {
+            str = getKEYS().Get("mon_infounlocking");
+        } else if (getCREATURELOCKER()._lockerData[this._creatureID] && getCREATURELOCKER()._lockerData[this._creatureID].t == 2) {
+            str = getKEYS().Get(getBASE().isInfernoMainYardOrOutpost ? "inf_mon_infounlocked" : "mon_infounlocked");
         } else {
-            str = KEYS.Get("mon_infotounlock", { "v1": GLOBAL.ToTime(data.time) });
-            if (BASE._resources.r3.Get() < data.resource) {
+            str = getKEYS().Get("mon_infotounlock", { "v1": getGLOBAL().ToTime(data.time) });
+            if (getBASE()._resources.r3.Get() < data.resource) {
                 str += "<font color=\"#CC0000\">";
             }
-            str += "<b>" + KEYS.Get(GLOBAL._resourceNames[2]) + "</b>: " + GLOBAL.FormatNumber(data.resource) + "<br>";
-            if (BASE._resources.r3.Get() < data.resource) {
+            str += "<b>" + getKEYS().Get(getGLOBAL()._resourceNames[2]) + "</b>: " + getGLOBAL().FormatNumber(data.resource) + "<br>";
+            if (getBASE()._resources.r3.Get() < data.resource) {
                 str += "</font>";
             }
-            if (GLOBAL._bLocker._lvl.Get() < data.level) {
+            if (getGLOBAL()._bLocker._lvl.Get() < data.level) {
                 str += "<font color=\"#CC0000\">";
             }
-            str += KEYS.Get(BASE.isInfernoMainYardOrOutpost ? "mon_strongboxlevelrequired" : "mon_infolockerlevelrequired", { "v1": data.level });
-            if (GLOBAL._bLocker._lvl.Get() < data.level) {
+            str += getKEYS().Get(getBASE().isInfernoMainYardOrOutpost ? "mon_strongboxlevelrequired" : "mon_infolockerlevelrequired", { "v1": data.level });
+            if (getGLOBAL()._bLocker._lvl.Get() < data.level) {
                 str += "</font>";
             }
         }
@@ -211,70 +214,70 @@ export class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP {
         let maxTime = 0;
         let maxResource = 0;
         let maxStorage = 0;
-        for (const c in CREATURELOCKER.GetAppropriateCreatures()) {
-            if (CREATURES.GetProperty(c, "speed") > maxSpeed) {
-                maxSpeed = CREATURES.GetProperty(c, "speed");
+        for (const c in getCREATURELOCKER().GetAppropriateCreatures()) {
+            if (getCREATURES().GetProperty(c, "speed") > maxSpeed) {
+                maxSpeed = getCREATURES().GetProperty(c, "speed");
             }
-            if (CREATURES.GetProperty(c, "health") > maxHealth) {
-                maxHealth = CREATURES.GetProperty(c, "health");
+            if (getCREATURES().GetProperty(c, "health") > maxHealth) {
+                maxHealth = getCREATURES().GetProperty(c, "health");
             }
-            if (CREATURES.GetProperty(c, "damage") > maxDamage) {
-                maxDamage = CREATURES.GetProperty(c, "damage");
+            if (getCREATURES().GetProperty(c, "damage") > maxDamage) {
+                maxDamage = getCREATURES().GetProperty(c, "damage");
             }
-            if (CREATURES.GetProperty(c, "cTime") > maxTime) {
-                maxTime = CREATURES.GetProperty(c, "cTime");
+            if (getCREATURES().GetProperty(c, "cTime") > maxTime) {
+                maxTime = getCREATURES().GetProperty(c, "cTime");
             }
-            if (CREATURES.GetProperty(c, "cResource") > maxResource) {
-                maxResource = CREATURES.GetProperty(c, "cResource");
+            if (getCREATURES().GetProperty(c, "cResource") > maxResource) {
+                maxResource = getCREATURES().GetProperty(c, "cResource");
             }
-            if (CREATURES.GetProperty(c, "cStorage") > maxStorage) {
-                maxStorage = CREATURES.GetProperty(c, "cStorage");
+            if (getCREATURES().GetProperty(c, "cStorage") > maxStorage) {
+                maxStorage = getCREATURES().GetProperty(c, "cStorage");
             }
         }
         TweenLite.to(this.bSpeed.mcBar, 0.4, {
-            "width": 100 / maxSpeed * CREATURES.GetProperty(this._creatureID, "speed"),
+            "width": 100 / maxSpeed * getCREATURES().GetProperty(this._creatureID, "speed"),
             "ease": Circ.easeInOut,
             "delay": 0
         });
         TweenLite.to(this.bHealth.mcBar, 0.4, {
-            "width": 100 / maxHealth * CREATURES.GetProperty(this._creatureID, "health"),
+            "width": 100 / maxHealth * getCREATURES().GetProperty(this._creatureID, "health"),
             "ease": Circ.easeInOut,
             "delay": 0.05
         });
         TweenLite.to(this.bDamage.mcBar, 0.4, {
-            "width": 100 / maxDamage * CREATURES.GetProperty(this._creatureID, "damage"),
+            "width": 100 / maxDamage * getCREATURES().GetProperty(this._creatureID, "damage"),
             "ease": Circ.easeInOut,
             "delay": 0.1
         });
         TweenLite.to(this.bResource.mcBar, 0.4, {
-            "width": 100 / maxResource * CREATURES.GetProperty(this._creatureID, "cResource"),
+            "width": 100 / maxResource * getCREATURES().GetProperty(this._creatureID, "cResource"),
             "ease": Circ.easeInOut,
             "delay": 0.15
         });
         TweenLite.to(this.bStorage.mcBar, 0.4, {
-            "width": 100 / maxStorage * CREATURES.GetProperty(this._creatureID, "cStorage"),
+            "width": 100 / maxStorage * getCREATURES().GetProperty(this._creatureID, "cStorage"),
             "ease": Circ.easeInOut,
             "delay": 0.2
         });
         TweenLite.to(this.bTime.mcBar, 0.4, {
-            "width": 100 / maxTime * CREATURES.GetProperty(this._creatureID, "cTime"),
+            "width": 100 / maxTime * getCREATURES().GetProperty(this._creatureID, "cTime"),
             "ease": Circ.easeInOut,
             "delay": 0.25
         });
-        this.tSpeed.htmlText = KEYS.Get("mon_statsspeed", { "v1": CREATURES.GetProperty(this._creatureID, "speed") });
-        this.tHealth.htmlText = CREATURES.GetProperty(this._creatureID, "health").toString();
-        const dam = CREATURES.GetProperty(this._creatureID, "damage");
+        this.tSpeed.htmlText = getKEYS().Get("mon_statsspeed", { "v1": getCREATURES().GetProperty(this._creatureID, "speed") });
+        this.tHealth.htmlText = getCREATURES().GetProperty(this._creatureID, "health").toString();
+        const dam = getCREATURES().GetProperty(this._creatureID, "damage");
         if (dam > 0) {
             this.tDamage.htmlText = dam.toString();
         } else {
-            this.tDamage.htmlText = -dam + " (" + KEYS.Get("str_heal") + ")";
+            this.tDamage.htmlText = -dam + " (" + getKEYS().Get("str_heal") + ")";
         }
-        this.tResource.htmlText = CREATURES.GetProperty(this._creatureID, "cResource") + " " + KEYS.Get(GLOBAL._resourceNames[3]);
-        this.tStorage.htmlText = KEYS.Get("mon_statsstorage", { "v1": CREATURES.GetProperty(this._creatureID, "cStorage") });
-        this.tTime.htmlText = GLOBAL.ToTime(CREATURES.GetProperty(this._creatureID, "cTime"), true);
+        this.tResource.htmlText = getCREATURES().GetProperty(this._creatureID, "cResource") + " " + getKEYS().Get(getGLOBAL()._resourceNames[3]);
+        this.tStorage.htmlText = getKEYS().Get("mon_statsstorage", { "v1": getCREATURES().GetProperty(this._creatureID, "cStorage") });
+        this.tTime.htmlText = getGLOBAL().ToTime(getCREATURES().GetProperty(this._creatureID, "cTime"), true);
 
-        if (CREATURELOCKER._lockerData[this._creatureID]) {
-            if (CREATURELOCKER._lockerData[this._creatureID].t == 2) {
+        if (getCREATURELOCKER()._lockerData[this._creatureID]) {
+            if (getCREATURELOCKER()._lockerData[this._creatureID].t == 2) {
                 this.mcButtons.gotoAndStop(1);
                 (this.mcButtons as any).bStart.SetupKey("mon_unlocked");
                 (this.mcButtons as any).bStart.Enabled = false;
@@ -295,12 +298,12 @@ export class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP {
             (this.mcButtons as any).bStart.Enabled = true;
             (this.mcButtons as any).bStart.Highlight = true;
             (this.mcButtons as any).bStart.addEventListener(MouseEvent.CLICK, this.Start.bind(this));
-            const putty = CREATURELOCKER._creatures[this._creatureID].resource;
-            const time = CREATURELOCKER._creatures[this._creatureID].time;
-            const timeCost = STORE.GetTimeCost(time);
+            const putty = getCREATURELOCKER()._creatures[this._creatureID].resource;
+            const time = getCREATURELOCKER()._creatures[this._creatureID].time;
+            const timeCost = getSTORE().GetTimeCost(time);
             const resourcesCost = Math.ceil(Math.pow(Math.sqrt(putty / 2), 0.75));
             this._instantUnlockCost = timeCost + resourcesCost;
-            this.bInstant.Setup(KEYS.Get("btn_unlockinstantly", { "v1": this._instantUnlockCost }));
+            this.bInstant.Setup(getKEYS().Get("btn_unlockinstantly", { "v1": this._instantUnlockCost }));
             this.bInstant.visible = true;
             this.bInstant.Enabled = true;
             this.bInstant.Highlight = true;
@@ -312,17 +315,17 @@ export class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP {
     }
 
     public Start(param1: MouseEvent): void {
-        if (CREATURELOCKER.Start(this._creatureID)) {
+        if (getCREATURELOCKER().Start(this._creatureID)) {
             this.Update();
         }
     }
 
     public Stop(param1: MouseEvent): void {
-        GLOBAL.Message(KEYS.Get("mon_confirmcancel", { "v1": KEYS.Get(CREATURELOCKER._creatures[CREATURELOCKER._unlocking].name) }), KEYS.Get("btn_yes"), CREATURELOCKER.Cancel);
+        getGLOBAL().Message(getKEYS().Get("mon_confirmcancel", { "v1": getKEYS().Get(getCREATURELOCKER()._creatures[getCREATURELOCKER()._unlocking].name) }), getKEYS().Get("btn_yes"), getCREATURELOCKER().Cancel);
     }
 
     public Speedup(param1: MouseEvent): void {
-        STORE.SpeedUp("SP4");
+        getSTORE().SpeedUp("SP4");
     }
 
     public Update(): void {
@@ -335,24 +338,24 @@ export class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP {
     }
 
     public InstantUnlock(e: MouseEvent): void {
-        if (BASE._credits.Get() < this._instantUnlockCost) {
-            POPUPS.DisplayGetShiny();
+        if (getBASE()._credits.Get() < this._instantUnlockCost) {
+            getPOPUPS().DisplayGetShiny();
             return;
         }
-        if (GLOBAL._bLocker._lvl.Get() < CREATURELOCKER._creatures[this._creatureID].level) {
-            GLOBAL.Message(KEYS.Get("mon_upgradelocker", {
-                "v1": KEYS.Get(GLOBAL._bLocker._buildingProps.name),
-                "v2": CREATURELOCKER._creatures[this._creatureID].level
+        if (getGLOBAL()._bLocker._lvl.Get() < getCREATURELOCKER()._creatures[this._creatureID].level) {
+            getGLOBAL().Message(getKEYS().Get("mon_upgradelocker", {
+                "v1": getKEYS().Get(getGLOBAL()._bLocker._buildingProps.name),
+                "v2": getCREATURELOCKER()._creatures[this._creatureID].level
             }));
             return;
         }
-        if (CREATURELOCKER._unlocking && CREATURELOCKER._lockerData[CREATURELOCKER._unlocking] && CREATURELOCKER._lockerData[CREATURELOCKER._unlocking] == this._creatureID) {
-            delete CREATURELOCKER._lockerData[CREATURELOCKER._unlocking].s;
-            delete CREATURELOCKER._lockerData[CREATURELOCKER._unlocking].e;
+        if (getCREATURELOCKER()._unlocking && getCREATURELOCKER()._lockerData[getCREATURELOCKER()._unlocking] && getCREATURELOCKER()._lockerData[getCREATURELOCKER()._unlocking] == this._creatureID) {
+            delete getCREATURELOCKER()._lockerData[getCREATURELOCKER()._unlocking].s;
+            delete getCREATURELOCKER()._lockerData[getCREATURELOCKER()._unlocking].e;
         }
-        const creature = CREATURELOCKER._creatures[this._creatureID];
+        const creature = getCREATURELOCKER()._creatures[this._creatureID];
         let img: string;
-        if (!BASE.isInfernoMainYardOrOutpost) {
+        if (!getBASE().isInfernoMainYardOrOutpost) {
             img = "quests/monster" + this._creatureID.substr(1) + ".v2.png";
         } else {
             img = "quests/monsterinferno" + this._creatureID.substr(2) + ".png";
@@ -360,18 +363,18 @@ export class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP {
         if (creature.stream.length > 1) {
             img = String(creature.stream[2]);
         }
-        CREATURELOCKER._lockerData[this._creatureID] = { "t": 2 };
-        GLOBAL.player.m_upgrades[this._creatureID] = { "level": 1 };
-        if (!BASE.isInfernoMainYardOrOutpost) {
-            LOGGER.Stat([46, parseInt(this._creatureID.substr(1))]);
+        getCREATURELOCKER()._lockerData[this._creatureID] = { "t": 2 };
+        getGLOBAL().player.m_upgrades[this._creatureID] = { "level": 1 };
+        if (!getBASE().isInfernoMainYardOrOutpost) {
+            getLOGGER().Stat([46, parseInt(this._creatureID.substr(1))]);
         } else {
-            LOGGER.Stat([46, parseInt(this._creatureID.substr(2))]);
+            getLOGGER().Stat([46, parseInt(this._creatureID.substr(2))]);
         }
-        if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD) {
             const StreamPost = (st: string, sd: string, im: string): Function => {
                 return (param1: MouseEvent = null): void => {
-                    GLOBAL.CallJS("sendFeed", ["unlock-end", st, sd, im, 0]);
-                    POPUPS.Next();
+                    getGLOBAL().CallJS("sendFeed", ["unlock-end", st, sd, im, 0]);
+                    getPOPUPS().Next();
                 };
             };
             const mc = new popup_monster();
@@ -381,24 +384,24 @@ export class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP {
             }
             let _body = "";
             if (creature.stream[1]) {
-                _body = KEYS.Get(creature.stream[1]);
+                _body = getKEYS().Get(creature.stream[1]);
             }
-            mc.bSpeedup.addEventListener(MouseEvent.CLICK, StreamPost(KEYS.Get(creature.stream[0]), _body, img) as (arg0: unknown) => void);
+            mc.bSpeedup.addEventListener(MouseEvent.CLICK, StreamPost(getKEYS().Get(creature.stream[0]), _body, img) as (arg0: unknown) => void);
             mc.bSpeedup.Highlight = true;
             mc.bAction.visible = false;
-            if (CREATURELOCKER._creatures) {
-                const hatcheryName = GLOBAL._bHatchery ? String(GLOBAL._bHatchery._buildingProps.name) : String(GLOBAL._buildingProps[12].name);
-                mc.tText.htmlText = KEYS.Get("pop_unlock_complete", {
-                    "v1": KEYS.Get(CREATURELOCKER._creatures[this._creatureID].name),
-                    "v2": KEYS.Get(hatcheryName)
+            if (getCREATURELOCKER()._creatures) {
+                const hatcheryName = getGLOBAL()._bHatchery ? String(getGLOBAL()._bHatchery._buildingProps.name) : String(getGLOBAL()._buildingProps[12].name);
+                mc.tText.htmlText = getKEYS().Get("pop_unlock_complete", {
+                    "v1": getKEYS().Get(getCREATURELOCKER()._creatures[this._creatureID].name),
+                    "v2": getKEYS().Get(hatcheryName)
                 });
             }
             const image = this._creatureID + "-150.png";
-            POPUPS.Push(mc, null, null, null, image);
+            getPOPUPS().Push(mc, null, null, null, image);
         }
-        CREATURELOCKER._unlocking = null;
-        QUESTS.Check();
-        BASE.Purchase("IUN", this._instantUnlockCost, "creaturelocker");
+        getCREATURELOCKER()._unlocking = null;
+        getQUESTS().Check();
+        getBASE().Purchase("IUN", this._instantUnlockCost, "creaturelocker");
         this.Update();
     }
 
@@ -410,7 +413,7 @@ export class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP {
         }
         this.gotoAndStop(this._guidePage);
         if (this._guidePage > 1) {
-            this.txtGuide.htmlText = KEYS.Get("loc_tut_" + (this._guidePage - 1));
+            this.txtGuide.htmlText = getKEYS().Get("loc_tut_" + (this._guidePage - 1));
             if (this._guidePage == 2) {
                 this.bContinue.addEventListener(MouseEvent.CLICK, this.Help.bind(this));
                 this.bContinue.SetupKey("btn_continue");
@@ -419,7 +422,7 @@ export class CREATURELOCKERPOPUP extends CREATURELOCKERPOPUP_CLIP {
     }
 
     public Hide(param1: MouseEvent = null): void {
-        CREATURELOCKER.Hide(param1);
+        getCREATURELOCKER().Hide(param1);
     }
 
     public Center(): void {

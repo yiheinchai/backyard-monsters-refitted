@@ -1,11 +1,14 @@
-import { Console } from './com/monsters/debug/Console';
 import MouseEvent from 'openfl/events/MouseEvent';
 import TextFieldAutoSize from 'openfl/text/TextFieldAutoSize';
-import { GLOBAL } from './GLOBAL';
 import { POPUPSETTINGS } from './POPUPSETTINGS';
-import { SOUNDS } from './SOUNDS';
 import { TweenLite, Elastic } from './gs/TweenLite';
 import { MESSAGE_CLIP } from './MESSAGE_CLIP';
+
+// Lazy imports to break circular dependency chains
+function getConsole(): any { return require("./com/monsters/debug/Console").Console; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+
 
 /**
  * MESSAGE - Dialog Message System
@@ -51,8 +54,8 @@ export class MESSAGE extends MESSAGE_CLIP {
         this.tMessage.y = this.mcBG.y + 20;
         this.bAction.y = this.mcBG.y + this.mcBG.height - 45;
         this.bAction2.y = this.mcBG.y + this.mcBG.height - 45;
-        GLOBAL.BlockerAdd(GLOBAL._layerTop);
-        this._mc = GLOBAL._layerTop.addChild(this) as MESSAGE;
+        getGLOBAL().BlockerAdd(getGLOBAL()._layerTop);
+        this._mc = getGLOBAL()._layerTop.addChild(this) as MESSAGE;
         this.Center();
         this.ScaleUp();
         return this;
@@ -76,7 +79,7 @@ export class MESSAGE extends MESSAGE_CLIP {
                     console.log("ERROR: MESSAGE.Action only handles up to 4 parameters!");
                 }
             } catch (error: any) {
-                Console.warning(error + "MESSAGE.Action (invalid action and/or arguments)", true);
+                getConsole().warning(error + "MESSAGE.Action (invalid action and/or arguments)", true);
             }
         }
     }
@@ -97,21 +100,21 @@ export class MESSAGE extends MESSAGE_CLIP {
     }
 
     public Hide(event: MouseEvent | null = null): void {
-        GLOBAL.BlockerRemove();
-        SOUNDS.Play("close");
+        getGLOBAL().BlockerRemove();
+        getSOUNDS().Play("close");
         if (this._mc && this._mc.parent) {
-            GLOBAL._layerTop.removeChild(this._mc);
+            getGLOBAL()._layerTop.removeChild(this._mc);
         }
         this._mc = null;
     }
 
     public Resize(): void {
-        if (GLOBAL._SCREENCENTER) {
-            this.x = GLOBAL._SCREENCENTER.x;
-            this.y = GLOBAL._SCREENCENTER.y;
+        if (getGLOBAL()._SCREENCENTER) {
+            this.x = getGLOBAL()._SCREENCENTER.x;
+            this.y = getGLOBAL()._SCREENCENTER.y;
         } else {
-            this.x = GLOBAL._SCREENINIT.width / 2;
-            this.y = GLOBAL._SCREENINIT.height / 2;
+            this.x = getGLOBAL()._SCREENINIT.width / 2;
+            this.y = getGLOBAL()._SCREENINIT.height / 2;
         }
     }
 

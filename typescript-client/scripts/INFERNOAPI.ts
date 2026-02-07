@@ -4,13 +4,16 @@ import IOErrorEvent from 'openfl/events/IOErrorEvent';
 import getTimer from 'openfl/utils/getTimer';
 import { SecNum } from './com/cc/utils/SecNum';
 import { WMBASE } from './com/monsters/ai/WMBASE';
-import { URLLoaderApi } from './URLLoaderApi';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { LOGGER } from './LOGGER';
 import { MAPROOM_DESCENT } from './MAPROOM_DESCENT';
 import { PLEASEWAIT } from './PLEASEWAIT';
+
+// Lazy imports to break circular dependency chains
+function getURLLoaderApi(): any { return require("./URLLoaderApi").URLLoaderApi; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+
 
 class InternalClass {
     constructor() {
@@ -96,20 +99,20 @@ export class INFERNOAPI extends EventDispatcher {
                         MAPROOM_DESCENT._loot.r3 = new SecNum(0);
                         MAPROOM_DESCENT._loot.r4 = new SecNum(0);
                     }
-                } else if (BASE.isInfernoMainYardOrOutpost) {
+                } else if (getBASE().isInfernoMainYardOrOutpost) {
                     INFERNOAPI._infernoLoadData = param1;
                 }
-                GLOBAL.WaitHide();
+                getGLOBAL().WaitHide();
             }
             INFERNOAPI._loading = false;
         };
         const handleLoadError = (param1: IOErrorEvent): void => {
-            if (GLOBAL._reloadonerror) {
-                GLOBAL.CallJS("reloadPage");
+            if (getGLOBAL()._reloadonerror) {
+                getGLOBAL().CallJS("reloadPage");
             } else {
-                LOGGER.Log("err", "INFERNOAPI.Load HTTP");
+                getLOGGER().Log("err", "INFERNOAPI.Load HTTP");
                 PLEASEWAIT.Hide();
-                GLOBAL.ErrorMessage("INFERNO.Load HTTP");
+                getGLOBAL().ErrorMessage("INFERNO.Load HTTP");
             }
             INFERNOAPI._loading = false;
         };
@@ -118,16 +121,16 @@ export class INFERNOAPI extends EventDispatcher {
         INFERNOAPI._baseID = baseid;
         PLEASEWAIT.Hide();
         INFERNOAPI.Cleanup();
-        PLEASEWAIT.Show(KEYS.Get("msg_loading"));
-        const tmpMode = GLOBAL.mode;
+        PLEASEWAIT.Show(getKEYS().Get("msg_loading"));
+        const tmpMode = getGLOBAL().mode;
         INFERNOAPI._loadType = mode;
         const loadVars = [["userid", userid > 0 ? userid : ""], ["baseid", INFERNOAPI._baseID], ["type", INFERNOAPI._loadType]];
         if (url) {
-            new URLLoaderApi().load(url + "load", loadVars, handleLoadSuccessful, handleLoadError);
-        } else if (BASE.isInfernoMainYardOrOutpost) {
-            new URLLoaderApi().load(GLOBAL._infBaseURL + "load", loadVars, handleLoadSuccessful, handleLoadError);
+            new (getURLLoaderApi())().load(url + "load", loadVars, handleLoadSuccessful, handleLoadError);
+        } else if (getBASE().isInfernoMainYardOrOutpost) {
+            new (getURLLoaderApi())().load(getGLOBAL()._infBaseURL + "load", loadVars, handleLoadSuccessful, handleLoadError);
         } else {
-            new URLLoaderApi().load(GLOBAL._baseURL + "load", loadVars, handleLoadSuccessful, handleLoadError);
+            new (getURLLoaderApi())().load(getGLOBAL()._baseURL + "load", loadVars, handleLoadSuccessful, handleLoadError);
         }
     }
 

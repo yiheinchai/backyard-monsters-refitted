@@ -2,7 +2,10 @@ import { BaseBuff } from "../../BaseBuff";
 import { CreepEvent } from "../../../events/CreepEvent";
 import { MultiplicationPropertyModifier } from "../../../monsters/components/modifiers/MultiplicationPropertyModifier";
 
-import { GLOBAL } from "../../../../../GLOBAL";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+
+
 
 /**
  * Monster damage multiplier - internal class for monster damage buff.
@@ -31,7 +34,7 @@ export class MonsterDamageBuff extends BaseBuff {
     }
 
     public override apply(): void {
-        GLOBAL.eventDispatcher.addEventListener(this.m_eventType, this.spawnedDefendingCreep.bind(this));
+        getGLOBAL().eventDispatcher.addEventListener(this.m_eventType, this.spawnedDefendingCreep.bind(this));
     }
 
     protected spawnedDefendingCreep(event: CreepEvent): void {
@@ -39,6 +42,6 @@ export class MonsterDamageBuff extends BaseBuff {
     }
 
     public override clear(): void {
-        GLOBAL.eventDispatcher.removeEventListener(this.m_eventType, this.spawnedDefendingCreep.bind(this));
+        getGLOBAL().eventDispatcher.removeEventListener(this.m_eventType, this.spawnedDefendingCreep.bind(this));
     }
 }

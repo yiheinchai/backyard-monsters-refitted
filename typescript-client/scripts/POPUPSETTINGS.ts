@@ -2,7 +2,10 @@ import DisplayObject from 'openfl/display/DisplayObject';
 import { TweenLite } from './gs/TweenLite';
 import { Quad } from './gs/easing/Quad';
 import { GAME } from './GAME';
-import { GLOBAL } from './GLOBAL';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+
 
 /**
  * POPUPSETTINGS - Popup Positioning and Animation Utilities
@@ -14,18 +17,18 @@ export class POPUPSETTINGS {
     constructor() {}
 
     public static AlignToCenter(displayObject: DisplayObject): void {
-        displayObject.x = GLOBAL._SCREENCENTER.x;
-        displayObject.y = GLOBAL._SCREENCENTER.y - POPUPSETTINGS._BOTTOM_PADDING;
+        displayObject.x = getGLOBAL()._SCREENCENTER.x;
+        displayObject.y = getGLOBAL()._SCREENCENTER.y - POPUPSETTINGS._BOTTOM_PADDING;
         if (GAME._isSmallSize) {
-            displayObject.y = GLOBAL._SCREENCENTER.y - POPUPSETTINGS._BOTTOM_PADDING / 2;
+            displayObject.y = getGLOBAL()._SCREENCENTER.y - POPUPSETTINGS._BOTTOM_PADDING / 2;
         }
     }
 
     public static AlignToUpperLeft(displayObject: DisplayObject, centered: boolean = false): void {
-        displayObject.x = GLOBAL._SCREENCENTER.x - displayObject.width * 0.5;
-        displayObject.y = GLOBAL._SCREENCENTER.y - POPUPSETTINGS._BOTTOM_PADDING - displayObject.height * 0.5;
+        displayObject.x = getGLOBAL()._SCREENCENTER.x - displayObject.width * 0.5;
+        displayObject.y = getGLOBAL()._SCREENCENTER.y - POPUPSETTINGS._BOTTOM_PADDING - displayObject.height * 0.5;
         if (centered) {
-            displayObject.y = GLOBAL._SCREENCENTER.y - displayObject.height * 0.5;
+            displayObject.y = getGLOBAL()._SCREENCENTER.y - displayObject.height * 0.5;
         }
     }
 

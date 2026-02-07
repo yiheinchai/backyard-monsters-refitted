@@ -2,15 +2,18 @@ import { SecNum } from "../../cc/utils/SecNum";
 import { BaseBuffHandler } from "../baseBuffs/BaseBuffHandler";
 import { AutoBankBaseBuff } from "../baseBuffs/buffs/AutoBankBaseBuff";
 import { BYMConfig } from "../configs/BYMConfig";
-import { InstanceManager } from "../managers/InstanceManager";
-import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 
-import { BASE } from "../../../BASE";
-import { BFOUNDATION } from "../../../BFOUNDATION";
-import { BRESOURCE } from "../../../BRESOURCE";
-import { GLOBAL } from "../../../GLOBAL";
-import { LOGGER } from "../../../LOGGER";
 import { OUTPOST_YARD_PROPS } from "../../../OUTPOST_YARD_PROPS";
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("../managers/InstanceManager").InstanceManager; }
+function getMapRoomManager(): any { return require("../maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getBFOUNDATION(): any { return require("../../../BFOUNDATION").BFOUNDATION; }
+function getBRESOURCE(): any { return require("../../../BRESOURCE").BRESOURCE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+
 
 /**
  * AutoBankManager - static manager for auto-banking resources from outposts.
@@ -18,10 +21,10 @@ import { OUTPOST_YARD_PROPS } from "../../../OUTPOST_YARD_PROPS";
 export class AutoBankManager {
     private static readonly k_OPKEY_TIME: string = "t";
     private static readonly k_OPKEY_BASE: string = "b";
-    private static readonly k_OPKEY_TWIGS: string = "r" + BRESOURCE.RESOURCE_TWIGS;
-    private static readonly k_OPKEY_PEBBLES: string = "r" + BRESOURCE.RESOURCE_PEBBLES;
-    private static readonly k_OPKEY_PUTTY: string = "r" + BRESOURCE.RESOURCE_PUTTY;
-    private static readonly k_OPKEY_GOO: string = "r" + BRESOURCE.RESOURCE_GOO;
+    private static readonly k_OPKEY_TWIGS: string = "r" + getBRESOURCE().RESOURCE_TWIGS;
+    private static readonly k_OPKEY_PEBBLES: string = "r" + getBRESOURCE().RESOURCE_PEBBLES;
+    private static readonly k_OPKEY_PUTTY: string = "r" + getBRESOURCE().RESOURCE_PUTTY;
+    private static readonly k_OPKEY_GOO: string = "r" + getBRESOURCE().RESOURCE_GOO;
     private static readonly k_MAX_RESOURCES: number = 5;
     private static s_logCounter: number = 10;
 
@@ -31,7 +34,7 @@ export class AutoBankManager {
 
     public static get lastMapRoom3Time(): number {
         let lastTime = 0;
-        for (const key in BASE.resourceCells) {
+        for (const key in getBASE().resourceCells) {
             if (parseInt(key) > lastTime) {
                 lastTime = parseInt(key);
             }
@@ -42,11 +45,11 @@ export class AutoBankManager {
     public static updateSaveData(): Record<string, any> | null {
         const result: Record<string, any> = {};
         AutoBankManager.setLocalGIP(result);
-        if (MapRoomManager.instance.isInMapRoom2) {
+        if (getMapRoomManager().instance.isInMapRoom2) {
             return AutoBankManager.updateBuildingResources(result);
         }
-        if (MapRoomManager.instance.isInMapRoom3) {
-            return BASE.resourceCells;
+        if (getMapRoomManager().instance.isInMapRoom3) {
+            return getBASE().resourceCells;
         }
         return null;
     }
@@ -54,19 +57,19 @@ export class AutoBankManager {
     public static updateLoadData(data: Record<string, any>, gip: Record<string, any>, processedGIP: Record<string, any>, serverTime: number, lastProcessedTime: number): number {
         AutoBankManager.s_logCounter = 10;
         if (data) {
-            if (data[AutoBankManager.k_OPKEY_BASE + GLOBAL._homeBaseID]) {
-                delete data[AutoBankManager.k_OPKEY_BASE + GLOBAL._homeBaseID];
+            if (data[AutoBankManager.k_OPKEY_BASE + getGLOBAL()._homeBaseID]) {
+                delete data[AutoBankManager.k_OPKEY_BASE + getGLOBAL()._homeBaseID];
             }
-            if (Boolean(data[AutoBankManager.k_OPKEY_TIME]) && (GLOBAL.mode !== GLOBAL.e_BASE_MODE.ATTACK || BYMConfig.instance.AUTOBANK_FIX)) {
+            if (Boolean(data[AutoBankManager.k_OPKEY_TIME]) && (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.ATTACK || BYMConfig.instance.AUTOBANK_FIX)) {
                 lastProcessedTime = Number(data[AutoBankManager.k_OPKEY_TIME]);
                 delete data[AutoBankManager.k_OPKEY_TIME];
             } else {
                 lastProcessedTime = serverTime;
             }
-            if (GLOBAL.Timestamp() - lastProcessedTime > 3600 * 24 * 2) {
-                lastProcessedTime = GLOBAL.Timestamp() - 3600 * 24 * 2;
+            if (getGLOBAL().Timestamp() - lastProcessedTime > 3600 * 24 * 2) {
+                lastProcessedTime = getGLOBAL().Timestamp() - 3600 * 24 * 2;
             }
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK) {
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK) {
                 for (const key in data) {
                     const cellData = data[key];
                     if (key === AutoBankManager.k_OPKEY_TIME) {
@@ -104,7 +107,7 @@ export class AutoBankManager {
                                     } else {
                                         produce = OUTPOST_YARD_PROPS._outpostProps[building.t - 1].produce[0];
                                     }
-                                    produce = Math.max(Math.floor(produce * GLOBAL._averageAltitude.Get() / height), 1);
+                                    produce = Math.max(Math.floor(produce * getGLOBAL()._averageAltitude.Get() / height), 1);
                                     processedGIP[key]["r" + building.t].Add(produce);
                                 }
                             }
@@ -128,39 +131,39 @@ export class AutoBankManager {
     }
 
     public static setLocalGIP(result: Record<string, any>): void {
-        const processedGIP = BASE._processedGIP;
-        if (!MapRoomManager.instance.isInMapRoom3) {
+        const processedGIP = getBASE()._processedGIP;
+        if (!getMapRoomManager().instance.isInMapRoom3) {
             for (const key in processedGIP) {
                 if (key === AutoBankManager.k_OPKEY_TIME) {
-                    if (BYMConfig.instance.AUTOBANK_FIX && GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK && BASE.isOutpost) {
-                        result[key] = BASE._lastProcessedGIP;
-                    } else if (!BASE.isMainYardInfernoOnly) {
-                        result[key] = GLOBAL.Timestamp();
+                    if (BYMConfig.instance.AUTOBANK_FIX && getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK && getBASE().isOutpost) {
+                        result[key] = getBASE()._lastProcessedGIP;
+                    } else if (!getBASE().isMainYardInfernoOnly) {
+                        result[key] = getGLOBAL().Timestamp();
                     } else {
-                        result[key] = BASE._lastProcessedGIP;
+                        result[key] = getBASE()._lastProcessedGIP;
                     }
                 } else {
                     result[key] = {
-                        "r1": BASE._processedGIP[key][AutoBankManager.k_OPKEY_TWIGS].Get(),
-                        "r2": BASE._processedGIP[key][AutoBankManager.k_OPKEY_PEBBLES].Get(),
-                        "r3": BASE._processedGIP[key][AutoBankManager.k_OPKEY_PUTTY].Get(),
-                        "r4": BASE._processedGIP[key][AutoBankManager.k_OPKEY_GOO].Get()
+                        "r1": getBASE()._processedGIP[key][AutoBankManager.k_OPKEY_TWIGS].Get(),
+                        "r2": getBASE()._processedGIP[key][AutoBankManager.k_OPKEY_PEBBLES].Get(),
+                        "r3": getBASE()._processedGIP[key][AutoBankManager.k_OPKEY_PUTTY].Get(),
+                        "r4": getBASE()._processedGIP[key][AutoBankManager.k_OPKEY_GOO].Get()
                     };
                 }
             }
         } else {
             for (const key in processedGIP) {
                 if (key === AutoBankManager.k_OPKEY_TIME) {
-                    result[key] = GLOBAL.Timestamp();
+                    result[key] = getGLOBAL().Timestamp();
                 }
             }
         }
     }
 
     public static updateBuildingResources(result: Record<string, any>): Record<string, any> {
-        if (BASE.isOutpost) {
+        if (getBASE().isOutpost) {
             const resources: Record<string, number> = { "r1": 0, "r2": 0, "r3": 0, "r4": 0 };
-            const buildings = InstanceManager.getInstancesByClass(BRESOURCE);
+            const buildings = getInstanceManager().getInstancesByClass(getBRESOURCE());
             for (const building of buildings) {
                 const b = building as BFOUNDATION;
                 if (b._type >= 1 && b._type <= 4) {
@@ -170,25 +173,25 @@ export class AutoBankManager {
                             level++;
                         }
                         let produce = b._buildingProps.produce[level - 1];
-                        produce = Math.max(Math.floor(produce * GLOBAL._averageAltitude.Get() / GLOBAL._currentCell.cellHeight), 1);
+                        produce = Math.max(Math.floor(produce * getGLOBAL()._averageAltitude.Get() / getGLOBAL()._currentCell.cellHeight), 1);
                         resources["r" + b._type] += produce;
                     }
                 }
             }
-            if (BASE._processedGIP[AutoBankManager.k_OPKEY_BASE + BASE._baseID]) {
+            if (getBASE()._processedGIP[AutoBankManager.k_OPKEY_BASE + getBASE()._baseID]) {
                 for (let i = 1; i < AutoBankManager.k_MAX_RESOURCES; i++) {
-                    BASE._GIP["r" + i].Add(-BASE._processedGIP[AutoBankManager.k_OPKEY_BASE + BASE._baseID]["r" + i].Get());
-                    BASE._processedGIP[AutoBankManager.k_OPKEY_BASE + BASE._baseID]["r" + i].Set(resources["r" + i]);
-                    BASE._rawGIP[AutoBankManager.k_OPKEY_BASE + BASE._baseID]["r" + i] = resources["r" + i];
+                    getBASE()._GIP["r" + i].Add(-getBASE()._processedGIP[AutoBankManager.k_OPKEY_BASE + getBASE()._baseID]["r" + i].Get());
+                    getBASE()._processedGIP[AutoBankManager.k_OPKEY_BASE + getBASE()._baseID]["r" + i].Set(resources["r" + i]);
+                    getBASE()._rawGIP[AutoBankManager.k_OPKEY_BASE + getBASE()._baseID]["r" + i] = resources["r" + i];
                 }
             } else {
-                BASE._processedGIP[AutoBankManager.k_OPKEY_BASE + BASE._baseID] = {
+                getBASE()._processedGIP[AutoBankManager.k_OPKEY_BASE + getBASE()._baseID] = {
                     "r1": new SecNum(resources[AutoBankManager.k_OPKEY_TWIGS]),
                     "r2": new SecNum(resources[AutoBankManager.k_OPKEY_PEBBLES]),
                     "r3": new SecNum(resources[AutoBankManager.k_OPKEY_PUTTY]),
                     "r4": new SecNum(resources[AutoBankManager.k_OPKEY_GOO])
                 };
-                BASE._rawGIP[AutoBankManager.k_OPKEY_BASE + BASE._baseID] = {
+                getBASE()._rawGIP[AutoBankManager.k_OPKEY_BASE + getBASE()._baseID] = {
                     "r1": resources[AutoBankManager.k_OPKEY_TWIGS],
                     "r2": resources[AutoBankManager.k_OPKEY_PEBBLES],
                     "r3": resources[AutoBankManager.k_OPKEY_PUTTY],
@@ -196,41 +199,41 @@ export class AutoBankManager {
                 };
             }
             for (let i = 1; i < AutoBankManager.k_MAX_RESOURCES; i++) {
-                BASE._GIP["r" + i].Add(resources["r" + i]);
+                getBASE()._GIP["r" + i].Add(resources["r" + i]);
             }
-            result[AutoBankManager.k_OPKEY_BASE + BASE._baseID] = resources;
+            result[AutoBankManager.k_OPKEY_BASE + getBASE()._baseID] = resources;
         }
         return result;
     }
 
     public static autobank(ticks: number = 10, forceLog: boolean = false): void {
-        if (MapRoomManager.instance.isInMapRoom2) {
-            const gip = BASE._GIP;
+        if (getMapRoomManager().instance.isInMapRoom2) {
+            const gip = getBASE()._GIP;
             if (!gip) {
                 return;
             }
             const totalFunded = new SecNum(0);
             const funded = [new SecNum(0), new SecNum(0), new SecNum(0), new SecNum(0)];
             let overdrivePower: SecNum;
-            if (GLOBAL._harvesterOverdrive >= GLOBAL.Timestamp() && Boolean(GLOBAL._harvesterOverdrivePower.Get())) {
-                overdrivePower = GLOBAL._harvesterOverdrivePower;
+            if (getGLOBAL()._harvesterOverdrive >= getGLOBAL().Timestamp() && Boolean(getGLOBAL()._harvesterOverdrivePower.Get())) {
+                overdrivePower = getGLOBAL()._harvesterOverdrivePower;
             } else {
                 overdrivePower = new SecNum(1);
             }
             for (let i = 1; i < AutoBankManager.k_MAX_RESOURCES; i++) {
                 if (Boolean(gip["r" + i]) && Boolean(gip["r" + i].Get())) {
-                    funded[i - 1].Set(BASE.Fund(i, gip["r" + i].Get() * overdrivePower.Get() * ticks / 10, false, null, false, false));
+                    funded[i - 1].Set(getBASE().Fund(i, gip["r" + i].Get() * overdrivePower.Get() * ticks / 10, false, null, false, false));
                     totalFunded.Add(funded[i - 1].Get());
                 }
                 if (ticks > 10 || AutoBankManager.s_logCounter === 0) {
                     if (funded[i - 1].Get() > 0) {
-                        LOGGER.Stat([96, i, funded[i - 1].Get() * (ticks > 10 ? 1 : 10)]);
+                        getLOGGER().Stat([96, i, funded[i - 1].Get() * (ticks > 10 ? 1 : 10)]);
                     }
                     AutoBankManager.s_logCounter = 10;
                 }
             }
-            BASE.PointsAdd(Math.ceil(totalFunded.Get() * 0.375));
-        } else if (MapRoomManager.instance.isInMapRoom3) {
+            getBASE().PointsAdd(Math.ceil(totalFunded.Get() * 0.375));
+        } else if (getMapRoomManager().instance.isInMapRoom3) {
             const buff = BaseBuffHandler.instance.getBuffByName(AutoBankBaseBuff.k_NAME) as AutoBankBaseBuff;
             if (buff) {
                 AutoBankManager.fundAllResources(buff.value * Math.max(0, ticks), forceLog || AutoBankManager.s_logCounter === 0);
@@ -245,9 +248,9 @@ export class AutoBankManager {
 
     private static fundAllResources(amount: number, doLog: boolean): void {
         for (let i = 1; i < AutoBankManager.k_MAX_RESOURCES; i++) {
-            BASE.Fund(i, amount, false, null, false, false);
+            getBASE().Fund(i, amount, false, null, false, false);
             if (doLog && Boolean(amount)) {
-                LOGGER.Stat([96, i, amount]);
+                getLOGGER().Stat([96, i, amount]);
             }
         }
         if (doLog) {

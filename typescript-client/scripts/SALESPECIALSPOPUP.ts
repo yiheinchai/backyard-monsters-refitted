@@ -7,17 +7,20 @@ import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
 import { TweenLite } from "./gs/TweenLite";
 import { Quad } from "./gs/easing/Quad";
 import { SALESPECIALSPOPUP_CLIP } from "./SALESPECIALSPOPUP_CLIP";
-import { KEYS } from "./KEYS";
-import { GLOBAL } from "./GLOBAL";
-import { SOUNDS } from "./SOUNDS";
-import { BASE } from "./BASE";
-import { LOGIN } from "./LOGIN";
-import { POPUPS } from "./POPUPS";
-import { BUY } from "./BUY";
-import { STORE } from "./STORE";
-import { TUTORIAL } from "./TUTORIAL";
-import { BUILDINGS } from "./BUILDINGS";
 import { store_icon_CLIP } from "./store_icon_CLIP";
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getLOGIN(): any { return require("./LOGIN").LOGIN; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getBUY(): any { return require("./BUY").BUY; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+function getBUILDINGS(): any { return require("./BUILDINGS").BUILDINGS; }
+
 
 export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
     public static imageContainer: BuildingAssetContainer;
@@ -52,11 +55,11 @@ export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
             "bAction2X": -75, "bAction2Y": 50, "bAction2W": 150, "bAction2H": 30,
             "mcIconsX": 0, "mcIconsY": 0, "mcIconsW": 0, "mcIconsH": 0,
             "mcFrameX": -170, "mcFrameY": -130, "mcFrameW": 340, "mcFrameH": 220,
-            "tTitleText": KEYS.Get("special_textprops_title"),
-            "tDescText1": KEYS.Get("special_limitedtime"),
-            "tDescText2": KEYS.Get("special_remaining") + "<br><br>",
-            "tDescText3": KEYS.Get("special_textprops_desc3"),
-            "bActionText": KEYS.Get("special_buyshiny")
+            "tTitleText": getKEYS().Get("special_textprops_title"),
+            "tDescText1": getKEYS().Get("special_limitedtime"),
+            "tDescText2": getKEYS().Get("special_remaining") + "<br><br>",
+            "tDescText3": getKEYS().Get("special_textprops_desc3"),
+            "bActionText": getKEYS().Get("special_buyshiny")
         };
         this._giftProps = {
             "tTitleX": -150, "tTitleY": -100, "tTitleW": 300, "tTitleH": 70,
@@ -65,11 +68,11 @@ export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
             "bAction2X": -75, "bAction2Y": 50, "bAction2W": 150, "bAction2H": 30,
             "mcIconsX": -190, "mcIconsY": -25, "mcIconsW": 0, "mcIconsH": 0,
             "mcFrameX": -210, "mcFrameY": -130, "mcFrameW": 420, "mcFrameH": 290,
-            "tTitleText": KEYS.Get("special_giftprops_title"),
-            "tDescText1": KEYS.Get("special_limitedtime"),
-            "tDescText2": KEYS.Get("special_remaining") + "<br><br><br><br><br><br><br><br>",
-            "tDescText3": KEYS.Get("special_giftprops_desc3"),
-            "bActionText": KEYS.Get("special_buyshiny")
+            "tTitleText": getKEYS().Get("special_giftprops_title"),
+            "tDescText1": getKEYS().Get("special_limitedtime"),
+            "tDescText2": getKEYS().Get("special_remaining") + "<br><br><br><br><br><br><br><br>",
+            "tDescText3": getKEYS().Get("special_giftprops_desc3"),
+            "bActionText": getKEYS().Get("special_buyshiny")
         };
         this._giftConfirmProps = {
             "tTitleX": -150, "tTitleY": -100, "tTitleW": 300, "tTitleH": 70,
@@ -78,11 +81,11 @@ export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
             "bAction2X": -75, "bAction2Y": 50, "bAction2W": 150, "bAction2H": 30,
             "mcIconsX": -190, "mcIconsY": -55, "mcIconsW": 0, "mcIconsH": 0,
             "mcFrameX": -210, "mcFrameY": -130, "mcFrameW": 420, "mcFrameH": 290,
-            "tTitleText": KEYS.Get("special_giftconfirmprops_title"),
+            "tTitleText": getKEYS().Get("special_giftconfirmprops_title"),
             "tDescText1": "",
             "tDescText2": "<br><br><br><br><br><br>",
-            "tDescText3": KEYS.Get("special_giftconfirmprops_desc3"),
-            "bActionText": KEYS.Get("special_gotostore")
+            "tDescText3": getKEYS().Get("special_giftconfirmprops_desc3"),
+            "bActionText": getKEYS().Get("special_gotostore")
         };
         this._shinyDiscountProps = {
             "tTitleX": -150, "tTitleY": -100, "tTitleW": 300, "tTitleH": 70,
@@ -91,11 +94,11 @@ export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
             "bAction2X": -75, "bAction2Y": 50, "bAction2W": 150, "bAction2H": 30,
             "mcIconsX": 0, "mcIconsY": 0, "mcIconsW": 0, "mcIconsH": 0,
             "mcFrameX": -170, "mcFrameY": -130, "mcFrameW": 340, "mcFrameH": 200,
-            "tTitleText": KEYS.Get("special_shinydiscount_title"),
-            "tDescText1": KEYS.Get("special_limitedtime"),
-            "tDescText2": KEYS.Get("special_remaining") + "<br><br>",
-            "tDescText3": KEYS.Get("special_shinydiscount_desc3"),
-            "bActionText": KEYS.Get("special_buyshiny")
+            "tTitleText": getKEYS().Get("special_shinydiscount_title"),
+            "tDescText1": getKEYS().Get("special_limitedtime"),
+            "tDescText2": getKEYS().Get("special_remaining") + "<br><br>",
+            "tDescText3": getKEYS().Get("special_shinydiscount_desc3"),
+            "bActionText": getKEYS().Get("special_buyshiny")
         };
         this._shinyBonusProps = {
             "tTitleX": -150, "tTitleY": -100, "tTitleW": 300, "tTitleH": 70,
@@ -104,11 +107,11 @@ export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
             "bAction2X": -75, "bAction2Y": 50, "bAction2W": 150, "bAction2H": 30,
             "mcIconsX": 0, "mcIconsY": 0, "mcIconsW": 0, "mcIconsH": 0,
             "mcFrameX": -170, "mcFrameY": -130, "mcFrameW": 340, "mcFrameH": 200,
-            "tTitleText": KEYS.Get("special_shinybonus_title"),
-            "tDescText1": KEYS.Get("special_limitedtime"),
-            "tDescText2": KEYS.Get("special_remaining") + "<br><br>",
-            "tDescText3": KEYS.Get("special_shinybonus"),
-            "bActionText": KEYS.Get("special_buyshiny")
+            "tTitleText": getKEYS().Get("special_shinybonus_title"),
+            "tDescText1": getKEYS().Get("special_limitedtime"),
+            "tDescText2": getKEYS().Get("special_remaining") + "<br><br>",
+            "tDescText3": getKEYS().Get("special_shinybonus"),
+            "bActionText": getKEYS().Get("special_buyshiny")
         };
         this._sevenElevenBigGulpProps = {
             "tTitleX": -105, "tTitleY": 108, "tTitleW": 90, "tTitleH": 35,
@@ -117,12 +120,12 @@ export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
             "bAction2X": 25, "bAction2Y": 105, "bAction2W": 100, "bAction2H": 45,
             "mcIconsX": 0, "mcIconsY": 0, "mcIconsW": 0, "mcIconsH": 0,
             "mcFrameX": -180, "mcFrameY": -175, "mcFrameW": 360, "mcFrameH": 350,
-            "tTitleText": KEYS.Get("special_gbg_title"),
-            "tDescText1": KEYS.Get("special_limitedtime"),
-            "tDescText2": KEYS.Get("special_remaining") + "<br><br>",
-            "tDescText3": KEYS.Get("special_shinybonus"),
-            "bActionText": KEYS.Get("special_goldenbiggulp"),
-            "bActionText2": KEYS.Get("special_hatcheryod")
+            "tTitleText": getKEYS().Get("special_gbg_title"),
+            "tDescText1": getKEYS().Get("special_limitedtime"),
+            "tDescText2": getKEYS().Get("special_remaining") + "<br><br>",
+            "tDescText3": getKEYS().Get("special_shinybonus"),
+            "bActionText": getKEYS().Get("special_goldenbiggulp"),
+            "bActionText2": getKEYS().Get("special_hatcheryod")
         };
         this._sevenElevenBigGulpTutorialProps = {
             "tTitleX": -50, "tTitleY": 108, "tTitleW": 90, "tTitleH": 35,
@@ -131,12 +134,12 @@ export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
             "bAction2X": 25, "bAction2Y": 105, "bAction2W": 100, "bAction2H": 45,
             "mcIconsX": 0, "mcIconsY": 0, "mcIconsW": 0, "mcIconsH": 0,
             "mcFrameX": -180, "mcFrameY": -175, "mcFrameW": 360, "mcFrameH": 350,
-            "tTitleText": KEYS.Get("special_gbg_title"),
-            "tDescText1": KEYS.Get("special_limitedtime"),
-            "tDescText2": KEYS.Get("special_remaining") + "<br><br>",
-            "tDescText3": KEYS.Get("special_shinybonus"),
-            "bActionText": KEYS.Get("special_goldenbiggulp"),
-            "bActionText2": KEYS.Get("special_hatcheryod")
+            "tTitleText": getKEYS().Get("special_gbg_title"),
+            "tDescText1": getKEYS().Get("special_limitedtime"),
+            "tDescText2": getKEYS().Get("special_remaining") + "<br><br>",
+            "tDescText3": getKEYS().Get("special_shinybonus"),
+            "bActionText": getKEYS().Get("special_goldenbiggulp"),
+            "bActionText2": getKEYS().Get("special_hatcheryod")
         };
         SALESPECIALSPOPUP._page = param1;
         this.Switch(SALESPECIALSPOPUP._page);
@@ -149,11 +152,11 @@ export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
         let _loc4_: number = 0;
         let _loc5_: number = 0;
         let _loc6_: number = 0;
-        if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && !GLOBAL._monetized && !SALESPECIALSPOPUP._open && BASE.BaseLevel().level >= 26 && !SALESPECIALSPOPUP._alreadyDone) {
+        if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD && !getGLOBAL()._monetized && !SALESPECIALSPOPUP._open && getBASE().BaseLevel().level >= 26 && !SALESPECIALSPOPUP._alreadyDone) {
             _loc1_ = 0;
-            _loc2_ = Number(LOGIN._digits[LOGIN._digits.length - 1]);
-            _loc3_ = Number(LOGIN._digits[LOGIN._digits.length - 2]);
-            _loc4_ = Number(LOGIN._digits[LOGIN._digits.length - 3]);
+            _loc2_ = Number(getLOGIN()._digits[getLOGIN()._digits.length - 1]);
+            _loc3_ = Number(getLOGIN()._digits[getLOGIN()._digits.length - 2]);
+            _loc4_ = Number(getLOGIN()._digits[getLOGIN()._digits.length - 3]);
             _loc5_ = (_loc4_ + _loc2_) % 10;
             _loc6_ = (_loc3_ + _loc2_) % 10;
             if (_loc5_ <= 7) {
@@ -180,16 +183,16 @@ export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
 
     public static Show(param1: string = "text"): void {
         if (!SALESPECIALSPOPUP._open) {
-            SOUNDS.Play("click1");
-            BASE.BuildingDeselect();
+            getSOUNDS().Play("click1");
+            getBASE().BuildingDeselect();
             SALESPECIALSPOPUP._open = true;
             SALESPECIALSPOPUP._page = param1;
             SALESPECIALSPOPUP._popup = new SALESPECIALSPOPUP(param1);
             if (param1 == "biggulp") {
-                POPUPS.Push(SALESPECIALSPOPUP._popup, BUY.logFB711RedeemShown, [param1], null, null, false);
+                getPOPUPS().Push(SALESPECIALSPOPUP._popup, getBUY().logFB711RedeemShown, [param1], null, null, false);
             } else {
                 SALESPECIALSPOPUP.CheckPromoTimer();
-                POPUPS.Push(SALESPECIALSPOPUP._popup, BUY.logPromoShown, [param1], null, null, false);
+                getPOPUPS().Push(SALESPECIALSPOPUP._popup, getBUY().logPromoShown, [param1], null, null, false);
             }
             TweenLite.to(SALESPECIALSPOPUP._do, 0.2, { "scaleX": 1, "scaleY": 1, "ease": Quad.easeOut });
             if (!SALESPECIALSPOPUP._saleEnd && param1 != "giftconfirm" && param1 != "biggulp") {
@@ -219,74 +222,74 @@ export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
         if (SALESPECIALSPOPUP._open && Boolean(SALESPECIALSPOPUP._popup)) {
             SALESPECIALSPOPUP._popup.Update(SALESPECIALSPOPUP._page);
         }
-        if (SALESPECIALSPOPUP._saleEnd < GLOBAL.Timestamp()) {
+        if (SALESPECIALSPOPUP._saleEnd < getGLOBAL().Timestamp()) {
             SALESPECIALSPOPUP.EndSale();
         }
     }
 
     public static CheckPromoTimer(): void {
-        GLOBAL.CallJS("cc.startPromoTimer", [{ "callback": "startPromoTimer" }]);
+        getGLOBAL().CallJS("cc.startPromoTimer", [{ "callback": "startPromoTimer" }]);
     }
 
     public static StartSale(param1: number = 0): void {
-        if (param1 > 0 && param1 > GLOBAL.Timestamp()) {
+        if (param1 > 0 && param1 > getGLOBAL().Timestamp()) {
             SALESPECIALSPOPUP._saleEnd = param1;
-            if (GLOBAL._flags.midgameIncentive == 1) {
+            if (getGLOBAL()._flags.midgameIncentive == 1) {
                 SALESPECIALSPOPUP.Show("text");
-            } else if (GLOBAL._flags.midgameIncentive == 2) {
+            } else if (getGLOBAL()._flags.midgameIncentive == 2) {
                 SALESPECIALSPOPUP.Show("gift");
-            } else if (GLOBAL._flags.midgameIncentive == 3) {
+            } else if (getGLOBAL()._flags.midgameIncentive == 3) {
                 SALESPECIALSPOPUP.Show("shinydiscount");
-            } else if (GLOBAL._flags.midgameIncentive == 4) {
+            } else if (getGLOBAL()._flags.midgameIncentive == 4) {
                 SALESPECIALSPOPUP.Show("shinybonus");
-            } else if (GLOBAL._flags.midgameIncentive == 5) {
+            } else if (getGLOBAL()._flags.midgameIncentive == 5) {
                 SALESPECIALSPOPUP.Show("giftconfirm");
             }
         }
     }
 
     public static EndSale(): void {
-        SALESPECIALSPOPUP._saleEnd = GLOBAL.Timestamp();
+        SALESPECIALSPOPUP._saleEnd = getGLOBAL().Timestamp();
     }
 
     public static OnActionClick(param1: MouseEvent = null): void {
         if (SALESPECIALSPOPUP._page == "giftconfirm") {
-            POPUPS.Next();
-            if (!BASE.isInfernoMainYardOrOutpost) {
-                STORE.ShowB(3, 1, ["HOD", "HOD2", "HOD3"]);
+            getPOPUPS().Next();
+            if (!getBASE().isInfernoMainYardOrOutpost) {
+                getSTORE().ShowB(3, 1, ["HOD", "HOD2", "HOD3"]);
             } else {
-                STORE.ShowB(3, 1, ["HODI", "HOD2I", "HOD3I"]);
+                getSTORE().ShowB(3, 1, ["HODI", "HOD2I", "HOD3I"]);
             }
         } else if (SALESPECIALSPOPUP._page == "biggulp") {
             if (param1.currentTarget == SALESPECIALSPOPUP._popup.bAction4) {
-                if (TUTORIAL._stage < 200) {
-                    POPUPS.Next();
+                if (getTUTORIAL()._stage < 200) {
+                    getPOPUPS().Next();
                 } else {
-                    POPUPS.Next();
-                    if (!BASE.isInfernoMainYardOrOutpost) {
-                        STORE.ShowB(3, 1, ["HOD", "HOD2", "HOD3"]);
+                    getPOPUPS().Next();
+                    if (!getBASE().isInfernoMainYardOrOutpost) {
+                        getSTORE().ShowB(3, 1, ["HOD", "HOD2", "HOD3"]);
                     } else {
-                        STORE.ShowB(3, 1, ["HODI", "HOD2I", "HOD3I"]);
+                        getSTORE().ShowB(3, 1, ["HODI", "HOD2I", "HOD3I"]);
                     }
                 }
             } else if (param1.currentTarget == SALESPECIALSPOPUP._popup.bAction3) {
-                if (TUTORIAL._stage < 200) {
-                    POPUPS.Next();
+                if (getTUTORIAL()._stage < 200) {
+                    getPOPUPS().Next();
                 } else {
-                    BUILDINGS._buildingID = 120;
-                    BUILDINGS.Show();
-                    BUILDINGS._mc.SwitchB(4, 4, 0);
-                    POPUPS.Next();
+                    getBUILDINGS()._buildingID = 120;
+                    getBUILDINGS().Show();
+                    getBUILDINGS()._mc.SwitchB(4, 4, 0);
+                    getPOPUPS().Next();
                 }
             }
         } else {
-            BUY.MidGameOffers(SALESPECIALSPOPUP._page);
+            getBUY().MidGameOffers(SALESPECIALSPOPUP._page);
         }
     }
 
     public static Hide(): void {
         if (SALESPECIALSPOPUP._open) {
-            SOUNDS.Play("close");
+            getSOUNDS().Play("close");
             SALESPECIALSPOPUP._open = false;
             SALESPECIALSPOPUP._popup.removeEventListener(Event.ENTER_FRAME, SALESPECIALSPOPUP.Tick);
             if (SALESPECIALSPOPUP._popup.bAction) {
@@ -301,7 +304,7 @@ export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
             if (SALESPECIALSPOPUP._popup.bAction4) {
                 SALESPECIALSPOPUP._popup.bAction4.removeEventListener(MouseEvent.CLICK, SALESPECIALSPOPUP.OnActionClick);
             }
-            POPUPS.Next();
+            getPOPUPS().Next();
         }
     }
 
@@ -331,7 +334,7 @@ export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
                 break;
             case "biggulp":
                 this.gotoAndStop("redeem");
-                if (TUTORIAL._stage < 200) {
+                if (getTUTORIAL()._stage < 200) {
                     SALESPECIALSPOPUP._props = this._sevenElevenBigGulpTutorialProps;
                 } else {
                     SALESPECIALSPOPUP._props = this._sevenElevenBigGulpProps;
@@ -358,10 +361,10 @@ export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
             this.bAction4.width = SALESPECIALSPOPUP._props.bAction2W;
             this.bAction4.height = SALESPECIALSPOPUP._props.bAction2H;
             (this.bAction4 as any).txt.htmlText = SALESPECIALSPOPUP._props.bActionText2;
-            if (TUTORIAL._stage < 200) {
+            if (getTUTORIAL()._stage < 200) {
                 if (this.bAction3) {
                     this.bAction3.visible = true;
-                    (this.bAction3 as any).txt.htmlText = KEYS.Get("tut_continue");
+                    (this.bAction3 as any).txt.htmlText = getKEYS().Get("tut_continue");
                 }
                 if (this.bAction4) {
                     this.bAction4.visible = false;
@@ -436,8 +439,8 @@ export class SALESPECIALSPOPUP extends SALESPECIALSPOPUP_CLIP {
         let _loc4_: number = NaN;
         if (SALESPECIALSPOPUP._page != "biggulp") {
             _loc2_ = "";
-            _loc4_ = SALESPECIALSPOPUP._saleEnd - GLOBAL.Timestamp();
-            _loc3_ = GLOBAL.ToTime(_loc4_);
+            _loc4_ = SALESPECIALSPOPUP._saleEnd - getGLOBAL().Timestamp();
+            _loc3_ = getGLOBAL().ToTime(_loc4_);
             _loc2_ += SALESPECIALSPOPUP._props.tDescText1;
             if (SALESPECIALSPOPUP._page != "giftconfirm") {
                 _loc2_ += "<b>" + _loc3_ + "</b>";

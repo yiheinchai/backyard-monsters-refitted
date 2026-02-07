@@ -9,8 +9,11 @@ import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
 import { SecNum } from "../../cc/utils/SecNum";
 import { PlayerBaseInferno_CLIP } from "../../../PlayerBaseInferno_CLIP";
 
-import { KEYS } from "../../../KEYS";
-import { LOGIN } from "../../../LOGIN";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGIN(): any { return require("../../../LOGIN").LOGIN; }
+
+
 
 /**
  * PlayerBase (Inferno) - represents the player's base on the inferno map room.
@@ -35,8 +38,8 @@ export class PlayerBase extends PlayerBaseInferno_CLIP {
         this.data.ownerName = "My Yard";
         this.loader = new Loader();
         try {
-            if (LOGIN._playerPic.length > 5) {
-                this.loader.load(new URLRequest(LOGIN._playerPic), new LoaderContext(true));
+            if (getLOGIN()._playerPic.length > 5) {
+                this.loader.load(new URLRequest(getLOGIN()._playerPic), new LoaderContext(true));
             }
         } catch (e: any) {
             // Ignore errors
@@ -52,7 +55,7 @@ export class PlayerBase extends PlayerBaseInferno_CLIP {
         this.image.addChild(this.loader);
         this.image.addChild(this.frame_mc);
         this.name_txt.autoSize = TextFieldAutoSize.LEFT;
-        this.name_txt.htmlText = "<b>" + KEYS.Get("map_mybase");
+        this.name_txt.htmlText = "<b>" + getKEYS().Get("map_mybase");
         this.name_txt.x = this.name_txt.textWidth * -0.5;
         this.nameBox = new Sprite();
         this.nameBox.addChild(this.box_mc);

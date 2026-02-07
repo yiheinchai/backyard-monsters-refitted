@@ -7,10 +7,13 @@ import URLRequest from 'openfl/net/URLRequest';
 import URLRequestHeader from 'openfl/net/URLRequestHeader';
 import URLRequestMethod from 'openfl/net/URLRequestMethod';
 import URLVariables from 'openfl/net/URLVariables';
-import { GLOBAL } from './GLOBAL';
-import { LOGIN } from './LOGIN';
-import { LOGGER } from './LOGGER';
 import { JSON } from './JSON';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getLOGIN(): any { return require("./LOGIN").LOGIN; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+
 
 export class URLLoaderApi {
     public static _data: string = "";
@@ -37,7 +40,7 @@ export class URLLoaderApi {
 
             request.method = method;
             request.contentType = "application/json";
-            request.requestHeaders.push(new URLRequestHeader("Authorization", "Bearer " + LOGIN.token));
+            request.requestHeaders.push(new URLRequestHeader("Authorization", "Bearer " + getLOGIN().token));
 
             if (data == null || data == undefined) data = {};
             if (method != URLRequestMethod.GET) request.data = JSON.encode(data);
@@ -53,12 +56,12 @@ export class URLLoaderApi {
 
             loader.addEventListener(IOErrorEvent.IO_ERROR, (event: IOErrorEvent): void => {
                 errMessage = "IOError error event occurred while making the request";
-                GLOBAL.ErrorMessage(errMessage, GLOBAL.ERROR_ORANGE_BOX_ONLY);
+                getGLOBAL().ErrorMessage(errMessage, getGLOBAL().ERROR_ORANGE_BOX_ONLY);
             });
 
         } catch (error) {
             const errMessage = "Error occurred while making the request: " + error.message;
-            GLOBAL.ErrorMessage(errMessage, GLOBAL.ERROR_ORANGE_BOX_ONLY);
+            getGLOBAL().ErrorMessage(errMessage, getGLOBAL().ERROR_ORANGE_BOX_ONLY);
         }
     }
 
@@ -73,7 +76,7 @@ export class URLLoaderApi {
         this._url = baseUrl;
         const urlBuilder = new URLRequest(baseUrl);
         const urlVariables = new URLVariables();
-        const token = LOGIN.token;
+        const token = getLOGIN().token;
 
         if (keyValuePairs != null && keyValuePairs.length > 0) {
             for (let currentIndex = 0; currentIndex < keyValuePairs.length; currentIndex++) {
@@ -93,8 +96,8 @@ export class URLLoaderApi {
         this._req.addEventListener(IOErrorEvent.IO_ERROR, this.loadError.bind(this));
         this._req.addEventListener(HTTPStatusEvent.HTTP_STATUS, this.setStatus.bind(this));
         this._req.addEventListener(SecurityErrorEvent.SECURITY_ERROR, (event: SecurityErrorEvent) => {
-            GLOBAL.initError = "Failed to connect to the server.";
-            GLOBAL.eventDispatcher.dispatchEvent(new Event("initError"));
+            getGLOBAL().initError = "Failed to connect to the server.";
+            getGLOBAL().eventDispatcher.dispatchEvent(new Event("initError"));
             return;
         });
     }
@@ -103,47 +106,47 @@ export class URLLoaderApi {
         this._status = param1.status;
         switch (this._status) {
             case 404:
-                LOGGER.Log("err", "URLLoaderApi HTTP status " + this._status + " Not Found");
+                getLOGGER().Log("err", "URLLoaderApi HTTP status " + this._status + " Not Found");
                 break;
             case 401:
-                LOGGER.Log("err", "URLLoaderApi HTTP status " + this._status + " Unauthorized");
+                getLOGGER().Log("err", "URLLoaderApi HTTP status " + this._status + " Unauthorized");
                 break;
             case 403:
-                LOGGER.Log("err", "URLLoaderApi HTTP status " + this._status + " Forbidden");
+                getLOGGER().Log("err", "URLLoaderApi HTTP status " + this._status + " Forbidden");
                 break;
             case 405:
-                LOGGER.Log("err", "URLLoaderApi HTTP status " + this._status + " Method Not Allowed");
+                getLOGGER().Log("err", "URLLoaderApi HTTP status " + this._status + " Method Not Allowed");
                 break;
             case 406:
-                LOGGER.Log("err", "URLLoaderApi HTTP status " + this._status + " Not Acceptable");
+                getLOGGER().Log("err", "URLLoaderApi HTTP status " + this._status + " Not Acceptable");
                 break;
             case 407:
-                LOGGER.Log("err", "URLLoaderApi HTTP status " + this._status + " Proxy Authentication Required");
+                getLOGGER().Log("err", "URLLoaderApi HTTP status " + this._status + " Proxy Authentication Required");
                 break;
             case 408:
-                LOGGER.Log("err", "URLLoaderApi HTTP status " + this._status + " Request Timeout");
+                getLOGGER().Log("err", "URLLoaderApi HTTP status " + this._status + " Request Timeout");
                 break;
             case 500:
-                LOGGER.Log("err", "URLLoaderApi HTTP status " + this._status + " Internal Server Error");
+                getLOGGER().Log("err", "URLLoaderApi HTTP status " + this._status + " Internal Server Error");
                 break;
             case 501:
-                LOGGER.Log("err", "URLLoaderApi HTTP status " + this._status + " Not Implemented");
+                getLOGGER().Log("err", "URLLoaderApi HTTP status " + this._status + " Not Implemented");
                 break;
             case 502:
-                LOGGER.Log("err", "URLLoaderApi HTTP status " + this._status + " Bad Gateway");
+                getLOGGER().Log("err", "URLLoaderApi HTTP status " + this._status + " Bad Gateway");
                 break;
             case 503:
-                LOGGER.Log("err", "URLLoaderApi HTTP status " + this._status + " Service Unavailable");
+                getLOGGER().Log("err", "URLLoaderApi HTTP status " + this._status + " Service Unavailable");
                 break;
             default:
                 if (this._status > 400) {
-                    LOGGER.Log("err", "URLLoaderApi HTTP status " + this._status + " Other status");
+                    getLOGGER().Log("err", "URLLoaderApi HTTP status " + this._status + " Other status");
                 }
         }
     }
 
     private loadError(param1: IOErrorEvent): void {
-        LOGGER.Log("err", "URLLoader Load Error " + this._url);
+        getLOGGER().Log("err", "URLLoader Load Error " + this._url);
         let errorObj: any = null;
         if (this._req && this._req.data) {
             try {

@@ -1,6 +1,9 @@
 import Event from "openfl/events/Event";
 
-import { BFOUNDATION } from "../../../BFOUNDATION";
+// Lazy imports to break circular dependency chains
+function getBFOUNDATION(): any { return require("../../../BFOUNDATION").BFOUNDATION; }
+
+
 
 /**
  * Event dispatched for building state changes.

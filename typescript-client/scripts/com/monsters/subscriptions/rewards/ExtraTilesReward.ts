@@ -1,7 +1,10 @@
 import { Reward } from "../../rewarding/Reward";
 
-import { GLOBAL } from "../../../../GLOBAL";
-import { MAP } from "../../../../MAP";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getMAP(): any { return require("../../../../MAP").MAP; }
+
+
 
 /**
  * Extra tiles reward - unlocks extra yard tiles for subscribers.
@@ -14,14 +17,14 @@ export class ExtraTilesReward extends Reward {
     }
 
     public override canBeApplied(): boolean {
-        return GLOBAL.isAtHome();
+        return getGLOBAL().isAtHome();
     }
 
     protected override onApplication(): void {
-        MAP.swapIntBG(this.value);
+        getMAP().swapIntBG(this.value);
     }
 
     public override removed(): void {
-        MAP.swapIntBG(0);
+        getMAP().swapIntBG(0);
     }
 }

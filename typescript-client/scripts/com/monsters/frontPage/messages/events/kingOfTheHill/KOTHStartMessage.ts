@@ -1,8 +1,11 @@
 import { KOTHPromoMessage } from "./KOTHPromoMessage";
-import { MapRoomManager } from "../../../../maproom_manager/MapRoomManager";
 
-import { GLOBAL } from "../../../../../../GLOBAL";
-import { KEYS } from "../../../../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../../../../maproom_manager/MapRoomManager").MapRoomManager; }
+function getGLOBAL(): any { return require("../../../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../../../KEYS").KEYS; }
+
+
 
 /**
  * King of the Hill start message - shown when KOTH event starts.
@@ -10,11 +13,11 @@ import { KEYS } from "../../../../../../KEYS";
 export class KOTHStartMessage extends KOTHPromoMessage {
     constructor() {
         super("event_kothstart");
-        if (MapRoomManager.instance.isInMapRoom2or3) {
+        if (getMapRoomManager().instance.isInMapRoom2or3) {
             this._action = this.openMapRoom.bind(this);
-            this._buttonCopy = KEYS.Get("btn_openmap");
-        } else if (Boolean(GLOBAL._bMap) && GLOBAL.townHall._lvl.Get() >= 6) {
-            this._buttonCopy = KEYS.Get("btn_upgradenow");
+            this._buttonCopy = getKEYS().Get("btn_openmap");
+        } else if (Boolean(getGLOBAL()._bMap) && getGLOBAL().townHall._lvl.Get() >= 6) {
+            this._buttonCopy = getKEYS().Get("btn_upgradenow");
             this._action = this.upgradeMapRoom.bind(this);
         }
         const useVideo: boolean = false;
@@ -26,6 +29,6 @@ export class KOTHStartMessage extends KOTHPromoMessage {
     }
 
     private openMapRoom(): void {
-        GLOBAL.ShowMap();
+        getGLOBAL().ShowMap();
     }
 }

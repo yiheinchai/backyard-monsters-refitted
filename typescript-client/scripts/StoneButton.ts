@@ -7,10 +7,13 @@ import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { ImageText } from './com/monsters/display/ImageText';
-import { KEYS } from './KEYS';
-import { GLOBAL } from './GLOBAL';
 import { ScaleBitmap } from './org/bytearray/display/ScaleBitmap';
 import { button_alert } from './button_alert';
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+
 
 export class StoneButton extends Sprite {
     public static _bgKeys: any[] = [
@@ -115,7 +118,7 @@ export class StoneButton extends Sprite {
     }
 
     public SetupKey(param1: string, param2: number = 12): void {
-        this.Setup(KEYS.Get(param1), param2);
+        this.Setup(getKEYS().Get(param1), param2);
     }
 
     public Setup(str: string, sz: number = 12): void {
@@ -165,7 +168,7 @@ export class StoneButton extends Sprite {
         this._tgtWidth = tx.width + 2 * this.margin;
 
         let imgArray = StoneButton._bgKeys;
-        if (GLOBAL.InfernoMode()) {
+        if (getGLOBAL().InfernoMode()) {
             imgArray = StoneButton._bgKeysInferno;
         }
 

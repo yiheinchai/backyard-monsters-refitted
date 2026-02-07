@@ -1,14 +1,17 @@
 import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
-import { BASE } from './BASE';
 import { CUSTOMATTACKS } from './CUSTOMATTACKS';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { MAP } from './MAP';
 import { MONSTERBAITERPOPUP } from './MONSTERBAITERPOPUP';
-import { SOUNDS } from './SOUNDS';
-import { UI2 } from './UI2';
-import { WMATTACK } from './WMATTACK';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getUI2(): any { return require("./UI2").UI2; }
+function getWMATTACK(): any { return require("./WMATTACK").WMATTACK; }
+
 
 /**
  * MONSTERBAITER - Monster Baiter Controller
@@ -32,14 +35,14 @@ export class MONSTERBAITER {
     constructor() {}
 
     public static Tick(): void {
-        if (GLOBAL._bBaiter) {
+        if (getGLOBAL()._bBaiter) {
             MONSTERBAITER._musk = MONSTERBAITER._muskLimit;
             if (MONSTERBAITER._mc) {
                 MONSTERBAITER._mc.Update();
             }
             if (MONSTERBAITER._attPrep > 0) {
                 if (MONSTERBAITER._attPrep === 1) {
-                    UI2._warning.Update("<font size=\"28\">" + KEYS.Get("msg_dontpanic") + "</font>");
+                    getUI2()._warning.Update("<font size=\"28\">" + getKEYS().Get("msg_dontpanic") + "</font>");
                     MONSTERBAITER._attPrep = 0;
                     const attackers: any[] = [];
                     for (const creatureId in MONSTERBAITER._queue) {
@@ -47,7 +50,7 @@ export class MONSTERBAITER {
                             attackers.push([creatureId, "bounce", MONSTERBAITER._queue[creatureId], MONSTERBAITER._attackPt.x, MONSTERBAITER._attackPt.y, 0, 0]);
                         }
                     }
-                    WMATTACK._type = WMATTACK.TYPE_DAMAGE;
+                    getWMATTACK()._type = getWMATTACK().TYPE_DAMAGE;
                     MONSTERBAITER._currentAttackers = CUSTOMATTACKS.CustomAttack(attackers);
                     for (const group of MONSTERBAITER._currentAttackers) {
                         for (const monster of group) {
@@ -55,8 +58,8 @@ export class MONSTERBAITER {
                         }
                     }
                 } else {
-                    UI2._warning.Update("<font size=\"28\">" + (MONSTERBAITER._attPrep - 1) + "</font>");
-                    SOUNDS.PlayMusic(BASE.isInfernoMainYardOrOutpost ? "musicipanic" : "musicpanic");
+                    getUI2()._warning.Update("<font size=\"28\">" + (MONSTERBAITER._attPrep - 1) + "</font>");
+                    getSOUNDS().PlayMusic(getBASE().isInfernoMainYardOrOutpost ? "musicipanic" : "musicpanic");
                     MONSTERBAITER._attPrep--;
                 }
             }
@@ -68,19 +71,19 @@ export class MONSTERBAITER {
         MONSTERBAITER._scaredAway = true;
         MONSTERBAITER._attPrep = 4;
         MONSTERBAITER._attacking = 1;
-        MAP.FocusTo(GLOBAL._bBaiter.x, GLOBAL._bBaiter.y, 2);
-        UI2.Show("warning");
-        BASE.Save();
-        UI2.Hide("top");
-        UI2.Hide("bottom");
+        getMAP().FocusTo(getGLOBAL()._bBaiter.x, getGLOBAL()._bBaiter.y, 2);
+        getUI2().Show("warning");
+        getBASE().Save();
+        getUI2().Hide("top");
+        getUI2().Hide("bottom");
     }
 
     public static End(silent: boolean = false): void {
         MONSTERBAITER._scaredAway = true;
-        if (!silent) SOUNDS.Play("wmbhorn");
-        UI2.Hide("scareAway");
-        UI2.Hide("warning");
-        SOUNDS.PlayMusic(BASE.isInfernoMainYardOrOutpost ? "musicibuild" : "musicbuild");
+        if (!silent) getSOUNDS().Play("wmbhorn");
+        getUI2().Hide("scareAway");
+        getUI2().Hide("warning");
+        getSOUNDS().PlayMusic(getBASE().isInfernoMainYardOrOutpost ? "musicibuild" : "musicbuild");
         
         for (const group of MONSTERBAITER._currentAttackers) {
             for (let i = 0; i < group.length; i++) {
@@ -111,10 +114,10 @@ export class MONSTERBAITER {
 
     public static Update(): void {
         try {
-            if (GLOBAL._bBaiter !== null) {
-                const props = GLOBAL._buildingProps[18];
-                MONSTERBAITER._muskLimit = props.capacity[GLOBAL._bBaiter._lvl.Get() - 1];
-                MONSTERBAITER._replenishRate = props.produce[GLOBAL._bBaiter._lvl.Get() - 1];
+            if (getGLOBAL()._bBaiter !== null) {
+                const props = getGLOBAL()._buildingProps[18];
+                MONSTERBAITER._muskLimit = props.capacity[getGLOBAL()._bBaiter._lvl.Get() - 1];
+                MONSTERBAITER._replenishRate = props.produce[getGLOBAL()._bBaiter._lvl.Get() - 1];
             }
         } catch (e) {
             // Ignore errors
@@ -135,9 +138,9 @@ export class MONSTERBAITER {
 
     public static Show(): void {
         if (!MONSTERBAITER._mc) {
-            SOUNDS.Play("click1");
-            GLOBAL.BlockerAdd();
-            MONSTERBAITER._mc = GLOBAL._layerWindows.addChild(new MONSTERBAITERPOPUP()) as MONSTERBAITERPOPUP;
+            getSOUNDS().Play("click1");
+            getGLOBAL().BlockerAdd();
+            MONSTERBAITER._mc = getGLOBAL()._layerWindows.addChild(new MONSTERBAITERPOPUP()) as MONSTERBAITERPOPUP;
             MONSTERBAITER._mc.Setup(MONSTERBAITER._queue, MONSTERBAITER._attackDir);
             MONSTERBAITER._mc.Center();
             MONSTERBAITER._mc.ScaleUp();
@@ -145,10 +148,10 @@ export class MONSTERBAITER {
     }
 
     public static Hide(event: MouseEvent | null = null): void {
-        SOUNDS.Play("close");
-        GLOBAL.BlockerRemove();
+        getSOUNDS().Play("close");
+        getGLOBAL().BlockerRemove();
         if (MONSTERBAITER._mc) {
-            GLOBAL._layerWindows.removeChild(MONSTERBAITER._mc);
+            getGLOBAL()._layerWindows.removeChild(MONSTERBAITER._mc);
             MONSTERBAITER._mc = null;
         }
     }

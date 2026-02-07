@@ -19,8 +19,11 @@ import { SpurtzCannonQuota2 } from "./quotas/SpurtzCannonQuota2";
 import { SpurtzCannonQuota3 } from "./quotas/SpurtzCannonQuota3";
 import { WaveObj } from "../../monsterInvasion/WaveObj";
 
-import { KEYS } from "../../../../../KEYS";
-import { BASE } from "../../../../../BASE";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../../KEYS").KEYS; }
+function getBASE(): any { return require("../../../../../BASE").BASE; }
+
+
 
 /**
  * Brukkarg War event - attack/defend event with waves and base attacks.
@@ -81,9 +84,9 @@ export class BrukkargWarEvent extends AttackDefend {
 
     public override get buttonCopy(): string {
         if (this.readyToAttackNextYard()) {
-            this._buttonCopy = KEYS.Get("btn_attack");
+            this._buttonCopy = getKEYS().Get("btn_attack");
         } else {
-            this._buttonCopy = KEYS.Get("btn_next");
+            this._buttonCopy = getKEYS().Get("btn_next");
         }
         return this._buttonCopy;
     }
@@ -118,7 +121,7 @@ export class BrukkargWarEvent extends AttackDefend {
                 "level": 0
             });
             TRIBES.B_IDS.push(data.baseid);
-            BASE.addEventBaseException(data.baseid);
+            getBASE().addEventBaseException(data.baseid);
         }
     }
 

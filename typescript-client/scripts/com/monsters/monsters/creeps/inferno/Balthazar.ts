@@ -1,10 +1,13 @@
 import Point from "openfl/geom/Point";
 
-import { MonsterBase } from "../../MonsterBase";
-import { Targeting } from "../../../../../Targeting";
 import { CreepBase } from "../CreepBase";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+function getTargeting(): any { return require("../../../../../Targeting").Targeting; }
+function getBFOUNDATION(): any { return require("../../../../../BFOUNDATION").BFOUNDATION; }
+
+
 
 /**
  * Balthazar - inferno creep that modifies its defense flags and targeting when powered up.
@@ -26,11 +29,11 @@ export class Balthazar extends CreepBase {
     ) {
         super(id, behavior, spawn, rotation, level, health, center, friendly, housing, damageMult, easy, monster);
         
-        if (Boolean(this.defenseFlags & Targeting.k_TARGETS_FLYING)) {
-            this.defenseFlags ^= Targeting.k_TARGETS_FLYING;
+        if (Boolean(this.defenseFlags & getTargeting().k_TARGETS_FLYING)) {
+            this.defenseFlags ^= getTargeting().k_TARGETS_FLYING;
         }
-        if (Boolean(this.defenseFlags & Targeting.k_TARGETS_GROUND)) {
-            this.defenseFlags ^= Targeting.k_TARGETS_GROUND;
+        if (Boolean(this.defenseFlags & getTargeting().k_TARGETS_GROUND)) {
+            this.defenseFlags ^= getTargeting().k_TARGETS_GROUND;
         }
         if (this.poweredUp()) {
             this.targetMode = 1;

@@ -1,6 +1,9 @@
 import { UnblockMonsterAward } from "./UnblockMonsterAward";
 
-import { CREATURELOCKER } from "../../../../CREATURELOCKER";
+// Lazy imports to break circular dependency chains
+function getCREATURELOCKER(): any { return require("../../../../CREATURELOCKER").CREATURELOCKER; }
+
+
 
 /**
  * Unblock and unlock monster award - both unblocks and unlocks a monster.
@@ -11,12 +14,12 @@ export class UnblockUnlockMonsterAward extends UnblockMonsterAward {
     }
 
     protected override onApplication(): void {
-        CREATURELOCKER._lockerData[this._monsterID] = { t: 2 };
+        getCREATURELOCKER()._lockerData[this._monsterID] = { t: 2 };
         super.onApplication();
     }
 
     public override reset(): void {
-        delete CREATURELOCKER._lockerData[this._monsterID];
+        delete getCREATURELOCKER()._lockerData[this._monsterID];
         super.reset();
     }
 }

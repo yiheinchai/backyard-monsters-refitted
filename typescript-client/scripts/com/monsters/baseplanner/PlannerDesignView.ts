@@ -13,11 +13,14 @@ import { BasePlannerPopup } from "./popups/BasePlannerPopup";
 import { BasePlannerPopup_xSpot } from "../../../BasePlannerPopup_xSpot";
 import { PlannerNode } from "./PlannerNode";
 
-import { BASE } from "../../../BASE";
 import { Checkbox } from "../../../Checkbox";
 import { GAME } from "../../../GAME";
-import { GLOBAL } from "../../../GLOBAL";
-import { STORE } from "../../../STORE";
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getSTORE(): any { return require("../../../STORE").STORE; }
+
 
 /**
  * PlannerDesignView - Base planner design view for building layout.
@@ -131,12 +134,12 @@ export class PlannerDesignView extends Sprite {
 
     private drawYardBounds(): void {
         let expansionLevel = 1;
-        if (STORE._storeData.ENL) {
-            expansionLevel = STORE._storeData.ENL.q + 1;
+        if (getSTORE()._storeData.ENL) {
+            expansionLevel = getSTORE()._storeData.ENL.q + 1;
         }
         let currentExpansion = 0;
-        if (STORE._storeData.ENL) {
-            currentExpansion = STORE._storeData.ENL.q;
+        if (getSTORE()._storeData.ENL) {
+            currentExpansion = getSTORE()._storeData.ENL.q;
         }
         const currentSize = this.YARD_EXPANSIONS[currentExpansion];
         const nextSize = this.YARD_EXPANSIONS[Math.min(currentExpansion + 1, this.YARD_EXPANSIONS.length - 1)];
@@ -145,7 +148,7 @@ export class PlannerDesignView extends Sprite {
         if (Math.min(currentExpansion + 1, this.YARD_EXPANSIONS.length - 1) > currentExpansion) {
             nextRect = new Rectangle(-nextSize.x / 2, -nextSize.y / 2, nextSize.x, nextSize.y);
         }
-        if (Boolean(nextRect) && !BASE.isOutpost) {
+        if (Boolean(nextRect) && !getBASE().isOutpost) {
             const nextBg = new Sprite();
             nextBg.graphics.beginFill(0xFFFFFF, 0.25);
             nextBg.graphics.drawRect(nextRect!.x, nextRect!.y, nextRect!.width, nextRect!.height);
@@ -238,29 +241,29 @@ export class PlannerDesignView extends Sprite {
         let posX = this.mouseX + this._dragOffset!.x;
         if (posX > this._canvas!.width / 2) {
             posX = this._canvas!.width / 2;
-        } else if (posX < GLOBAL._SCREEN.width - this._canvas!.width / 2 - PlannerDesignView.SIDEBAR_WIDTH) {
-            posX = GLOBAL._SCREEN.width - this._canvas!.width / 2 - PlannerDesignView.SIDEBAR_WIDTH;
+        } else if (posX < getGLOBAL()._SCREEN.width - this._canvas!.width / 2 - PlannerDesignView.SIDEBAR_WIDTH) {
+            posX = getGLOBAL()._SCREEN.width - this._canvas!.width / 2 - PlannerDesignView.SIDEBAR_WIDTH;
         }
-        if (this._canvas!.width < GLOBAL._SCREEN.width) {
-            posX = GLOBAL._SCREEN.width / 2 - PlannerDesignView.SIDEBAR_WIDTH;
+        if (this._canvas!.width < getGLOBAL()._SCREEN.width) {
+            posX = getGLOBAL()._SCREEN.width / 2 - PlannerDesignView.SIDEBAR_WIDTH;
         }
         this._canvas!.x = posX;
         let posY = this.mouseY + this._dragOffset!.y;
         if (posY > this._canvas!.height / 2) {
             posY = this._canvas!.height / 2;
-        } else if (posY < GLOBAL._SCREEN.height - this._canvas!.height / 2 - PlannerDesignView.BOTTOMBAR_HEIGHT) {
-            posY = GLOBAL._SCREEN.height - this._canvas!.height / 2 - PlannerDesignView.BOTTOMBAR_HEIGHT;
+        } else if (posY < getGLOBAL()._SCREEN.height - this._canvas!.height / 2 - PlannerDesignView.BOTTOMBAR_HEIGHT) {
+            posY = getGLOBAL()._SCREEN.height - this._canvas!.height / 2 - PlannerDesignView.BOTTOMBAR_HEIGHT;
         }
-        if (this._canvas!.height < GLOBAL._SCREEN.height) {
-            posY = GLOBAL._SCREEN.height / 2 - PlannerDesignView.BOTTOMBAR_HEIGHT;
+        if (this._canvas!.height < getGLOBAL()._SCREEN.height) {
+            posY = getGLOBAL()._SCREEN.height / 2 - PlannerDesignView.BOTTOMBAR_HEIGHT;
         }
         this._canvas!.y = posY;
         this._dragged = true;
     }
 
     public recenter(): void {
-        this._canvas!.x = GLOBAL._SCREEN.width / 2 - PlannerDesignView.SIDEBAR_WIDTH;
-        this._canvas!.y = GLOBAL._SCREEN.height / 2 - PlannerDesignView.BOTTOMBAR_HEIGHT;
+        this._canvas!.x = getGLOBAL()._SCREEN.width / 2 - PlannerDesignView.SIDEBAR_WIDTH;
+        this._canvas!.y = getGLOBAL()._SCREEN.height / 2 - PlannerDesignView.BOTTOMBAR_HEIGHT;
     }
 
     public addInventoryItem(node: PlannerNode): void {
@@ -504,8 +507,8 @@ export class PlannerDesignView extends Sprite {
             }
         }
         let expansionLevel = 0;
-        if (STORE._storeData.ENL) {
-            expansionLevel = STORE._storeData.ENL.q;
+        if (getSTORE()._storeData.ENL) {
+            expansionLevel = getSTORE()._storeData.ENL.q;
         }
         const yardSize = this.YARD_EXPANSIONS[expansionLevel];
         if (item.category !== BuildingItem.TYPE_DECORATION) {

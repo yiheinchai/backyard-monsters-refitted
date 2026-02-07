@@ -7,7 +7,10 @@ import { MapRoom3FriendData } from "../data/MapRoom3FriendData";
 import { MapRoom3RelocatePopup } from "./MapRoom3RelocatePopup";
 import { MapRoom3RelocateMainYardPopupFriendItemDisplay } from "../../../../MapRoom3RelocateMainYardPopupFriendItemDisplay";
 
-import { KEYS } from "../../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+
+
 
 /**
  * Map room 3 relocate popup item display - displays a friend item for relocation.
@@ -29,7 +32,7 @@ export class MapRoom3RelocatePopupItemDisplay extends MapRoom3RelocateMainYardPo
         (this.levelIcon as any).lv_txt.htmlText = "<b>" + this.m_FriendToDisplay.level + "</b>";
         this.nameText.htmlText = "<b>" + friendData.name + "</b>";
         this.nameText.mouseEnabled = false;
-        const worldDescription: string = friendData.isInPlayersWorld ? KEYS.Get("mr3_relocate_main_yard_same") : KEYS.Get("mr3_relocate_main_yard_world", { "v1": friendData.world });
+        const worldDescription: string = friendData.isInPlayersWorld ? getKEYS().Get("mr3_relocate_main_yard_same") : getKEYS().Get("mr3_relocate_main_yard_world", { "v1": friendData.world });
         this.worldText.htmlText = "<b>" + worldDescription + "</b>";
         this.worldText.mouseEnabled = false;
         this.coordinatesText.htmlText = "(" + friendData.baseX.toString() + "," + friendData.baseY.toString() + ")";

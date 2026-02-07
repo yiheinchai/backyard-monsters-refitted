@@ -6,16 +6,19 @@ import MouseEvent from "openfl/events/MouseEvent";
 
 import { ImageCache } from "../display/ImageCache";
 
-import { BASE } from "../../../BASE";
-import { CREATURELOCKER } from "../../../CREATURELOCKER";
 import { INFERNO_EMERGENCE_EVENT } from "../../../INFERNO_EMERGENCE_EVENT";
 import { INFERNO_EMERGENCE_POPUPS } from "../../../INFERNO_EMERGENCE_POPUPS";
-import { KEYS } from "../../../KEYS";
 import { POPUPSETTINGS } from "../../../POPUPSETTINGS";
-import { SOUNDS } from "../../../SOUNDS";
-import { WMATTACK } from "../../../WMATTACK";
 import { popup_infernoemerge_aiattack } from "../../../popup_infernoemerge_aiattack";
 import { bubblepopup3 } from "../../../bubblepopup3";
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getCREATURELOCKER(): any { return require("../../../CREATURELOCKER").CREATURELOCKER; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+function getWMATTACK(): any { return require("../../../WMATTACK").WMATTACK; }
+
 
 /**
  * Popup displayed when Inferno Emergence AI is about to attack.
@@ -72,15 +75,15 @@ export class INFERNO_EMERGENCE_ATTACKPOPUP extends popup_infernoemerge_aiattack 
         this._descriptions = [this.d1, this.d2, this.d3, this.d4, this.d5];
         this._attackArray = attackArray;
         
-        this.tTitle.htmlText = KEYS.Get("ai_inferno_popupwarning_title");
+        this.tTitle.htmlText = getKEYS().Get("ai_inferno_popupwarning_title");
         this.tName.htmlText = "";
         this.Resize();
     }
 
     private onWaitDown(event: MouseEvent): void {
-        SOUNDS.Play("click1");
-        WMATTACK._queued.warned = 1;
-        BASE.Save(0, false, true);
+        getSOUNDS().Play("click1");
+        getWMATTACK()._queued.warned = 1;
+        getBASE().Save(0, false, true);
         if (this.parent) {
             this.parent.removeChild(this);
         }
@@ -114,7 +117,7 @@ export class INFERNO_EMERGENCE_ATTACKPOPUP extends popup_infernoemerge_aiattack 
         }
         
         for (let i = 0; i < creatureTypes.length; i++) {
-            this._descriptions[i].Setup(50, 20, KEYS.Get("emerge_mondesc_" + CREATURELOCKER._creatures[creatureTypes[i]].description), 3);
+            this._descriptions[i].Setup(50, 20, getKEYS().Get("emerge_mondesc_" + getCREATURELOCKER()._creatures[creatureTypes[i]].description), 3);
         }
         
         this.c1.addChild(this.d1);
@@ -133,7 +136,7 @@ export class INFERNO_EMERGENCE_ATTACKPOPUP extends popup_infernoemerge_aiattack 
                 [this._clips[i].mcIcon]
             );
             this._clips[i].tInfo.htmlText = "x" + this._attackArray[i][2];
-            this._clips[i].tName.htmlText = "<b>" + KEYS.Get(CREATURELOCKER._creatures[creatureTypes[i]].name) + "</b>";
+            this._clips[i].tName.htmlText = "<b>" + getKEYS().Get(getCREATURELOCKER()._creatures[creatureTypes[i]].name) + "</b>";
             this._descriptions[i].visible = false;
             this._clips[i].mouseChildren = false;
             this._clips[i].addEventListener(MouseEvent.MOUSE_OVER, this.showDescription.bind(this));
@@ -167,13 +170,13 @@ export class INFERNO_EMERGENCE_ATTACKPOPUP extends popup_infernoemerge_aiattack 
     }
 
     private sendDown(event: MouseEvent | null = null): void {
-        SOUNDS.Play("click1");
+        getSOUNDS().Play("click1");
         INFERNO_EMERGENCE_EVENT.TriggerAttack(event);
         this.closeDown();
     }
 
     private closeDown(event: MouseEvent | null = null): void {
-        SOUNDS.Play("close");
+        getSOUNDS().Play("close");
         INFERNO_EMERGENCE_POPUPS.HideWarning();
     }
 

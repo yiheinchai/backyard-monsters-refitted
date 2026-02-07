@@ -1,11 +1,14 @@
 import Point from "openfl/geom/Point";
 
 import { IAttackable } from "../../../interfaces/IAttackable";
-import { MonsterBase } from "../../MonsterBase";
 import { Component } from "../Component";
-import { Targeting } from "../../../../../Targeting";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+function getTargeting(): any { return require("../../../../../Targeting").Targeting; }
+function getBFOUNDATION(): any { return require("../../../../../BFOUNDATION").BFOUNDATION; }
+
+
 
 /**
  * AOE damage - deals area of effect damage to targets in range.
@@ -36,24 +39,24 @@ export class AOEDamage extends Component {
         if (allTargets.length > this.m_maxTargets) {
             allTargets.length = this.m_maxTargets;
         }
-        Targeting.DealLinearAEDamage(ownerLocation, this.m_radiusOuter, Math.abs(damage), allTargets, this.m_radiusInner);
+        getTargeting().DealLinearAEDamage(ownerLocation, this.m_radiusOuter, Math.abs(damage), allTargets, this.m_radiusInner);
     }
 
     private getAllTargets(ownerLocation: Point, initialTarget: IAttackable | null = null): Array<any> {
         let targetFlags: number = this.m_targetFlags;
         let ignoreCreep: MonsterBase | null = null;
         let ignoreBuilding: BFOUNDATION | null = null;
-        if (this.owner._friendly && Boolean(targetFlags & Targeting.k_TARGETS_BUILDINGS) && !(initialTarget instanceof BFOUNDATION)) {
+        if (this.owner._friendly && Boolean(targetFlags & getTargeting().k_TARGETS_BUILDINGS) && !(initialTarget instanceof getBFOUNDATION())) {
             // Defending monsters will not hit their own base's buildings unless specifically targetting them.
-            targetFlags ^= Targeting.k_TARGETS_BUILDINGS;
+            targetFlags ^= getTargeting().k_TARGETS_BUILDINGS;
         }
         if (!this.m_includeInitialTarget) {
-            if (initialTarget instanceof MonsterBase) {
+            if (initialTarget instanceof getMonsterBase()) {
                 ignoreCreep = initialTarget;
-            } else if (initialTarget instanceof BFOUNDATION) {
+            } else if (initialTarget instanceof getBFOUNDATION()) {
                 ignoreBuilding = initialTarget;
             }
         }
-        return Targeting.getTargetsInRange(this.m_radiusOuter, ownerLocation, targetFlags, ignoreCreep, ignoreBuilding);
+        return getTargeting().getTargetsInRange(this.m_radiusOuter, ownerLocation, targetFlags, ignoreCreep, ignoreBuilding);
     }
 }

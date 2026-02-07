@@ -13,8 +13,11 @@ import TextFieldType from "openfl/text/TextFieldType";
 import TextFormat from "openfl/text/TextFormat";
 import TextFormatAlign from "openfl/text/TextFormatAlign";
 
-import { Console } from "./Console";
-import { GLOBAL } from "../../../GLOBAL";
+// Lazy imports to break circular dependency chains
+function getConsole(): any { return require("./Console").Console; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+
+
 
 interface LogEntry {
     color: number;
@@ -163,7 +166,7 @@ export class ConsoleView extends Sprite {
 
     protected onInputKeyDown = (event: KeyboardEvent): void => {
         if (event.keyCode === Keyboard.TAB) {
-            const commands = Console.commands;
+            const commands = getConsole().commands;
             const matches: string[] = [];
             this.tabCompletionPrefix = this._input.text.toLowerCase();
             
@@ -177,7 +180,7 @@ export class ConsoleView extends Sprite {
                 this._input.text = matches[0] + " ";
                 if (matches.length >= 2) {
                     for (const match of matches) {
-                        Console.print("    " + match);
+                        getConsole().print("    " + match);
                     }
                 }
                 this.stage.focus = this._input;
@@ -210,9 +213,9 @@ export class ConsoleView extends Sprite {
     };
 
     protected resize = (event: Event | null = null): void => {
-        if (this.stage && GLOBAL._SCREEN) {
-            this.x = GLOBAL._SCREEN.x;
-            this.y = GLOBAL._SCREEN.y;
+        if (this.stage && getGLOBAL()._SCREEN) {
+            this.x = getGLOBAL()._SCREEN.x;
+            this.y = getGLOBAL()._SCREEN.y;
             this._width = this.stage.stageWidth - 1;
             this._height = Math.floor(this.stage.stageHeight / 3);
         }
@@ -292,7 +295,7 @@ export class ConsoleView extends Sprite {
                     this.bottomLineIndex = Number.MAX_SAFE_INTEGER;
                 }
             }
-        } else if (Console.isKey(event.keyCode)) {
+        } else if (getConsole().isKey(event.keyCode)) {
             this.toggleActive();
             this._input.text = "";
         }
@@ -303,7 +306,7 @@ export class ConsoleView extends Sprite {
 
     protected processCommand(): void {
         this.addLogMessage("CMD", ">", this._input.text);
-        const result = Console.processLine(this._input.text);
+        const result = getConsole().processLine(this._input.text);
         if (result) {
             this.addLogMessage("CMD", "<", result);
         }
@@ -371,7 +374,7 @@ export class ConsoleView extends Sprite {
     }
 
     private getColorFromLevel(level: string): string {
-        if (level === Console.WARNING) {
+        if (level === getConsole().WARNING) {
             return "#FF0000";
         }
         return "#FFFFFF";

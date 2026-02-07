@@ -23,11 +23,14 @@ import { ChatBox_CLIP } from "../../../../ChatBox_CLIP";
 import { ChatBox_msg_CLIP } from "../../../../ChatBox_msg_CLIP";
 import { ChatBox_msg_name_CLIP } from "../../../../ChatBox_msg_name_CLIP";
 
-import { GLOBAL } from "../../../../GLOBAL";
-import { LOGIN } from "../../../../LOGIN";
-import { LOGGER } from "../../../../LOGGER";
-import { MAP } from "../../../../MAP";
-import { TUTORIAL } from "../../../../TUTORIAL";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getLOGIN(): any { return require("../../../../LOGIN").LOGIN; }
+function getLOGGER(): any { return require("../../../../LOGGER").LOGGER; }
+function getMAP(): any { return require("../../../../MAP").MAP; }
+function getTUTORIAL(): any { return require("../../../../TUTORIAL").TUTORIAL; }
+
+
 
 /**
  * ChatBox - Main chat box UI implementation.
@@ -216,14 +219,14 @@ export class ChatBox extends AbstractChatBox implements IChatDisplay {
 
     private onInputFocus(event: Event): void {
         if (this.stage.displayState === StageDisplayState.FULL_SCREEN) {
-            GLOBAL.goFullScreen(null);
+            getGLOBAL().goFullScreen(null);
         }
         this.forceFocus();
     }
 
     private forceFocus(): void {
         this.stage.focus = this.input;
-        MAP.Release(null);
+        getMAP().Release(null);
     }
 
     public override init(): void {
@@ -250,7 +253,7 @@ export class ChatBox extends AbstractChatBox implements IChatDisplay {
         this.ClearAlert();
         this.UpdateAlert();
         this.background.alert.visible = false;
-        if (GLOBAL.StatGet("chatmin") === 1) {
+        if (getGLOBAL().StatGet("chatmin") === 1) {
             this._enabled = false;
             this._maximized = false;
         } else {
@@ -326,7 +329,7 @@ export class ChatBox extends AbstractChatBox implements IChatDisplay {
                 this.background.arrowDown.gotoAndStop("off" + this._skinTag);
                 this.background.arrowUp.buttonMode = true;
                 this.background.arrowDown.buttonMode = false;
-                GLOBAL.StatSet("chatmin", 1);
+                getGLOBAL().StatSet("chatmin", 1);
             } else if (shouldMaximize) {
                 targetProps = this._maxProps;
                 this._maximized = true;
@@ -334,7 +337,7 @@ export class ChatBox extends AbstractChatBox implements IChatDisplay {
                 this.background.arrowDown.gotoAndStop("on" + this._skinTag);
                 this.background.arrowUp.buttonMode = true;
                 this.background.arrowDown.buttonMode = false;
-                GLOBAL.StatSet("chatmin", 0);
+                getGLOBAL().StatSet("chatmin", 0);
             } else if (shouldMinimize) {
                 return;
             }
@@ -349,7 +352,7 @@ export class ChatBox extends AbstractChatBox implements IChatDisplay {
             this.background.arrowDown.gotoAndStop("on" + this._skinTag);
             this.background.arrowUp.buttonMode = true;
             this.background.arrowDown.buttonMode = true;
-            GLOBAL.StatSet("chatmin", 0);
+            getGLOBAL().StatSet("chatmin", 0);
         }
         if (targetProps === null) {
             return;
@@ -382,7 +385,7 @@ export class ChatBox extends AbstractChatBox implements IChatDisplay {
         }
         this._animating = true;
         const alphaValue = targetProps === this._closeProps ? 0 : 1;
-        if (TUTORIAL.hasFinished) {
+        if (getTUTORIAL().hasFinished) {
             if (this._maximized) {
                 TweenLite.to(this.background.arrowUp, duration, {
                     "rotation": 180,
@@ -415,7 +418,7 @@ export class ChatBox extends AbstractChatBox implements IChatDisplay {
         if (!Chat._bymChat._open) {
             Chat._bymChat.toggleMinimizedStat(true);
             this._scrollbar!.visible = false;
-        } else if (GLOBAL.StatGet("chatmin") !== 0) {
+        } else if (getGLOBAL().StatGet("chatmin") !== 0) {
             Chat._bymChat.toggleMinimizedStat(false);
         }
         this._scrollbar!.ScrollTo(1, false);
@@ -533,7 +536,7 @@ export class ChatBox extends AbstractChatBox implements IChatDisplay {
         msgClip.ignoreBtn.visible = false;
         msgClip.ignoreBtn.buttonMode = true;
         msgClip.msgData = msgData;
-        msgClip.isOwnMessage = userid === LOGIN._playerID.toString();
+        msgClip.isOwnMessage = userid === getLOGIN()._playerID.toString();
         if (username !== null) {
             msgClip.ignoreBtn.addEventListener(MouseEvent.MOUSE_DOWN, this.OnMsgIgnoreMouseDown.bind(this));
             msgClip.ignoreBtn.addEventListener(MouseEvent.ROLL_OVER, this.OnMsgIgnoreRollOver.bind(this));
@@ -561,7 +564,7 @@ export class ChatBox extends AbstractChatBox implements IChatDisplay {
 
     public Skin(): void {
         let skinIndex = 1;
-        if (GLOBAL.InfernoMode()) {
+        if (getGLOBAL().InfernoMode()) {
             skinIndex = 2;
         }
         this._skinTag = skinIndex;
@@ -577,12 +580,12 @@ export class ChatBox extends AbstractChatBox implements IChatDisplay {
         super.update();
         this.ResizeWindow();
         this.ResizeMessages();
-        if (!TUTORIAL.hasFinished) {
-            this.background.arrowUp.visible = TUTORIAL.hasFinished;
-            this.background.mcToggle.visible = TUTORIAL.hasFinished;
-        } else if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-            this.background.arrowUp.visible = TUTORIAL.hasFinished;
-            this.background.mcToggle.visible = TUTORIAL.hasFinished;
+        if (!getTUTORIAL().hasFinished) {
+            this.background.arrowUp.visible = getTUTORIAL().hasFinished;
+            this.background.mcToggle.visible = getTUTORIAL().hasFinished;
+        } else if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+            this.background.arrowUp.visible = getTUTORIAL().hasFinished;
+            this.background.mcToggle.visible = getTUTORIAL().hasFinished;
         }
         this.Skin();
         this.UpdateChatStatus();
@@ -673,18 +676,18 @@ export class ChatBox extends AbstractChatBox implements IChatDisplay {
         if (this._animating) {
             return;
         }
-        if (event && event.currentTarget === this.background.mcToggle && TUTORIAL.hasFinished) {
+        if (event && event.currentTarget === this.background.mcToggle && getTUTORIAL().hasFinished) {
             this._enabled = !this._enabled;
         }
-        if (TUTORIAL.hasFinished && !Chat._bymChat.isLoggingOut) {
+        if (getTUTORIAL().hasFinished && !Chat._bymChat.isLoggingOut) {
             this.EnableInput(this._enabled);
             if (!this._enabled && Chat._bymChat.IsJoined) {
                 Chat._bymChat.disableChat();
-                LOGGER.Stat([68, "hide"]);
+                getLOGGER().Stat([68, "hide"]);
             } else if (Chat.flagsShouldChatExist()) {
                 if (!Chat._bymChat.IsConnected) {
                     Chat.connectAndLogin();
-                    LOGGER.Stat([68, "unhide"]);
+                    getLOGGER().Stat([68, "unhide"]);
                 }
             }
             this.UpdateChatStatus();

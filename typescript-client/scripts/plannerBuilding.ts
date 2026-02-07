@@ -3,13 +3,16 @@ import MouseEvent from "openfl/events/MouseEvent";
 import DropShadowFilter from "openfl/filters/DropShadowFilter";
 import Point from "openfl/geom/Point";
 
-import { BASE } from "./BASE";
-import { BFOUNDATION } from "./BFOUNDATION";
-import { GRID } from "./GRID";
-import { KEYS } from "./KEYS";
-import { PLANNER } from "./PLANNER";
 import { plannerBuilding_CLIP } from "./plannerBuilding_CLIP";
 import { plannerRange } from "./plannerRange";
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getGRID(): any { return require("./GRID").GRID; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPLANNER(): any { return require("./PLANNER").PLANNER; }
+
 
 export class plannerBuilding extends plannerBuilding_CLIP {
     public _building: BFOUNDATION;
@@ -28,7 +31,7 @@ export class plannerBuilding extends plannerBuilding_CLIP {
         this.mcSquare.width = this._building._footprint[0].width;
         this.mcSquare.height = this._building._footprint[0].height;
 
-        _loc3_ = GRID.FromISO(this._building._mc.x, this._building._mc.y);
+        _loc3_ = getGRID().FromISO(this._building._mc.x, this._building._mc.y);
         this.x = _loc3_.x;
         this.y = _loc3_.y;
 
@@ -77,28 +80,28 @@ export class plannerBuilding extends plannerBuilding_CLIP {
         let _loc2_: number = 0;
         let _loc3_: number = 0;
 
-        if (!PLANNER._mc._dragged) {
-            if (!PLANNER._selected) {
-                PLANNER._selected = true;
+        if (!getPLANNER()._mc._dragged) {
+            if (!getPLANNER()._selected) {
+                getPLANNER()._selected = true;
                 this._dragging = true;
                 this.mcSquare.mcOver.visible = false;
-                this._dragPoint = new Point(this.x - (PLANNER._mc.mouseX - PLANNER._mc.mcMap.x) / PLANNER._mc.mcMap.scaleX, this.y - (PLANNER._mc.mouseY - PLANNER._mc.mcMap.y) / PLANNER._mc.mcMap.scaleY);
+                this._dragPoint = new Point(this.x - (getPLANNER()._mc.mouseX - getPLANNER()._mc.mcMap.x) / getPLANNER()._mc.mcMap.scaleX, this.y - (getPLANNER()._mc.mouseY - getPLANNER()._mc.mcMap.y) / getPLANNER()._mc.mcMap.scaleY);
                 this._oldPoint = new Point(this.x, this.y);
                 this._clickAge = 0;
                 this.mcSquare.removeEventListener(MouseEvent.CLICK, this.Click.bind(this));
-                PLANNER._mc.addEventListener(MouseEvent.CLICK, this.ClickB.bind(this));
+                getPLANNER()._mc.addEventListener(MouseEvent.CLICK, this.ClickB.bind(this));
                 this.addEventListener(Event.ENTER_FRAME, this.Drag.bind(this));
 
                 _loc2_ = 0;
                 _loc3_ = 0;
-                while (_loc3_ < PLANNER._mc._buildings.numChildren) {
-                    if (PLANNER._mc._buildings.getChildAt(_loc3_) != this) {
-                        PLANNER._mc._buildings.setChildIndex(PLANNER._mc._buildings.getChildAt(_loc3_), _loc2_);
+                while (_loc3_ < getPLANNER()._mc._buildings.numChildren) {
+                    if (getPLANNER()._mc._buildings.getChildAt(_loc3_) != this) {
+                        getPLANNER()._mc._buildings.setChildIndex(getPLANNER()._mc._buildings.getChildAt(_loc3_), _loc2_);
                         _loc2_++;
                     }
                     _loc3_++;
                 }
-                PLANNER._mc._buildings.setChildIndex(this, _loc2_);
+                getPLANNER()._mc._buildings.setChildIndex(this, _loc2_);
                 this.ShadowAdd();
                 this._building.StartMove();
             }
@@ -108,15 +111,15 @@ export class plannerBuilding extends plannerBuilding_CLIP {
     public ClickB(param1: MouseEvent = null): void {
         let _loc2_: Point = null;
 
-        if (!PLANNER._mc._dragged && this._clickAge > 0) {
-            PLANNER._selected = false;
+        if (!getPLANNER()._mc._dragged && this._clickAge > 0) {
+            getPLANNER()._selected = false;
             this._dragging = false;
             this.removeEventListener(Event.ENTER_FRAME, this.Drag.bind(this));
-            PLANNER._mc.removeEventListener(MouseEvent.CLICK, this.ClickB.bind(this));
+            getPLANNER()._mc.removeEventListener(MouseEvent.CLICK, this.ClickB.bind(this));
             this.mcSquare.addEventListener(MouseEvent.CLICK, this.Click.bind(this));
             this.mcSquare.mcBlocked.visible = false;
             this._building.StopMoveB();
-            _loc2_ = GRID.FromISO(this._building._mc.x, this._building._mc.y);
+            _loc2_ = getGRID().FromISO(this._building._mc.x, this._building._mc.y);
             this.x = _loc2_.x;
             this.y = _loc2_.y;
             this.ShadowRemove();
@@ -126,24 +129,24 @@ export class plannerBuilding extends plannerBuilding_CLIP {
     public Drag(param1: Event): void {
         let _loc2_: Point = null;
 
-        if (PLANNER._open) {
+        if (getPLANNER()._open) {
             if (!this._building._moving) {
-                PLANNER._selected = false;
+                getPLANNER()._selected = false;
                 this._dragging = false;
                 this.removeEventListener(Event.ENTER_FRAME, this.Drag.bind(this));
-                PLANNER._mc.removeEventListener(MouseEvent.CLICK, this.ClickB.bind(this));
+                getPLANNER()._mc.removeEventListener(MouseEvent.CLICK, this.ClickB.bind(this));
                 this.mcSquare.addEventListener(MouseEvent.CLICK, this.Click.bind(this));
                 this.mcSquare.mcBlocked.visible = false;
                 this._building.StopMoveB();
-                _loc2_ = GRID.FromISO(this._building._mc.x, this._building._mc.y);
+                _loc2_ = getGRID().FromISO(this._building._mc.x, this._building._mc.y);
                 this.x = _loc2_.x;
                 this.y = _loc2_.y;
                 this.ShadowRemove();
             } else {
                 ++this._clickAge;
-                this.x = Math.floor(((PLANNER._mc.mouseX - PLANNER._mc.mcMap.x) / PLANNER._mc.mcMap.scaleX + this._dragPoint.x) / 5) * 5;
-                this.y = Math.floor(((PLANNER._mc.mouseY - PLANNER._mc.mcMap.y) / PLANNER._mc.mcMap.scaleY + this._dragPoint.y) / 5) * 5;
-                _loc2_ = GRID.ToISO(this.x, this.y, 0);
+                this.x = Math.floor(((getPLANNER()._mc.mouseX - getPLANNER()._mc.mcMap.x) / getPLANNER()._mc.mcMap.scaleX + this._dragPoint.x) / 5) * 5;
+                this.y = Math.floor(((getPLANNER()._mc.mouseY - getPLANNER()._mc.mcMap.y) / getPLANNER()._mc.mcMap.scaleY + this._dragPoint.y) / 5) * 5;
+                _loc2_ = getGRID().ToISO(this.x, this.y, 0);
                 this._building._mc.x = _loc2_.x;
                 this._building._mc.y = _loc2_.y;
                 this._building._mcBase.x = this._building._mc.x;
@@ -159,7 +162,7 @@ export class plannerBuilding extends plannerBuilding_CLIP {
                     this._rangeCircle.y = this.y + this.mcSquare.height / 2;
                 }
 
-                if (BASE.BuildBlockers(this._building) != "") {
+                if (getBASE().BuildBlockers(this._building) != "") {
                     this.mcSquare.mcBlocked.visible = true;
                 } else {
                     this.mcSquare.mcBlocked.visible = false;
@@ -172,39 +175,39 @@ export class plannerBuilding extends plannerBuilding_CLIP {
         let _loc2_: string = null;
 
         if (this._building._class == "decoration" || this._building._class == "mushroom" || this._building._class == "immovable") {
-            _loc2_ = "<b>" + KEYS.Get(this._building._buildingProps.name) + "</b>";
+            _loc2_ = "<b>" + getKEYS().Get(this._building._buildingProps.name) + "</b>";
         } else {
             this.mcSquare.mcOver.visible = true;
             _loc2_ = "<b>";
 
             if (this._building._lvl.Get() > 0 && this._building._class != "mushroom" && this._building._class != "immovable") {
-                _loc2_ += KEYS.Get("planner_bdglevel", {
+                _loc2_ += getKEYS().Get("planner_bdglevel", {
                     "v1": this._building._lvl.Get(),
-                    "v2": KEYS.Get(this._building._buildingProps.name)
+                    "v2": getKEYS().Get(this._building._buildingProps.name)
                 }) + "</b>";
             }
 
             if (this._building._countdownBuild.Get() > 0) {
-                _loc2_ += " " + KEYS.Get("planner_bdgbuilding");
+                _loc2_ += " " + getKEYS().Get("planner_bdgbuilding");
             }
             if (this._building._countdownUpgrade.Get() > 0) {
-                _loc2_ += " " + KEYS.Get("planner_bdgupgrading");
+                _loc2_ += " " + getKEYS().Get("planner_bdgupgrading");
             }
             if (this._building._countdownFortify.Get() > 0) {
-                _loc2_ += " " + KEYS.Get("planner_bdgfortifying");
+                _loc2_ += " " + getKEYS().Get("planner_bdgfortifying");
             }
         }
 
-        PLANNER._mc.tName.htmlText = _loc2_;
-        PLANNER._mc.mcNameBG.width = PLANNER._mc.tName.width + 10;
-        PLANNER._mc.tName.visible = true;
-        PLANNER._mc.mcNameBG.visible = true;
+        getPLANNER()._mc.tName.htmlText = _loc2_;
+        getPLANNER()._mc.mcNameBG.width = getPLANNER()._mc.tName.width + 10;
+        getPLANNER()._mc.tName.visible = true;
+        getPLANNER()._mc.mcNameBG.visible = true;
     }
 
     public InfoHide(param1: MouseEvent): void {
         this.mcSquare.mcOver.visible = false;
-        PLANNER._mc.tName.visible = false;
-        PLANNER._mc.mcNameBG.visible = false;
+        getPLANNER()._mc.tName.visible = false;
+        getPLANNER()._mc.mcNameBG.visible = false;
     }
 
     public ShadowAdd(): void {

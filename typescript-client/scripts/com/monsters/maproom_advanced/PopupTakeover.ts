@@ -13,17 +13,20 @@ import { CellData } from "./CellData";
 import { MapRoom } from "./MapRoom";
 import { MapRoomCell } from "./MapRoomCell";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGGER } from "../../../LOGGER";
 import { PLEASEWAIT } from "../../../PLEASEWAIT";
-import { POPUPS } from "../../../POPUPS";
 import { POPUPSETTINGS } from "../../../POPUPSETTINGS";
 import { POWERUPS } from "../../../POWERUPS";
-import { URLLoaderApi } from "../../../URLLoaderApi";
-import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { MapRoomPopup_takeover_CLIP } from "../../../MapRoomPopup_takeover_CLIP";
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+function getPOPUPS(): any { return require("../../../POPUPS").POPUPS; }
+function getURLLoaderApi(): any { return require("../../../URLLoaderApi").URLLoaderApi; }
+function getMapRoomManager(): any { return require("../maproom_manager/MapRoomManager").MapRoomManager; }
+
 
 // JSON declaration
 declare const JSON: { encode(obj: any): string };
@@ -79,13 +82,13 @@ export class PopupTakeover extends MapRoomPopup_takeover_CLIP {
         
         // Check if adjacent cell for 50% discount
         let half = false;
-        if (Math.abs(GLOBAL._mapHome.x - this._cell.X) === 1) {
-            if (GLOBAL._mapHome.y + 1 - (GLOBAL._mapHome.x + 1) % 2 * 2 === this._cell.Y || 
-                GLOBAL._mapHome.y === this._cell.Y) {
+        if (Math.abs(getGLOBAL()._mapHome.x - this._cell.X) === 1) {
+            if (getGLOBAL()._mapHome.y + 1 - (getGLOBAL()._mapHome.x + 1) % 2 * 2 === this._cell.Y || 
+                getGLOBAL()._mapHome.y === this._cell.Y) {
                 half = true;
             }
-        } else if (GLOBAL._mapHome.x === this._cell.X) {
-            if (GLOBAL._mapHome.y + 1 === this._cell.Y || GLOBAL._mapHome.y - 1 === this._cell.Y) {
+        } else if (getGLOBAL()._mapHome.x === this._cell.X) {
+            if (getGLOBAL()._mapHome.y + 1 === this._cell.Y || getGLOBAL()._mapHome.y - 1 === this._cell.Y) {
                 half = true;
             }
         }
@@ -105,55 +108,55 @@ export class PopupTakeover extends MapRoomPopup_takeover_CLIP {
         for (let i = 1; i < 5; i++) {
             const costMC = this.mcResources["mcR" + i] as MovieClip;
             costMC.gotoAndStop(i);
-            (costMC as any).tTitle.htmlText = "<b>" + KEYS.Get(GLOBAL._resourceNames[i - 1]) + "</b>";
+            (costMC as any).tTitle.htmlText = "<b>" + getKEYS().Get(getGLOBAL()._resourceNames[i - 1]) + "</b>";
             
             let colorString = "000000";
-            if (GLOBAL._resources["r" + i].Get() <= this._resourceCost.Get()) {
+            if (getGLOBAL()._resources["r" + i].Get() <= this._resourceCost.Get()) {
                 colorString = "FF0000";
-            } else if (GLOBAL._allianceConquestTime.Get() > GLOBAL.Timestamp()) {
+            } else if (getGLOBAL()._allianceConquestTime.Get() > getGLOBAL().Timestamp()) {
                 colorString = "0000FF";
             }
             
-            const displayColor = this._resourceCost.Get() > GLOBAL._resources["r" + i].Get() ? "FF0000" : "000000";
+            const displayColor = this._resourceCost.Get() > getGLOBAL()._resources["r" + i].Get() ? "FF0000" : "000000";
             (costMC as any).tValue.htmlText = '<b><font color="#' + displayColor + '">' + 
-                GLOBAL.FormatNumber(this._resourceCost.Get()) + '</font></b>';
+                getGLOBAL().FormatNumber(this._resourceCost.Get()) + '</font></b>';
         }
         
-        const bonusTower = Math.floor(this._cell._height * 100 / GLOBAL._averageAltitude.Get() - 100);
-        const bonusResource = Math.floor(100 * GLOBAL._averageAltitude.Get() / this._cell._height - 100);
+        const bonusTower = Math.floor(this._cell._height * 100 / getGLOBAL()._averageAltitude.Get() - 100);
+        const bonusResource = Math.floor(100 * getGLOBAL()._averageAltitude.Get() / this._cell._height - 100);
         
         let bonusStr = "";
-        if (this._cell._height !== GLOBAL._averageAltitude.Get()) {
-            if (this._cell._height > GLOBAL._averageAltitude.Get()) {
-                bonusStr = KEYS.Get("bonus_towerrange", { v1: bonusTower });
+        if (this._cell._height !== getGLOBAL()._averageAltitude.Get()) {
+            if (this._cell._height > getGLOBAL()._averageAltitude.Get()) {
+                bonusStr = getKEYS().Get("bonus_towerrange", { v1: bonusTower });
             } else {
-                bonusStr = KEYS.Get("bonus_resourceproduction", { v1: bonusResource });
+                bonusStr = getKEYS().Get("bonus_resourceproduction", { v1: bonusResource });
             }
         }
         
         if (this._cell._base === 1) {
-            this.tTitle.htmlText = "<b>" + KEYS.Get("takeover_wildmonsteryard") + "</b>";
+            this.tTitle.htmlText = "<b>" + getKEYS().Get("takeover_wildmonsteryard") + "</b>";
         } else {
-            this.tTitle.htmlText = "<b>" + KEYS.Get("takeover_outpost", { v1: this._cell._name }) + "</b>";
+            this.tTitle.htmlText = "<b>" + getKEYS().Get("takeover_outpost", { v1: this._cell._name }) + "</b>";
         }
         
-        this.tDescription.htmlText = "<b>" + KEYS.Get("takeover_expand") + (bonusStr ? " " + bonusStr : "") + "</b>";
+        this.tDescription.htmlText = "<b>" + getKEYS().Get("takeover_expand") + (bonusStr ? " " + bonusStr : "") + "</b>";
         
-        this.mcResources.mcTime.visible = false;
-        this.mcResources.bAction.SetupKey("btn_useresources");
-        this.mcResources.bAction.addEventListener(MouseEvent.CLICK, (e: MouseEvent) => {
+        (this.mcResources as any).mcTime.visible = false;
+        (this.mcResources as any).bAction.SetupKey("btn_useresources");
+        (this.mcResources as any).bAction.addEventListener(MouseEvent.CLICK, (e: MouseEvent) => {
             this.TakeOverConfirm(false);
         });
         
-        this.mcInstant.bAction.Setup(KEYS.Get("btn_useshiny", { v1: this._shinyCost.Get() }));
-        this.mcInstant.tDescription.htmlText = KEYS.Get("takeover_instant");
+        this.mcInstant.bAction.Setup(getKEYS().Get("btn_useshiny", { v1: this._shinyCost.Get() }));
+        this.mcInstant.tDescription.htmlText = getKEYS().Get("takeover_instant");
         this.mcInstant.bAction.addEventListener(MouseEvent.CLICK, (e: MouseEvent) => {
             this.TakeOverConfirm(true);
         });
     }
 
     public Hide(): void {
-        GLOBAL.BlockerRemove();
+        getGLOBAL().BlockerRemove();
         if (this.parent) {
             this.parent.removeChild(this);
         }
@@ -163,47 +166,47 @@ export class PopupTakeover extends MapRoomPopup_takeover_CLIP {
         const takeoverSuccessful = (serverData: any): void => {
             PLEASEWAIT.Hide();
             if (serverData.error === 0) {
-                BASE._takeoverFirstOpen = this._cell._base === 1 ? 1 : 2;
-                BASE._takeoverPreviousOwnersName = this._cell._name;
+                getBASE()._takeoverFirstOpen = this._cell._base === 1 ? 1 : 2;
+                getBASE()._takeoverPreviousOwnersName = this._cell._name;
                 MapRoom.GetCell(this._cell.X, this._cell.Y, true);
-                GLOBAL._mapOutpost.push(new Point(this._cell.X, this._cell.Y));
-                GLOBAL._resources.r1max += GLOBAL._outpostCapacity.Get();
-                GLOBAL._resources.r2max += GLOBAL._outpostCapacity.Get();
-                GLOBAL._resources.r3max += GLOBAL._outpostCapacity.Get();
-                GLOBAL._resources.r4max += GLOBAL._outpostCapacity.Get();
+                getGLOBAL()._mapOutpost.push(new Point(this._cell.X, this._cell.Y));
+                getGLOBAL()._resources.r1max += getGLOBAL()._outpostCapacity.Get();
+                getGLOBAL()._resources.r2max += getGLOBAL()._outpostCapacity.Get();
+                getGLOBAL()._resources.r3max += getGLOBAL()._outpostCapacity.Get();
+                getGLOBAL()._resources.r4max += getGLOBAL()._outpostCapacity.Get();
                 MapRoom.ClearCells();
-                MapRoomManager.instance.Hide();
-                GLOBAL._attackerCellsInRange = [];
-                GLOBAL._currentCell = this._cell;
-                (GLOBAL._currentCell as MapRoomCell).baseType = 3;
-                BASE.yardType = EnumYardType.OUTPOST;
-                BASE.LoadBase(null, 0, this._cell._baseID, (GLOBAL as any).e_BASE_MODE.BUILD, false, EnumYardType.OUTPOST);
-                LOGGER.Stat([37, BASE._takeoverFirstOpen]);
+                getMapRoomManager().instance.Hide();
+                getGLOBAL()._attackerCellsInRange = [];
+                getGLOBAL()._currentCell = this._cell;
+                (getGLOBAL()._currentCell as MapRoomCell).baseType = 3;
+                getBASE().yardType = EnumYardType.OUTPOST;
+                getBASE().LoadBase(null, 0, this._cell._baseID, (GLOBAL as any).e_BASE_MODE.BUILD, false, EnumYardType.OUTPOST);
+                getLOGGER().Stat([37, getBASE()._takeoverFirstOpen]);
             } else {
-                GLOBAL.Message(KEYS.Get("err_takeoverproblem") + serverData.error);
+                getGLOBAL().Message(getKEYS().Get("err_takeoverproblem") + serverData.error);
             }
             this.Hide();
         };
 
         const takeoverError = (event: IOErrorEvent): void => {
             this.Hide();
-            GLOBAL.Message(KEYS.Get("err_takeoverproblem") + event.text);
+            getGLOBAL().Message(getKEYS().Get("err_takeoverproblem") + event.text);
         };
 
         let takeoverVars: any[][];
         
         if (useShiny) {
-            if (GLOBAL._credits.Get() < this._shinyCost.Get()) {
-                POPUPS.DisplayGetShiny();
+            if (getGLOBAL()._credits.Get() < this._shinyCost.Get()) {
+                getPOPUPS().DisplayGetShiny();
                 return;
             }
             takeoverVars = [["baseid", this._cell._baseID], ["shiny", this._shinyCost.Get()]];
         } else {
-            if (GLOBAL._resources.r1.Get() < this._resourceCost.Get() ||
-                GLOBAL._resources.r2.Get() < this._resourceCost.Get() ||
-                GLOBAL._resources.r3.Get() < this._resourceCost.Get() ||
-                GLOBAL._resources.r4.Get() < this._resourceCost.Get()) {
-                GLOBAL.Message(KEYS.Get("newmap_take4"));
+            if (getGLOBAL()._resources.r1.Get() < this._resourceCost.Get() ||
+                getGLOBAL()._resources.r2.Get() < this._resourceCost.Get() ||
+                getGLOBAL()._resources.r3.Get() < this._resourceCost.Get() ||
+                getGLOBAL()._resources.r4.Get() < this._resourceCost.Get()) {
+                getGLOBAL().Message(getKEYS().Get("newmap_take4"));
                 return;
             }
             takeoverVars = [
@@ -217,8 +220,8 @@ export class PopupTakeover extends MapRoomPopup_takeover_CLIP {
             ];
         }
 
-        PLEASEWAIT.Show(KEYS.Get("plsw_taking"));
-        new URLLoaderApi().load(GLOBAL._mapURL + "takeovercell", takeoverVars, takeoverSuccessful, takeoverError);
+        PLEASEWAIT.Show(getKEYS().Get("plsw_taking"));
+        new (getURLLoaderApi())().load(getGLOBAL()._mapURL + "takeovercell", takeoverVars, takeoverSuccessful, takeoverError);
     }
 
     private Center(): void {

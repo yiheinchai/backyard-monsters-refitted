@@ -1,7 +1,4 @@
 import { IAttackable } from './com/monsters/interfaces/IAttackable';
-import { MonsterBase } from './com/monsters/monsters/MonsterBase';
-import { PATHING } from './com/monsters/pathing/PATHING';
-import { Vacuum } from './com/monsters/siege/weapons/Vacuum';
 import BitmapData from 'openfl/display/BitmapData';
 import MovieClip from 'openfl/display/MovieClip';
 import Shape from 'openfl/display/Shape';
@@ -11,14 +8,20 @@ import GlowFilter from 'openfl/filters/GlowFilter';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BTOWER } from './BTOWER';
-import { ATTACK } from './ATTACK';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { MAP } from './MAP';
-import { POPUPS } from './POPUPS';
-import { SOUNDS } from './SOUNDS';
-import { Targeting } from './Targeting';
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getPATHING(): any { return require("./com/monsters/pathing/PATHING").PATHING; }
+function getVacuum(): any { return require("./com/monsters/siege/weapons/Vacuum").Vacuum; }
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getTargeting(): any { return require("./Targeting").Targeting; }
+
 
 /**
  * BUILDING118 - Railgun Tower (Inferno)
@@ -43,15 +46,15 @@ export class BUILDING118 extends BTOWER {
         this._gridCost = [[new Rectangle(0, 0, 70, 70), 10], [new Rectangle(10, 10, 50, 50), 200]];
         this.SetProps();
         this.Props();
-        this.attackFlags = Targeting.getOldStyleTargets(-1);
+        this.attackFlags = getTargeting().getOldStyleTargets(-1);
     }
 
     public override TickAttack(): void {
         super.TickAttack();
         if (this._hasTargets) {
             const targetCreep: MonsterBase = this._targetCreeps[0].creep;
-            const targetPos: Point = PATHING.FromISO(targetCreep._tmpPoint);
-            let myPos: Point = PATHING.FromISO(new Point(this._mc!.x, this._mc!.y));
+            const targetPos: Point = getPATHING().FromISO(targetCreep._tmpPoint);
+            let myPos: Point = getPATHING().FromISO(new Point(this._mc!.x, this._mc!.y));
             myPos = myPos.add(new Point(35, 35));
             const dx: number = targetPos.x - myPos.x;
             const dy: number = targetPos.y - myPos.y;
@@ -78,10 +81,10 @@ export class BUILDING118 extends BTOWER {
                 for (let i = 0; i < count; i++) {
                     if (this._fireCount > 15) {
                         if (this._gunballs[0] && this._gunballs[0].parent) {
-                            MAP._PROJECTILES.removeChild(this._gunballs[0]);
+                            getMAP()._PROJECTILES.removeChild(this._gunballs[0]);
                         }
                         if (this._trail[0] && this._trail[0].parent) {
-                            MAP._PROJECTILES.removeChild(this._trail[0]);
+                            getMAP()._PROJECTILES.removeChild(this._trail[0]);
                         }
                     } else {
                         const alpha = 1 - (this._fireCount - 10) * 0.2;
@@ -102,7 +105,7 @@ export class BUILDING118 extends BTOWER {
     }
 
     public override AnimFrame(advance: boolean = true): void {
-        if (this._animLoaded && GLOBAL._render) {
+        if (this._animLoaded && getGLOBAL()._render) {
             this._animRect!.x = this._animRect!.width * this._animTick;
             this._animContainerBMD!.copyPixels(this._animBMD!, this._animRect!, this._nullPoint!);
         }
@@ -110,15 +113,15 @@ export class BUILDING118 extends BTOWER {
 
     public override Fire(target: IAttackable): void {
         super.Fire(target);
-        SOUNDS.Play("railgun1", !this.isJard ? 0.8 : 0.4);
+        getSOUNDS().Play("railgun1", !this.isJard ? 0.8 : 0.4);
         const healthRatio: number = 0.5 + 0.5 / this.maxHealth * this.health;
         let overdrive: number = 1;
-        if (GLOBAL._towerOverdrive && GLOBAL._towerOverdrive.Get() >= GLOBAL.Timestamp()) {
+        if (getGLOBAL()._towerOverdrive && getGLOBAL()._towerOverdrive.Get() >= getGLOBAL().Timestamp()) {
             overdrive = 1.25;
         }
         if (this.isJard) {
             this._jarHealth!.Add(-Math.floor(this.damage * 3 * healthRatio * overdrive));
-            ATTACK.Damage(this._mc!.x, this._mc!.y + this._top, this.damage * 3 * healthRatio * overdrive);
+            getATTACK().Damage(this._mc!.x, this._mc!.y + this._top, this.damage * 3 * healthRatio * overdrive);
             if (this._jarHealth!.Get() <= 0) {
                 this.KillJar();
             }
@@ -127,9 +130,9 @@ export class BUILDING118 extends BTOWER {
             this._spot = new Point(startPos.x, startPos.y);
             let dy: number, dx: number;
             if (this._targetVacuum) {
-                dx = GLOBAL.townHall._mc!.x - startPos.x;
-                dy = GLOBAL.townHall._mc!.y - GLOBAL.townHall._mc!.height - startPos.y;
-                Vacuum.getHose().modifyHealth(-Math.floor(this.damage * 3 * healthRatio * overdrive));
+                dx = getGLOBAL().townHall._mc!.x - startPos.x;
+                dy = getGLOBAL().townHall._mc!.y - getGLOBAL().townHall._mc!.height - startPos.y;
+                getVacuum().getHose().modifyHealth(-Math.floor(this.damage * 3 * healthRatio * overdrive));
             } else {
                 dy = target.y - startPos.y;
                 dx = target.x - startPos.x;
@@ -139,10 +142,10 @@ export class BUILDING118 extends BTOWER {
             // Clear existing projectiles
             while (this._gunballs.length > 0) {
                 if (this._gunballs[0] && this._gunballs[0].parent) {
-                    MAP._PROJECTILES.removeChild(this._gunballs[0]);
+                    getMAP()._PROJECTILES.removeChild(this._gunballs[0]);
                 }
                 if (this._trail[0] && this._trail[0].parent) {
-                    MAP._PROJECTILES.removeChild(this._trail[0]);
+                    getMAP()._PROJECTILES.removeChild(this._trail[0]);
                 }
                 this._gunballs.shift();
                 this._trail.shift();
@@ -161,14 +164,14 @@ export class BUILDING118 extends BTOWER {
                 this._trail[i].graphics.lineTo(this._spot.x + this._segment.x, this._spot.y + this._segment.y);
                 this._trail[i].filters = [new GlowFilter(0x0088AB, 1, 5 + Math.random() * 2, 5 + Math.random() * 2, 4, 1, false, false)];
                 this._spot = this._spot.add(this._segment);
-                MAP._PROJECTILES.addChild(this._trail[i]);
-                MAP._PROJECTILES.addChild(this._gunballs[i]);
+                getMAP()._PROJECTILES.addChild(this._trail[i]);
+                getMAP()._PROJECTILES.addChild(this._gunballs[i]);
                 ++this._spawnCount;
             }
             
             // Deal damage to creatures in line
             if (!this._targetVacuum) {
-                const targets = Targeting.getCreepsInRange(1600, startPos, this.attackFlags);
+                const targets = getTargeting().getCreepsInRange(1600, startPos, this.attackFlags);
                 let totalDamage = 0;
                 const endPos: Point = startPos.add(new Point(this._segment.x * 50, this._segment.y * 50));
                 for (const targetData of targets) {
@@ -178,7 +181,7 @@ export class BUILDING118 extends BTOWER {
                         creep.modifyHealth(-(this.damage * overdrive * healthRatio * creep._damageMult));
                     }
                 }
-                ATTACK.Damage(this._mc!.x, this._mc!.y + this._top, totalDamage);
+                getATTACK().Damage(this._mc!.x, this._mc!.y + this._top, totalDamage);
             }
         }
     }
@@ -213,10 +216,10 @@ export class BUILDING118 extends BTOWER {
         super.Destroyed(byAttacker);
         while (this._gunballs.length > 0) {
             if (this._gunballs[0] && this._gunballs[0].parent) {
-                MAP._PROJECTILES.removeChild(this._gunballs[0]);
+                getMAP()._PROJECTILES.removeChild(this._gunballs[0]);
             }
             if (this._trail[0] && this._trail[0].parent) {
-                MAP._PROJECTILES.removeChild(this._trail[0]);
+                getMAP()._PROJECTILES.removeChild(this._trail[0]);
             }
             this._gunballs.shift();
             this._trail.shift();

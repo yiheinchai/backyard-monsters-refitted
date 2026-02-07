@@ -6,21 +6,24 @@ import { TweenLite } from "gs/TweenLite";
 
 import { BYMConfig } from "../../configs/BYMConfig";
 import { ProjectileEvent } from "../../events/ProjectileEvent";
-import { MonsterBase } from "../MonsterBase";
 import { FlameEffect } from "../components/statusEffects/FlameEffect";
 import { ChampionBase } from "./ChampionBase";
-import { PATHING } from "../../pathing/PATHING";
-import { Targeting } from "../../../../Targeting";
 import { RasterData } from "../../rendering/RasterData";
 
-import { ATTACK } from "../../../../ATTACK";
-import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { FIREBALL } from "../../../../FIREBALL";
-import { FIREBALLS } from "../../../../FIREBALLS";
-import { GLOBAL } from "../../../../GLOBAL";
-import { MAP } from "../../../../MAP";
-import { SOUNDS } from "../../../../SOUNDS";
-import { SPRITES } from "../../../../SPRITES";
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../MonsterBase").MonsterBase; }
+function getPATHING(): any { return require("../../pathing/PATHING").PATHING; }
+function getTargeting(): any { return require("../../../../Targeting").Targeting; }
+function getATTACK(): any { return require("../../../../ATTACK").ATTACK; }
+function getBFOUNDATION(): any { return require("../../../../BFOUNDATION").BFOUNDATION; }
+function getFIREBALL(): any { return require("../../../../FIREBALL").FIREBALL; }
+function getFIREBALLS(): any { return require("../../../../FIREBALLS").FIREBALLS; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getMAP(): any { return require("../../../../MAP").MAP; }
+function getSOUNDS(): any { return require("../../../../SOUNDS").SOUNDS; }
+function getSPRITES(): any { return require("../../../../SPRITES").SPRITES; }
+
+
 
 /**
  * Korath - fire-breathing champion with stomp ability.
@@ -105,9 +108,9 @@ export class Korath extends ChampionBase {
         } else {
             ++this._attackNum;
             if (Boolean(this._targetBuilding) && this._targetBuilding!._fortification.Get() > 0) {
-                ATTACK.Damage(this._tmpPoint.x, this._tmpPoint.y - 5, this.damage * dmgMult * (100 - (this._targetBuilding!._fortification.Get() * 10 + 10)) / 100, this._mc.visible);
+                getATTACK().Damage(this._tmpPoint.x, this._tmpPoint.y - 5, this.damage * dmgMult * (100 - (this._targetBuilding!._fortification.Get() * 10 + 10)) / 100, this._mc.visible);
             } else {
-                ATTACK.Damage(this._tmpPoint.x, this._tmpPoint.y - 5, this.damage * dmgMult, this._mc.visible);
+                getATTACK().Damage(this._tmpPoint.x, this._tmpPoint.y - 5, this.damage * dmgMult, this._mc.visible);
             }
             if (this._targetCreep) {
                 this._targetCreep.modifyHealth(-(this.damage * dmgMult));
@@ -125,7 +128,7 @@ export class Korath extends ChampionBase {
             this.shootFireball(this._targetCreep!);
         } else {
             ++this._attackNum;
-            ATTACK.Damage(this._tmpPoint.x, this._tmpPoint.y - 5, this.damage, this._mc.visible);
+            getATTACK().Damage(this._tmpPoint.x, this._tmpPoint.y - 5, this.damage, this._mc.visible);
             this._targetCreep!.modifyHealth(-this.damage);
             this.addFlameDOT(this._targetCreep!);
         }
@@ -134,15 +137,15 @@ export class Korath extends ChampionBase {
     private shootFireball(target: MonsterBase): void {
         const offset = 50;
         const startPos = Point.interpolate(this._tmpPoint.add(new Point(0, -offset)), this._targetCreep!._tmpPoint, 0.8);
-        const fireball = FIREBALLS.Spawn2(startPos, this._targetCreep!._tmpPoint, this._targetCreep!, 8, this.damage / 4, 0, FIREBALLS.TYPE_MAGMA, 1, this);
-        fireball.addEventListener(FIREBALL.COLLIDED, this.addFlameDOTEvent.bind(this), false, 0, true);
+        const fireball = getFIREBALLS().Spawn2(startPos, this._targetCreep!._tmpPoint, this._targetCreep!, 8, this.damage / 4, 0, getFIREBALLS().TYPE_MAGMA, 1, this);
+        fireball.addEventListener(getFIREBALL().COLLIDED, this.addFlameDOTEvent.bind(this), false, 0, true);
     }
 
     protected override getTargetCreeps(): void {
         if (this._powerLevel.Get() >= Korath.KORATH_POWER_FIREBALL && this._level.Get() > 3) {
-            this._targetCreeps = Targeting.getCreepsInRange(800, this._tmpPoint, Targeting.getOldStyleTargets(1));
+            this._targetCreeps = getTargeting().getCreepsInRange(800, this._tmpPoint, getTargeting().getOldStyleTargets(1));
         } else {
-            this._targetCreeps = Targeting.getCreepsInRange(800, this._tmpPoint, Targeting.getOldStyleTargets(0));
+            this._targetCreeps = getTargeting().getCreepsInRange(800, this._tmpPoint, getTargeting().getOldStyleTargets(0));
         }
     }
 
@@ -155,11 +158,11 @@ export class Korath extends ChampionBase {
                 return false;
             }
         }
-        const dist = GLOBAL.QuickDistance(this._targetCreep._tmpPoint, this._tmpPoint);
+        const dist = getGLOBAL().QuickDistance(this._targetCreep._tmpPoint, this._tmpPoint);
         if (dist > this.m_range) {
             return false;
         }
-        if (PATHING.LineOfSight(this._tmpPoint.x, this._tmpPoint.y, this._targetCreep._tmpPoint.x, this._targetCreep._tmpPoint.y)) {
+        if (getPATHING().LineOfSight(this._tmpPoint.x, this._tmpPoint.y, this._targetCreep._tmpPoint.x, this._targetCreep._tmpPoint.y)) {
             return true;
         }
         return false;
@@ -168,7 +171,7 @@ export class Korath extends ChampionBase {
     protected override getNextSprite(): void {
         super.getNextSprite();
         if (this._quaking) {
-            SPRITES.GetSprite(this._graphic, this._spriteID, "stomp", this.m_rotation - 45, this._frameNumber);
+            getSPRITES().GetSprite(this._graphic, this._spriteID, "stomp", this.m_rotation - 45, this._frameNumber);
         }
     }
 
@@ -176,8 +179,8 @@ export class Korath extends ChampionBase {
     }
 
     private addFlameDOTEvent(event: ProjectileEvent): void {
-        (event.target as FIREBALL).removeEventListener(FIREBALL.COLLIDED, this.addFlameDOTEvent.bind(this));
-        if (event.m_targetCreep instanceof MonsterBase) {
+        (event.target as FIREBALL).removeEventListener(getFIREBALL().COLLIDED, this.addFlameDOTEvent.bind(this));
+        if (event.m_targetCreep instanceof getMonsterBase()) {
             this.addFlameDOT(event.m_targetCreep as MonsterBase);
         }
     }
@@ -195,7 +198,7 @@ export class Korath extends ChampionBase {
             if (this._frameNumber / 8 % 10 + 20 === 26) {
                 const dmgMult = 1;
                 this._attackNum = 0;
-                SOUNDS.Play("quake", 0.4);
+                getSOUNDS().Play("quake", 0.4);
                 this.quake(this.damage * dmgMult);
             } else if (this._frameNumber / 8 % 10 + 20 === 29) {
                 this._quaking = false;
@@ -211,13 +214,13 @@ export class Korath extends ChampionBase {
 
     private quake(damage: number): void {
         const pos = new Point(this._mc.x, this._mc.y);
-        let targetFlags = Targeting.getEnemyFlag(this) | Targeting.k_TARGETS_GROUND | Targeting.k_TARGETS_INVISIBLE;
+        let targetFlags = getTargeting().getEnemyFlag(this) | getTargeting().k_TARGETS_GROUND | getTargeting().k_TARGETS_INVISIBLE;
         if (!this._friendly) {
-            targetFlags |= Targeting.k_TARGETS_BUILDINGS;
+            targetFlags |= getTargeting().k_TARGETS_BUILDINGS;
         }
-        const targets = Targeting.getTargetsInRange(this.m_range * 2.5, new Point(this._mc.x, this._mc.y), targetFlags);
+        const targets = getTargeting().getTargetsInRange(this.m_range * 2.5, new Point(this._mc.x, this._mc.y), targetFlags);
         if (targets) {
-            Targeting.DealLinearAEDamage(pos, this.m_range * 2.5, damage, targets, this.m_range * 1.5);
+            getTargeting().DealLinearAEDamage(pos, this.m_range * 2.5, damage, targets, this.m_range * 1.5);
         }
         const offsetY = 0;
         const quakeGraphic = new G4QuakeGraphic(20, this.m_range * 2.5, BYMConfig.instance.RENDERER_ON ? new Point(this._rasterPt.x, this._rasterPt.y + this._graphic.height * 0.6) : null);
@@ -254,7 +257,7 @@ class G4QuakeGraphic {
             const container = new Sprite();
             container.addChild(this.graphic);
             this.m_rasterPt = new Point(rasterPt!.x + container.width, rasterPt!.y + container.height);
-            this.m_rasterData = new RasterData(container, this.m_rasterPt, MAP.DEPTH_SHADOW + 1);
+            this.m_rasterData = new RasterData(container, this.m_rasterPt, getMAP().DEPTH_SHADOW + 1);
         }
     }
 

@@ -13,14 +13,17 @@ import { FriendPicker } from './com/monsters/mailbox/FriendPicker';
 import { Message } from './com/monsters/mailbox/Message';
 import { Contact } from './com/monsters/mailbox/model/Contact';
 import { Button } from './Button';
-import { BFOUNDATION } from './BFOUNDATION';
-import { URLLoaderApi } from './URLLoaderApi';
-import { GLOBAL } from './GLOBAL';
-import { BASE } from './BASE';
-import { KEYS } from './KEYS';
 import { SIGNS } from './SIGNS';
-import { LOGGER } from './LOGGER';
 import { POPUPSETTINGS } from './POPUPSETTINGS';
+
+// Lazy imports to break circular dependency chains
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getURLLoaderApi(): any { return require("./URLLoaderApi").URLLoaderApi; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+
 
 export class SIGNPOPUP extends Sprite {
     public static readonly GRAY: number = 6710886;
@@ -50,10 +53,10 @@ export class SIGNPOPUP extends Sprite {
         this.timer.addEventListener(TimerEvent.TIMER, this.Validate.bind(this));
         this.timer.start();
         this.closeBtn.addEventListener(MouseEvent.MOUSE_DOWN, this.closeDown.bind(this));
-        const _loc1_ = new Contact(String(BASE._userID), {
-            "first_name": BASE._ownerName,
+        const _loc1_ = new Contact(String(getBASE()._userID), {
+            "first_name": getBASE()._ownerName,
             "last_name": "",
-            "pic_square": BASE._ownerPic
+            "pic_square": getBASE()._ownerPic
         });
         this.picker.preloadSelection(_loc1_);
     }
@@ -69,15 +72,15 @@ export class SIGNPOPUP extends Sprite {
         this._sign._subject = this.subject_txt.text;
         this._subject = this.subject_txt.text;
         const _loc2_ = this.picker.getCurrentData().userid;
-        const _loc4_ = new URLLoaderApi();
+        const _loc4_ = new (getURLLoaderApi())();
         if (this._mode == "create") {
             _loc3_ = [["threadid", 0], ["targetid", _loc2_], ["targetbaseid", 0], ["type", this.requestType], ["subject", this._subject]];
-            _loc4_.load(GLOBAL._apiURL + "player/sendmessage", _loc3_, this.onSuccess.bind(this), this.onFail.bind(this));
+            _loc4_.load(getGLOBAL()._apiURL + "player/sendmessage", _loc3_, this.onSuccess.bind(this), this.onFail.bind(this));
             this.sendBtn.Enabled = false;
             this.sendBtn.removeEventListener(MouseEvent.CLICK, this.sendDown.bind(this));
         } else if (this._mode == "edit") {
             _loc3_ = [["threadid", this._sign._threadid], ["subject", this._subject]];
-            _loc4_.load(GLOBAL._apiURL + "player/editthread", _loc3_, this.onSuccess.bind(this), this.onFail.bind(this));
+            _loc4_.load(getGLOBAL()._apiURL + "player/editthread", _loc3_, this.onSuccess.bind(this), this.onFail.bind(this));
             this.sendBtn.Enabled = false;
             this.sendBtn.removeEventListener(MouseEvent.CLICK, this.sendDown.bind(this));
         }
@@ -96,7 +99,7 @@ export class SIGNPOPUP extends Sprite {
     private onSuccess(param1: any): void {
         if (param1.error != undefined && param1.error != 0) {
             try {
-                LOGGER.Log("err", "mailbox-" + param1.error);
+                getLOGGER().Log("err", "mailbox-" + param1.error);
             } catch (e) {
             }
             this.displayError();
@@ -125,7 +128,7 @@ export class SIGNPOPUP extends Sprite {
 
     private detectFS(param1: FullScreenEvent = null): void {
         if (this.stage && this.stage.displayState == StageDisplayState.FULL_SCREEN) {
-            (this.fsWarning as any).tBody.htmlText = KEYS.Get("fswarning");
+            (this.fsWarning as any).tBody.htmlText = getKEYS().Get("fswarning");
             this.addChild(this.fsWarning);
         } else if (this.contains(this.fsWarning)) {
             this.removeChild(this.fsWarning);

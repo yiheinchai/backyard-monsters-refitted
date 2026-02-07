@@ -1,15 +1,18 @@
 import Timer from "openfl/utils/Timer";
 import TimerEvent from "openfl/events/TimerEvent";
 
-import { Decoy } from "./weapons/Decoy";
-import { Vacuum } from "./weapons/Vacuum";
-import { Jars } from "./weapons/Jars";
 import { SiegeWeapon } from "./weapons/SiegeWeapon";
 
-import { ATTACK } from "../../../ATTACK";
-import { LOGGER } from "../../../LOGGER";
 
 import { md5 } from "../../../md5";
+
+// Lazy imports to break circular dependency chains
+function getDecoy(): any { return require("./weapons/Decoy").Decoy; }
+function getVacuum(): any { return require("./weapons/Vacuum").Vacuum; }
+function getJars(): any { return require("./weapons/Jars").Jars; }
+function getATTACK(): any { return require("../../../ATTACK").ATTACK; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+
 
 declare const JSON: { encode(obj: any): string };
 
@@ -26,9 +29,9 @@ export class SiegeWeapons {
 
     // Static initialization block moved to static method
     public static initialize(): void {
-        SiegeWeapons._weaponsList[Decoy.ID] = new Decoy();
-        SiegeWeapons._weaponsList[Vacuum.ID] = new Vacuum();
-        SiegeWeapons._weaponsList[Jars.ID] = new Jars();
+        SiegeWeapons._weaponsList[getDecoy().ID] = new (getDecoy())();
+        SiegeWeapons._weaponsList[getVacuum().ID] = new (getVacuum())();
+        SiegeWeapons._weaponsList[getJars().ID] = new (getJars())();
     }
 
     constructor() {}
@@ -61,7 +64,7 @@ export class SiegeWeapons {
         }
         
         SiegeWeapons.activeWeaponID = weaponId;
-        ATTACK.Log("siegeWeaponActivation", '<font color="#0000FF">' + weapon.logMessage + '</font>');
+        getATTACK().Log("siegeWeaponActivation", '<font color="#0000FF">' + weapon.logMessage + '</font>');
         
         if (weapon.duration > 0) {
             SiegeWeapons.activeWeaponTimer = new Timer(1000, weapon.duration);
@@ -71,7 +74,7 @@ export class SiegeWeapons {
         
         weapon.quantity--;
         SiegeWeapons.didActivatWeapon = true;
-        LOGGER.Stat([93, weaponId, weapon.level]);
+        getLOGGER().Stat([93, weaponId, weapon.level]);
         return true;
     }
 
@@ -141,30 +144,30 @@ export class SiegeWeapons {
     public static Check(): string {
         const list: any[] = [];
         for (let i = 0; i < 10; i++) {
-            list.push(SiegeWeapons.getWeapon(Decoy.ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r1);
-            list.push(SiegeWeapons.getWeapon(Decoy.ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r2);
-            list.push(SiegeWeapons.getWeapon(Decoy.ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r3);
-            list.push(SiegeWeapons.getWeapon(Decoy.ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r4);
-            list.push(SiegeWeapons.getWeapon(Decoy.ID).getProperty(Decoy.DAMAGE).values[i]);
-            list.push(SiegeWeapons.getWeapon(Decoy.ID).getProperty(SiegeWeapon.RANGE).values[i]);
-            list.push(SiegeWeapons.getWeapon(Decoy.ID).getProperty(SiegeWeapon.DURATION).values[i]);
-            list.push(SiegeWeapons.getWeapon(Vacuum.ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r1);
-            list.push(SiegeWeapons.getWeapon(Vacuum.ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r2);
-            list.push(SiegeWeapons.getWeapon(Vacuum.ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r3);
-            list.push(SiegeWeapons.getWeapon(Vacuum.ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r4);
-            list.push(SiegeWeapons.getWeapon(Vacuum.ID).getProperty(SiegeWeapon.DURATION).values[i]);
-            list.push(SiegeWeapons.getWeapon(Vacuum.ID).getProperty(SiegeWeapon.DURABILITY).values[i]);
-            list.push(SiegeWeapons.getWeapon(Vacuum.ID).getProperty(Vacuum.LOOT_BONUS).values[i]);
-            list.push(SiegeWeapons.getWeapon(Jars.ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r1);
-            list.push(SiegeWeapons.getWeapon(Jars.ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r2);
-            list.push(SiegeWeapons.getWeapon(Jars.ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r3);
-            list.push(SiegeWeapons.getWeapon(Jars.ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r4);
-            list.push(SiegeWeapons.getWeapon(Jars.ID).getProperty(SiegeWeapon.RANGE).values[i]);
-            list.push(SiegeWeapons.getWeapon(Jars.ID).getProperty(SiegeWeapon.DURABILITY).values[i]);
+            list.push(SiegeWeapons.getWeapon(getDecoy().ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r1);
+            list.push(SiegeWeapons.getWeapon(getDecoy().ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r2);
+            list.push(SiegeWeapons.getWeapon(getDecoy().ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r3);
+            list.push(SiegeWeapons.getWeapon(getDecoy().ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r4);
+            list.push(SiegeWeapons.getWeapon(getDecoy().ID).getProperty(getDecoy().DAMAGE).values[i]);
+            list.push(SiegeWeapons.getWeapon(getDecoy().ID).getProperty(SiegeWeapon.RANGE).values[i]);
+            list.push(SiegeWeapons.getWeapon(getDecoy().ID).getProperty(SiegeWeapon.DURATION).values[i]);
+            list.push(SiegeWeapons.getWeapon(getVacuum().ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r1);
+            list.push(SiegeWeapons.getWeapon(getVacuum().ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r2);
+            list.push(SiegeWeapons.getWeapon(getVacuum().ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r3);
+            list.push(SiegeWeapons.getWeapon(getVacuum().ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r4);
+            list.push(SiegeWeapons.getWeapon(getVacuum().ID).getProperty(SiegeWeapon.DURATION).values[i]);
+            list.push(SiegeWeapons.getWeapon(getVacuum().ID).getProperty(SiegeWeapon.DURABILITY).values[i]);
+            list.push(SiegeWeapons.getWeapon(getVacuum().ID).getProperty(getVacuum().LOOT_BONUS).values[i]);
+            list.push(SiegeWeapons.getWeapon(getJars().ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r1);
+            list.push(SiegeWeapons.getWeapon(getJars().ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r2);
+            list.push(SiegeWeapons.getWeapon(getJars().ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r3);
+            list.push(SiegeWeapons.getWeapon(getJars().ID).getProperty(SiegeWeapon.UPGRADE_COSTS).values[i].r4);
+            list.push(SiegeWeapons.getWeapon(getJars().ID).getProperty(SiegeWeapon.RANGE).values[i]);
+            list.push(SiegeWeapons.getWeapon(getJars().ID).getProperty(SiegeWeapon.DURABILITY).values[i]);
         }
         return md5(JSON.encode(list));
     }
 }
 
 // Call initialize when module loads
-SiegeWeapons.initialize();
+// SiegeWeapons.initialize(); // Deferred - called when needed

@@ -4,8 +4,11 @@ import Event from 'openfl/events/Event';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BRESOURCE } from './BRESOURCE';
-import { CREEPS } from './CREEPS';
-import { GLOBAL } from './GLOBAL';
+
+// Lazy imports to break circular dependency chains
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+
 
 /**
  * BUILDING3 - Putty Squisher (Resource Gatherer for Putty)
@@ -30,11 +33,11 @@ export class BUILDING3 extends BRESOURCE {
 
     public override TickFast(event: Event | null = null): void {
         super.TickFast(event);
-        if (GLOBAL._render && this._animLoaded && 
+        if (getGLOBAL()._render && this._animLoaded && 
             this._countdownBuild.Get() + this._countdownUpgrade.Get() + this._countdownFortify.Get() === 0 && 
             this._producing && this._canFunction) {
-            if ((GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === "help" || GLOBAL.mode === "view") && 
-                this._frameNumber % 3 === 0 && CREEPS._creepCount === 0) {
+            if ((getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode === "help" || getGLOBAL().mode === "view") && 
+                this._frameNumber % 3 === 0 && getCREEPS()._creepCount === 0) {
                 this.AnimFrame();
             } else if (this._frameNumber % 10 === 0) {
                 this.AnimFrame();

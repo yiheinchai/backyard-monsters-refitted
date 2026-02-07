@@ -4,7 +4,10 @@ import MouseEvent from "openfl/events/MouseEvent";
 import { BasePlannerEvent } from "../../events/BasePlannerEvent";
 import { BasePlannerTransferConfirmation_CLIP } from "../../../../../BasePlannerTransferConfirmation_CLIP";
 
-import { KEYS } from "../../../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../../KEYS").KEYS; }
+
+
 
 /**
  * Base planner transfer confirmation popup - confirms overwriting a saved template.
@@ -12,8 +15,8 @@ import { KEYS } from "../../../../../KEYS";
 export class BasePlannerTransferConfirmation extends BasePlannerTransferConfirmation_CLIP {
     constructor(templateName: string | null = null) {
         super();
-        this.tTitle.htmlText = KEYS.Get("pop_areyousure");
-        this.tBody.htmlText = KEYS.Get("basePlanner_overwrite", { "v1": templateName });
+        this.tTitle.htmlText = getKEYS().Get("pop_areyousure");
+        this.tBody.htmlText = getKEYS().Get("basePlanner_overwrite", { "v1": templateName });
         this.bCancel.SetupKey("btn_cancel");
         this.bConfirm.SetupKey("basePlanner_btnSave");
         this.bCancel.addEventListener(MouseEvent.CLICK, this.clickedCancel.bind(this), false, 0, true);

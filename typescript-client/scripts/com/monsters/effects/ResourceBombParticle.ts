@@ -12,8 +12,11 @@ import { RasterData } from "../rendering/RasterData";
 import { ResourceBomb } from "./ResourceBomb";
 import { ResourceBombs } from "./ResourceBombs";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { MAP } from "../../../MAP";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getMAP(): any { return require("../../../MAP").MAP; }
+
+
 
 /**
  * ResourceBombParticle - individual particle for resource bomb effects.
@@ -84,11 +87,11 @@ export class ResourceBombParticle {
                 offset.y = -26;
         }
         this.mc!.x = position.x + 100 + offset.x;
-        this.mc!.y = position.y - GLOBAL.StageHeight + offset.y;
+        this.mc!.y = position.y - getGLOBAL().StageHeight + offset.y;
         if (!BYMConfig.instance.RENDERER_ON) {
             this.mc!.cacheAsBitmap = true;
         } else {
-            this.m_rasterPt = new Point(this.mc!.x - MAP.instance.offset.x + this.mctop.x, this.mc!.y - MAP.instance.offset.y + this.mctop.y);
+            this.m_rasterPt = new Point(this.mc!.x - getMAP().instance.offset.x + this.mctop.x, this.mc!.y - getMAP().instance.offset.y + this.mctop.y);
             this.m_rasterData = new RasterData(this.bmd_frame!, this.m_rasterPt, Number.MAX_VALUE);
             this.m_rasterData.visible = false;
         }
@@ -116,8 +119,8 @@ export class ResourceBombParticle {
         } else if (resourceId === ResourceBombParticle.k_TYPE_PUTTY) {
             TweenLite.to(this.m_rasterPt, 0.3 + Math.random() * 0.5, {
                 "delay": 1,
-                "x": position.x - MAP.instance.offset.x + this.mctop.x,
-                "y": position.y - MAP.instance.offset.y + this.mctop.y,
+                "x": position.x - getMAP().instance.offset.x + this.mctop.x,
+                "y": position.y - getMAP().instance.offset.y + this.mctop.y,
                 "onStart": this.Add.bind(this),
                 "onComplete": this.Hit.bind(this),
                 "ease": Sine.easeIn
@@ -125,8 +128,8 @@ export class ResourceBombParticle {
         } else {
             TweenLite.to(this.m_rasterPt, 0.3 + Math.random() * 0.5, {
                 "delay": 1 + Math.random() * (delay * 2),
-                "x": position.x - MAP.instance.offset.x + this.mctop.x,
-                "y": position.y - MAP.instance.offset.y + this.mctop.y,
+                "x": position.x - getMAP().instance.offset.x + this.mctop.x,
+                "y": position.y - getMAP().instance.offset.y + this.mctop.y,
                 "onStart": this.Add.bind(this),
                 "onComplete": this.Hit.bind(this),
                 "ease": Sine.easeIn
@@ -194,8 +197,8 @@ export class ResourceBombParticle {
             this.mc!.x = this.m_position.x + offset.x;
             this.mc!.y = this.m_position.y + offset.y;
             if (BYMConfig.instance.RENDERER_ON) {
-                this.m_rasterPt!.x = this.mc!.x - MAP.instance.offset.x - this.mctop.x;
-                this.m_rasterPt!.y = this.mc!.y - MAP.instance.offset.y - this.mctop.y;
+                this.m_rasterPt!.x = this.mc!.x - getMAP().instance.offset.x - this.mctop.x;
+                this.m_rasterPt!.y = this.mc!.y - getMAP().instance.offset.y - this.mctop.y;
             }
         }
     }
@@ -235,7 +238,7 @@ export class ResourceBombParticle {
         }
         if (BYMConfig.instance.RENDERER_ON) {
             if (this.m_resourceId !== ResourceBombParticle.k_TYPE_TWIGS) {
-                MAP.effectsBMD.copyPixels(this.bmd_frame!, this.bmd_frame!.rect, this.m_rasterPt!);
+                getMAP().effectsBMD.copyPixels(this.bmd_frame!, this.bmd_frame!.rect, this.m_rasterPt!);
             }
             if (this.m_rasterData) {
                 this.m_rasterData.clear();

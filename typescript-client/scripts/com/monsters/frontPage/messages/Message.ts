@@ -1,18 +1,21 @@
 import MovieClip from "openfl/display/MovieClip";
 import MouseEvent from "openfl/events/MouseEvent";
 
-import { FrontPageHandler } from "../FrontPageHandler";
 import { Category } from "../categories/Category";
 import { Button } from "../../../../Button";
 
-import { BASE } from "../../../../BASE";
-import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { BUILDINGS } from "../../../../BUILDINGS";
-import { BUILDINGOPTIONS } from "../../../../BUILDINGOPTIONS";
-import { GLOBAL } from "../../../../GLOBAL";
-import { KEYS } from "../../../../KEYS";
-import { LOGGER } from "../../../../LOGGER";
-import { POPUPS } from "../../../../POPUPS";
+// Lazy imports to break circular dependency chains
+function getFrontPageHandler(): any { return require("../FrontPageHandler").FrontPageHandler; }
+function getBASE(): any { return require("../../../../BASE").BASE; }
+function getBFOUNDATION(): any { return require("../../../../BFOUNDATION").BFOUNDATION; }
+function getBUILDINGS(): any { return require("../../../../BUILDINGS").BUILDINGS; }
+function getBUILDINGOPTIONS(): any { return require("../../../../BUILDINGOPTIONS").BUILDINGOPTIONS; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../../LOGGER").LOGGER; }
+function getPOPUPS(): any { return require("../../../../POPUPS").POPUPS; }
+
+
 
 /**
  * Message - base class for front page messages/notifications.
@@ -32,14 +35,14 @@ export class Message {
     protected _bodyArguments: Record<string, any> | null = null;
 
     constructor(titleKey: string, bodyKey: string, imageName: string | null = null, buttonKey: string | null = null, videoUrl: string | null = null) {
-        this.title = KEYS.Get(titleKey);
-        this.body = KEYS.Get(bodyKey, this._bodyArguments);
+        this.title = getKEYS().Get(titleKey);
+        this.body = getKEYS().Get(bodyKey, this._bodyArguments);
         if (imageName) {
             this.imageURL = Message._IMAGE_DIRECTORY + imageName;
         }
         this.videoURL = videoUrl || "";
         if (buttonKey) {
-            this._buttonCopy = KEYS.Get(buttonKey);
+            this._buttonCopy = getKEYS().Get(buttonKey);
         }
         this.name = titleKey;
     }
@@ -65,13 +68,13 @@ export class Message {
     }
 
     public viewed(): void {
-        this.timeLastSeen = GLOBAL.Timestamp();
+        this.timeLastSeen = getGLOBAL().Timestamp();
         this.onView();
     }
 
     protected clickedButton(event: MouseEvent): void {
         const mc = event.currentTarget as MovieClip;
-        LOGGER.StatB({
+        getLOGGER().StatB({
             "st1": "GTP",
             "st2": "CTA",
             "value": 1
@@ -94,7 +97,7 @@ export class Message {
             return;
         }
         if (data.seen === 1) {
-            this.timeLastSeen = GLOBAL.Timestamp();
+            this.timeLastSeen = getGLOBAL().Timestamp();
         } else {
             this.timeLastSeen = data.seen;
         }
@@ -112,30 +115,30 @@ export class Message {
 
     public buyBuilding(buildingType: number, closeFrontPage: boolean = true): void {
         if (closeFrontPage) {
-            FrontPageHandler.closeAll();
+            getFrontPageHandler().closeAll();
         }
-        BUILDINGS._buildingID = buildingType;
-        BUILDINGS.Show();
+        getBUILDINGS()._buildingID = buildingType;
+        getBUILDINGS().Show();
     }
 
     public buyMenu(tab1: number = 1, tab2: number = 1, tab3: number = 0): void {
-        BUILDINGS.Show();
-        BUILDINGS._mc.SwitchB(tab1, tab2, tab3);
-        POPUPS.Next();
+        getBUILDINGS().Show();
+        getBUILDINGS()._mc.SwitchB(tab1, tab2, tab3);
+        getPOPUPS().Next();
     }
 
     public upgradeBuilding(buildingType: number): void {
-        FrontPageHandler.closeAll();
-        const building = BASE.findBuilding(buildingType);
+        getFrontPageHandler().closeAll();
+        const building = getBASE().findBuilding(buildingType);
         if (building) {
-            BUILDINGOPTIONS.Show(building, "upgrade");
+            getBUILDINGOPTIONS().Show(building, "upgrade");
         } else {
             this.buyBuilding(buildingType);
         }
     }
 
     public markAsUnseenIfOlderThan(ageSeconds: number): void {
-        if (GLOBAL.Timestamp() - this.timeLastSeen >= ageSeconds) {
+        if (getGLOBAL().Timestamp() - this.timeLastSeen >= ageSeconds) {
             this.timeLastSeen = 0;
         }
     }

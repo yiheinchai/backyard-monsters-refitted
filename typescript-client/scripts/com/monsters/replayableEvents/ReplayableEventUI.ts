@@ -11,9 +11,12 @@ import { IReplayableEventUI } from "./IReplayableEventUI";
 import { ReplayableEvent } from "./ReplayableEvent";
 import { EventsBar_CLIP } from "../../../EventsBar_CLIP";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+
+
 
 /**
  * Replayable event UI - displays event info bar with progress and countdown.
@@ -50,7 +53,7 @@ export class ReplayableEventUI extends EventsBar_CLIP implements IReplayableEven
         this.bHelp.addEventListener(MouseEvent.CLICK, this.ShowInfoPopup.bind(this));
         this.bHelp.buttonMode = true;
         let frame: number = 1;
-        if (BASE.isInfernoMainYardOrOutpost) {
+        if (getBASE().isInfernoMainYardOrOutpost) {
             frame = 2;
         }
         this.mcBG.gotoAndStop(frame);
@@ -110,7 +113,7 @@ export class ReplayableEventUI extends EventsBar_CLIP implements IReplayableEven
         if (timeRemaining <= 0) {
             this.tLabel.htmlText = "<b>DATE NOT INITIALIZED!</b>";
         } else {
-            const timeStr = GLOBAL.ToTime(timeRemaining, true);
+            const timeStr = getGLOBAL().ToTime(timeRemaining, true);
             this.tLabel.htmlText = "<b>" + timeStr + "</b>";
         }
         this.tLabel.mouseEnabled = false;
@@ -121,7 +124,7 @@ export class ReplayableEventUI extends EventsBar_CLIP implements IReplayableEven
             this.barProgressTxt.htmlText = "" + phaseKey + " - " + percentComplete + " %" + "";
             this.barProgress.mcBar.width = Math.min(100, this._event!.progress * 100);
         } else if (this.phase > 1) {
-            this.tLabel.htmlText = "<b>" + KEYS.Get("refresh_to_start_event") + "<b>";
+            this.tLabel.htmlText = "<b>" + getKEYS().Get("refresh_to_start_event") + "<b>";
         }
     }
 
@@ -174,9 +177,9 @@ export class ReplayableEventUI extends EventsBar_CLIP implements IReplayableEven
     }
 
     private Resize(): void {
-        GLOBAL.RefreshScreen();
-        this.x = Math.floor(GLOBAL._SCREEN.x + 5 + 30);
-        this.y = Math.floor(GLOBAL._SCREEN.y + GLOBAL._SCREEN.height - this.mcHit.height - 10);
+        getGLOBAL().RefreshScreen();
+        this.x = Math.floor(getGLOBAL()._SCREEN.x + 5 + 30);
+        this.y = Math.floor(getGLOBAL()._SCREEN.y + getGLOBAL()._SCREEN.height - this.mcHit.height - 10);
         if (Chat._bymChat && Chat._bymChat.chatBox && Boolean(Chat._bymChat.chatBox.background)) {
             this.y = Math.floor(Chat._bymChat.y + Chat._bymChat.chatBox.y + Chat._bymChat.chatBox.background.y - 53);
         }
@@ -185,12 +188,12 @@ export class ReplayableEventUI extends EventsBar_CLIP implements IReplayableEven
     private PhaseKey(keys: Array<string>, translate: boolean = true): string {
         if (this.phase - 1 < keys.length - 1) {
             if (translate) {
-                return KEYS.Get(keys[this.phase - 1]);
+                return getKEYS().Get(keys[this.phase - 1]);
             }
             return keys[this.phase - 1];
         }
         if (translate) {
-            return KEYS.Get(keys[keys.length - 1]);
+            return getKEYS().Get(keys[keys.length - 1]);
         }
         return keys[keys.length - 1];
     }

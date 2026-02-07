@@ -1,7 +1,6 @@
 import Event from "openfl/events/Event";
 
 import { ABTest } from "../../cc/tests/ABTest";
-import { Console } from "../debug/Console";
 import { FrontPageGraphic } from "../frontPage/FrontPageGraphic";
 import { DebugMessage } from "../frontPage/messages/DebugMessage";
 import { Message } from "../frontPage/messages/Message";
@@ -11,13 +10,17 @@ import { ReplayableEvent } from "./ReplayableEvent";
 import { ReplayableEventLibrary } from "./ReplayableEventLibrary";
 import { ReplayableEventUI } from "./ReplayableEventUI";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { LOGGER } from "../../../LOGGER";
-import { POPUPS } from "../../../POPUPS";
-import { TUTORIAL } from "../../../TUTORIAL";
-import { UI2 } from "../../../UI2";
-import { URLLoaderApi } from "../../../URLLoaderApi";
+// Lazy imports to break circular dependency chains
+function getConsole(): any { return require("../debug/Console").Console; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+function getPOPUPS(): any { return require("../../../POPUPS").POPUPS; }
+function getTUTORIAL(): any { return require("../../../TUTORIAL").TUTORIAL; }
+function getUI2(): any { return require("../../../UI2").UI2; }
+function getURLLoaderApi(): any { return require("../../../URLLoaderApi").URLLoaderApi; }
+
+
 
 /**
  * ReplayableEventHandler - manages replayable events lifecycle.
@@ -39,14 +42,14 @@ export class ReplayableEventHandler {
     }
 
     public static get currentTime(): number {
-        if (Boolean(ReplayableEventHandler.debugDate) && GLOBAL._aiDesignMode) {
+        if (Boolean(ReplayableEventHandler.debugDate) && getGLOBAL()._aiDesignMode) {
             return ReplayableEventHandler.debugDate.getTime() / 1000;
         }
-        return GLOBAL.Timestamp();
+        return getGLOBAL().Timestamp();
     }
 
     public static initialize(data: Record<string, any> | null = null): void {
-        if (GLOBAL.isAtHome() && TUTORIAL.hasFinished) {
+        if (getGLOBAL().isAtHome() && getTUTORIAL().hasFinished) {
             if (data) {
                 ReplayableEventHandler.importData(data);
             }
@@ -71,12 +74,12 @@ export class ReplayableEventHandler {
         if (time) {
             ReplayableEventHandler.debugDate.setTime(time);
         }
-        BASE.Save();
-        UI2.DebugWarningEdit(ReplayableEventHandler.debugDate.toDateString());
+        getBASE().Save();
+        getUI2().DebugWarningEdit(ReplayableEventHandler.debugDate.toDateString());
         if (ReplayableEventHandler.activeEvent) {
             const message = ReplayableEventHandler.activeEvent.getCurrentMessage();
             if (message && !message.hasBeenSeen && !(message instanceof DebugMessage)) {
-                POPUPS.Push(new FrontPageGraphic(message));
+                getPOPUPS().Push(new FrontPageGraphic(message));
                 message.viewed();
             }
             ReplayableEventHandler.checkIfActiveEventIsFinished();
@@ -85,10 +88,10 @@ export class ReplayableEventHandler {
 
     private static checkIfActiveEventIsFinished(): void {
         if (Boolean(ReplayableEventHandler.activeEvent) && (ReplayableEventHandler.activeEvent!.hasEventEnded || ReplayableEventHandler.activeEvent!.hasCompletedEvent)) {
-            LOGGER.StatB({ "st1": "ERS", "st2": ReplayableEventHandler.activeEvent!.name }, "event_end");
+            getLOGGER().StatB({ "st1": "ERS", "st2": ReplayableEventHandler.activeEvent!.name }, "event_end");
             const message = ReplayableEventHandler.activeEvent!.getCurrentMessage();
             if (message && !message.hasBeenSeen && !(message instanceof DebugMessage)) {
-                POPUPS.Push(new FrontPageGraphic(message));
+                getPOPUPS().Push(new FrontPageGraphic(message));
                 message.viewed();
             }
             if (ReplayableEventHandler.activeEvent!.endDate - ReplayableEventHandler.currentTime >= ReplayableEventHandler.k_DURATION_STORE_IS_OPEN_AFTER_EVENT) {
@@ -106,13 +109,13 @@ export class ReplayableEventHandler {
         }
         event.setStartDate(startDate);
         ReplayableEventHandler.callServerMethod("startevent", [["eventid", event.id], ["starttime", event.startDate], ["endtime", event.endDate]], ReplayableEventHandler.startEventCallback);
-        LOGGER.StatB({ "st1": "ERS", "st2": event.name }, "event_start");
+        getLOGGER().StatB({ "st1": "ERS", "st2": event.name }, "event_start");
         ReplayableEventHandler.activeEvent = event;
     }
 
     public static callServerMethod(method: string, params: Array<Array<any>>, callback: Function | null = null): void {
-        const loader = new URLLoaderApi();
-        loader.load(GLOBAL._apiURL + "bm/event/" + method, params, callback);
+        const loader = new (getURLLoaderApi())();
+        loader.load(getGLOBAL()._apiURL + "bm/event/" + method, params, callback);
     }
 
     protected static startEventCallback(response: Record<string, any>): void {
@@ -158,7 +161,7 @@ export class ReplayableEventHandler {
         if (message) {
             message.refresh();
             const graphic = new FrontPageGraphic(message);
-            POPUPS.Push(graphic);
+            getPOPUPS().Push(graphic);
         }
     }
 
@@ -185,7 +188,7 @@ export class ReplayableEventHandler {
     }
 
     private static canScheduleNewEvent(): boolean {
-        if (!GLOBAL._flags["ers"]) {
+        if (!getGLOBAL()._flags["ers"]) {
             return false;
         }
         return Boolean(ReplayableEventHandler.getQualifiedLiveEvent()) || !ReplayableEventHandler.hasRecentlyParticipatedInAnEvent() && ABTest.isInTestGroup("ers", 205);
@@ -246,7 +249,7 @@ export class ReplayableEventHandler {
             ReplayableEventHandler.doesDebugClear = false;
             return {};
         }
-        if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD || BASE.isInfernoMainYardOrOutpost) {
+        if (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD || getBASE().isInfernoMainYardOrOutpost) {
             return null;
         }
         const result: Record<string, any> = {};
@@ -286,7 +289,7 @@ export class ReplayableEventHandler {
 
     public static optInForEventEmails(): void {
         if (!ReplayableEventHandler.activeEvent) {
-            Console.warning("You're trying to opt-in for an event that isnt currently running, something is fucked");
+            getConsole().warning("You're trying to opt-in for an event that isnt currently running, something is fucked");
             return;
         }
         ReplayableEventHandler.callServerMethod("emailoptin", [["eventid", ReplayableEventHandler.activeEvent.id]]);

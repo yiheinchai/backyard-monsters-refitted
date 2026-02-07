@@ -18,7 +18,10 @@ import { Obstruction } from "../Obstruction";
 import { map_descent_bg } from "../../../../map_descent_bg";
 import { MapViewDescent_Fog_Shroud } from "../../../../MapViewDescent_Fog_Shroud";
 
-import { TUTORIAL } from "../../../../TUTORIAL";
+// Lazy imports to break circular dependency chains
+function getTUTORIAL(): any { return require("../../../../TUTORIAL").TUTORIAL; }
+
+
 
 /**
  * Descent view - main scrollable map view for inferno descent.
@@ -139,7 +142,7 @@ export class DescentView extends DescentView_CLIP {
 
     private onPlayersData(event: Event): void {
         if (!this.gotFirstData) {
-            if (TUTORIAL._stage < 130) {
+            if (getTUTORIAL()._stage < 130) {
                 this.scrollToBase(this.players!.basesWM[0]);
             } else if (this.players!.targetBase) {
                 this.scrollToBase(this.players!.targetBase);

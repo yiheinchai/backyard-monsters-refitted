@@ -4,15 +4,18 @@ import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import TextFieldAutoSize from 'openfl/text/TextFieldAutoSize';
-import { InstanceManager } from './com/monsters/managers/InstanceManager';
 import { PLANNERPOPUP_CLIP } from './PLANNERPOPUP_CLIP';
 import { plannerBuilding } from './plannerBuilding';
-import { BFOUNDATION } from './BFOUNDATION';
-import { GLOBAL } from './GLOBAL';
-import { BASE } from './BASE';
-import { KEYS } from './KEYS';
-import { STORE } from './STORE';
-import { PLANNER } from './PLANNER';
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getPLANNER(): any { return require("./PLANNER").PLANNER; }
+
 
 export class PLANNERPOPUP extends PLANNERPOPUP_CLIP {
     public _thumbnailsMC: MovieClip;
@@ -40,7 +43,7 @@ export class PLANNERPOPUP extends PLANNERPOPUP_CLIP {
         this._ranges.mouseEnabled = false;
         this._ranges.visible = false;
         this.Setup();
-        this.title_txt.htmlText = KEYS.Get("planner_title");
+        this.title_txt.htmlText = getKEYS().Get("planner_title");
     }
 
     public Setup(): void {
@@ -49,7 +52,7 @@ export class PLANNERPOPUP extends PLANNERPOPUP_CLIP {
         this.addEventListener(MouseEvent.MOUSE_DOWN, this.DragStart.bind(this));
         this.addEventListener(MouseEvent.MOUSE_UP, this.DragStop.bind(this));
         this.mcMap.scaleX = this.mcMap.scaleY = this._zoom;
-        const _loc3_ = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const _loc3_ = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const _loc4_ of _loc3_) {
             this._buildings.addChild(new plannerBuilding(_loc4_ as BFOUNDATION, this._ranges));
         }
@@ -61,20 +64,20 @@ export class PLANNERPOPUP extends PLANNERPOPUP_CLIP {
         this.bRanges.SetupKey("planner_showranges_btn");
         this.bRanges.addEventListener(MouseEvent.CLICK, this.ToggleRanges.bind(this));
         this.bExpand.SetupKey("planner_expand_btn");
-        if (BASE.isMainYardOrInfernoMainYard) {
-            if (STORE._storeData.ENL && STORE._storeData.ENL.q == 6) {
+        if (getBASE().isMainYardOrInfernoMainYard) {
+            if (getSTORE()._storeData.ENL && getSTORE()._storeData.ENL.q == 6) {
                 this.bExpand.Enabled = false;
             } else {
                 this.bExpand.Enabled = true;
-                this.bExpand.addEventListener(MouseEvent.CLICK, STORE.Show(1, 1, ["ENL"]));
+                this.bExpand.addEventListener(MouseEvent.CLICK, getSTORE().Show(1, 1, ["ENL"]));
             }
             this.bExpand.visible = true;
         } else {
             this.bExpand.visible = false;
         }
         let _loc5_ = 1;
-        if (STORE._storeData.ENL) {
-            _loc5_ = STORE._storeData.ENL.q + 1;
+        if (getSTORE()._storeData.ENL) {
+            _loc5_ = getSTORE()._storeData.ENL.q + 1;
         }
         let _loc6_ = _loc5_ + 2;
         while (_loc6_ < 8) {
@@ -115,18 +118,18 @@ export class PLANNERPOPUP extends PLANNERPOPUP_CLIP {
     }
 
     public Bounds(): void {
-        if (GLOBAL._mapWidth * this._zoom > this._windowRect.width) {
-            if (this.mcMap.x + GLOBAL._mapWidth * 1.2 * this._zoom / 2 < this._windowRect.width + this._windowRect.x) {
-                this.mcMap.x = this._windowRect.width + this._windowRect.x - GLOBAL._mapWidth * 1.2 * this._zoom / 2;
+        if (getGLOBAL()._mapWidth * this._zoom > this._windowRect.width) {
+            if (this.mcMap.x + getGLOBAL()._mapWidth * 1.2 * this._zoom / 2 < this._windowRect.width + this._windowRect.x) {
+                this.mcMap.x = this._windowRect.width + this._windowRect.x - getGLOBAL()._mapWidth * 1.2 * this._zoom / 2;
             }
-            if (this.mcMap.y + GLOBAL._mapHeight * 1.2 * this._zoom / 2 < this._windowRect.height + this._windowRect.y) {
-                this.mcMap.y = this._windowRect.height + this._windowRect.y - GLOBAL._mapHeight * 1.2 * this._zoom / 2;
+            if (this.mcMap.y + getGLOBAL()._mapHeight * 1.2 * this._zoom / 2 < this._windowRect.height + this._windowRect.y) {
+                this.mcMap.y = this._windowRect.height + this._windowRect.y - getGLOBAL()._mapHeight * 1.2 * this._zoom / 2;
             }
-            if (this.mcMap.x - GLOBAL._mapWidth * 1.2 * this._zoom / 2 > this._windowRect.x) {
-                this.mcMap.x = this._windowRect.x + GLOBAL._mapWidth * 1.2 * this._zoom / 2;
+            if (this.mcMap.x - getGLOBAL()._mapWidth * 1.2 * this._zoom / 2 > this._windowRect.x) {
+                this.mcMap.x = this._windowRect.x + getGLOBAL()._mapWidth * 1.2 * this._zoom / 2;
             }
-            if (this.mcMap.y - GLOBAL._mapHeight * 1.2 * this._zoom / 2 > this._windowRect.y) {
-                this.mcMap.y = this._windowRect.y + GLOBAL._mapHeight * 1.2 * this._zoom / 2;
+            if (this.mcMap.y - getGLOBAL()._mapHeight * 1.2 * this._zoom / 2 > this._windowRect.y) {
+                this.mcMap.y = this._windowRect.y + getGLOBAL()._mapHeight * 1.2 * this._zoom / 2;
             }
         } else {
             this.mcMap.x = this._windowRect.x + this._windowRect.width / 2;
@@ -188,7 +191,7 @@ export class PLANNERPOPUP extends PLANNERPOPUP_CLIP {
         }
         this.gotoAndStop(this._guidePage);
         if (this._guidePage > 1) {
-            this.txtGuide.htmlText = KEYS.Get("planner_tut_" + (this._guidePage - 1));
+            this.txtGuide.htmlText = getKEYS().Get("planner_tut_" + (this._guidePage - 1));
             if (this._guidePage == 2) {
                 this.bContinue.addEventListener(MouseEvent.CLICK, this.Help.bind(this));
                 this.bContinue.SetupKey("btn_continue");
@@ -197,7 +200,7 @@ export class PLANNERPOPUP extends PLANNERPOPUP_CLIP {
     }
 
     public Hide(param1: MouseEvent = null): void {
-        PLANNER.Hide();
+        getPLANNER().Hide();
     }
 
     public Resize(): void {

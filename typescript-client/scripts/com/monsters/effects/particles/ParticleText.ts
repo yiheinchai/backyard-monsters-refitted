@@ -2,7 +2,10 @@ import Point from "openfl/geom/Point";
 
 import { ParticleDamageItem } from "./ParticleDamageItem";
 
-import { GLOBAL } from "../../../../GLOBAL";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+
+
 
 /**
  * Particle text - manages damage/heal text particles with object pooling.
@@ -21,7 +24,7 @@ export class ParticleText {
 
     public static Create(position: Point, value: number, type: number): ParticleDamageItem | null {
         let particle: ParticleDamageItem | null = null;
-        if (!GLOBAL._catchup && ParticleText._currentCount < ParticleText._currentMax) {
+        if (!getGLOBAL()._catchup && ParticleText._currentCount < ParticleText._currentMax) {
             particle = ParticleText.PoolGet(type);
             if (particle) {
                 particle.Init(position, value, type);

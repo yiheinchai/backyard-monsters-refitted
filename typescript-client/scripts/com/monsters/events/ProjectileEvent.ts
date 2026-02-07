@@ -1,7 +1,10 @@
 import Event from "openfl/events/Event";
 
 import { ITargetable } from "../interfaces/ITargetable";
-import { BFOUNDATION } from "../../../BFOUNDATION";
+
+// Lazy imports to break circular dependency chains
+function getBFOUNDATION(): any { return require("../../../BFOUNDATION").BFOUNDATION; }
+
 
 /**
  * Event dispatched when a projectile hits a target.

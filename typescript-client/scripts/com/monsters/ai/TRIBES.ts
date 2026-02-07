@@ -1,12 +1,15 @@
-import { KEYS } from "../../../KEYS";
-import { WMATTACK } from "../../../WMATTACK";
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
 
 import { PROCESS3 } from "./PROCESS3";
 import { PROCESS4 } from "./PROCESS4";
 import { PROCESS5 } from "./PROCESS5";
 import { PROCESS7 } from "./PROCESS7";
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getWMATTACK(): any { return require("../../../WMATTACK").WMATTACK; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+
 
 interface TribeData {
     id: number;
@@ -59,45 +62,45 @@ export class TRIBES {
 
         TRIBES._tribes.l = {
             id: 1,
-            name: KEYS.Get("ai_legion_name"),
+            name: getKEYS().Get("ai_legion_name"),
             process: PROCESS3,
-            type: WMATTACK.TYPE_TOWERS,
-            taunt: KEYS.Get("ai_legion_taunt"),
+            type: getWMATTACK().TYPE_TOWERS,
+            taunt: getKEYS().Get("ai_legion_taunt"),
             splash: "popups/tribe_legionnaire.v2.png",
-            description: KEYS.Get("ai_legion_description"),
-            succ: KEYS.Get("ai_legion_succ"),
-            succ_stream: KEYS.Get("ai_legion_succstream"),
-            fail: KEYS.Get("ai_legion_fail"),
+            description: getKEYS().Get("ai_legion_description"),
+            succ: getKEYS().Get("ai_legion_succ"),
+            succ_stream: getKEYS().Get("ai_legion_succstream"),
+            fail: getKEYS().Get("ai_legion_fail"),
             profilepic: "monsters/tribe_legionnaire_50.v2.jpg",
             streampostpic: "tribe-legionnaire.v2.png"
         };
 
         TRIBES._tribes.k = {
             id: 2,
-            name: KEYS.Get("ai_kozu_name"),
+            name: getKEYS().Get("ai_kozu_name"),
             process: PROCESS4,
-            type: WMATTACK.TYPE_SWARM,
-            taunt: KEYS.Get("ai_kozu_taunt"),
+            type: getWMATTACK().TYPE_SWARM,
+            taunt: getKEYS().Get("ai_kozu_taunt"),
             splash: "popups/tribe_kozu.v2.png",
-            description: KEYS.Get("ai_kozu_description"),
-            succ: KEYS.Get("ai_kozu_succ"),
-            succ_stream: KEYS.Get("ai_kozu_succstream"),
-            fail: KEYS.Get("ai_kozu_fail"),
+            description: getKEYS().Get("ai_kozu_description"),
+            succ: getKEYS().Get("ai_kozu_succ"),
+            succ_stream: getKEYS().Get("ai_kozu_succstream"),
+            fail: getKEYS().Get("ai_kozu_fail"),
             profilepic: "monsters/tribe_kozu_50.v2.jpg",
             streampostpic: "tribe-kozu.v2.png"
         };
 
         TRIBES._tribes.a = {
             id: 3,
-            name: KEYS.Get("ai_abunakki_name"),
+            name: getKEYS().Get("ai_abunakki_name"),
             process: PROCESS5,
-            type: WMATTACK.TYPE_KAMIKAZE,
-            taunt: KEYS.Get("ai_abunakki_taunt"),
+            type: getWMATTACK().TYPE_KAMIKAZE,
+            taunt: getKEYS().Get("ai_abunakki_taunt"),
             splash: "popups/tribe_abunakki.v2.png",
-            description: KEYS.Get("ai_abunakki_description"),
-            succ: KEYS.Get("ai_abunakki_succ"),
-            succ_stream: KEYS.Get("ai_abunakki_succstream"),
-            fail: KEYS.Get("ai_abunakki_fail"),
+            description: getKEYS().Get("ai_abunakki_description"),
+            succ: getKEYS().Get("ai_abunakki_succ"),
+            succ_stream: getKEYS().Get("ai_abunakki_succstream"),
+            fail: getKEYS().Get("ai_abunakki_fail"),
             profilepic: "monsters/tribe_abunakki_50.v2.jpg",
             streampostpic: "tribe-abunakki.v2.png",
             behaviour: "juice"
@@ -105,15 +108,15 @@ export class TRIBES {
 
         TRIBES._tribes.d = {
             id: 4,
-            name: KEYS.Get("ai_dread_name"),
+            name: getKEYS().Get("ai_dread_name"),
             process: PROCESS7,
-            type: WMATTACK.TYPE_NERD,
-            taunt: KEYS.Get("ai_dread_taunt"),
+            type: getWMATTACK().TYPE_NERD,
+            taunt: getKEYS().Get("ai_dread_taunt"),
             splash: "popups/tribe_dreadnaut.v2.png",
-            description: KEYS.Get("ai_dread_description"),
-            succ: KEYS.Get("ai_dread_succ"),
-            succ_stream: KEYS.Get("ai_dread_succstream"),
-            fail: KEYS.Get("ai_dread_fail"),
+            description: getKEYS().Get("ai_dread_description"),
+            succ: getKEYS().Get("ai_dread_succ"),
+            succ_stream: getKEYS().Get("ai_dread_succstream"),
+            fail: getKEYS().Get("ai_dread_fail"),
             profilepic: "monsters/tribe_dreadnaut_50.v2.jpg",
             streampostpic: "tribe-dreadnaut.v2.png"
         };
@@ -121,15 +124,15 @@ export class TRIBES {
         TRIBES._infernotribes = {};
         TRIBES._infernotribes.d = {
             id: 1,
-            name: KEYS.Get("ai_descenttribe_name"),
+            name: getKEYS().Get("ai_descenttribe_name"),
             process: PROCESS7,
-            type: WMATTACK.TYPE_NERD,
-            taunt: KEYS.Get("ai_descenttribe_taunt"),
+            type: getWMATTACK().TYPE_NERD,
+            taunt: getKEYS().Get("ai_descenttribe_taunt"),
             splash: "popups/tribe_moloch.png",
-            description: KEYS.Get("ai_descenttribe_description"),
-            succ: KEYS.Get("ai_descenttribe_succ"),
-            succ_stream: KEYS.Get("ai_descenttribe_succstream"),
-            fail: KEYS.Get("ai_descenttribe_fail"),
+            description: getKEYS().Get("ai_descenttribe_description"),
+            succ: getKEYS().Get("ai_descenttribe_succ"),
+            succ_stream: getKEYS().Get("ai_descenttribe_succstream"),
+            fail: getKEYS().Get("ai_descenttribe_fail"),
             profilepic: "monsters/tribe_moloch_50.jpg",
             streampostpic: "tribe-moloch.v2.png"
         };
@@ -137,22 +140,22 @@ export class TRIBES {
         TRIBES._eventtribes = {};
         TRIBES._eventtribes.b = {
             id: 1,
-            name: KEYS.Get("ai_brukkarg_name"),
+            name: getKEYS().Get("ai_brukkarg_name"),
             process: PROCESS7,
-            type: WMATTACK.TYPE_NERD,
-            taunt: KEYS.Get("ai_brukkarg_taunt"),
+            type: getWMATTACK().TYPE_NERD,
+            taunt: getKEYS().Get("ai_brukkarg_taunt"),
             splash: "popups/tribe_brukkarg.png",
-            description: KEYS.Get("ai_brukkarg_description"),
-            succ: KEYS.Get("ai_brukkarg_succ"),
-            succ_stream: KEYS.Get("ai_brukkarg_succstream"),
-            fail: KEYS.Get("ai_brukkarg_fail"),
+            description: getKEYS().Get("ai_brukkarg_description"),
+            succ: getKEYS().Get("ai_brukkarg_succ"),
+            succ_stream: getKEYS().Get("ai_brukkarg_succstream"),
+            fail: getKEYS().Get("ai_brukkarg_fail"),
             profilepic: "monsters/tribe_brukkarg_50.jpg",
             streampostpic: "tribe_brukkarg.png"
         };
     }
 
     public static TribeForID(id: number, tableType: number = 0): TribeData | null {
-        if (GLOBAL._loadmode !== GLOBAL.mode) {
+        if (getGLOBAL()._loadmode !== getGLOBAL().mode) {
             return TRIBES._infernotribes.d;
         }
         
@@ -176,7 +179,7 @@ export class TRIBES {
     }
 
     public static TribeForBaseID(baseId: number, tableType: number = 0): TribeData | null {
-        if (GLOBAL._loadmode !== GLOBAL.mode) {
+        if (getGLOBAL()._loadmode !== getGLOBAL().mode) {
             return TRIBES._infernotribes.d;
         }
         
@@ -217,7 +220,7 @@ export class TRIBES {
     public static ChooseTribesTable(tableType: number = 0): { [key: string]: TribeData } {
         let type = tableType;
         if (type <= 0) {
-            type = BASE.isInfernoMainYardOrOutpost ? 2 : 1;
+            type = getBASE().isInfernoMainYardOrOutpost ? 2 : 1;
         }
         switch (type) {
             case 0:

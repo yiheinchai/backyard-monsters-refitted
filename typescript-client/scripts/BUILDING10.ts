@@ -6,10 +6,13 @@ import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BFOUNDATION } from './BFOUNDATION';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { POPUPS } from './POPUPS';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+
 
 /**
  * BUILDING10 - Yard Planner
@@ -47,11 +50,11 @@ export class BUILDING10 extends BFOUNDATION {
 
     public override Constructed(): void {
         super.Constructed();
-        GLOBAL._bYardPlanner = this;
+        getGLOBAL()._bYardPlanner = this;
     }
 
     public override RecycleC(): void {
-        GLOBAL._bYardPlanner = null;
+        getGLOBAL()._bYardPlanner = null;
         super.RecycleC();
     }
 
@@ -62,7 +65,7 @@ export class BUILDING10 extends BFOUNDATION {
     public override Setup(building: any): void {
         super.Setup(building);
         if (this._countdownBuild.Get() === 0) {
-            GLOBAL._bYardPlanner = this;
+            getGLOBAL()._bYardPlanner = this;
         }
     }
 }

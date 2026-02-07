@@ -3,8 +3,11 @@ import MouseEvent from "openfl/events/MouseEvent";
 
 import { MapRoom3ExpandableFrame } from "../../../../MapRoom3ExpandableFrame";
 
-import { BASE } from "../../../../BASE";
 import { TweenLite } from "gs/TweenLite";
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../../BASE").BASE; }
+
 
 /**
  * Bookmarks expandable frame - collapsible/expandable frame for bookmarks.
@@ -28,7 +31,7 @@ export class BookmarksExpandableFrame extends MapRoom3ExpandableFrame {
         if (this.m_ExpandUp === true) {
             this.y -= this.m_MaxExpandedHeight + this.frameFooter.height;
         }
-        const frameStyle: number = BASE.isInfernoMainYardOrOutpost ? 2 : 1;
+        const frameStyle: number = getBASE().isInfernoMainYardOrOutpost ? 2 : 1;
         this.frameHeader.gotoAndStop(frameStyle);
         this.frameBorders.gotoAndStop(frameStyle);
         this.frameFooter.gotoAndStop(frameStyle);

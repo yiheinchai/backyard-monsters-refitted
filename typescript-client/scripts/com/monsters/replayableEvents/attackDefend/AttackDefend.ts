@@ -1,16 +1,19 @@
 import { TRIBES } from "../../ai/TRIBES";
 import { AttackEvent } from "../../events/AttackEvent";
-import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
 import { ReplayableEventHandler } from "../ReplayableEventHandler";
 import { ReplayableEventQuota } from "../ReplayableEventQuota";
 import { MonsterInvasion } from "../monsterInvasion/MonsterInvasion";
 
-import { BASE } from "../../../../BASE";
-import { CREATURES } from "../../../../CREATURES";
-import { GLOBAL } from "../../../../GLOBAL";
-import { HOUSING } from "../../../../HOUSING";
-import { LOGGER } from "../../../../LOGGER";
-import { LOGIN } from "../../../../LOGIN";
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../../maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("../../../../BASE").BASE; }
+function getCREATURES(): any { return require("../../../../CREATURES").CREATURES; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getHOUSING(): any { return require("../../../../HOUSING").HOUSING; }
+function getLOGGER(): any { return require("../../../../LOGGER").LOGGER; }
+function getLOGIN(): any { return require("../../../../LOGIN").LOGIN; }
+
+
 
 /**
  * AttackDefend - replayable event combining wave defense and base attacks.
@@ -42,7 +45,7 @@ export class AttackDefend extends MonsterInvasion {
             ReplayableEventHandler.callServerMethod("updatescore", [["eventid", this._id], ["delta", value - this._score]], this.verifyScoreFromServer.bind(this));
         }
         this._score = value;
-        if (!this.m_mustBeInsideBase || (this.m_mustBeInsideBase && GLOBAL.isAtHome() === true)) {
+        if (!this.m_mustBeInsideBase || (this.m_mustBeInsideBase && getGLOBAL().isAtHome() === true)) {
             const quotaLen = this._quotas.length;
             for (let i = 0; i < quotaLen; i++) {
                 const quota = this._quotas[i];
@@ -65,42 +68,42 @@ export class AttackDefend extends MonsterInvasion {
         if (!this.readyToAttackNextYard()) {
             this.setupNextWave();
             ++this._numAttempts;
-            LOGGER.StatB({
+            getLOGGER().StatB({
                 "st1": "ERS",
                 "st2": this._name,
                 "st3": "Wave_Num_" + this._wavesDestroyed,
                 "value": this._numAttempts
             }, "Attack_Start");
         } else if (Boolean(this._intactBaseList) && this._intactBaseList.length > 0) {
-            const hasMonsters = HOUSING._housingUsed.Get() > 0 || CREATURES._guardian !== null;
-            if (!GLOBAL._bMap || !GLOBAL._bFlinger || !GLOBAL._bFlinger._canFunction || !GLOBAL._bHousing || !hasMonsters) {
-                GLOBAL.Message("You need a working Maproom, Flinger, Housing and some monsters to participate in this next phase.");
+            const hasMonsters = getHOUSING()._housingUsed.Get() > 0 || getCREATURES()._guardian !== null;
+            if (!getGLOBAL()._bMap || !getGLOBAL()._bFlinger || !getGLOBAL()._bFlinger._canFunction || !getGLOBAL()._bHousing || !hasMonsters) {
+                getGLOBAL().Message("You need a working Maproom, Flinger, Housing and some monsters to participate in this next phase.");
                 return;
             }
             let baseUrl: string = "";
-            if (MapRoomManager.instance.isInMapRoom2or3) {
-                MapRoomManager.instance.mapRoomVersion = MapRoomManager.MAP_ROOM_VERSION_1;
-                baseUrl = GLOBAL._infBaseURL;
+            if (getMapRoomManager().instance.isInMapRoom2or3) {
+                getMapRoomManager().instance.mapRoomVersion = getMapRoomManager().MAP_ROOM_VERSION_1;
+                baseUrl = getGLOBAL()._infBaseURL;
             }
             const baseId = this._intactBaseList[this._yardsDestroyed].id;
             if (this._intactBaseList[this._yardsDestroyed].destroyed === true) {
                 // Base already destroyed
             }
-            LOGGER.StatB({
+            getLOGGER().StatB({
                 "st1": "ERS",
                 "st2": this._name,
                 "st3": "Attack_Num_" + baseId,
                 "value": baseId
             }, "Attack_Start");
-            GLOBAL.eventDispatcher.addEventListener(AttackEvent.ATTACK_OVER, this.finishedAttack.bind(this));
-            BASE.LoadBase(baseUrl, LOGIN._playerID, baseId, "wmattack");
+            getGLOBAL().eventDispatcher.addEventListener(AttackEvent.ATTACK_OVER, this.finishedAttack.bind(this));
+            getBASE().LoadBase(baseUrl, getLOGIN()._playerID, baseId, "wmattack");
         } else if (this._wavesDestroyed >= this._maxWaves && this._yardsDestroyed >= this._yardsToDestroy) {
             this.progress = 1;
         }
     }
 
     protected finishedAttack(event: AttackEvent): void {
-        GLOBAL.eventDispatcher.removeEventListener(AttackEvent.ATTACK_OVER, this.finishedAttack.bind(this));
+        getGLOBAL().eventDispatcher.removeEventListener(AttackEvent.ATTACK_OVER, this.finishedAttack.bind(this));
         if (event.wasBaseDestroyed) {
             this.score = this._score + AttackDefend.SCORE_PER_YARD;
         }
@@ -144,7 +147,7 @@ export class AttackDefend extends MonsterInvasion {
             const base = result[key];
             if (!(typeof base === "number")) {
                 this._intactBaseList.push(base);
-                BASE.addEventBaseException(base.id);
+                getBASE().addEventBaseException(base.id);
                 TRIBES.B_IDS.push(base.id);
             }
         }

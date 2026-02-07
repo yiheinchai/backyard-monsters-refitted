@@ -6,9 +6,12 @@ import Timer from "openfl/utils/Timer";
 import { descentDebuff_info_CLIP } from "../../../../descentDebuff_info_CLIP";
 import { bubblepopupUpBuff_CLIP } from "../../../../bubblepopupUpBuff_CLIP";
 
-import { GLOBAL } from "../../../../GLOBAL";
-import { KEYS } from "../../../../KEYS";
-import { UI2 } from "../../../../UI2";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getUI2(): any { return require("../../../../UI2").UI2; }
+
+
 
 /**
  * DescentDebuffPopup - displays descent/inferno toxicity level and debuff information.
@@ -38,10 +41,10 @@ export class DescentDebuffPopup extends descentDebuff_info_CLIP {
         this.currLvl = level;
         switch (this.currLvl) {
             case 7:
-                this.depthTxt = KEYS.Get("descent_depthBar");
-                this.depthTxt2 = KEYS.Get("descent_depthBarWarn1");
-                this.depthDesc = KEYS.Get("inf_descent_toxicity_desc");
-                this.depthDesc2 = KEYS.Get("inf_descent_toxicity_desc_low");
+                this.depthTxt = getKEYS().Get("descent_depthBar");
+                this.depthTxt2 = getKEYS().Get("descent_depthBarWarn1");
+                this.depthDesc = getKEYS().Get("inf_descent_toxicity_desc");
+                this.depthDesc2 = getKEYS().Get("inf_descent_toxicity_desc_low");
                 break;
             case 1:
             case 2:
@@ -51,7 +54,7 @@ export class DescentDebuffPopup extends descentDebuff_info_CLIP {
             case 6:
             case 8:
             default:
-                this.depthTxt = KEYS.Get("descent_depthBar");
+                this.depthTxt = getKEYS().Get("descent_depthBar");
                 this.depthTxt2 = "";
                 this.depthDesc = "";
                 this.depthDesc2 = "";
@@ -69,7 +72,7 @@ export class DescentDebuffPopup extends descentDebuff_info_CLIP {
         this._t.addEventListener(TimerEvent.TIMER, this.DepthCheck.bind(this));
         this.addEventListener(MouseEvent.ROLL_OVER, this.DescentDebuffInfoShow.bind(this));
         this.addEventListener(MouseEvent.ROLL_OUT, this.DescentDebuffInfoHide.bind(this));
-        UI2._top.addChild(this);
+        getUI2()._top.addChild(this);
     }
 
     public Hide(): void {
@@ -81,7 +84,7 @@ export class DescentDebuffPopup extends descentDebuff_info_CLIP {
         }
         if (this.parent) {
             this.parent.removeChild(this);
-            UI2._top._descentDebuff = null;
+            getUI2()._top._descentDebuff = null;
         }
     }
 
@@ -90,7 +93,7 @@ export class DescentDebuffPopup extends descentDebuff_info_CLIP {
         this.debuffTip.x = -10;
         this.debuffTip.y = this.debuffTip.height + 5;
         (this.debuffTip as any).mcArrow.x = this.debuffTip.width / 2 - 20;
-        (this.debuffTip as any).mcText.htmlText = KEYS.Get("inf_descent_toxicity_help");
+        (this.debuffTip as any).mcText.htmlText = getKEYS().Get("inf_descent_toxicity_help");
         (this.debuffTip as any).mcTextDuration.htmlText = "";
         this.addChild(this.debuffTip);
     }
@@ -125,11 +128,11 @@ export class DescentDebuffPopup extends descentDebuff_info_CLIP {
     }
 
     public Resize(): void {
-        this.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - 160;
+        this.x = getGLOBAL()._SCREEN.x + getGLOBAL()._SCREEN.width - 160;
         let offset = 0;
-        if (UI2._top && UI2._top.mcSound && UI2._top.mcSound.visible) {
-            offset = UI2._top.mcSound.y + UI2._top.mcSound.height;
+        if (getUI2()._top && getUI2()._top.mcSound && getUI2()._top.mcSound.visible) {
+            offset = getUI2()._top.mcSound.y + getUI2()._top.mcSound.height;
         }
-        this.y = GLOBAL._SCREEN.y + offset + 20;
+        this.y = getGLOBAL()._SCREEN.y + offset + 20;
     }
 }

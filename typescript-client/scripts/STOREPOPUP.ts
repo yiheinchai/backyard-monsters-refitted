@@ -1,8 +1,11 @@
 import MouseEvent from "openfl/events/MouseEvent";
 
 import { POPUPSETTINGS } from "./POPUPSETTINGS";
-import { STORE } from "./STORE";
 import { STOREPOPUP_CLIP } from "./STOREPOPUP_CLIP";
+
+// Lazy imports to break circular dependency chains
+function getSTORE(): any { return require("./STORE").STORE; }
+
 
 export class STOREPOPUP extends STOREPOPUP_CLIP {
     constructor() {
@@ -10,7 +13,7 @@ export class STOREPOPUP extends STOREPOPUP_CLIP {
     }
 
     public Hide(param1: MouseEvent = null): void {
-        STORE.Hide();
+        getSTORE().Hide();
     }
 
     public Center(): void {

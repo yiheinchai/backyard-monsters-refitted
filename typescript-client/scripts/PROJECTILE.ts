@@ -1,10 +1,13 @@
 import { IAttackable } from './com/monsters/interfaces/IAttackable';
-import { MonsterBase } from './com/monsters/monsters/MonsterBase';
 import Point from 'openfl/geom/Point';
-import { GLOBAL } from './GLOBAL';
 import { ProjectileBase } from './ProjectileBase';
 import { PROJECTILES } from './PROJECTILES';
-import { Targeting } from './Targeting';
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getTargeting(): any { return require("./Targeting").Targeting; }
+
 
 /**
  * PROJECTILE - Individual Projectile
@@ -25,7 +28,7 @@ export class PROJECTILE extends ProjectileBase {
             PROJECTILES.Remove(this._id);
             return false;
         }
-        const altitude: number = (this._target instanceof MonsterBase && (this._target as MonsterBase)._movement === "fly") 
+        const altitude: number = (this._target instanceof getMonsterBase() && (this._target as MonsterBase)._movement === "fly") 
             ? (this._target as MonsterBase)._altitude : 0;
         this._targetPoint = new Point(this._target.x, this._target.y - altitude);
         this._distance = Point.distance(this._targetPoint, new Point(this._tmpX, this._tmpY));
@@ -60,7 +63,7 @@ export class PROJECTILE extends ProjectileBase {
     }
 
     public Render(): void {
-        if (GLOBAL._render && this._graphic) {
+        if (getGLOBAL()._render && this._graphic) {
             this._graphic.x = Math.floor(this._tmpX);
             this._graphic.y = Math.floor(this._tmpY);
         }
@@ -68,8 +71,8 @@ export class PROJECTILE extends ProjectileBase {
 
     public Splash(): void {
         const pos: Point = new Point(this._tmpX, this._tmpY);
-        const targets: IAttackable[] = Targeting.getTargetsInRange(this._splash, pos, this._splashTargetFlags);
-        Targeting.DealLinearAEDamage(pos, this._splash, this._damage, targets);
+        const targets: IAttackable[] = getTargeting().getTargetsInRange(this._splash, pos, this._splashTargetFlags);
+        getTargeting().DealLinearAEDamage(pos, this._splash, this._damage, targets);
         this._target!.modifyHealth(0, this);
     }
 }

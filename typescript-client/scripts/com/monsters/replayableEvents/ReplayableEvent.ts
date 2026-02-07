@@ -2,16 +2,19 @@ import Event from "openfl/events/Event";
 import EventDispatcher from "openfl/events/EventDispatcher";
 
 import { FrontPageGraphic } from "../frontPage/FrontPageGraphic";
-import { FrontPageLibrary } from "../frontPage/FrontPageLibrary";
 import { Message } from "../frontPage/messages/Message";
 import { IReplayableEventUI } from "./IReplayableEventUI";
 import { ReplayableEventHandler } from "./ReplayableEventHandler";
 import { ReplayableEventQuota } from "./ReplayableEventQuota";
 import { ReplayableEventUI } from "./ReplayableEventUI";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { POPUPS } from "../../../POPUPS";
+// Lazy imports to break circular dependency chains
+function getFrontPageLibrary(): any { return require("../frontPage/FrontPageLibrary").FrontPageLibrary; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getPOPUPS(): any { return require("../../../POPUPS").POPUPS; }
+
+
 
 /**
  * ReplayableEvent - Base class for replayable events.
@@ -43,10 +46,10 @@ export class ReplayableEvent extends EventDispatcher {
         super();
         this._maxScore = Number.MAX_VALUE;
         if (this._rewardMessage) {
-            if (FrontPageLibrary.EVENTS === null) {
-                FrontPageLibrary.addCategories();
+            if (getFrontPageLibrary().EVENTS === null) {
+                getFrontPageLibrary().addCategories();
             }
-            FrontPageLibrary.EVENTS.addMessage(this._rewardMessage);
+            getFrontPageLibrary().EVENTS.addMessage(this._rewardMessage);
         }
         this._quotas = [];
     }
@@ -79,7 +82,7 @@ export class ReplayableEvent extends EventDispatcher {
     public initialize(): void {
         const message = this.getCurrentMessage();
         if (message) {
-            FrontPageLibrary.EVENTS.addMessage(message);
+            getFrontPageLibrary().EVENTS.addMessage(message);
         }
         this.onInitialize();
     }
@@ -114,10 +117,10 @@ export class ReplayableEvent extends EventDispatcher {
         for (let i = 0; i < this._messages.length; i++) {
             const message = this._messages[i];
             message.timeLastSeen = 0;
-            FrontPageLibrary.EVENTS.addMessage(message);
+            getFrontPageLibrary().EVENTS.addMessage(message);
         }
         ReplayableEventHandler.callServerMethod("resetevent", [["eventid", this._id]], this.resetCallback.bind(this));
-        BASE.Save();
+        getBASE().Save();
     }
 
     protected resetCallback(response: Record<string, any>): void {
@@ -209,14 +212,14 @@ export class ReplayableEvent extends EventDispatcher {
 
     public set score(value: number) {
         if (this._score >= 0 && value - this._score > 0) {
-            ReplayableEventHandler.callServerMethod("updatescore", [["eventid", this._id], ["delta", value - this._score], ["saveid", GLOBAL.Timestamp()]], this.verifyScoreFromServer.bind(this));
+            ReplayableEventHandler.callServerMethod("updatescore", [["eventid", this._id], ["delta", value - this._score], ["saveid", getGLOBAL().Timestamp()]], this.verifyScoreFromServer.bind(this));
         }
         this._score = value;
         this.setMetQuotas();
     }
 
     protected setMetQuotas(): void {
-        if (!this.m_mustBeInsideBase || this.m_mustBeInsideBase && GLOBAL.isAtHome() === true) {
+        if (!this.m_mustBeInsideBase || this.m_mustBeInsideBase && getGLOBAL().isAtHome() === true) {
             const count = this._quotas.length;
             for (let i = 0; i < count; i++) {
                 const quota = this._quotas[i];
@@ -256,11 +259,11 @@ export class ReplayableEvent extends EventDispatcher {
     }
 
     private completedEvent(): void {
-        if (this.m_mustBeInsideBase && GLOBAL.isAtHome() !== true) {
+        if (this.m_mustBeInsideBase && getGLOBAL().isAtHome() !== true) {
             return;
         }
         if (Boolean(this._rewardMessage) && !this._rewardMessage!.hasBeenSeen) {
-            POPUPS.Push(new FrontPageGraphic(this._rewardMessage!));
+            getPOPUPS().Push(new FrontPageGraphic(this._rewardMessage!));
             this._rewardMessage!.viewed();
         }
         this.onEventComplete();

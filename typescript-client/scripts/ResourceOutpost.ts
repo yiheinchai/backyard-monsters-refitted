@@ -3,7 +3,10 @@ import Rectangle from 'openfl/geom/Rectangle';
 import { ICoreBuilding } from './com/monsters/interfaces/ICoreBuilding';
 import { MapRoom3Cell } from './com/monsters/maproom3/MapRoom3Cell';
 import { BFOUNDATION } from './BFOUNDATION';
-import { GLOBAL } from './GLOBAL';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+
 
 export class ResourceOutpost extends BFOUNDATION implements ICoreBuilding {
     public static readonly k_TYPE: number = 139;
@@ -17,27 +20,27 @@ export class ResourceOutpost extends BFOUNDATION implements ICoreBuilding {
     }
 
     public get resourcesPerSecond(): number {
-        if ((GLOBAL._currentCell as MapRoom3Cell) == null || 
+        if ((getGLOBAL()._currentCell as MapRoom3Cell) == null || 
             !this._buildingProps.rps || 
-            this._buildingProps.rps.length < Math.floor((GLOBAL._currentCell as MapRoom3Cell).baseLevel * 0.1 - 1)) {
+            this._buildingProps.rps.length < Math.floor((getGLOBAL()._currentCell as MapRoom3Cell).baseLevel * 0.1 - 1)) {
             return 0;
         }
-        return this._buildingProps.rps[Math.floor((GLOBAL._currentCell as MapRoom3Cell).baseLevel * 0.1 - 1)];
+        return this._buildingProps.rps[Math.floor((getGLOBAL()._currentCell as MapRoom3Cell).baseLevel * 0.1 - 1)];
     }
 
     public override Setup(param1: any): void {
         super.Setup(param1);
-        GLOBAL.setTownHall(this);
+        getGLOBAL().setTownHall(this);
     }
 
     public override Cancel(): void {
-        GLOBAL.setTownHall(null);
+        getGLOBAL().setTownHall(null);
         super.Cancel();
     }
 
     public override Constructed(): void {
         super.Constructed();
-        GLOBAL.setTownHall(this);
+        getGLOBAL().setTownHall(this);
     }
 
     public override TickFast(param1: Event = null): void {

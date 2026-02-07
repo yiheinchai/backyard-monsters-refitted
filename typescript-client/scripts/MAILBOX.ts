@@ -1,8 +1,11 @@
 import { MailBox } from './com/monsters/mailbox/MailBox';
 import Loader from 'openfl/display/Loader';
 import MouseEvent from 'openfl/events/MouseEvent';
-import { GLOBAL } from './GLOBAL';
-import { SOUNDS } from './SOUNDS';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+
 
 /**
  * MAILBOX - Mail System Controller
@@ -23,24 +26,24 @@ export class MAILBOX {
     }
 
     public static Show(): void {
-        SOUNDS.Play("click1");
+        getSOUNDS().Play("click1");
         MAILBOX._mc = new MailBox();
-        GLOBAL.BlockerAdd();
-        GLOBAL._layerWindows.addChild(MAILBOX._mc as any);
+        getGLOBAL().BlockerAdd();
+        getGLOBAL()._layerWindows.addChild(MAILBOX._mc as any);
         MAILBOX._mc.Setup();
     }
 
     public static Tick(): void {
-        if (MAILBOX._mc && GLOBAL.Timestamp() % 15 === 0) {
+        if (MAILBOX._mc && getGLOBAL().Timestamp() % 15 === 0) {
             MAILBOX._mc.Tick();
         }
     }
 
     public static Hide(event: MouseEvent | null = null): void {
         try {
-            SOUNDS.Play("close");
-            GLOBAL.BlockerRemove();
-            GLOBAL._layerWindows.removeChild(MAILBOX._mc as any);
+            getSOUNDS().Play("close");
+            getGLOBAL().BlockerRemove();
+            getGLOBAL()._layerWindows.removeChild(MAILBOX._mc as any);
             MAILBOX._mc = null;
         } catch (e) {
             // Ignore errors

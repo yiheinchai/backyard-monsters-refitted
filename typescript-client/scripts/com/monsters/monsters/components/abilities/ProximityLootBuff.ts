@@ -1,12 +1,15 @@
 import { SecNum } from "../../../../cc/utils/SecNum";
 import { ITickable } from "../../../interfaces/ITickable";
-import { MonsterBase } from "../../MonsterBase";
 import { ChampionBase } from "../../champions/ChampionBase";
 import { Component } from "../Component";
 import { LootingMultiplier } from "./LootingMultiplier";
 
-import { GLOBAL } from "../../../../../GLOBAL";
-import { CREEPS } from "../../../../../CREEPS";
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+function getCREEPS(): any { return require("../../../../../CREEPS").CREEPS; }
+
+
 
 /**
  * Proximity loot buff - buffs loot multiplier for nearby allies.
@@ -34,9 +37,9 @@ export class ProximityLootBuff extends Component implements ITickable {
     }
 
     public override tick(delta: number = 1): void {
-        const creeps: Record<string, any> = CREEPS._creeps;
-        const quickDistSqrd: Function = GLOBAL.QuickDistanceSquared;
-        if (this.owner._behaviour !== MonsterBase.k_sBHVR_ATTACK && this.owner._behaviour !== MonsterBase.k_sBHVR_BOUNCE) {
+        const creeps: Record<string, any> = getCREEPS()._creeps;
+        const quickDistSqrd: Function = getGLOBAL().QuickDistanceSquared;
+        if (this.owner._behaviour !== getMonsterBase().k_sBHVR_ATTACK && this.owner._behaviour !== getMonsterBase().k_sBHVR_BOUNCE) {
             return;
         }
         if (this.owner._frameNumber % 50 === 0) {
@@ -57,7 +60,7 @@ export class ProximityLootBuff extends Component implements ITickable {
     }
 
     private removeBuffFromCreepsNoLongerInRange(): void {
-        const quickDistSqrd: Function = GLOBAL.QuickDistanceSquared;
+        const quickDistSqrd: Function = getGLOBAL().QuickDistanceSquared;
         for (let i = this.m_buddiesInRange.length - 1; i >= 0; i--) {
             const buddy: MonsterBase = this.m_buddiesInRange[i];
             const lootMod: LootingMultiplier | null = buddy.getComponentByType(LootingMultiplier) as LootingMultiplier;

@@ -1,21 +1,24 @@
 import Point from "openfl/geom/Point";
 import Rectangle from "openfl/geom/Rectangle";
 
-import { InstanceManager } from "../managers/InstanceManager";
-import { PATHING } from "../pathing/PATHING";
 import { IPROCESS } from "./IPROCESS";
 import { Solution } from "./Solution";
 
-import { BASE } from "../../../BASE";
-import { BFOUNDATION } from "../../../BFOUNDATION";
-import { BRESOURCE } from "../../../BRESOURCE";
-import { BUILDING6 } from "../../../BUILDING6";
-import { BUILDING14 } from "../../../BUILDING14";
-import { CREATURELOCKER } from "../../../CREATURELOCKER";
-import { GLOBAL } from "../../../GLOBAL";
-import { GRID } from "../../../GRID";
 import { INFERNO_EMERGENCE_EVENT } from "../../../INFERNO_EMERGENCE_EVENT";
-import { WMATTACK } from "../../../WMATTACK";
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("../managers/InstanceManager").InstanceManager; }
+function getPATHING(): any { return require("../pathing/PATHING").PATHING; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getBFOUNDATION(): any { return require("../../../BFOUNDATION").BFOUNDATION; }
+function getBRESOURCE(): any { return require("../../../BRESOURCE").BRESOURCE; }
+function getBUILDING6(): any { return require("../../../BUILDING6").BUILDING6; }
+function getBUILDING14(): any { return require("../../../BUILDING14").BUILDING14; }
+function getCREATURELOCKER(): any { return require("../../../CREATURELOCKER").CREATURELOCKER; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getGRID(): any { return require("../../../GRID").GRID; }
+function getWMATTACK(): any { return require("../../../WMATTACK").WMATTACK; }
+
 
 /**
  * INFERNO_EMERGENCE_PROCESS - AI attack strategy for Inferno Emergence events.
@@ -40,11 +43,11 @@ export class INFERNO_EMERGENCE_PROCESS implements IPROCESS {
         this._intelligence = intelligence;
         this._inProgress = true;
         this._solutions = [];
-        const mapWidth = GLOBAL._mapWidth;
-        const mapHeight = GLOBAL._mapHeight;
+        const mapWidth = getGLOBAL()._mapWidth;
+        const mapHeight = getGLOBAL()._mapHeight;
         
-        for (let i = 0; i < WMATTACK._attackResolution; i++) {
-            this._solutions.push(new Solution(360 / WMATTACK._attackResolution * i, mapWidth, mapHeight));
+        for (let i = 0; i < getWMATTACK()._attackResolution; i++) {
+            this._solutions.push(new Solution(360 / getWMATTACK()._attackResolution * i, mapWidth, mapHeight));
         }
         
         this.solsProcessed = 0;
@@ -53,12 +56,12 @@ export class INFERNO_EMERGENCE_PROCESS implements IPROCESS {
 
     public Process(solution: Solution, callback: Function): void {
         const buildings: { building: BFOUNDATION; distance: number }[] = [];
-        const allBuildings = InstanceManager.getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const allBuildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
         
         for (const building of allBuildings) {
-            if ((building instanceof BRESOURCE || building instanceof BUILDING6 || building instanceof BUILDING14) &&
+            if ((building instanceof getBRESOURCE() || building instanceof getBUILDING6() || building instanceof getBUILDING14()) &&
                 building.health > 0 && !(building as any)._looted) {
-                const pos = GRID.FromISO(building.x, building.y);
+                const pos = getGRID().FromISO(building.x, building.y);
                 const distance = Point.distance(solution.entryPoint, pos);
                 buildings.push({
                     building: building,
@@ -72,7 +75,7 @@ export class INFERNO_EMERGENCE_PROCESS implements IPROCESS {
             solution.targetBuilding = buildings[0].building;
             
             if (solution.targetBuilding._type === 6 || solution.targetBuilding._type === 14) {
-                solution.resourcesGained = 0.04 * BASE._resources.r1.Get();
+                solution.resourcesGained = 0.04 * getBASE()._resources.r1.Get();
             } else {
                 solution.resourcesGained = 0.1 * solution.targetBuilding._stored.Get();
             }
@@ -81,8 +84,8 @@ export class INFERNO_EMERGENCE_PROCESS implements IPROCESS {
                 solution.resourcesGained = 10000;
             }
             
-            solution.wayPoints = PATHING.GetPath(
-                GRID.ToISO(solution.entryPoint.x, solution.entryPoint.y, 0),
+            solution.wayPoints = getPATHING().GetPath(
+                getGRID().ToISO(solution.entryPoint.x, solution.entryPoint.y, 0),
                 new Rectangle(
                     solution.targetBuilding.x,
                     solution.targetBuilding.y,
@@ -99,7 +102,7 @@ export class INFERNO_EMERGENCE_PROCESS implements IPROCESS {
         this._solutions[this.solsProcessed].distanceToTarget = wayPoints.length;
         this.solsProcessed++;
         
-        if (this.solsProcessed < WMATTACK._attackResolution) {
+        if (this.solsProcessed < getWMATTACK()._attackResolution) {
             this.Process(this._solutions[this.solsProcessed], this.onProcess.bind(this));
         } else {
             this.beginProcessB();
@@ -124,31 +127,31 @@ export class INFERNO_EMERGENCE_PROCESS implements IPROCESS {
         const chosenIndex = Math.floor((sortedSolutions.length - 1) * this._intelligence);
         this.ProcessC(sortedSolutions[chosenIndex]);
         this._inProgress = false;
-        WMATTACK.Queue(sortedSolutions[chosenIndex]);
+        getWMATTACK().Queue(sortedSolutions[chosenIndex]);
     }
 
     public ProcessB(solution: Solution): void {
         for (let i = 0; i < solution.wayPoints.length; i += this.processStepResolution) {
-            solution.damageTaken += WMATTACK._damageBias * this.processStepResolution * WMATTACK.dpsAtPoint(solution, solution.wayPoints[i]);
+            solution.damageTaken += getWMATTACK()._damageBias * this.processStepResolution * getWMATTACK().dpsAtPoint(solution, solution.wayPoints[i]);
         }
     }
 
     public ProcessC(solution: Solution): void {
         const attack: { [key: string]: number } = {};
         
-        for (let i = 0; i < WMATTACK._monsterKeys.length; i++) {
-            attack[WMATTACK._monsterKeys[i]] = 0;
+        for (let i = 0; i < getWMATTACK()._monsterKeys.length; i++) {
+            attack[getWMATTACK()._monsterKeys[i]] = 0;
         }
         
         let volume = 0;
-        const allBuildings = InstanceManager.getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const allBuildings = getInstanceManager().getInstancesByClass(getBFOUNDATION()) as BFOUNDATION[];
         
         for (const building of allBuildings) {
             const buildingClass = (building as any)._class;
             if (buildingClass !== "trap" && buildingClass !== "wall") {
-                volume += 1 * WMATTACK._attackVolumeAmplifier;
+                volume += 1 * getWMATTACK()._attackVolumeAmplifier;
             } else {
-                volume += 0.15 * WMATTACK._attackVolumeAmplifier;
+                volume += 0.15 * getWMATTACK()._attackVolumeAmplifier;
             }
         }
         
@@ -161,40 +164,40 @@ export class INFERNO_EMERGENCE_PROCESS implements IPROCESS {
         const tankCount = (volume - looterCount) / (ratio + 1);
         const dpsCount = tankCount / ratio;
         
-        let levelRatio = BASE.BaseLevel().level * 0.2 * INFERNO_EMERGENCE_EVENT.Lvl / 40;
+        let levelRatio = getBASE().BaseLevel().level * 0.2 * INFERNO_EMERGENCE_EVENT.Lvl / 40;
         if (levelRatio < 0) levelRatio = 0;
         if (levelRatio > 1) levelRatio = 1;
         
-        const looterType = String(WMATTACK._infernoLooters[Math.floor((WMATTACK._infernoLooters.length - 1) * levelRatio)]);
-        const tankType = String(WMATTACK._infernoTanks[Math.floor((WMATTACK._infernoTanks.length - 1) * levelRatio)]);
-        const dpsType = String(WMATTACK._infernoDps[Math.floor((WMATTACK._infernoDps.length - 1) * levelRatio)]);
+        const looterType = String(getWMATTACK()._infernoLooters[Math.floor((getWMATTACK()._infernoLooters.length - 1) * levelRatio)]);
+        const tankType = String(getWMATTACK()._infernoTanks[Math.floor((getWMATTACK()._infernoTanks.length - 1) * levelRatio)]);
+        const dpsType = String(getWMATTACK()._infernoDps[Math.floor((getWMATTACK()._infernoDps.length - 1) * levelRatio)]);
         
         let travelTime = 0;
         const distances: { [key: string]: number } = {};
-        const baseDistance = GLOBAL._mapWidth * 0.25;
+        const baseDistance = getGLOBAL()._mapWidth * 0.25;
         const minDistance = 100;
         const targetDistance = Point.distance(solution.entryPoint, new Point(solution.targetBuilding.x, solution.targetBuilding.y));
         const adjustedDistance = targetDistance < minDistance ? baseDistance + (minDistance - targetDistance) : baseDistance;
         
         if (tankCount >= 1) {
             if (travelTime === 0) {
-                travelTime = adjustedDistance / CREATURELOCKER._creatures[tankType].props.speed[0];
+                travelTime = adjustedDistance / getCREATURELOCKER()._creatures[tankType].props.speed[0];
             }
-            distances[tankType] = travelTime * CREATURELOCKER._creatures[tankType].props.speed[0];
+            distances[tankType] = travelTime * getCREATURELOCKER()._creatures[tankType].props.speed[0];
         }
         
         if (dpsCount >= 1) {
             if (travelTime === 0) {
-                travelTime = adjustedDistance / CREATURELOCKER._creatures[dpsType].props.speed[0];
+                travelTime = adjustedDistance / getCREATURELOCKER()._creatures[dpsType].props.speed[0];
             }
-            distances[dpsType] = travelTime * CREATURELOCKER._creatures[dpsType].props.speed[0];
+            distances[dpsType] = travelTime * getCREATURELOCKER()._creatures[dpsType].props.speed[0];
         }
         
         if (looterCount >= 1) {
             if (travelTime === 0) {
-                travelTime = adjustedDistance / CREATURELOCKER._creatures[looterType].props.speed[0];
+                travelTime = adjustedDistance / getCREATURELOCKER()._creatures[looterType].props.speed[0];
             }
-            distances[looterType] = travelTime * CREATURELOCKER._creatures[looterType].props.speed[0];
+            distances[looterType] = travelTime * getCREATURELOCKER()._creatures[looterType].props.speed[0];
         }
         
         let finalTankCount = tankCount;

@@ -11,18 +11,21 @@ import { SecNum } from "../../../cc/utils/SecNum";
 import { IAttackable } from "../../interfaces/IAttackable";
 import { ITargetable } from "../../interfaces/ITargetable";
 import { ITickable } from "../../interfaces/ITickable";
-import { SiegeWeapons } from "../SiegeWeapons";
-import { ResourceOutpost } from "../../../../ResourceOutpost";
 
-import { ATTACK } from "../../../../ATTACK";
-import { BASE } from "../../../../BASE";
-import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { GLOBAL } from "../../../../GLOBAL";
-import { MAP } from "../../../../MAP";
-import { SOUNDS } from "../../../../SOUNDS";
-import { SPRITES } from "../../../../SPRITES";
-import { UI2 } from "../../../../UI2";
 import { bmp_healthbarsmall } from "../../../../bmp_healthbarsmall";
+
+// Lazy imports to break circular dependency chains
+function getSiegeWeapons(): any { return require("../SiegeWeapons").SiegeWeapons; }
+function getResourceOutpost(): any { return require("../../../../ResourceOutpost").ResourceOutpost; }
+function getATTACK(): any { return require("../../../../ATTACK").ATTACK; }
+function getBASE(): any { return require("../../../../BASE").BASE; }
+function getBFOUNDATION(): any { return require("../../../../BFOUNDATION").BFOUNDATION; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getMAP(): any { return require("../../../../MAP").MAP; }
+function getSOUNDS(): any { return require("../../../../SOUNDS").SOUNDS; }
+function getSPRITES(): any { return require("../../../../SPRITES").SPRITES; }
+function getUI2(): any { return require("../../../../UI2").UI2; }
+
 
 /**
  * VacuumHose - siege weapon that drains resources from a target.
@@ -57,8 +60,8 @@ export class VacuumHose implements IAttackable, ITickable {
     constructor(target: BFOUNDATION, health: number, lootRate: number) {
         this._vacuumHealthBar = new bmp_healthbarsmall(0, 0);
         this._vacuumHealth = new SecNum(0);
-        SPRITES.SetupSprite("vacuum_pipe");
-        SPRITES.SetupSprite("vacuum_end");
+        getSPRITES().SetupSprite("vacuum_pipe");
+        getSPRITES().SetupSprite("vacuum_end");
         this._target = target;
         this.ApplyVacuum(health, lootRate);
     }
@@ -71,17 +74,17 @@ export class VacuumHose implements IAttackable, ITickable {
         if (!this.hasMaxedAmountToLoot()) {
             let lootAmount = 0;
             const avail = [];
-            if (BASE._resources.r1.Get() > 0) {
-                avail.push({ "id": 1, "quantity": BASE._resources.r1.Get() });
+            if (getBASE()._resources.r1.Get() > 0) {
+                avail.push({ "id": 1, "quantity": getBASE()._resources.r1.Get() });
             }
-            if (BASE._resources.r2.Get() > 0) {
-                avail.push({ "id": 2, "quantity": BASE._resources.r2.Get() });
+            if (getBASE()._resources.r2.Get() > 0) {
+                avail.push({ "id": 2, "quantity": getBASE()._resources.r2.Get() });
             }
-            if (BASE._resources.r3.Get() > 0) {
-                avail.push({ "id": 3, "quantity": BASE._resources.r3.Get() });
+            if (getBASE()._resources.r3.Get() > 0) {
+                avail.push({ "id": 3, "quantity": getBASE()._resources.r3.Get() });
             }
-            if (BASE._resources.r4.Get() > 0) {
-                avail.push({ "id": 4, "quantity": BASE._resources.r4.Get() });
+            if (getBASE()._resources.r4.Get() > 0) {
+                avail.push({ "id": 4, "quantity": getBASE()._resources.r4.Get() });
             }
             if (avail.length > 0) {
                 const choice = avail[Math.floor(Math.random() * avail.length)];
@@ -90,21 +93,21 @@ export class VacuumHose implements IAttackable, ITickable {
                 } else {
                     lootAmount = choice.quantity;
                 }
-                BASE._resources["r" + choice.id].Add(-lootAmount);
-                BASE._hpResources["r" + choice.id] -= lootAmount;
-                if (BASE._deltaResources["r" + choice.id]) {
-                    BASE._deltaResources["r" + choice.id].Add(-lootAmount);
-                    BASE._hpDeltaResources["r" + choice.id] -= lootAmount;
+                getBASE()._resources["r" + choice.id].Add(-lootAmount);
+                getBASE()._hpResources["r" + choice.id] -= lootAmount;
+                if (getBASE()._deltaResources["r" + choice.id]) {
+                    getBASE()._deltaResources["r" + choice.id].Add(-lootAmount);
+                    getBASE()._hpDeltaResources["r" + choice.id] -= lootAmount;
                 } else {
-                    BASE._deltaResources["r" + choice.id] = new SecNum(-lootAmount);
-                    BASE._hpDeltaResources["r" + choice.id] = -lootAmount;
+                    getBASE()._deltaResources["r" + choice.id] = new SecNum(-lootAmount);
+                    getBASE()._hpDeltaResources["r" + choice.id] = -lootAmount;
                 }
-                BASE._deltaResources.dirty = true;
-                BASE._hpDeltaResources.dirty = true;
-                if (GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
+                getBASE()._deltaResources.dirty = true;
+                getBASE()._hpDeltaResources.dirty = true;
+                if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
                     lootAmount = Math.floor(lootAmount / 5);
                 }
-                ATTACK.Loot(choice.id, lootAmount, this._target.x, this._target.y, 9, this._target, true);
+                getATTACK().Loot(choice.id, lootAmount, this._target.x, this._target.y, 9, this._target, true);
                 this._vacuumLootTotals[choice.id - 1] += lootAmount;
                 this._amountLooted += lootAmount;
             }
@@ -158,13 +161,13 @@ export class VacuumHose implements IAttackable, ITickable {
         this._vacuumPipeSource = new BitmapData(VacuumHose.PIPE_WIDTH, VacuumHose.PIPE_HEIGHT, true, 0);
         const endBmp = new Bitmap(this._vacuumEndSource);
         this._vacuum.addChild(endBmp);
-        MAP._EFFECTSTOP.addChild(this._vacuum);
-        this._vacuumSound = SOUNDS.Play("othersounds/vacuumstart.mp3");
+        getMAP()._EFFECTSTOP.addChild(this._vacuum);
+        this._vacuumSound = getSOUNDS().Play("othersounds/vacuumstart.mp3");
         if (this._vacuumSound) {
             this._vacuumSound.addEventListener(Event.SOUND_COMPLETE, this.onLoopStartSoundComplete.bind(this), false, 0, true);
         }
         this._vacuumLootTotals = [0, 0, 0, 0];
-        const top = -GLOBAL._mapHeight;
+        const top = -getGLOBAL()._mapHeight;
         let yPos = 0;
         endBmp.x = -(VacuumHose.END_WIDTH / 2);
         endBmp.y = yPos -= VacuumHose.END_HEIGHT;
@@ -175,10 +178,10 @@ export class VacuumHose implements IAttackable, ITickable {
             this._vacuum.addChild(pipeBmp);
         }
         this._totalPossibleLoot = Number.MAX_VALUE;
-        if (this._target instanceof ResourceOutpost) {
-            const totalRes = BASE._resources.r1.Get() + BASE._resources.r2.Get() + BASE._resources.r3.Get() + BASE._resources.r4.Get();
+        if (this._target instanceof getResourceOutpost()) {
+            const totalRes = getBASE()._resources.r1.Get() + getBASE()._resources.r2.Get() + getBASE()._resources.r3.Get() + getBASE()._resources.r4.Get();
             this._totalPossibleLoot = totalRes * VacuumHose.MR3_MAX_LOOT_MULTIPLIER;
-            console.log("Using the loot-o-tron on a Resource Outpost. This base has " + GLOBAL.FormatNumber(totalRes) + " resources so you will only be able to take " + GLOBAL.FormatNumber(this._totalPossibleLoot) + ". (" + VacuumHose.MR3_MAX_LOOT_MULTIPLIER + "%)");
+            console.log("Using the loot-o-tron on a Resource Outpost. This base has " + getGLOBAL().FormatNumber(totalRes) + " resources so you will only be able to take " + getGLOBAL().FormatNumber(this._totalPossibleLoot) + ". (" + VacuumHose.MR3_MAX_LOOT_MULTIPLIER + "%)");
         }
         this._amountLooted = 0;
         this._vacuumLootRate = new SecNum(lootRate);
@@ -196,7 +199,7 @@ export class VacuumHose implements IAttackable, ITickable {
     }
 
     public onLoopStartSoundComplete(event: Event): void {
-        this._vacuumSound = SOUNDS.Play("othersounds/vacuumloop.mp3", 0.8, 0, 100);
+        this._vacuumSound = getSOUNDS().Play("othersounds/vacuumloop.mp3", 0.8, 0, 100);
     }
 
     public RemoveVacuum(wasDestroyed: boolean = false): void {
@@ -216,7 +219,7 @@ export class VacuumHose implements IAttackable, ITickable {
             this._vacuumMaxHealth = 0;
             if (this._vacuumSound) {
                 this._vacuumSound.stop();
-                SOUNDS.Play(wasDestroyed ? "othersounds/vacuumbroken.mp3" : "othersounds/vacuumloopoff.mp3");
+                getSOUNDS().Play(wasDestroyed ? "othersounds/vacuumbroken.mp3" : "othersounds/vacuumloopoff.mp3");
             }
             TweenLite.to(savedVacuum, 2, {
                 "y": this._target.y - 400,
@@ -235,24 +238,24 @@ export class VacuumHose implements IAttackable, ITickable {
         if (this._vacuum) {
             if (!this.hasMaxedAmountToLoot()) {
                 ++this._vacuumFrame;
-                SPRITES.GetFrameById(this._vacuumEndSource!, "vacuum_end", this._vacuumFrame % VacuumHose.END_NUM_FRAMES, 0);
-                SPRITES.GetFrameById(this._vacuumPipeSource!, "vacuum_pipe", this._vacuumFrame % VacuumHose.PIPE_NUM_FRAMES, 0);
+                getSPRITES().GetFrameById(this._vacuumEndSource!, "vacuum_end", this._vacuumFrame % VacuumHose.END_NUM_FRAMES, 0);
+                getSPRITES().GetFrameById(this._vacuumPipeSource!, "vacuum_pipe", this._vacuumFrame % VacuumHose.PIPE_NUM_FRAMES, 0);
             }
             if (this._vacuumHealth.Get() > 0) {
                 const prevLoot = (this._vacuumCurrTime - this._vacuumStartTime) * this._vacuumLootRate!.Get() / 1000;
                 this._vacuumCurrTime = Date.now();
                 const currLoot = (this._vacuumCurrTime - this._vacuumStartTime) * this._vacuumLootRate!.Get() / 1000;
                 this.VacuumLoot(currLoot - prevLoot);
-            } else if (SiegeWeapons.activeWeapon) {
-                SiegeWeapons.deactivateWeapon();
+            } else if (getSiegeWeapons().activeWeapon) {
+                getSiegeWeapons().deactivateWeapon();
             }
         }
     }
 
     private targetDestroyed(): void {
-        SiegeWeapons.deactivateWeapon();
-        if (UI2._top) {
-            UI2._top.validateSiegeWeapon();
+        getSiegeWeapons().deactivateWeapon();
+        if (getUI2()._top) {
+            getUI2()._top.validateSiegeWeapon();
         }
     }
 }

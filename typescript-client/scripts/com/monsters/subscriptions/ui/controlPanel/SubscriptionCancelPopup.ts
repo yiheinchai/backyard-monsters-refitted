@@ -4,7 +4,10 @@ import MouseEvent from "openfl/events/MouseEvent";
 import { SubscriptionHandler } from "../../SubscriptionHandler";
 import { subscriptions_cancelconfirm_popup } from "../../../../../subscriptions_cancelconfirm_popup";
 
-import { KEYS } from "../../../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../../KEYS").KEYS; }
+
+
 
 /**
  * Subscription cancel popup - confirmation popup for cancelling subscription.
@@ -12,15 +15,15 @@ import { KEYS } from "../../../../../KEYS";
 export class SubscriptionCancelPopup extends subscriptions_cancelconfirm_popup {
     constructor() {
         super();
-        this.tTitle.htmlText = KEYS.Get("dc_panel_cancel");
-        this.tDesc.htmlText = KEYS.Get("dc_cancel_confirmation");
+        this.tTitle.htmlText = getKEYS().Get("dc_panel_cancel");
+        this.tDesc.htmlText = getKEYS().Get("dc_cancel_confirmation");
         this.bConfirm.Highlight = false;
         this.bConfirm.buttonMode = true;
-        this.bConfirm.Setup(KEYS.Get("btn_cancelsub_confirm"));
+        this.bConfirm.Setup(getKEYS().Get("btn_cancelsub_confirm"));
         this.bConfirm.addEventListener(MouseEvent.CLICK, this.clickedConfirm.bind(this));
         this.bCancel.Highlight = true;
         this.bCancel.buttonMode = true;
-        this.bCancel.Setup(KEYS.Get("btn_cancelsub_keepsub"));
+        this.bCancel.Setup(getKEYS().Get("btn_cancelsub_keepsub"));
         this.bCancel.addEventListener(MouseEvent.CLICK, this.Hide.bind(this));
     }
 

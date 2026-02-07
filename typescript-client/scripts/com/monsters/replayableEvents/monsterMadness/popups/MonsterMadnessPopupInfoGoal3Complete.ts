@@ -4,7 +4,10 @@ import MouseEvent from "openfl/events/MouseEvent";
 import { MonsterMadnessPopupInfo } from "./MonsterMadnessPopupInfo";
 
 import { Button } from "../../../../../Button";
-import { KEYS } from "../../../../../KEYS";
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../../KEYS").KEYS; }
+
 
 /**
  * Monster Madness popup info for goal 3 complete.
@@ -24,7 +27,7 @@ export class MonsterMadnessPopupInfoGoal3Complete extends MonsterMadnessPopupInf
     }
 
     public override setupButton(button: Button, mode: number): void {
-        button.Setup(KEYS.Get("btn_brag"));
+        button.Setup(getKEYS().Get("btn_brag"));
         button.Highlight = true;
         button.addEventListener(MouseEvent.CLICK, this.onClickBrag.bind(this));
     }

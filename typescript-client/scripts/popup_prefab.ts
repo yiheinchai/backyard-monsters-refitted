@@ -5,21 +5,24 @@ import MouseEvent from "openfl/events/MouseEvent";
 
 import { SecNum } from "./com/cc/utils/SecNum";
 import { ImageCache } from "./com/monsters/display/ImageCache";
-import { InstanceManager } from "./com/monsters/managers/InstanceManager";
-import { PATHING } from "./com/monsters/pathing/PATHING";
 import { Kit } from "./com/monsters/kits/Kit";
 import { popup_prefab_CLIP } from "./popup_prefab_CLIP";
 import { popup_prefab_enlarge } from "./popup_prefab_enlarge";
-import { GLOBAL } from "./GLOBAL";
-import { KEYS } from "./KEYS";
-import { BASE } from "./BASE";
-import { BFOUNDATION } from "./BFOUNDATION";
-import { BUY } from "./BUY";
-import { POPUPS } from "./POPUPS";
-import { LOGGER } from "./LOGGER";
 import { ACHIEVEMENTS } from "./ACHIEVEMENTS";
-import { CREATURES } from "./CREATURES";
-import { CREEPS } from "./CREEPS";
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getPATHING(): any { return require("./com/monsters/pathing/PATHING").PATHING; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBUY(): any { return require("./BUY").BUY; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+
 
 // Kit data for prefab buildings (JSON strings stored in Vector)
 const KIT_DATA_1 = '{"0":{"Y":-105,"t":112,"id":0,"X":-65},"1":{"Y":-165,"t":21,"prefab":5,"id":1,"X":-155},"2":{"Y":25,"t":21,"prefab":5,"id":2,"X":-15},"3":{"Y":-175,"t":21,"prefab":5,"id":3,"X":125},"4":{"Y":15,"t":20,"prefab":5,"id":4,"X":-155},"5":{"Y":25,"t":20,"prefab":5,"id":5,"X":125},"6":{"Y":-175,"t":20,"prefab":5,"id":6,"X":-15},"7":{"Y":-75,"t":25,"id":7,"X":-155},"8":{"Y":115,"t":15,"prefab":2,"id":8,"X":35},"9":{"Y":-295,"t":13,"prefab":2,"id":9,"X":-35},"10":{"Y":115,"t":13,"prefab":2,"id":10,"X":-65},"11":{"Y":-285,"t":5,"prefab":2,"id":11,"X":-125},"13":{"Y":-85,"t":22,"id":13,"X":85},"14":{"rCP":1,"Y":-175,"t":1,"prefab":8,"id":14,"X":-85},"15":{"rCP":10,"Y":25,"t":1,"prefab":8,"id":15,"X":55},"16":{"rCP":9,"Y":-175,"t":2,"prefab":8,"id":16,"X":55},"17":{"rCP":2,"Y":25,"t":2,"prefab":8,"id":17,"X":-85},"18":{"Y":-195,"t":17,"prefab":2,"id":18,"X":165},"19":{"rCP":3,"Y":-40,"t":3,"prefab":8,"id":19,"X":-255},"20":{"rCP":10,"Y":-35,"t":4,"prefab":8,"id":20,"X":225},"21":{"rCP":7,"Y":-110,"t":4,"prefab":8,"id":21,"X":-255},"22":{"Y":-75,"t":17,"prefab":3,"id":22,"X":185},"23":{"Y":-65,"t":17,"prefab":3,"id":23,"X":-85},"24":{"Y":-95,"t":17,"prefab":3,"id":24,"X":185},"25":{"Y":-105,"t":17,"prefab":3,"id":25,"X":85},"26":{"Y":-55,"t":17,"prefab":3,"id":26,"X":185},"27":{"Y":-105,"t":17,"prefab":3,"id":27,"X":125},"28":{"Y":-35,"t":17,"prefab":3,"id":28,"X":185},"29":{"Y":-105,"t":17,"prefab":3,"id":29,"X":105},"30":{"Y":-45,"t":17,"prefab":3,"id":30,"X":-85},"31":{"Y":-105,"t":17,"prefab":3,"id":31,"X":145},"32":{"Y":-25,"t":17,"prefab":3,"id":32,"X":-85},"33":{"Y":5,"t":17,"prefab":3,"id":33,"X":165},"34":{"Y":-105,"t":17,"prefab":3,"id":34,"X":65},"35":{"Y":5,"t":17,"prefab":3,"id":35,"X":145},"36":{"Y":-105,"t":17,"prefab":3,"id":36,"X":165},"37":{"Y":5,"t":17,"prefab":3,"id":37,"X":125},"38":{"Y":-5,"t":17,"prefab":3,"id":38,"X":-185},"39":{"Y":-5,"t":17,"prefab":3,"id":39,"X":65},"40":{"Y":-85,"t":17,"prefab":3,"id":40,"X":65},"41":{"Y":5,"t":17,"prefab":3,"id":41,"X":85},"42":{"Y":-65,"t":17,"prefab":3,"id":42,"X":65},"43":{"Y":5,"t":17,"prefab":3,"id":43,"X":105},"44":{"Y":-45,"t":17,"prefab":3,"id":44,"X":65},"45":{"Y":-85,"t":17,"prefab":3,"id":45,"X":-185},"46":{"Y":-25,"t":17,"prefab":3,"id":46,"X":65},"47":{"Y":-45,"t":17,"prefab":3,"id":47,"X":-185},"48":{"Y":-95,"t":17,"prefab":3,"id":48,"X":-145},"49":{"Y":-95,"t":17,"prefab":3,"id":49,"X":-165},"50":{"Y":-95,"t":17,"prefab":3,"id":50,"X":-105},"51":{"Y":-95,"t":17,"prefab":3,"id":51,"X":-125},"52":{"Y":-85,"t":17,"prefab":3,"id":52,"X":-85},"53":{"Y":-65,"t":17,"prefab":3,"id":53,"X":-185},"54":{"Y":-25,"t":17,"prefab":3,"id":54,"X":-185},"55":{"Y":-5,"t":17,"prefab":3,"id":55,"X":-165},"56":{"Y":-5,"t":17,"prefab":3,"id":56,"X":-105},"57":{"Y":-5,"t":17,"prefab":3,"id":57,"X":-145},"58":{"Y":-5,"t":17,"prefab":3,"id":58,"X":-125},"59":{"Y":-15,"t":17,"prefab":3,"id":59,"X":185},"60":{"Y":-5,"t":17,"prefab":3,"id":60,"X":-85},"61":{"Y":5,"t":17,"prefab":3,"id":61,"X":185},"62":{"Y":-195,"t":17,"prefab":2,"id":62,"X":185},"63":{"Y":-185,"t":17,"prefab":2,"id":63,"X":-115},"64":{"Y":95,"t":17,"prefab":2,"id":64,"X":165},"65":{"Y":95,"t":17,"prefab":2,"id":65,"X":145},"66":{"Y":95,"t":17,"prefab":3,"id":66,"X":125},"67":{"Y":95,"t":17,"prefab":3,"id":67,"X":105},"68":{"Y":95,"t":17,"prefab":3,"id":68,"X":85},"69":{"Y":95,"t":17,"prefab":3,"id":69,"X":65},"70":{"Y":95,"t":17,"prefab":3,"id":70,"X":45},"71":{"Y":95,"t":17,"prefab":3,"id":71,"X":25},"72":{"Y":95,"t":17,"prefab":3,"id":72,"X":5},"73":{"Y":95,"t":17,"prefab":3,"id":73,"X":-15},"74":{"Y":95,"t":17,"prefab":3,"id":74,"X":-35},"75":{"Y":95,"t":17,"prefab":3,"id":75,"X":-55},"76":{"Y":95,"t":17,"prefab":3,"id":76,"X":-75},"77":{"Y":95,"t":17,"prefab":3,"id":77,"X":-95},"78":{"Y":95,"t":17,"prefab":2,"id":78,"X":-115},"79":{"Y":95,"t":17,"prefab":2,"id":79,"X":-135},"80":{"Y":85,"t":17,"prefab":2,"id":80,"X":-155},"81":{"Y":15,"t":17,"prefab":3,"id":81,"X":-185},"82":{"Y":35,"t":17,"prefab":2,"id":82,"X":-185},"83":{"Y":55,"t":17,"prefab":2,"id":83,"X":-185},"84":{"Y":75,"t":17,"prefab":2,"id":84,"X":-175},"85":{"Y":95,"t":17,"prefab":2,"id":85,"X":185},"86":{"Y":75,"t":17,"prefab":2,"id":86,"X":195},"87":{"Y":55,"t":17,"prefab":2,"id":87,"X":195},"88":{"Y":35,"t":17,"prefab":2,"id":88,"X":205},"89":{"Y":15,"t":17,"prefab":3,"id":89,"X":205},"90":{"Y":-115,"t":17,"prefab":3,"id":90,"X":-175},"91":{"Y":-135,"t":17,"prefab":2,"id":91,"X":-175},"92":{"Y":-155,"t":17,"prefab":2,"id":92,"X":-175},"93":{"Y":-175,"t":17,"prefab":2,"id":93,"X":-175},"94":{"Y":-185,"t":17,"prefab":2,"id":94,"X":-155},"95":{"Y":-185,"t":17,"prefab":2,"id":95,"X":-135},"96":{"Y":-195,"t":17,"prefab":2,"id":96,"X":145},"97":{"Y":-195,"t":17,"prefab":3,"id":97,"X":-95},"98":{"Y":-195,"t":17,"prefab":3,"id":98,"X":-75},"99":{"Y":-195,"t":17,"prefab":3,"id":99,"X":-55},"100":{"Y":-195,"t":17,"prefab":3,"id":100,"X":-35},"101":{"Y":-195,"t":17,"prefab":3,"id":101,"X":-15},"102":{"Y":-195,"t":17,"prefab":3,"id":102,"X":5},"103":{"Y":-195,"t":17,"prefab":3,"id":103,"X":25},"104":{"Y":-195,"t":17,"prefab":3,"id":104,"X":45},"105":{"Y":-195,"t":17,"prefab":3,"id":105,"X":65},"106":{"Y":-195,"t":17,"prefab":3,"id":106,"X":85},"107":{"Y":-195,"t":17,"prefab":3,"id":107,"X":105},"108":{"Y":-115,"t":17,"prefab":3,"id":108,"X":195},"110":{"Y":-135,"t":17,"prefab":2,"id":110,"X":195},"111":{"Y":-155,"t":17,"prefab":2,"id":111,"X":195},"112":{"Y":-175,"t":17,"prefab":2,"id":112,"X":195},"113":{"Y":-195,"t":17,"prefab":3,"id":113,"X":125},"114":{"rCP":6,"Y":-105,"t":3,"prefab":8,"id":114,"X":225}}';
@@ -70,24 +73,24 @@ export class popup_prefab extends popup_prefab_CLIP {
             (this as any)["img" + n].addEventListener(MouseEvent.CLICK, this.Enlarge(n));
             (this as any)["img" + n].buttonMode = true;
             const kitCosts = this.GetBuildings(n).costs;
-            (this as any)["c" + n].htmlText = "<b>" + GLOBAL.FormatNumber(kitCosts[0].Get()) + " " + KEYS.Get("#r_twigs#") + "<br>" + GLOBAL.FormatNumber(kitCosts[1].Get()) + " " + KEYS.Get("#r_pebbles#") + "<br>" + GLOBAL.FormatNumber(kitCosts[2].Get()) + " " + KEYS.Get("#r_putty#") + "</b>";
+            (this as any)["c" + n].htmlText = "<b>" + getGLOBAL().FormatNumber(kitCosts[0].Get()) + " " + getKEYS().Get("#r_twigs#") + "<br>" + getGLOBAL().FormatNumber(kitCosts[1].Get()) + " " + getKEYS().Get("#r_pebbles#") + "<br>" + getGLOBAL().FormatNumber(kitCosts[2].Get()) + " " + getKEYS().Get("#r_putty#") + "</b>";
             (this as any)["b" + n].SetupKey("btn_useresources");
             (this as any)["b" + n].addEventListener(MouseEvent.CLICK, this.PreSelect(n));
-            (this as any)["b" + n + "s"].Setup(KEYS.Get("btn_useshiny", { "v1": kitCosts[3].Get() }));
+            (this as any)["b" + n + "s"].Setup(getKEYS().Get("btn_useshiny", { "v1": kitCosts[3].Get() }));
             (this as any)["b" + n + "s"].addEventListener(MouseEvent.CLICK, this.PreBuyOutright(n, kitCosts[3].Get()));
             (this as any)["b" + n + "s"].Highlight = true;
-            this.tSelect.htmlText = "<b>" + KEYS.Get("str_selectsk") + "</b>";
-            this.t1.htmlText = "<b>" + KEYS.Get("str_regularkit") + "</b>";
-            this.t2.htmlText = "<b>" + KEYS.Get("str_megakit") + "</b>";
-            this.t3.htmlText = "<b>" + KEYS.Get("str_ultrakit") + "</b>";
+            this.tSelect.htmlText = "<b>" + getKEYS().Get("str_selectsk") + "</b>";
+            this.t1.htmlText = "<b>" + getKEYS().Get("str_regularkit") + "</b>";
+            this.t2.htmlText = "<b>" + getKEYS().Get("str_megakit") + "</b>";
+            this.t3.htmlText = "<b>" + getKEYS().Get("str_ultrakit") + "</b>";
             n++;
         }
-        this.tCol1.htmlText = KEYS.Get("popup_prefab_col1");
-        this.tCol2.htmlText = KEYS.Get("popup_prefab_col2");
-        this.tCol3.htmlText = KEYS.Get("popup_prefab_col3");
-        this.tCol4.htmlText = KEYS.Get("popup_prefab_col4");
-        this.tShiny.htmlText = "<b>" + GLOBAL.FormatNumber(BASE._credits.Get()) + " " + KEYS.Get("#r_shiny#") + "</b>";
-        this.tInstantNotice.htmlText = KEYS.Get("popup_prefab_instantnotice");
+        this.tCol1.htmlText = getKEYS().Get("popup_prefab_col1");
+        this.tCol2.htmlText = getKEYS().Get("popup_prefab_col2");
+        this.tCol3.htmlText = getKEYS().Get("popup_prefab_col3");
+        this.tCol4.htmlText = getKEYS().Get("popup_prefab_col4");
+        this.tShiny.htmlText = "<b>" + getGLOBAL().FormatNumber(getBASE()._credits.Get()) + " " + getKEYS().Get("#r_shiny#") + "</b>";
+        this.tInstantNotice.htmlText = getKEYS().Get("popup_prefab_instantnotice");
     }
 
     public static getShinyWorthFromResources(resources: number): number {
@@ -101,7 +104,7 @@ export class popup_prefab extends popup_prefab_CLIP {
             const buildingType: number = item.t;
             if (popup_prefab.isBuildingOfValidType(buildingType)) {
                 const level: number = item.l;
-                const props = GLOBAL._buildingProps[buildingType - 1];
+                const props = getGLOBAL()._buildingProps[buildingType - 1];
                 const costs = props.costs[level];
                 total += costs.r1.Get();
                 total += costs.r2.Get();
@@ -119,8 +122,8 @@ export class popup_prefab extends popup_prefab_CLIP {
     public Enlarge(n: number): (e?: MouseEvent) => void {
         return (e?: MouseEvent): void => {
             const popup = new popup_prefab_enlarge();
-            GLOBAL.BlockerAdd(GLOBAL._layerTop);
-            GLOBAL._layerTop.addChild(popup);
+            getGLOBAL().BlockerAdd(getGLOBAL()._layerTop);
+            getGLOBAL()._layerTop.addChild(popup);
             popup.Setup(n);
             popup.Center();
         };
@@ -138,9 +141,9 @@ export class popup_prefab extends popup_prefab_CLIP {
 
     public PreBuyOutright(kitID: number, shinyCost: number): (e?: MouseEvent) => void {
         return (e?: MouseEvent): void => {
-            const foundations = InstanceManager.getInstancesByClass(BFOUNDATION);
+            const foundations = getInstanceManager().getInstancesByClass(getBFOUNDATION());
             if (foundations.length > 1) {
-                GLOBAL.Message(KEYS.Get("kit_warning"), KEYS.Get("btn_build"), this.BuyOutright.bind(this), [kitID, shinyCost]);
+                getGLOBAL().Message(getKEYS().Get("kit_warning"), getKEYS().Get("btn_build"), this.BuyOutright.bind(this), [kitID, shinyCost]);
             } else {
                 this.BuyOutright(kitID, shinyCost);
             }
@@ -148,28 +151,28 @@ export class popup_prefab extends popup_prefab_CLIP {
     }
 
     public BuyOutright(kitID: number, shinyCost: number): void {
-        if (BASE._credits.Get() < shinyCost) {
-            POPUPS.Next();
-            POPUPS.DisplayGetShiny();
+        if (getBASE()._credits.Get() < shinyCost) {
+            getPOPUPS().Next();
+            getPOPUPS().DisplayGetShiny();
             return;
         }
         const costs: SecNum[] = this.GetBuildings(kitID).costs;
         const expectedCost: number = costs[3].Get();
         if (shinyCost === expectedCost) {
             this.BuildKit(kitID, true);
-            BASE.Purchase("KIT", shinyCost, "popup_prefab");
-            LOGGER.Stat([41, (kitID + 1) + "b", shinyCost]);
+            getBASE().Purchase("KIT", shinyCost, "popup_prefab");
+            getLOGGER().Stat([41, (kitID + 1) + "b", shinyCost]);
         } else {
-            LOGGER.Log("err", "KitCostMismatch (BuyOutright) expected:" + expectedCost + " got:" + shinyCost);
-            GLOBAL.ErrorMessage("Expected to cost:" + shinyCost + " recalculated cost was:" + expectedCost, GLOBAL.ERROR_ORANGE_BOX_ONLY);
+            getLOGGER().Log("err", "KitCostMismatch (BuyOutright) expected:" + expectedCost + " got:" + shinyCost);
+            getGLOBAL().ErrorMessage("Expected to cost:" + shinyCost + " recalculated cost was:" + expectedCost, getGLOBAL().ERROR_ORANGE_BOX_ONLY);
         }
     }
 
     public PreSelect(kitID: number): (e?: MouseEvent) => void {
         return (e?: MouseEvent): void => {
-            const foundations = InstanceManager.getInstancesByClass(BFOUNDATION);
+            const foundations = getInstanceManager().getInstancesByClass(getBFOUNDATION());
             if (foundations.length > 1) {
-                GLOBAL.Message(KEYS.Get("kit_warning"), KEYS.Get("btn_build"), this.Select.bind(this), [kitID]);
+                getGLOBAL().Message(getKEYS().Get("kit_warning"), getKEYS().Get("btn_build"), this.Select.bind(this), [kitID]);
             } else {
                 this.Select(kitID);
             }
@@ -184,80 +187,80 @@ export class popup_prefab extends popup_prefab_CLIP {
         const missing: any[] = [];
         let missingTotal: number = 0;
         
-        let available: number = Math.min(GLOBAL._resources.r1.Get(), costs[0].Get());
+        let available: number = Math.min(getGLOBAL()._resources.r1.Get(), costs[0].Get());
         missingTotal += costs[0].Get() - available;
         if (available !== costs[0].Get()) {
-            missing.push([costs[0].Get() - available, KEYS.Get("#r_twigs#")]);
+            missing.push([costs[0].Get() - available, getKEYS().Get("#r_twigs#")]);
         }
         
-        available = Math.min(GLOBAL._resources.r2.Get(), costs[1].Get());
+        available = Math.min(getGLOBAL()._resources.r2.Get(), costs[1].Get());
         missingTotal += costs[1].Get() - available;
         if (available !== costs[1].Get()) {
-            missing.push([costs[1].Get() - available, KEYS.Get("#r_pebbles#")]);
+            missing.push([costs[1].Get() - available, getKEYS().Get("#r_pebbles#")]);
         }
         
-        available = Math.min(GLOBAL._resources.r3.Get(), costs[2].Get());
+        available = Math.min(getGLOBAL()._resources.r3.Get(), costs[2].Get());
         missingTotal += costs[2].Get() - available;
         if (available !== costs[2].Get()) {
-            missing.push([costs[2].Get() - available, KEYS.Get("#r_putty#")]);
+            missing.push([costs[2].Get() - available, getKEYS().Get("#r_putty#")]);
         }
         
         if (missing.length > 0) {
             const shinyCost: number = Math.ceil(Math.pow(Math.sqrt(missingTotal / 2), 0.75));
-            GLOBAL.Message("<b>You need an extra " + GLOBAL.Array2String(missing) + " to build this kit.</b><br><br>You can bank resources in your outposts and main yard or use " + shinyCost + " shiny to make up the difference.", "Use " + shinyCost + " Shiny", this.PayForKit.bind(this), [kitID, shinyCost]);
+            getGLOBAL().Message("<b>You need an extra " + getGLOBAL().Array2String(missing) + " to build this kit.</b><br><br>You can bank resources in your outposts and main yard or use " + shinyCost + " shiny to make up the difference.", "Use " + shinyCost + " Shiny", this.PayForKit.bind(this), [kitID, shinyCost]);
             return;
         }
         
-        if (GLOBAL._resources.r1.Get() >= costs[0].Get()) {
-            if (GLOBAL._resources.r2.Get() >= costs[1].Get()) {
-                if (GLOBAL._resources.r3.Get() >= costs[2].Get()) {
-                    BASE.Charge(1, costs[0].Get());
-                    BASE.Charge(2, costs[1].Get());
-                    BASE.Charge(3, costs[2].Get());
-                    LOGGER.Stat([38, kitID + 1, 0]);
+        if (getGLOBAL()._resources.r1.Get() >= costs[0].Get()) {
+            if (getGLOBAL()._resources.r2.Get() >= costs[1].Get()) {
+                if (getGLOBAL()._resources.r3.Get() >= costs[2].Get()) {
+                    getBASE().Charge(1, costs[0].Get());
+                    getBASE().Charge(2, costs[1].Get());
+                    getBASE().Charge(3, costs[2].Get());
+                    getLOGGER().Stat([38, kitID + 1, 0]);
                     this.BuildKit(kitID);
-                    BASE.Save();
-                    POPUPS.Next();
+                    getBASE().Save();
+                    getPOPUPS().Next();
                     return;
                 }
-                GLOBAL.Message(KEYS.Get("newmap_sk_res"));
+                getGLOBAL().Message(getKEYS().Get("newmap_sk_res"));
                 return;
             }
-            GLOBAL.Message(KEYS.Get("newmap_sk_res"));
+            getGLOBAL().Message(getKEYS().Get("newmap_sk_res"));
             return;
         }
-        GLOBAL.Message(KEYS.Get("newmap_sk_res"));
+        getGLOBAL().Message(getKEYS().Get("newmap_sk_res"));
     }
 
     private PayForKit(kitID: number, shinyCost: number): void {
-        if (BASE._credits.Get() < shinyCost) {
-            GLOBAL.Message("<b>" + KEYS.Get("pop_noshiny_title") + "</b><br>" + KEYS.Get("pop_noshiny_body"), KEYS.Get("str_getmore_btn"), BUY.Show);
+        if (getBASE()._credits.Get() < shinyCost) {
+            getGLOBAL().Message("<b>" + getKEYS().Get("pop_noshiny_title") + "</b><br>" + getKEYS().Get("pop_noshiny_body"), getKEYS().Get("str_getmore_btn"), getBUY().Show);
             return;
         }
         
         const costs: SecNum[] = this.GetBuildings(kitID).costs;
         let missingTotal: number = 0;
         
-        let available: number = Math.min(GLOBAL._resources.r1.Get(), costs[0].Get());
+        let available: number = Math.min(getGLOBAL()._resources.r1.Get(), costs[0].Get());
         missingTotal += costs[0].Get() - available;
-        BASE.Charge(1, available);
+        getBASE().Charge(1, available);
         
-        available = Math.min(GLOBAL._resources.r2.Get(), costs[1].Get());
+        available = Math.min(getGLOBAL()._resources.r2.Get(), costs[1].Get());
         missingTotal += costs[1].Get() - available;
-        BASE.Charge(2, available);
+        getBASE().Charge(2, available);
         
-        available = Math.min(GLOBAL._resources.r3.Get(), costs[2].Get());
+        available = Math.min(getGLOBAL()._resources.r3.Get(), costs[2].Get());
         missingTotal += costs[2].Get() - available;
-        BASE.Charge(3, available);
+        getBASE().Charge(3, available);
         
         const calculatedCost: number = Math.ceil(Math.pow(Math.sqrt(missingTotal / 2), 0.75));
         if (shinyCost === calculatedCost) {
             this.BuildKit(kitID);
-            BASE.Purchase("KIT", shinyCost, "popup_prefab");
-            LOGGER.Stat([38, kitID + 1, shinyCost]);
+            getBASE().Purchase("KIT", shinyCost, "popup_prefab");
+            getLOGGER().Stat([38, kitID + 1, shinyCost]);
         } else {
-            LOGGER.Log("err", "KitCostMismatch expected:" + shinyCost + " got:" + calculatedCost);
-            GLOBAL.ErrorMessage("Expected to cost:" + shinyCost + " recalculated cost was:" + calculatedCost, GLOBAL.ERROR_ORANGE_BOX_ONLY);
+            getLOGGER().Log("err", "KitCostMismatch expected:" + shinyCost + " got:" + calculatedCost);
+            getGLOBAL().ErrorMessage("Expected to cost:" + shinyCost + " recalculated cost was:" + calculatedCost, getGLOBAL().ERROR_ORANGE_BOX_ONLY);
         }
     }
 
@@ -268,10 +271,10 @@ export class popup_prefab extends popup_prefab_CLIP {
         this.b3.Enabled = false;
         
         const buildings: any = this.GetBuildings(kitID).buildings;
-        CREATURES.Clear();
-        CREEPS.Clear();
+        getCREATURES().Clear();
+        getCREEPS().Clear();
         
-        const foundations: BFOUNDATION[] = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const foundations: BFOUNDATION[] = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (const foundation of foundations) {
             if (foundation._type !== 112) {
                 foundation.clear();
@@ -288,10 +291,10 @@ export class popup_prefab extends popup_prefab_CLIP {
         for (const key in buildings) {
             const buildingData = buildings[key];
             if (buildingData.t === 112) {
-                GLOBAL.townHall.Setup(buildingData);
-                if (GLOBAL.townHall.health < GLOBAL.townHall.maxHealth) {
-                    GLOBAL.townHall.setHealth(GLOBAL.townHall.maxHealth);
-                    GLOBAL.townHall.Repaired();
+                getGLOBAL().townHall.Setup(buildingData);
+                if (getGLOBAL().townHall.health < getGLOBAL().townHall.maxHealth) {
+                    getGLOBAL().townHall.setHealth(getGLOBAL().townHall.maxHealth);
+                    getGLOBAL().townHall.Repaired();
                 }
             } else {
                 if (!buildingData.prefab) {
@@ -301,7 +304,7 @@ export class popup_prefab extends popup_prefab_CLIP {
                     buildingData.l = buildingData.prefab;
                     delete buildingData.prefab;
                 }
-                const newBuilding: BFOUNDATION = BASE.addBuildingC(buildingData.t);
+                const newBuilding: BFOUNDATION = getBASE().addBuildingC(buildingData.t);
                 newBuilding.Setup(buildingData);
                 if (newBuilding._class === "resource") {
                     newBuilding._stored = new SecNum(0);
@@ -310,9 +313,9 @@ export class popup_prefab extends popup_prefab_CLIP {
         }
         
         ACHIEVEMENTS.Check("starterkit", 1);
-        PATHING.ResetCosts();
-        POPUPS.Next();
-        BASE.Save();
+        getPATHING().ResetCosts();
+        getPOPUPS().Next();
+        getBASE().Save();
     }
 
     private GetBuildings(kitID: number): { buildings: any; costs: SecNum[] } {
@@ -338,7 +341,7 @@ export class popup_prefab extends popup_prefab_CLIP {
             costs[2] = new SecNum(100000000);
             costs[3] = new SecNum(1500);
         } else {
-            LOGGER.Log("err", "popup_prefab.GetBuildings " + kitID);
+            getLOGGER().Log("err", "popup_prefab.GetBuildings " + kitID);
         }
         
         return {

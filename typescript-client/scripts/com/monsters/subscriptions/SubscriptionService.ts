@@ -1,10 +1,13 @@
 import EventDispatcher from "openfl/events/EventDispatcher";
 
-import { Console } from "../debug/Console";
 import { SubscriptionStatusEvent } from "./SubscriptionStatusEvent";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { LOGGER } from "../../../LOGGER";
+// Lazy imports to break circular dependency chains
+function getConsole(): any { return require("../debug/Console").Console; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+
+
 
 // Forward declaration for ExternalInterface
 declare class ExternalInterface {
@@ -31,7 +34,7 @@ export class SubscriptionService extends EventDispatcher {
             ExternalInterface.addCallback(cleanName, callback);
             this._callbacks.push(cleanName);
         }
-        GLOBAL.CallJS(funcName, [param], waitForResult);
+        getGLOBAL().CallJS(funcName, [param], waitForResult);
     }
 
     public getSubscriptionData(): void {
@@ -42,14 +45,14 @@ export class SubscriptionService extends EventDispatcher {
         let event = new SubscriptionStatusEvent(SubscriptionStatusEvent.STATUS_EVENT);
         
         if (!jsonData) {
-            Console.warning("did not recieve json back from the server");
+            getConsole().warning("did not recieve json back from the server");
             this.dispatchEvent(event);
             return;
         }
         
         const data = JSON.decode(jsonData)[0];
         if (data.length === 0) {
-            Console.warning("got subscription data but it's emtpy, not going to try to parse it");
+            getConsole().warning("got subscription data but it's emtpy, not going to try to parse it");
             this.dispatchEvent(event);
             return;
         }
@@ -70,7 +73,7 @@ export class SubscriptionService extends EventDispatcher {
     }
 
     public startSubscription(): void {
-        LOGGER.StatB({ st1: "daves_club" }, "subscribe");
+        getLOGGER().StatB({ st1: "daves_club" }, "subscribe");
         this.callJS("cc.showSubscriptionDialog", this.showSubscriptionDialog.bind(this));
     }
 
@@ -80,7 +83,7 @@ export class SubscriptionService extends EventDispatcher {
 
     private showSubscriptionDialog(jsonData: string | null = null): void {
         if (!jsonData) {
-            Console.warning("got a calback @ 'showSubscriptionDialog' but theres no JSON data!");
+            getConsole().warning("got a calback @ 'showSubscriptionDialog' but theres no JSON data!");
         }
         this.getUserSubscriptions(jsonData || "");
     }
@@ -94,7 +97,7 @@ export class SubscriptionService extends EventDispatcher {
     }
 
     public cancelSubscription(subscriptionID: number): void {
-        LOGGER.StatB({ st1: "daves_club" }, "unsubscribe");
+        getLOGGER().StatB({ st1: "daves_club" }, "unsubscribe");
         this.callJS("cc.showSubscriptionDialog", this.showSubscriptionDialog.bind(this));
     }
 

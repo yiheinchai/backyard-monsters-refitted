@@ -1,8 +1,11 @@
 import { KeywordMessage } from "../KeywordMessage";
 import { SubscriptionHandler } from "../../../subscriptions/SubscriptionHandler";
 
-import { POPUPS } from "../../../../../POPUPS";
 import { Button } from "../../../../../Button";
+
+// Lazy imports to break circular dependency chains
+function getPOPUPS(): any { return require("../../../../../POPUPS").POPUPS; }
+
 
 /**
  * Promo 02 - Dave Club v2 promotional message.
@@ -43,7 +46,7 @@ export class Promo02DaveClub extends KeywordMessage {
     }
 
     protected override onButtonClick(): void {
-        POPUPS.Next();
+        getPOPUPS().Next();
         SubscriptionHandler.instance.showPromoPopup();
     }
 }

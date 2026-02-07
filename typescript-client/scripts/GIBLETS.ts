@@ -1,10 +1,13 @@
 import Point from 'openfl/geom/Point';
-import { EFFECTS } from './EFFECTS';
 import { GIBLET } from './GIBLET';
-import { GLOBAL } from './GLOBAL';
-import { GRID } from './GRID';
-import { LOGGER } from './LOGGER';
-import { MAP } from './MAP';
+
+// Lazy imports to break circular dependency chains
+function getEFFECTS(): any { return require("./EFFECTS").EFFECTS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getGRID(): any { return require("./GRID").GRID; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getMAP(): any { return require("./MAP").MAP; }
+
 
 /**
  * GIBLETS - Giblet Particle System
@@ -34,7 +37,7 @@ export class GIBLETS {
             GIBLETS._gibletCount = 0;
             GIBLETS._frame = 0;
         } catch (e: any) {
-            LOGGER.Log("err", "Giblets Clear " + e.stack);
+            getLOGGER().Log("err", "Giblets Clear " + e.stack);
         }
     }
 
@@ -54,7 +57,7 @@ export class GIBLETS {
     }
 
     public static Create(pos: Point, scale: number, spread: number, count: number, heightOffset: number = 0): void {
-        if (!GLOBAL._catchup) {
+        if (!getGLOBAL()._catchup) {
             if (GIBLETS._tmpGibCount < 20) {
                 for (let i = 0; i < count; i++) {
                     ++GIBLETS._tmpGibCount;
@@ -70,11 +73,11 @@ export class GIBLETS {
 
     public static Spawn(pos: Point, scale: number, distance: number, delay: number, heightOffset: number): void {
         const angle: number = Math.random() * 360;
-        const gridPos: Point = GRID.FromISO(pos.x, pos.y);
+        const gridPos: Point = getGRID().FromISO(pos.x, pos.y);
         const targetX: number = gridPos.x + Math.cos(angle) * distance;
         const targetY: number = gridPos.y + Math.sin(angle) * distance;
-        const targetPos: Point = GRID.ToISO(targetX, targetY, 0).add(new Point(0, heightOffset));
-        GIBLETS._giblets[GIBLETS._gibletCount] = MAP._RESOURCES.addChild(GIBLETS.PoolGet(GIBLETS._gibletCount, pos, targetPos, distance, delay, scale));
+        const targetPos: Point = getGRID().ToISO(targetX, targetY, 0).add(new Point(0, heightOffset));
+        GIBLETS._giblets[GIBLETS._gibletCount] = getMAP()._RESOURCES.addChild(GIBLETS.PoolGet(GIBLETS._gibletCount, pos, targetPos, distance, delay, scale));
         ++GIBLETS._gibletCount;
     }
 
@@ -82,8 +85,8 @@ export class GIBLETS {
         const giblet: GIBLET = GIBLETS._giblets[id];
         --GIBLETS._tmpGibCount;
         try {
-            EFFECTS.SplatParticle(20, giblet.x, giblet.y, 0, 0);
-            MAP._RESOURCES.removeChild(giblet);
+            getEFFECTS().SplatParticle(20, giblet.x, giblet.y, 0, 0);
+            getMAP()._RESOURCES.removeChild(giblet);
             giblet.Clear();
             GIBLETS.PoolSet(giblet);
             delete GIBLETS._giblets[id];

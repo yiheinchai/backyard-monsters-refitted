@@ -1,13 +1,16 @@
 import Point from "openfl/geom/Point";
 
 import { ITargetable } from "../../interfaces/ITargetable";
-import { MonsterBase } from "../MonsterBase";
 import { GlavesOnAttack } from "../components/abilities/GlavesOnAttack";
 import { CreepBase } from "./CreepBase";
 
-import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { SPRITES } from "../../../../SPRITES";
-import { FIREBALLS } from "../../../../FIREBALLS";
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../MonsterBase").MonsterBase; }
+function getBFOUNDATION(): any { return require("../../../../BFOUNDATION").BFOUNDATION; }
+function getSPRITES(): any { return require("../../../../SPRITES").SPRITES; }
+function getFIREBALLS(): any { return require("../../../../FIREBALLS").FIREBALLS; }
+
+
 
 /**
  * Teratorn - flying creep with glave ability when powered up.
@@ -28,15 +31,15 @@ export class Teratorn extends CreepBase {
         parent: MonsterBase | null = null
     ) {
         super(id, type, startPos, velocity, startFrame, endFrame, targetPos, ownedByAttacker, building, scale, flipped, parent);
-        SPRITES.SetupSprite("shadow");
+        getSPRITES().SetupSprite("shadow");
         if (this.poweredUp()) {
             this.addComponent(new GlavesOnAttack(this.powerUpLevel()));
         }
     }
 
     protected override rangedAttack(target: ITargetable): ITargetable {
-        if (target instanceof BFOUNDATION) {
-            return FIREBALLS.Spawn(
+        if (target instanceof getBFOUNDATION()) {
+            return getFIREBALLS().Spawn(
                 new Point(this._tmpPoint.x, this._tmpPoint.y - this._altitude),
                 this._targetBuilding._position,
                 this._targetBuilding,
@@ -44,18 +47,18 @@ export class Teratorn extends CreepBase {
                 this.damage,
                 0,
                 0,
-                FIREBALLS.TYPE_MAGMA,
+                getFIREBALLS().TYPE_MAGMA,
                 this
             );
         }
-        return FIREBALLS.Spawn2(
+        return getFIREBALLS().Spawn2(
             this._tmpPoint,
             this._targetCreep._tmpPoint,
             this._targetCreep,
             10,
             this.damage,
             0,
-            FIREBALLS.TYPE_MAGMA,
+            getFIREBALLS().TYPE_MAGMA,
             1,
             this
         );

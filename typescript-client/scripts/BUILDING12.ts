@@ -1,8 +1,11 @@
 import MouseEvent from 'openfl/events/MouseEvent';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BFOUNDATION } from './BFOUNDATION';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+
 
 /**
  * BUILDING12 - General Store
@@ -35,20 +38,20 @@ export class BUILDING12 extends BFOUNDATION {
     }
 
     public override Cancel(): void {
-        GLOBAL._bStore = null;
+        getGLOBAL()._bStore = null;
         super.Cancel();
     }
 
     public override RecycleC(): void {
-        GLOBAL._bStore = null;
+        getGLOBAL()._bStore = null;
         super.RecycleC();
     }
 
     public override Description(): void {
         super.Description();
-        this._buildingTitle = KEYS.Get("#b_generalstore#");
-        this._buildingDescription = KEYS.Get("building_generalstore_desc1");
-        this._specialDescription = KEYS.Get("building_generalstore_desc2", { v1: GLOBAL._resourceNames[4] });
+        this._buildingTitle = getKEYS().Get("#b_generalstore#");
+        this._buildingDescription = getKEYS().Get("building_generalstore_desc1");
+        this._specialDescription = getKEYS().Get("building_generalstore_desc2", { v1: getGLOBAL()._resourceNames[4] });
     }
 
     public override Update(force: boolean = false): void {
@@ -60,14 +63,14 @@ export class BUILDING12 extends BFOUNDATION {
     }
 
     public override Constructed(): void {
-        GLOBAL._bStore = this;
+        getGLOBAL()._bStore = this;
         super.Constructed();
     }
 
     public override Setup(building: any): void {
         super.Setup(building);
         if (this._countdownBuild.Get() <= 0) {
-            GLOBAL._bStore = this;
+            getGLOBAL()._bStore = this;
         }
     }
 }

@@ -2,20 +2,23 @@ import Point from "openfl/geom/Point";
 
 import { ProjectileEvent } from "../../../events/ProjectileEvent";
 import { ITargetable } from "../../../interfaces/ITargetable";
-import { MonsterBase } from "../../MonsterBase";
 import { CreepBase } from "../../creeps/CreepBase";
 import { Projectilev2 } from "../../../projectiles/Projectilev2";
 import { RangedAttack } from "./RangedAttack";
 import { Zombiefy } from "./Zombiefy";
-import { Targeting } from "../../../../../Targeting";
 
-import { MAP } from "../../../../../MAP";
-import { CREATURES } from "../../../../../CREATURES";
-import { CREEPS } from "../../../../../CREEPS";
-import { EFFECTS } from "../../../../../EFFECTS";
-import { GIBLETS } from "../../../../../GIBLETS";
 import { TweenLite } from "gs/TweenLite";
 import { Sine } from "gs/easing/Sine";
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+function getTargeting(): any { return require("../../../../../Targeting").Targeting; }
+function getMAP(): any { return require("../../../../../MAP").MAP; }
+function getCREATURES(): any { return require("../../../../../CREATURES").CREATURES; }
+function getCREEPS(): any { return require("../../../../../CREEPS").CREEPS; }
+function getEFFECTS(): any { return require("../../../../../EFFECTS").EFFECTS; }
+function getGIBLETS(): any { return require("../../../../../GIBLETS").GIBLETS; }
+
 
 /**
  * Rezghul resurrect attack - ranged attack that resurrects dead creatures.
@@ -37,7 +40,7 @@ export class RezghulResurrectAttack extends RangedAttack {
             return null;
         }
         let targets: Array<ITargetable> | null = null;
-        const allDeadCreeps: Array<any> = Targeting.getDeadCreeps(position, range, targetFlags);
+        const allDeadCreeps: Array<any> = getTargeting().getDeadCreeps(position, range, targetFlags);
         for (let i = 0; i < allDeadCreeps.length; i++) {
             if (!targets) {
                 targets = [];
@@ -77,18 +80,18 @@ export class RezghulResurrectAttack extends RangedAttack {
     private resurrect(monsterToRes: CreepBase): void {
         let newMonster: CreepBase;
         if (this.owner._friendly) {
-            newMonster = CREATURES.Spawn(monsterToRes._creatureID, MAP._BUILDINGTOPS, monsterToRes._behaviour, new Point(monsterToRes.x, monsterToRes.y), monsterToRes._targetRotation, null, monsterToRes._house) as CreepBase;
+            newMonster = getCREATURES().Spawn(monsterToRes._creatureID, getMAP()._BUILDINGTOPS, monsterToRes._behaviour, new Point(monsterToRes.x, monsterToRes.y), monsterToRes._targetRotation, null, monsterToRes._house) as CreepBase;
         } else {
-            newMonster = CREEPS.Spawn(monsterToRes._creatureID, MAP._BUILDINGTOPS, monsterToRes._behaviour, new Point(monsterToRes.x, monsterToRes.y), monsterToRes._targetRotation, 1, false, true) as CreepBase;
+            newMonster = getCREEPS().Spawn(monsterToRes._creatureID, getMAP()._BUILDINGTOPS, monsterToRes._behaviour, new Point(monsterToRes.x, monsterToRes.y), monsterToRes._targetRotation, 1, false, true) as CreepBase;
         }
-        EFFECTS.Dig(Math.floor(newMonster.x), Math.floor(newMonster.y + 20));
+        getEFFECTS().Dig(Math.floor(newMonster.x), Math.floor(newMonster.y + 20));
         TweenLite.from(newMonster._graphicMC, 0.8, {
             "y": newMonster._graphicMC.y + 20,
             "ease": Sine.easeOut,
             "overwrite": false,
             "onComplete": newMonster._friendly ? newMonster.findDefenseTargets : newMonster.findTarget
         });
-        GIBLETS.Create(new Point(newMonster.x, newMonster.y + 20), 1, 50, 20, 10);
+        getGIBLETS().Create(new Point(newMonster.x, newMonster.y + 20), 1, 50, 20, 10);
         newMonster.addComponent(this.m_zombiefy.clone());
         monsterToRes.corpseDeath();
     }

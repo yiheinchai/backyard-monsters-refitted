@@ -1,8 +1,11 @@
 import { BaseBuff } from "../BaseBuff";
-import { InstanceManager } from "../../managers/InstanceManager";
 import { ArmorPropertyModifier } from "../../monsters/components/modifiers/ArmorPropertyModifier";
 
-import { BFOUNDATION } from "../../../../BFOUNDATION";
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("../../managers/InstanceManager").InstanceManager; }
+function getBFOUNDATION(): any { return require("../../../../BFOUNDATION").BFOUNDATION; }
+
+
 
 /**
  * Building defense multiplier - internal class for building defense buff.
@@ -28,7 +31,7 @@ export class BuildingDefenseBuff extends BaseBuff {
     }
 
     public override apply(): void {
-        const buildings: Array<any> = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const buildings: Array<any> = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (let i = 0; i < buildings.length; i++) {
             const building: BFOUNDATION = buildings[i] as BFOUNDATION;
             building.armorProperty.addModifier(new BuildingDefenseMultiplier(this.getValue() * 0.01));
@@ -36,7 +39,7 @@ export class BuildingDefenseBuff extends BaseBuff {
     }
 
     public override clear(): void {
-        const buildings: Array<any> = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const buildings: Array<any> = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         for (let i = 0; i < buildings.length; i++) {
             const building: BFOUNDATION = buildings[i] as BFOUNDATION;
             building.armorProperty.removeModifier(building.damageProperty.getModifierByType(BuildingDefenseMultiplier));

@@ -1,16 +1,19 @@
 import { ImageCache } from './com/monsters/display/ImageCache';
-import { InventoryManager } from './com/monsters/inventory/InventoryManager';
-import { InstanceManager } from './com/monsters/managers/InstanceManager';
 import Bitmap from 'openfl/display/Bitmap';
 import BitmapData from 'openfl/display/BitmapData';
 import MovieClip from 'openfl/display/MovieClip';
 import MouseEvent from 'openfl/events/MouseEvent';
-import { BASE } from './BASE';
-import { BFOUNDATION } from './BFOUNDATION';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { SOUNDS } from './SOUNDS';
-import { STORE } from './STORE';
+
+// Lazy imports to break circular dependency chains
+function getInventoryManager(): any { return require("./com/monsters/inventory/InventoryManager").InventoryManager; }
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+
 
 /**
  * BUILDINGBUTTON - Building Selection Button in Store
@@ -41,7 +44,7 @@ export class BUILDINGBUTTON extends MovieClip {
 
     public Setup(buildingId: number, interactive: boolean = true): void {
         this._id = buildingId;
-        this._buildingProps = GLOBAL._buildingProps[this._id - 1];
+        this._buildingProps = getGLOBAL()._buildingProps[this._id - 1];
         this.mouseChildren = false;
 
         if (interactive) {
@@ -53,18 +56,18 @@ export class BUILDINGBUTTON extends MovieClip {
             this.buttonMode = true;
         }
 
-        this.tName.htmlText = "<b>" + KEYS.Get(this._buildingProps.name) + "</b>";
+        this.tName.htmlText = "<b>" + getKEYS().Get(this._buildingProps.name) + "</b>";
         this.mcSale.visible = this._buildingProps.sale === 1;
-        this.mcSale.t.htmlText = "<b>" + KEYS.Get("ui_sale_on") + "</b>";
-        this.mcNew.t.htmlText = "<b>" + KEYS.Get("str_new_caps") + "</b>";
+        this.mcSale.t.htmlText = "<b>" + getKEYS().Get("ui_sale_on") + "</b>";
+        this.mcNew.t.htmlText = "<b>" + getKEYS().Get("str_new_caps") + "</b>";
 
-        const thLevel: number = GLOBAL.GetBuildingTownHallLevel(this._buildingProps);
+        const thLevel: number = getGLOBAL().GetBuildingTownHallLevel(this._buildingProps);
         const maxQuantity: number = thLevel < this._buildingProps.quantity.length 
             ? this._buildingProps.quantity[thLevel] 
             : this._buildingProps.quantity[this._buildingProps.quantity.length - 1];
         
         let currentCount: number = 0;
-        const instances = InstanceManager.getInstancesByClass(this._buildingProps.cls || BFOUNDATION);
+        const instances = getInstanceManager().getInstancesByClass(this._buildingProps.cls || BFOUNDATION);
         for (const building of instances) {
             if ((building as BFOUNDATION)._type === this._id) {
                 currentCount++;
@@ -74,11 +77,11 @@ export class BUILDINGBUTTON extends MovieClip {
         if (this.isLocked) {
             this.tQuantity.htmlText = "";
         } else if (this._buildingProps.type === "decoration") {
-            const storageCount = InventoryManager.buildingStorageCount(this._id);
+            const storageCount = getInventoryManager().buildingStorageCount(this._id);
             if (storageCount > 0) {
-                this.tQuantity.htmlText = '<font color="#0000CC"><b>' + KEYS.Get("bdg_numinstorage", { v1: storageCount }) + '</b></font>';
+                this.tQuantity.htmlText = '<font color="#0000CC"><b>' + getKEYS().Get("bdg_numinstorage", { v1: storageCount }) + '</b></font>';
             } else {
-                this.tQuantity.htmlText = '<font color="#333333"><b>' + STORE._storeItems["BUILDING" + this._id].c[0] + " " + KEYS.Get("#r_shiny#") + '</b></font>';
+                this.tQuantity.htmlText = '<font color="#333333"><b>' + getSTORE()._storeItems["BUILDING" + this._id].c[0] + " " + getKEYS().Get("#r_shiny#") + '</b></font>';
             }
         } else if (currentCount >= maxQuantity) {
             this.tQuantity.htmlText = '<b><font color="#CC0000">' + currentCount + " / " + maxQuantity + '</font></b>';
@@ -95,15 +98,15 @@ export class BUILDINGBUTTON extends MovieClip {
                 }
             }
             if (minLevel !== Number.MAX_VALUE && this._buildingProps.upgradeImgData[minLevel].silhouette_img && 
-                !BASE.HasRequirements(this._buildingProps.costs[0]) && !this._buildingProps.rewarded) {
+                !getBASE().HasRequirements(this._buildingProps.costs[0]) && !this._buildingProps.rewarded) {
                 imgUrl = this._buildingProps.upgradeImgData.baseurl + this._buildingProps.upgradeImgData[minLevel].silhouette_img;
             }
         }
 
         if (!imgUrl) {
-            if (this._buildingProps.buildingbuttons && BASE._buildingsStored["bl" + this._id] &&
-                this._buildingProps.buildingbuttons.length >= BASE._buildingsStored["bl" + this._id].Get()) {
-                imgUrl = "buildingbuttons/" + this._buildingProps.buildingbuttons[BASE._buildingsStored["bl" + this._id].Get() - 1] + ".jpg";
+            if (this._buildingProps.buildingbuttons && getBASE()._buildingsStored["bl" + this._id] &&
+                this._buildingProps.buildingbuttons.length >= getBASE()._buildingsStored["bl" + this._id].Get()) {
+                imgUrl = "buildingbuttons/" + this._buildingProps.buildingbuttons[getBASE()._buildingsStored["bl" + this._id].Get() - 1] + ".jpg";
             } else if (this._buildingProps.buildingbuttons && this._buildingProps.buildingbuttons.length > 0) {
                 imgUrl = "buildingbuttons/" + this._buildingProps.buildingbuttons[0] + ".jpg";
             } else {
@@ -116,7 +119,7 @@ export class BUILDINGBUTTON extends MovieClip {
         this.mcCheck.visible = currentCount >= maxTotal && maxTotal > 0;
         this.mcNew.visible = false;
 
-        if (GLOBAL._newThings && this._buildingProps.isNew) {
+        if (getGLOBAL()._newThings && this._buildingProps.isNew) {
             this.mcNew.visible = true;
         }
 
@@ -139,14 +142,14 @@ export class BUILDINGBUTTON extends MovieClip {
     }
 
     public ShowInfo(event: MouseEvent): void {
-        SOUNDS.Play("click1");
+        getSOUNDS().Play("click1");
         (this.parent!.parent as any).ShowInfo(this._id);
     }
 
     private ShowLockedInfo(event: MouseEvent): void {
         const callback = BUILDINGBUTTON.s_LockedCallbacks.get(this._id);
         if (!callback) return;
-        SOUNDS.Play("click1");
+        getSOUNDS().Play("click1");
         callback();
     }
 

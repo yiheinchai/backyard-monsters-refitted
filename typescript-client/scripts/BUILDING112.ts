@@ -1,14 +1,17 @@
 import { WMBASE } from './com/monsters/ai/WMBASE';
 import { ICoreBuilding } from './com/monsters/interfaces/ICoreBuilding';
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
 import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BSTORAGE } from './BSTORAGE';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { MAP } from './MAP';
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getMAP(): any { return require("./MAP").MAP; }
+
 
 /**
  * BUILDING112 - Outpost Town Hall (Inferno)
@@ -30,40 +33,40 @@ export class BUILDING112 extends BSTORAGE implements ICoreBuilding {
     }
 
     public override Place(event: MouseEvent | null = null): void {
-        if (!MAP._dragged) {
+        if (!getMAP()._dragged) {
             super.Place(event);
             this._hasResources = true;
         }
     }
 
     public override Cancel(): void {
-        GLOBAL.setTownHall(null);
+        getGLOBAL().setTownHall(null);
         super.Cancel();
     }
 
     public override Recycle(): void {
-        GLOBAL.Message(KEYS.Get("msg_recycleoutpost"));
+        getGLOBAL().Message(getKEYS().Get("msg_recycleoutpost"));
     }
 
     public override RecycleB(event: MouseEvent | null = null): void {
-        GLOBAL.Message(KEYS.Get("msg_recycleoutpost"));
+        getGLOBAL().Message(getKEYS().Get("msg_recycleoutpost"));
     }
 
     public override RecycleC(): void {
-        GLOBAL.Message(KEYS.Get("msg_recycleoutpost"));
+        getGLOBAL().Message(getKEYS().Get("msg_recycleoutpost"));
     }
 
     public override Destroyed(byAttacker: boolean = true): void {
         super.Destroyed(byAttacker);
-        if ((!MapRoomManager.instance.isInMapRoom2or3 || BASE.isInfernoMainYardOrOutpost) && GLOBAL.mode === "wmattack") {
+        if ((!getMapRoomManager().instance.isInMapRoom2or3 || getBASE().isInfernoMainYardOrOutpost) && getGLOBAL().mode === "wmattack") {
             WMBASE._destroyed = true;
         }
     }
 
     public override Description(): void {
         super.Description();
-        this._buildingDescription = KEYS.Get("outpost_upgradedesc");
-        this._recycleDescription = KEYS.Get("th_recycledesc");
+        this._buildingDescription = getKEYS().Get("outpost_upgradedesc");
+        this._recycleDescription = getKEYS().Get("th_recycledesc");
     }
 
     public override Update(force: boolean = false): void {
@@ -72,11 +75,11 @@ export class BUILDING112 extends BSTORAGE implements ICoreBuilding {
 
     public override Constructed(): void {
         super.Constructed();
-        GLOBAL.setTownHall(this);
+        getGLOBAL().setTownHall(this);
     }
 
     public override Setup(building: any): void {
         super.Setup(building);
-        GLOBAL.setTownHall(this);
+        getGLOBAL().setTownHall(this);
     }
 }

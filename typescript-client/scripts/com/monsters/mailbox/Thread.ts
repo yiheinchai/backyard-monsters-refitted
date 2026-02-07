@@ -14,22 +14,25 @@ import { ScrollSet } from "../display/ScrollSet";
 import { Contact } from "./model/Contact";
 import { ThreadData } from "./model/ThreadData";
 import { MapRoom } from "../maproom_advanced/MapRoom";
-import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { MailBox } from "./MailBox";
 import { Message } from "./Message";
 import { Thread_CLIP } from "../../../Thread_CLIP";
 import { ThreadMember } from "./ThreadMember";
 
 import { frame } from "../../../frame";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGGER } from "../../../LOGGER";
-import { LOGIN } from "../../../LOGIN";
 import { MAPROOM } from "../../../MAPROOM";
 import { popup_report } from "../../../popup_report";
-import { SOUNDS } from "../../../SOUNDS";
-import { UI2 } from "../../../UI2";
-import { URLLoaderApi } from "../../../URLLoaderApi";
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../maproom_manager/MapRoomManager").MapRoomManager; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+function getLOGIN(): any { return require("../../../LOGIN").LOGIN; }
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+function getUI2(): any { return require("../../../UI2").UI2; }
+function getURLLoaderApi(): any { return require("../../../URLLoaderApi").URLLoaderApi; }
+
 
 /**
  * Thread - Message thread view.
@@ -121,7 +124,7 @@ export class Thread extends Thread_CLIP {
         this.Display(false);
         if (!threadData.reported) {
             this._mc.reportBtn.addEventListener(MouseEvent.MOUSE_DOWN, this.reportThread.bind(this));
-            this._mc.reportBtn.label_txt.htmlText = KEYS.Get("mail_ignoreplayer_btn");
+            this._mc.reportBtn.label_txt.htmlText = getKEYS().Get("mail_ignoreplayer_btn");
             this._mc.reportBtn.buttonMode = true;
             this._mc.reportBtn.mouseChildren = false;
         } else {
@@ -154,43 +157,43 @@ export class Thread extends Thread_CLIP {
     }
 
     private reportThread(...args: any[]): void {
-        SOUNDS.Play("click1");
+        getSOUNDS().Play("click1");
         const popup = new popup_report();
-        popup.tTitle.htmlText = KEYS.Get("report_title");
-        popup.tDesc.htmlText = KEYS.Get("report_desc");
+        popup.tTitle.htmlText = getKEYS().Get("report_title");
+        popup.tDesc.htmlText = getKEYS().Get("report_desc");
         popup.Resize = (): void => {
             popup.x = this.mcFrame.x + this.mcFrame.width * 0.5 + 100;
             popup.y = this.mcFrame.y + this.mcFrame.height * 0.5;
         };
         popup.sendBtn.SetupKey("btn_send");
         popup.mcFrame.Setup(true, (): void => {
-            SOUNDS.Play("close");
-            GLOBAL.BlockerRemove();
+            getSOUNDS().Play("close");
+            getGLOBAL().BlockerRemove();
             popup.parent.removeChild(popup);
         });
         popup.x = this.mcFrame.x + this.mcFrame.width * 0.5 + 100;
         popup.y = this.mcFrame.y + this.mcFrame.height * 0.5;
         const onSuccessfulReport = (response: any): void => {
             if (response.error !== undefined && response.error !== 0) {
-                LOGGER.Log("err", "message error in reporting thread- " + response.error);
+                getLOGGER().Log("err", "message error in reporting thread- " + response.error);
             }
             this.data!.flagged = true;
             this.data!.Changed();
-            SOUNDS.Play("close");
-            GLOBAL.BlockerRemove();
+            getSOUNDS().Play("close");
+            getGLOBAL().BlockerRemove();
             popup.parent.removeChild(popup);
             MailBox.ShowInbox();
         };
         const reportSendDown = (e: MouseEvent): void => {
             const vars = [["threadid", this.data!.threadid], ["reason", "block"]];
-            const loader = new URLLoaderApi();
-            loader.load(GLOBAL._apiURL + "player/reportmessagethread", vars, onSuccessfulReport, this.onFail.bind(this));
+            const loader = new (getURLLoaderApi())();
+            loader.load(getGLOBAL()._apiURL + "player/reportmessagethread", vars, onSuccessfulReport, this.onFail.bind(this));
             popup.sendBtn.removeEventListener(MouseEvent.CLICK, reportSendDown);
             popup.sendBtn.Enabled = false;
         };
         popup.sendBtn.addEventListener(MouseEvent.CLICK, reportSendDown);
-        GLOBAL.BlockerAdd();
-        GLOBAL._layerWindows.addChild(popup);
+        getGLOBAL().BlockerAdd();
+        getGLOBAL()._layerWindows.addChild(popup);
     }
 
     private onAdd(event: Event): void {
@@ -202,7 +205,7 @@ export class Thread extends Thread_CLIP {
 
     private detectFS(event: FullScreenEvent | null = null): void {
         if (Boolean(this.stage) && this.stage.displayState === StageDisplayState.FULL_SCREEN) {
-            this.fsWarning.tBody.htmlText = KEYS.Get("fswarning");
+            this.fsWarning.tBody.htmlText = getKEYS().Get("fswarning");
             this.addChild(this.fsWarning);
             this.setChildIndex(this.fsWarning, this.numChildren - 1);
         } else if (this.contains(this.fsWarning)) {
@@ -321,7 +324,7 @@ export class Thread extends Thread_CLIP {
         this.msg_txt.width = 300;
         this.addChild(this.sendBtn);
         if (this.data!.trucestate === "requested") {
-            if (this.data!.convo[0].targetid === LOGIN._playerID) {
+            if (this.data!.convo[0].targetid === getLOGIN()._playerID) {
                 this.acceptBtn.SetupKey("btn_truceaccept");
                 this.acceptBtn.addEventListener(MouseEvent.CLICK, this.truceAccept.bind(this));
                 this.denyBtn.SetupKey("btn_trucereject");
@@ -334,7 +337,7 @@ export class Thread extends Thread_CLIP {
             }
         }
         if (this.data!.migratestate === "requested") {
-            if (this.data!.convo[0].targetid === LOGIN._playerID) {
+            if (this.data!.convo[0].targetid === getLOGIN()._playerID) {
                 this.acceptBtn.SetupKey("btn_truceaccept");
                 this.acceptBtn.addEventListener(MouseEvent.CLICK, this.migrateAccept.bind(this));
                 this.denyBtn.SetupKey("invite_decline");
@@ -347,7 +350,7 @@ export class Thread extends Thread_CLIP {
                 this.addChild(this.acceptBtn);
                 this.addChild(this.denyBtn);
                 this.addChild(this.viewBtn);
-            } else if (this.data!.convo[0].userid === LOGIN._playerID) {
+            } else if (this.data!.convo[0].userid === getLOGIN()._playerID) {
                 this.denyBtn.SetupKey("btn_revoke");
                 this.denyBtn.addEventListener(MouseEvent.CLICK, this.migrateRevoke.bind(this));
                 this.addChild(this.denyBtn);
@@ -369,7 +372,7 @@ export class Thread extends Thread_CLIP {
         let isSentByMe = false;
         if (this.data!.convo.length >= 1) {
             const lastMessage = this.data!.convo[this.data!.convo.length - 1];
-            isSentByMe = lastMessage.userid === LOGIN._playerID;
+            isSentByMe = lastMessage.userid === getLOGIN()._playerID;
         }
         if (!isSentByMe) {
             this.msg_txt.addEventListener(FocusEvent.FOCUS_IN, this.onMsgFocusIn.bind(this));
@@ -381,8 +384,8 @@ export class Thread extends Thread_CLIP {
         }
         this.spammy = isSentByMe;
         if (this.data!.unread) {
-            --GLOBAL._unreadMessages;
-            UI2._top.Update();
+            --getGLOBAL()._unreadMessages;
+            getUI2()._top.Update();
             this.data!.unread = false;
             this.data!.Changed();
         }
@@ -411,7 +414,7 @@ export class Thread extends Thread_CLIP {
                 }
                 this.members.push(newMember);
                 lastMember = newMember;
-                if (this.data!.convo[i].userid !== LOGIN._playerID) {
+                if (this.data!.convo[i].userid !== getLOGIN()._playerID) {
                     newMember.setOrientation("right");
                 }
             }
@@ -446,15 +449,15 @@ export class Thread extends Thread_CLIP {
     }
 
     private truceAccept(event: MouseEvent): void {
-        SOUNDS.Play("click1");
+        getSOUNDS().Play("click1");
         const targetId = this.data!.userid;
-        let message = KEYS.Get("mail_defaulttruceaccept");
+        let message = getKEYS().Get("mail_defaulttruceaccept");
         if (Message.getNotWS(this.msg_txt.text).length > 1) {
             message = this.msg_txt.text;
         }
         const vars = [["threadid", this.data!.threadid], ["targetid", targetId], ["targetbaseid", 0], ["type", "truceaccept"], ["subject", this.subject], ["message", message]];
-        const loader = new URLLoaderApi();
-        loader.load(GLOBAL._apiURL + "player/sendmessage", vars, this.onTruceAcceptSuccess.bind(this), this.onFail.bind(this));
+        const loader = new (getURLLoaderApi())();
+        loader.load(getGLOBAL()._apiURL + "player/sendmessage", vars, this.onTruceAcceptSuccess.bind(this), this.onFail.bind(this));
         this.acceptBtn.Enabled = this.denyBtn.Enabled = this.sendBtn.Enabled = false;
         this.acceptBtn.removeEventListener(MouseEvent.CLICK, this.truceAccept.bind(this));
         this.denyBtn.removeEventListener(MouseEvent.CLICK, this.truceReject.bind(this));
@@ -464,15 +467,15 @@ export class Thread extends Thread_CLIP {
     }
 
     private truceReject(event: MouseEvent): void {
-        SOUNDS.Play("click1");
+        getSOUNDS().Play("click1");
         const targetId = this.data!.userid;
-        let message = KEYS.Get("mail_defaulttrucereject");
+        let message = getKEYS().Get("mail_defaulttrucereject");
         if (Message.getNotWS(this.msg_txt.text).length > 1) {
             message = this.msg_txt.text;
         }
         const vars = [["threadid", this.data!.threadid], ["targetid", targetId], ["targetbaseid", 0], ["type", "trucereject"], ["subject", this.subject], ["message", message]];
-        const loader = new URLLoaderApi();
-        loader.load(GLOBAL._apiURL + "player/sendmessage", vars, this.onTruceRejectSuccess.bind(this), this.onFail.bind(this));
+        const loader = new (getURLLoaderApi())();
+        loader.load(getGLOBAL()._apiURL + "player/sendmessage", vars, this.onTruceRejectSuccess.bind(this), this.onFail.bind(this));
         this.sending = true;
         this.Validate();
         this.acceptBtn.Enabled = this.denyBtn.Enabled = this.sendBtn.Enabled = this.viewBtn.Enabled = false;
@@ -480,9 +483,9 @@ export class Thread extends Thread_CLIP {
     }
 
     private migrateAccept(event: MouseEvent): void {
-        SOUNDS.Play("click1");
-        if (MapRoomManager.instance.isInMapRoom3) {
-            GLOBAL.Message(KEYS.Get("msg_invalid_mr2_invitation_in_mr3"));
+        getSOUNDS().Play("click1");
+        if (getMapRoomManager().instance.isInMapRoom3) {
+            getGLOBAL().Message(getKEYS().Get("msg_invalid_mr2_invitation_in_mr3"));
             return;
         }
         MapRoom.inviteBaseID = this.data!.baseID;
@@ -491,8 +494,8 @@ export class Thread extends Thread_CLIP {
     }
 
     private migrateReject(event: MouseEvent): void {
-        SOUNDS.Play("click1");
-        if (MapRoomManager.instance.isInMapRoom3) {
+        getSOUNDS().Play("click1");
+        if (getMapRoomManager().instance.isInMapRoom3) {
             return;
         }
         MapRoom.inviteBaseID = this.data!.baseID;
@@ -501,14 +504,14 @@ export class Thread extends Thread_CLIP {
     }
 
     private migrateRevoke(event: MouseEvent): void {
-        SOUNDS.Play("click1");
+        getSOUNDS().Play("click1");
         const targetId = this.data!.userid;
         const contact = Contact.contactWithUserId(this.data!.convo[0].userid, true);
         const firstName = contact.firstname;
-        const message = KEYS.Get("invite_revoke", { "v1": firstName });
+        const message = getKEYS().Get("invite_revoke", { "v1": firstName });
         const vars = [["threadid", this.data!.threadid], ["targetid", targetId], ["targetbaseid", 0], ["type", "migraterevoke"], ["subject", this.subject], ["message", message]];
-        const loader = new URLLoaderApi();
-        loader.load(GLOBAL._apiURL + "player/sendmessage", vars, this.onMigrateRevokeSuccess.bind(this), this.onFail.bind(this));
+        const loader = new (getURLLoaderApi())();
+        loader.load(getGLOBAL()._apiURL + "player/sendmessage", vars, this.onMigrateRevokeSuccess.bind(this), this.onFail.bind(this));
         this.sending = true;
         this.Validate();
         this.acceptBtn.Enabled = this.denyBtn.Enabled = this.sendBtn.Enabled = this.viewBtn.Enabled = false;
@@ -516,23 +519,23 @@ export class Thread extends Thread_CLIP {
     }
 
     private migrateView(event: MouseEvent): void {
-        if (MapRoomManager.instance.isInMapRoom3) {
-            GLOBAL.Message(KEYS.Get("msg_invalid_mr2_invitation_in_mr3"));
+        if (getMapRoomManager().instance.isInMapRoom3) {
+            getGLOBAL().Message(getKEYS().Get("msg_invalid_mr2_invitation_in_mr3"));
             return;
         }
         if (ALLIANCES._myAlliance) {
-            GLOBAL.Message(KEYS.Get("msg_mustleavealliance"));
+            getGLOBAL().Message(getKEYS().Get("msg_mustleavealliance"));
             return;
         }
-        SOUNDS.Play("click1");
-        GLOBAL._currentCell = null;
+        getSOUNDS().Play("click1");
+        getGLOBAL()._currentCell = null;
         MapRoom._Setup(this.data!.coords, this.data!.worldID, this.data!.baseID, true, this);
-        MapRoomManager.instance.Show();
+        getMapRoomManager().instance.Show();
     }
 
     private onMigrateAcceptSuccess(response: any): void {
         if (response.error !== undefined && response.error !== 0) {
-            LOGGER.Log("err", "error on migrate accept " + response.error);
+            getLOGGER().Log("err", "error on migrate accept " + response.error);
             return;
         }
         this.data!.migratestate = "accepted";
@@ -570,15 +573,15 @@ export class Thread extends Thread_CLIP {
         this.stage.focus = null;
         const message = this.msg_txt.text;
         const vars = [["threadid", this.data!.threadid], ["targetid", targetId], ["targetbaseid", 0], ["type", "message"], ["subject", this.subject], ["message", message]];
-        const loader = new URLLoaderApi();
-        loader.load(GLOBAL._apiURL + "player/sendmessage", vars, this.onSuccess.bind(this), this.onFail.bind(this));
+        const loader = new (getURLLoaderApi())();
+        loader.load(getGLOBAL()._apiURL + "player/sendmessage", vars, this.onSuccess.bind(this), this.onFail.bind(this));
         this.sending = true;
         this.Validate();
     }
 
     private onTruceAcceptSuccess(response: any): void {
         if (response.error !== undefined && response.error !== 0) {
-            LOGGER.Log("err", "error on truce accept " + response.error);
+            getLOGGER().Log("err", "error on truce accept " + response.error);
             return;
         }
         this.data!.trucestate = "accepted";
@@ -601,7 +604,7 @@ export class Thread extends Thread_CLIP {
 
     private onSuccess(response: any): void {
         if (response.error !== undefined && response.error !== 0) {
-            LOGGER.Log("err", "message error - " + response.error);
+            getLOGGER().Log("err", "message error - " + response.error);
         }
         ++this.data!.messagecount;
         this.data!.Changed();

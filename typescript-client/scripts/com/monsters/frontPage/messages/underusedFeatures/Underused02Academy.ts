@@ -1,12 +1,15 @@
 import { KeywordMessage } from "../KeywordMessage";
-import { InstanceManager } from "../../../managers/InstanceManager";
 
-import { GLOBAL } from "../../../../../GLOBAL";
-import { KEYS } from "../../../../../KEYS";
-import { CREATURELOCKER } from "../../../../../CREATURELOCKER";
 import { ACADEMY } from "../../../../../ACADEMY";
-import { POPUPS } from "../../../../../POPUPS";
-import { BUILDING26 } from "../../../../../BUILDING26";
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("../../../managers/InstanceManager").InstanceManager; }
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../../KEYS").KEYS; }
+function getCREATURELOCKER(): any { return require("../../../../../CREATURELOCKER").CREATURELOCKER; }
+function getPOPUPS(): any { return require("../../../../../POPUPS").POPUPS; }
+function getBUILDING26(): any { return require("../../../../../BUILDING26").BUILDING26; }
+
 
 /**
  * Underused 02 - Academy feature suggestion message.
@@ -18,37 +21,37 @@ export class Underused02Academy extends KeywordMessage {
     }
 
     public override get areRequirementsMet(): boolean {
-        return GLOBAL._bAcademy && this.hasIdleAcademy() && GLOBAL.townHall._lvl.Get() >= 3 && GLOBAL.Timestamp() - GLOBAL.StatGet("CM5") > 60 * 60 * 24 * 5 && Boolean(this.hasUpgradableMonster());
+        return getGLOBAL()._bAcademy && this.hasIdleAcademy() && getGLOBAL().townHall._lvl.Get() >= 3 && getGLOBAL().Timestamp() - getGLOBAL().StatGet("CM5") > 60 * 60 * 24 * 5 && Boolean(this.hasUpgradableMonster());
     }
 
     protected override onView(): void {
-        GLOBAL.StatSet("CM5", GLOBAL.Timestamp());
+        getGLOBAL().StatSet("CM5", getGLOBAL().Timestamp());
     }
 
     protected override onButtonClick(): void {
-        ACADEMY.Show(GLOBAL._bAcademy);
-        POPUPS.Next();
+        ACADEMY.Show(getGLOBAL()._bAcademy);
+        getPOPUPS().Next();
     }
 
     private hasUpgradableMonster(): string | null {
-        const creatures: Record<string, any> = CREATURELOCKER.GetAppropriateCreatures();
-        const academyLevel: number = GLOBAL._bAcademy._lvl.Get();
-        const isMaxLevel: boolean = academyLevel >= GLOBAL._buildingProps[ACADEMY.ID - 1].costs.length;
+        const creatures: Record<string, any> = getCREATURELOCKER().GetAppropriateCreatures();
+        const academyLevel: number = getGLOBAL()._bAcademy._lvl.Get();
+        const isMaxLevel: boolean = academyLevel >= getGLOBAL()._buildingProps[ACADEMY.ID - 1].costs.length;
         for (const creatureID in creatures) {
-            const upgradeData: any = GLOBAL.player.m_upgrades[creatureID];
+            const upgradeData: any = getGLOBAL().player.m_upgrades[creatureID];
             if (!upgradeData) {
                 return null;
             }
             const upgradeLevel: number = parseInt(upgradeData.level);
-            if (upgradeLevel < academyLevel || (upgradeLevel === academyLevel && !isMaxLevel && academyLevel >= creatures[creatureID].page && !GLOBAL.player.m_upgrades[creatureID].time)) {
-                return KEYS.Get(creatures[creatureID].name);
+            if (upgradeLevel < academyLevel || (upgradeLevel === academyLevel && !isMaxLevel && academyLevel >= creatures[creatureID].page && !getGLOBAL().player.m_upgrades[creatureID].time)) {
+                return getKEYS().Get(creatures[creatureID].name);
             }
         }
         return null;
     }
 
     private hasIdleAcademy(): boolean {
-        const academies: Array<any> = InstanceManager.getInstancesByClass(BUILDING26);
+        const academies: Array<any> = getInstanceManager().getInstancesByClass(getBUILDING26());
         for (const academy of academies) {
             if (!academy._upgrading) {
                 return true;

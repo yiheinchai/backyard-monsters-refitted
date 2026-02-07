@@ -1,6 +1,9 @@
 import { Component } from "../Component";
 
-import { GLOBAL } from "../../../../../GLOBAL";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+
+
 
 /**
  * Invisibility - allows creature to become invisible while moving to target.
@@ -20,11 +23,11 @@ export class Invisibility extends Component {
         if (this.m_isInvisible) {
             if (this.owner._atTarget) {
                 if (this.m_timeInvisiblityExpires) {
-                    if (GLOBAL.Timestamp() >= this.m_timeInvisiblityExpires) {
+                    if (getGLOBAL().Timestamp() >= this.m_timeInvisiblityExpires) {
                         this.stopInvisibility();
                     }
                 } else {
-                    this.m_timeInvisiblityExpires = this.m_cooldownDuration + GLOBAL.Timestamp();
+                    this.m_timeInvisiblityExpires = this.m_cooldownDuration + getGLOBAL().Timestamp();
                 }
             } else {
                 this.m_timeInvisiblityExpires = 0;

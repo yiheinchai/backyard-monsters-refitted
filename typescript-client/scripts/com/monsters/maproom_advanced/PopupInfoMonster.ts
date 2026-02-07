@@ -4,11 +4,14 @@ import Sprite from "openfl/display/Sprite";
 
 import { ImageCache } from "../display/ImageCache";
 
-import { CHAMPIONCAGE } from "../../../CHAMPIONCAGE";
-import { CREATURELOCKER } from "../../../CREATURELOCKER";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
 import { MapRoomPopupInfoMonster_CLIP } from "../../../MapRoomPopupInfoMonster_CLIP";
+
+// Lazy imports to break circular dependency chains
+function getCHAMPIONCAGE(): any { return require("../../../CHAMPIONCAGE").CHAMPIONCAGE; }
+function getCREATURELOCKER(): any { return require("../../../CREATURELOCKER").CREATURELOCKER; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+
 
 /**
  * Monster info display for map room popups.
@@ -32,17 +35,17 @@ export class PopupInfoMonster extends MapRoomPopupInfoMonster_CLIP {
         
         if (monsterID.substr(0, 1) === "G") {
             // Guardian/Champion
-            this.tName.htmlText = "<b>" + CHAMPIONCAGE._guardians[monsterID.substr(0, 2)].name + "</b>";
+            this.tName.htmlText = "<b>" + getCHAMPIONCAGE()._guardians[monsterID.substr(0, 2)].name + "</b>";
         } else {
             // Regular creature
-            let name = String(CREATURELOCKER._creatures[monsterID].name);
+            let name = String(getCREATURELOCKER()._creatures[monsterID].name);
             if (monsterID === "IC8") {
                 name = "#m_k_wormzer#";
             }
             if (quantity) {
-                this.tName.htmlText = "<b>" + KEYS.Get(name) + ": " + GLOBAL.FormatNumber(quantity) + "</b>";
+                this.tName.htmlText = "<b>" + getKEYS().Get(name) + ": " + getGLOBAL().FormatNumber(quantity) + "</b>";
             } else {
-                this.tName.htmlText = "<b>" + KEYS.Get(name) + "</b>";
+                this.tName.htmlText = "<b>" + getKEYS().Get(name) + "</b>";
             }
         }
         

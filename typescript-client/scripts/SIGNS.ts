@@ -3,13 +3,16 @@ import MovieClip from 'openfl/display/MovieClip';
 import Event from 'openfl/events/Event';
 import IOErrorEvent from 'openfl/events/IOErrorEvent';
 import MouseEvent from 'openfl/events/MouseEvent';
-import { BASE } from './BASE';
-import { BFOUNDATION } from './BFOUNDATION';
-import { GLOBAL } from './GLOBAL';
-import { LOGIN } from './LOGIN';
 import { MAILBOX } from './MAILBOX';
-import { SOUNDS } from './SOUNDS';
-import { UPDATES } from './UPDATES';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getLOGIN(): any { return require("./LOGIN").LOGIN; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getUPDATES(): any { return require("./UPDATES").UPDATES; }
+
 
 /**
  * SIGNS - Sign and Message System
@@ -23,27 +26,27 @@ export class SIGNS {
 
     public static CreateForBuilding(building: BFOUNDATION): void {
         if (SIGNS._mc === null) {
-            SOUNDS.Play("click1");
+            getSOUNDS().Play("click1");
             SIGNS._mc = new (GLOBAL as any).SIGNPOPUP();
-            GLOBAL._layerWindows.addChild(SIGNS._mc);
+            getGLOBAL()._layerWindows.addChild(SIGNS._mc);
             SIGNS._mc._sign = building;
-            SIGNS._mc._senderid = LOGIN._playerID;
-            SIGNS._mc._senderName = LOGIN._playerName;
-            SIGNS._mc._senderPic = LOGIN._playerPic;
+            SIGNS._mc._senderid = getLOGIN()._playerID;
+            SIGNS._mc._senderName = getLOGIN()._playerName;
+            SIGNS._mc._senderPic = getLOGIN()._playerPic;
             SIGNS._mc._subject = "Sign";
             SIGNS._mc._mode = "create";
             SIGNS._mc.Setup();
         }
-        if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD) {
             const costs: any = building._buildingProps.costs[0];
             const r5: number = costs.r5 !== undefined ? costs.r5 : 0;
-            UPDATES.CreateB(["BE", BASE._loadedBaseID, costs.r1.Get(), costs.r2.Get(), costs.r3.Get(), costs.r4.Get(), r5], 0, -1);
+            getUPDATES().CreateB(["BE", getBASE()._loadedBaseID, costs.r1.Get(), costs.r2.Get(), costs.r3.Get(), costs.r4.Get(), r5], 0, -1);
         }
     }
 
     public static ShowMessage(building: BFOUNDATION): void {
-        SOUNDS.Play("click1");
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+        getSOUNDS().Play("click1");
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
             MAILBOX.ShowWithThreadId(building._threadid);
         } else {
             SIGNS.ViewForBuilding(building);
@@ -52,12 +55,12 @@ export class SIGNS {
 
     public static ViewForBuilding(building: BFOUNDATION): void {
         const view: any = new (GLOBAL as any).popup_sign_view();
-        GLOBAL._layerWindows.addChild(view);
+        getGLOBAL()._layerWindows.addChild(view);
         view.subject_txt.text = building._subject;
         view.name_txt.text = building._senderName;
         view.closeBtn.addEventListener(MouseEvent.MOUSE_DOWN, SIGNS.Hide);
-        view.x = GLOBAL._SCREENCENTER.x;
-        view.y = GLOBAL._SCREENCENTER.y;
+        view.x = getGLOBAL()._SCREENCENTER.x;
+        view.y = getGLOBAL()._SCREENCENTER.y;
         
         // Load sender picture
         if (building._senderPic) {
@@ -80,9 +83,9 @@ export class SIGNS {
     public static EditForBuilding(building: BFOUNDATION): void {
         if (SIGNS._mc === null) {
             SIGNS._mc = new (GLOBAL as any).SIGNPOPUP();
-            GLOBAL._layerWindows.addChild(SIGNS._mc);
+            getGLOBAL()._layerWindows.addChild(SIGNS._mc);
             SIGNS._mc._sign = building;
-            SIGNS._mc._senderid = LOGIN._playerID;
+            SIGNS._mc._senderid = getLOGIN()._playerID;
             SIGNS._mc._subject = building._subject;
             SIGNS._mc._mode = "edit";
             SIGNS._mc.Setup();
@@ -92,7 +95,7 @@ export class SIGNS {
     public static Hide(event: MouseEvent | null = null): void {
         if (SIGNS._mc) {
             try {
-                SOUNDS.Play("close");
+                getSOUNDS().Play("close");
                 if (SIGNS._mc.parent) {
                     SIGNS._mc.parent.removeChild(SIGNS._mc);
                 }
@@ -101,7 +104,7 @@ export class SIGNS {
         }
         if (SIGNS._view) {
             try {
-                SOUNDS.Play("close");
+                getSOUNDS().Play("close");
                 if (SIGNS._view.parent) {
                     SIGNS._view.parent.removeChild(SIGNS._view);
                 }

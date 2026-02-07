@@ -1,7 +1,10 @@
-import { MonsterBase } from "../monsters/MonsterBase";
 import { CreepInfo } from "./CreepInfo";
-import { BASE } from "../../../BASE";
-import { CREATURES } from "../../../CREATURES";
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../monsters/MonsterBase").MonsterBase; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getCREATURES(): any { return require("../../../CREATURES").CREATURES; }
+
 
 /**
  * Data container for a monster type, managing creep instances, health, and healing.
@@ -31,7 +34,7 @@ export class MonsterData {
 
     public set level(value: number) {
         this.m_level = value;
-        this.m_maxHealth = CREATURES.GetProperty(this.m_creatureID, "health", this.m_level);
+        this.m_maxHealth = getCREATURES().GetProperty(this.m_creatureID, "health", this.m_level);
     }
 
     public get numCreeps(): number {
@@ -92,8 +95,8 @@ export class MonsterData {
     }
 
     public getNumCreepsCanHealWithSpecificResourceAmount(resourceAmt: number, ownerID: number = 0): { num: number; resoLeft: number } {
-        const healTime = CREATURES.GetProperty(this.m_creatureID, "hTime", this.m_level);
-        const hResource = CREATURES.GetProperty(this.m_creatureID, "hResource", this.m_level);
+        const healTime = getCREATURES().GetProperty(this.m_creatureID, "hTime", this.m_level);
+        const hResource = getCREATURES().GetProperty(this.m_creatureID, "hResource", this.m_level);
         this.m_creeps.sort(this.healthSort.bind(this));
         
         let num = 0;
@@ -111,7 +114,7 @@ export class MonsterData {
     }
 
     public getHighestTimeWithHousingSplit(ownerID: number = 0): number {
-        const numHeals = BASE.getNumHousingHealsPerTick();
+        const numHeals = getBASE().getNumHousingHealsPerTick();
         const times: number[] = new Array(numHeals).fill(0);
         this.m_creeps.sort(this.healthSort.bind(this));
         
@@ -127,7 +130,7 @@ export class MonsterData {
     }
 
     private timeLeftToHealCreep(creep: CreepInfo): number {
-        const healTime = CREATURES.GetProperty(this.m_creatureID, "hTime", this.m_level);
+        const healTime = getCREATURES().GetProperty(this.m_creatureID, "hTime", this.m_level);
         return (this.m_maxHealth - creep.health) / (this.m_maxHealth / healTime);
     }
 
@@ -168,9 +171,9 @@ export class MonsterData {
     }
 
     public heal(ownerID: number = 0): boolean {
-        const healTime = CREATURES.GetProperty(this.m_creatureID, "hTime", this.m_level);
+        const healTime = getCREATURES().GetProperty(this.m_creatureID, "hTime", this.m_level);
         const healPerTick = this.m_maxHealth / healTime;
-        const numHealsPerTick = BASE.getNumHousingHealsPerTick();
+        const numHealsPerTick = getBASE().getNumHousingHealsPerTick();
         const toHeal: CreepInfo[] = [];
         
         for (let i = 0; i < numHealsPerTick; i++) {

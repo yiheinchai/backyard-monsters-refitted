@@ -20,10 +20,13 @@ import { User } from "../../smartfoxserver/v2/entities/User";
 import { Room } from "../../smartfoxserver/v2/entities/Room";
 import { SFSObject } from "../../smartfoxserver/v2/entities/data/SFSObject";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGGER } from "../../../LOGGER";
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+
+
 
 /**
  * BYMChat - Main chat system for Backyard Monsters.
@@ -85,7 +88,7 @@ export class BYMChat extends Sprite {
         }
         this._chatHost = hostStr;
         this._chatPort = port;
-        if (GLOBAL.StatGet("chatmin") === 1) {
+        if (getGLOBAL().StatGet("chatmin") === 1) {
             this._open = false;
         } else {
             this._open = true;
@@ -260,7 +263,7 @@ export class BYMChat extends Sprite {
 
     public global_chat(message: string): void {
         if (!this._isConnected) {
-            LOGGER.Log("err", "BYMChat.global_chat(): not connected");
+            getLOGGER().Log("err", "BYMChat.global_chat(): not connected");
             return;
         }
         if (this.globalChatTimer === null) {
@@ -342,13 +345,13 @@ export class BYMChat extends Sprite {
     public enter_sector(sectorName: string, force: boolean = false): void {
         if (!force) {
             if (this._joinAttempts >= 10) {
-                LOGGER.Log("err", "BYMChat.enter_sector: failed to connect to 10 chat rooms; giving up");
+                getLOGGER().Log("err", "BYMChat.enter_sector: failed to connect to 10 chat rooms; giving up");
                 this.displayUnavailable("unable to find open chat room");
                 return;
             }
             const parts = sectorName.split(/(\d+)/);
             if (parts.length === 0) {
-                LOGGER.Log("err", "BYMChat.enter_sector(): invalid sectorName");
+                getLOGGER().Log("err", "BYMChat.enter_sector(): invalid sectorName");
                 this.displayUnavailable("invalid chat room");
                 return;
             }
@@ -381,7 +384,7 @@ export class BYMChat extends Sprite {
 
     public sector_chat(message: string): void {
         if (!this._isConnected) {
-            LOGGER.Log("err", "BYMChat.sector_chat(): not connected");
+            getLOGGER().Log("err", "BYMChat.sector_chat(): not connected");
             return;
         }
         if (this.sector_channel !== null) {
@@ -393,7 +396,7 @@ export class BYMChat extends Sprite {
 
     public private_chat(userId: string, message: string): void {
         if (!this._isConnected) {
-            LOGGER.Log("err", "BYMChat.private_chat(): not connected");
+            getLOGGER().Log("err", "BYMChat.private_chat(): not connected");
             return;
         }
         if (this.userIsIgnored(userId)) {
@@ -417,7 +420,7 @@ export class BYMChat extends Sprite {
         } catch (e: any) {
             const reason = event.Get("reason") as string;
             this.displayUnavailable(reason !== null ? reason : "connect failed");
-            LOGGER.Log("err", "BYMChat.onConnect: " + e.message);
+            getLOGGER().Log("err", "BYMChat.onConnect: " + e.message);
         }
     }
 
@@ -428,7 +431,7 @@ export class BYMChat extends Sprite {
         } else {
             const reason = event.Get("reason") as string;
             this.displayUnavailable(reason !== null ? reason : "login failed");
-            LOGGER.Log("err", "onLogin() " + event.Success + ": '" + event.Get("error") + "'");
+            getLOGGER().Log("err", "onLogin() " + event.Success + ": '" + event.Get("error") + "'");
         }
     }
 
@@ -451,8 +454,8 @@ export class BYMChat extends Sprite {
             this.clearChat();
             this.system_message("Joined channel " + channel.Name + ".");
             this.system_message("Type /h for help.");
-            BYMChat._chat!.setDisplayNameUserVar("[" + BASE.BaseLevel().level + "] " + BYMChat._userRecord!.Id);
-            BYMChat._chat!.updateDisplayName(channel, BYMChat._userRecord!.Name, "[" + BASE.BaseLevel().level + "] " + BYMChat._userRecord!.Id);
+            BYMChat._chat!.setDisplayNameUserVar("[" + getBASE().BaseLevel().level + "] " + BYMChat._userRecord!.Id);
+            BYMChat._chat!.updateDisplayName(channel, BYMChat._userRecord!.Name, "[" + getBASE().BaseLevel().level + "] " + BYMChat._userRecord!.Id);
             this.chatBox.EnableInput(true);
             this._isJoined = true;
         } else {
@@ -464,7 +467,7 @@ export class BYMChat extends Sprite {
 
     private onLeave(event: ChatEvent): void {
         if (!event.Success) {
-            LOGGER.Log("err", "BYMChat.onLeave() " + event.Success + ": '" + event.Get("error") + "'");
+            getLOGGER().Log("err", "BYMChat.onLeave() " + event.Success + ": '" + event.Get("error") + "'");
         }
     }
 
@@ -478,19 +481,19 @@ export class BYMChat extends Sprite {
             }
             this.showChatMessage(channel, user, message);
         } else {
-            LOGGER.Log("err", "BYMChat.onSay() " + event.Success + ": '" + event.Get("error") + "'");
+            getLOGGER().Log("err", "BYMChat.onSay() " + event.Success + ": '" + event.Get("error") + "'");
         }
     }
 
     private onList(event: ChatEvent): void {
         if (!event.Success) {
-            LOGGER.Log("err", "BYMChat.onList() " + event.Success + ": '" + event.Get("error") + "'");
+            getLOGGER().Log("err", "BYMChat.onList() " + event.Success + ": '" + event.Get("error") + "'");
         }
     }
 
     private onMembers(event: ChatEvent): void {
         if (!event.Success) {
-            LOGGER.Log("err", "BYMChat.onMembers() " + event.Success + ": '" + event.Get("error") + "'");
+            getLOGGER().Log("err", "BYMChat.onMembers() " + event.Success + ": '" + event.Get("error") + "'");
         }
     }
 
@@ -530,7 +533,7 @@ export class BYMChat extends Sprite {
                 }
             }
         } else {
-            LOGGER.Log("err", "BYMChat.onIgnore() " + event.Success + ": '" + event.Get("error") + "'");
+            getLOGGER().Log("err", "BYMChat.onIgnore() " + event.Success + ": '" + event.Get("error") + "'");
         }
     }
 
@@ -551,17 +554,17 @@ export class BYMChat extends Sprite {
         const user = event.Get("user") as User;
         const room = event.Get("room") as Room;
         if (this.sector_channel === null) {
-            LOGGER.Log("err", "BYMChat.onUserEnter(): No sector has been joined yet");
+            getLOGGER().Log("err", "BYMChat.onUserEnter(): No sector has been joined yet");
             return;
         }
         if (BYMChat._userRecord === null) {
-            LOGGER.Log("err", "BYMChat.onUserEnter(): No user record available");
+            getLOGGER().Log("err", "BYMChat.onUserEnter(): No user record available");
             return;
         }
         if (user.name === BYMChat._userRecord.Name) {
             return;
         }
-        BYMChat._chat!.updateDisplayNameDirect(this.sector_channel, user.name, BYMChat._userRecord.Name, "[" + BASE.BaseLevel().level + "] " + BYMChat._userRecord.Id);
+        BYMChat._chat!.updateDisplayNameDirect(this.sector_channel, user.name, BYMChat._userRecord.Name, "[" + getBASE().BaseLevel().level + "] " + BYMChat._userRecord.Id);
     }
 
     private onUserExit(event: ChatEvent): void {
@@ -573,7 +576,7 @@ export class BYMChat extends Sprite {
     public toggleVisible(): void {
         this._open = !this._open;
         this.toggleVisibleB();
-        GLOBAL.StatSet("chatvis", this._open ? 1 : 0);
+        getGLOBAL().StatSet("chatvis", this._open ? 1 : 0);
     }
 
     public toggleVisibleB(): void {
@@ -605,11 +608,11 @@ export class BYMChat extends Sprite {
 
     public toggleMinimizedStat(minimized: boolean = true): void {
         if (minimized === true) {
-            if (GLOBAL.StatGet("chatmin") !== 1) {
-                GLOBAL.StatSet("chatmin", 1);
+            if (getGLOBAL().StatGet("chatmin") !== 1) {
+                getGLOBAL().StatSet("chatmin", 1);
             }
-        } else if (GLOBAL.StatGet("chatmin") !== 0) {
-            GLOBAL.StatSet("chatmin", 0);
+        } else if (getGLOBAL().StatGet("chatmin") !== 0) {
+            getGLOBAL().StatSet("chatmin", 0);
         }
     }
 
@@ -671,7 +674,7 @@ export class BYMChat extends Sprite {
 
     public ignoreUser(userId: string | null = null, displayName: string | null = null): void {
         if (userId !== null) {
-            GLOBAL.Message(KEYS.Get("chat_ignore") + " '" + displayName + "' (id: " + userId + ")<br><br>" + KEYS.Get("chat_ignore_confirm"), KEYS.Get("btn_yes"), BYMChat._chat!.ignore.bind(BYMChat._chat), [userId, displayName]);
+            getGLOBAL().Message(getKEYS().Get("chat_ignore") + " '" + displayName + "' (id: " + userId + ")<br><br>" + getKEYS().Get("chat_ignore_confirm"), getKEYS().Get("btn_yes"), BYMChat._chat!.ignore.bind(BYMChat._chat), [userId, displayName]);
         }
     }
 
@@ -682,15 +685,15 @@ export class BYMChat extends Sprite {
     }
 
     public position(): void {
-        const stageWidth = GLOBAL._ROOT.stage.stageWidth;
-        const stageHeight = GLOBAL._ROOT.stage.stageHeight;
+        const stageWidth = getGLOBAL()._ROOT.stage.stageWidth;
+        const stageHeight = getGLOBAL()._ROOT.stage.stageHeight;
         const offsetX = 0;
         const offsetY = 0;
-        const bounds = new Rectangle(0 - (stageWidth - GLOBAL._SCREENINIT.width) / 2 + 0, 0 - (stageHeight - GLOBAL._SCREENINIT.height) / 2 + offsetY, stageWidth, stageHeight);
+        const bounds = new Rectangle(0 - (stageWidth - getGLOBAL()._SCREENINIT.width) / 2 + 0, 0 - (stageHeight - getGLOBAL()._SCREENINIT.height) / 2 + offsetY, stageWidth, stageHeight);
         this._hideX = bounds.x;
         this._showX = bounds.x;
-        this._showY = GLOBAL._SCREENINIT.height + (stageHeight - GLOBAL._SCREENINIT.height) / 2 - 30;
-        this._hideY = GLOBAL._SCREENINIT.height + (stageHeight - GLOBAL._SCREENINIT.height) / 2 - 30;
+        this._showY = getGLOBAL()._SCREENINIT.height + (stageHeight - getGLOBAL()._SCREENINIT.height) / 2 - 30;
+        this._hideY = getGLOBAL()._SCREENINIT.height + (stageHeight - getGLOBAL()._SCREENINIT.height) / 2 - 30;
         this._hideX += offsetX;
         this._showX += offsetX;
         this._showY += offsetY;

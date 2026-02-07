@@ -4,10 +4,13 @@ import EventDispatcher from "openfl/events/EventDispatcher";
 import Point from "openfl/geom/Point";
 
 import { MailBox } from "../MailBox";
-import { URLLoaderApi } from "../../../../URLLoaderApi";
 
-import { GLOBAL } from "../../../../GLOBAL";
-import { LOGGER } from "../../../../LOGGER";
+// Lazy imports to break circular dependency chains
+function getURLLoaderApi(): any { return require("../../../../URLLoaderApi").URLLoaderApi; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getLOGGER(): any { return require("../../../../LOGGER").LOGGER; }
+
+
 
 /**
  * Thread data - represents a mail thread conversation.
@@ -70,9 +73,9 @@ export class ThreadData extends EventDispatcher {
     }
 
     public loadThread(): void {
-        const loader: URLLoaderApi = new URLLoaderApi();
+        const loader: URLLoaderApi = new (getURLLoaderApi())();
         const params: Array<any> = [["threadid", this.threadid]];
-        loader.load(GLOBAL._apiURL + "player/getmessagethread", params, this.handleLoadSuccessful.bind(this), this.handleLoadError.bind(this));
+        loader.load(getGLOBAL()._apiURL + "player/getmessagethread", params, this.handleLoadSuccessful.bind(this), this.handleLoadError.bind(this));
     }
 
     private handleLoadSuccessful(data: Record<string, any>): void {
@@ -95,7 +98,7 @@ export class ThreadData extends EventDispatcher {
     }
 
     private handleLoadError(event: IOErrorEvent): void {
-        LOGGER.Log("err", "IOError opening threadid " + this.threadid);
+        getLOGGER().Log("err", "IOError opening threadid " + this.threadid);
     }
 
     public override toString(): string {

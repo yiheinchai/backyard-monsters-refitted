@@ -7,10 +7,13 @@ import { Contact } from "../mailbox/model/Contact";
 import { BaseObject } from "./model/BaseObject";
 import { MapRoom } from "./MapRoom";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
 import { MAPROOM } from "../../../MAPROOM";
-import { TUTORIAL } from "../../../TUTORIAL";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getTUTORIAL(): any { return require("../../../TUTORIAL").TUTORIAL; }
+
 
 /**
  * PlayerHandler - handles player interactions in normal map room.
@@ -36,18 +39,18 @@ export class PlayerHandler extends Sprite {
         let relation = "Unknown";
         let relationColor = "#000000";
         if (this.data!.wm.Get() === 0) {
-            if (this.data!.saved.Get() >= MapRoom.BRIDGE.GLOBAL.Timestamp() - 62) {
+            if (this.data!.saved.Get() >= MapRoom.BRIDGE.getGLOBAL().Timestamp() - 62) {
                 okAttack = false;
-                status = "<font color = '#01BA01'>" + KEYS.Get("player_online");
+                status = "<font color = '#01BA01'>" + getKEYS().Get("player_online");
             } else {
-                status = "<font color = '#666666'>" + KEYS.Get("player_offline");
+                status = "<font color = '#666666'>" + getKEYS().Get("player_offline");
             }
             if (this.data!.friend.Get() === 1) {
-                relation = String(MapRoom.BRIDGE.KEYS.Get("map_status_friends"));
+                relation = String(MapRoom.BRIDGE.getKEYS().Get("map_status_friends"));
                 relationColor = "#0000FF";
             }
             if (this.data!.attacksfrom.Get() > 1) {
-                relation = String(MapRoom.BRIDGE.KEYS.Get("map_status_hostile"));
+                relation = String(MapRoom.BRIDGE.getKEYS().Get("map_status_hostile"));
                 relationColor = "#990000";
             }
             if (Boolean(this.data!.trucestate) && this.data!.trucestate !== "") {
@@ -55,28 +58,28 @@ export class PlayerHandler extends Sprite {
                 this.player.truceBtn.removeEventListener(MouseEvent.CLICK, this.onTruce.bind(this));
                 if (this.data!.trucestate === "accepted") {
                     okAttack = false;
-                    relation = String(MapRoom.BRIDGE.KEYS.Get("map_status_tactive"));
+                    relation = String(MapRoom.BRIDGE.getKEYS().Get("map_status_tactive"));
                     relationColor = "#00FF00";
                 } else if (this.data!.trucestate === "requested") {
-                    relation = String(MapRoom.BRIDGE.KEYS.Get("map_status_trequested"));
+                    relation = String(MapRoom.BRIDGE.getKEYS().Get("map_status_trequested"));
                     relationColor = "#0000FF";
                 } else if (this.data!.trucestate === "rejected") {
-                    relation = String(MapRoom.BRIDGE.KEYS.Get("map_status_trejected"));
+                    relation = String(MapRoom.BRIDGE.getKEYS().Get("map_status_trejected"));
                     relationColor = "#CC0000";
                 }
                 switch (this.data!.attackpermitted.Get()) {
                     case 5:
                         okAttack = false;
-                        extraStatus = String(MapRoom.BRIDGE.KEYS.Get("map_status_dp"));
+                        extraStatus = String(MapRoom.BRIDGE.getKEYS().Get("map_status_dp"));
                         break;
                     case 6:
                         okAttack = false;
-                        extraStatus = String(MapRoom.BRIDGE.KEYS.Get("map_status_sp"));
+                        extraStatus = String(MapRoom.BRIDGE.getKEYS().Get("map_status_sp"));
                         break;
                     case 7:
                         okAttack = false;
                         okView = false;
-                        extraStatus = String(MapRoom.BRIDGE.KEYS.Get("map_status_underattack"));
+                        extraStatus = String(MapRoom.BRIDGE.getKEYS().Get("map_status_underattack"));
                         extraStatusColor = "#FF0000";
                         break;
                 }
@@ -86,30 +89,30 @@ export class PlayerHandler extends Sprite {
                 switch (this.data!.attackpermitted.Get()) {
                     case 3:
                         okAttack = false;
-                        extraStatus = String(MapRoom.BRIDGE.KEYS.Get("map_status_level"));
+                        extraStatus = String(MapRoom.BRIDGE.getKEYS().Get("map_status_level"));
                         break;
                     case 4:
-                        extraStatus = String(MapRoom.BRIDGE.KEYS.Get("map_status_vengeance", { "v1": this.data!.retaliatecount }));
+                        extraStatus = String(MapRoom.BRIDGE.getKEYS().Get("map_status_vengeance", { "v1": this.data!.retaliatecount }));
                         extraStatusColor = "#FF0000";
                         break;
                     case 5:
                         okAttack = false;
-                        extraStatus = String(MapRoom.BRIDGE.KEYS.Get("map_status_dp"));
+                        extraStatus = String(MapRoom.BRIDGE.getKEYS().Get("map_status_dp"));
                         break;
                     case 6:
                         okAttack = false;
-                        extraStatus = String(MapRoom.BRIDGE.KEYS.Get("map_status_sp"));
+                        extraStatus = String(MapRoom.BRIDGE.getKEYS().Get("map_status_sp"));
                         break;
                     case 7:
                         okAttack = false;
                         okView = false;
-                        extraStatus = String(MapRoom.BRIDGE.KEYS.Get("map_status_underattack"));
+                        extraStatus = String(MapRoom.BRIDGE.getKEYS().Get("map_status_underattack"));
                         extraStatusColor = "#FF0000";
                         break;
                 }
             }
             if (this.data!.truceexpire > 0) {
-                extraStatus = String(MapRoom.BRIDGE.KEYS.Get("map_status_timeremain", { "v1": MapRoom.BRIDGE.GLOBAL.ToTime(this.data!.truceexpire, true, false) }));
+                extraStatus = String(MapRoom.BRIDGE.getKEYS().Get("map_status_timeremain", { "v1": MapRoom.BRIDGE.getGLOBAL().ToTime(this.data!.truceexpire, true, false) }));
                 extraStatusColor = "#000000";
             }
             this.player.helpBtn.removeEventListener(MouseEvent.CLICK, this.onHelp.bind(this));
@@ -135,7 +138,7 @@ export class PlayerHandler extends Sprite {
             }
         } else {
             this.player.helpBtn.SetupKey("map_view_btn");
-            if (TUTORIAL._stage < 110) {
+            if (getTUTORIAL()._stage < 110) {
                 this.player.helpBtn.Enabled = false;
             } else {
                 this.player.helpBtn.addEventListener(MouseEvent.CLICK, this.onView.bind(this));
@@ -143,7 +146,7 @@ export class PlayerHandler extends Sprite {
             this.player.attackBtn.SetupKey("map_attack_btn");
             this.player.attackBtn.addEventListener(MouseEvent.CLICK, this.onAttack.bind(this));
             this.player.attackBtn.Enabled = true;
-            if (TUTORIAL._stage > 110) {
+            if (getTUTORIAL()._stage > 110) {
                 this.player.helpBtn.Enabled = true;
             }
         }
@@ -170,8 +173,8 @@ export class PlayerHandler extends Sprite {
         // messageUI.picker.preloadSelection(contact);
         // messageUI.requestType = "message";
         // messageUI.body_txt.text = "";
-        GLOBAL.BlockerAdd();
-        // GLOBAL._layerWindows.addChild(messageUI);
+        getGLOBAL().BlockerAdd();
+        // getGLOBAL()._layerWindows.addChild(messageUI);
     }
 
     private onHelp(event: MouseEvent): void {
@@ -215,17 +218,17 @@ export class PlayerHandler extends Sprite {
                     "pic_square": this.player.data.pic
                 });
                 // messageUI.picker.preloadSelection(contact);
-                // messageUI.subject_txt.htmlText = "<b>" + MapRoom.BRIDGE.KEYS.Get("map_trucesubject");
-                // messageUI.body_txt.htmlText = MapRoom.BRIDGE.KEYS.Get("map_trucemessage");
+                // messageUI.subject_txt.htmlText = "<b>" + MapRoom.BRIDGE.getKEYS().Get("map_trucesubject");
+                // messageUI.body_txt.htmlText = MapRoom.BRIDGE.getKEYS().Get("map_trucemessage");
                 // messageUI.requestType = "trucerequest";
                 // messageUI.truceShareHandler = MapRoom.BRIDGE.truceShareHandler;
-                GLOBAL.BlockerAdd();
-                // GLOBAL._layerWindows.addChild(messageUI);
+                getGLOBAL().BlockerAdd();
+                // getGLOBAL()._layerWindows.addChild(messageUI);
             } else {
                 MapRoom.BRIDGE.RequestTruce(this.data!.ownerName, this.data!.baseid.Get());
             }
         } else {
-            MapRoom.BRIDGE.GLOBAL.Message(MapRoom.BRIDGE.KEYS.Get("msg_trucealreadyrequested"));
+            MapRoom.BRIDGE.getGLOBAL().Message(MapRoom.BRIDGE.getKEYS().Get("msg_trucealreadyrequested"));
         }
     }
 
@@ -234,62 +237,62 @@ export class PlayerHandler extends Sprite {
         const baseData = this.player.data;
         let okAttack = false;
         let message = "";
-        const attackLabel = String(MapRoom.BRIDGE.KEYS.Get("map_attack_btn2"));
-        const hasMonsters = MapRoom.BRIDGE.HOUSING._housingUsed.Get() > 0 || MapRoom.BRIDGE.GLOBAL._playerGuardianData !== null;
-        if (MapRoom.BRIDGE.GLOBAL._bFlinger !== null && MapRoom.BRIDGE.GLOBAL._bFlinger._canFunction && MapRoom.BRIDGE.GLOBAL._bFlinger._countdownUpgrade.Get() === 0) {
+        const attackLabel = String(MapRoom.BRIDGE.getKEYS().Get("map_attack_btn2"));
+        const hasMonsters = MapRoom.BRIDGE.HOUSING._housingUsed.Get() > 0 || MapRoom.BRIDGE.getGLOBAL()._playerGuardianData !== null;
+        if (MapRoom.BRIDGE.getGLOBAL()._bFlinger !== null && MapRoom.BRIDGE.getGLOBAL()._bFlinger._canFunction && MapRoom.BRIDGE.getGLOBAL()._bFlinger._countdownUpgrade.Get() === 0) {
             if (baseData.wm.Get() === 0) {
-                if (baseData.saved.Get() >= MapRoom.BRIDGE.GLOBAL.Timestamp() - 62) {
+                if (baseData.saved.Get() >= MapRoom.BRIDGE.getGLOBAL().Timestamp() - 62) {
                     okAttack = false;
-                    message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_ownerinyard", { "v1": baseData.ownerName }));
-                } else if (MapRoom.BRIDGE.GLOBAL._flags.attacking === 0) {
+                    message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_ownerinyard", { "v1": baseData.ownerName }));
+                } else if (MapRoom.BRIDGE.getGLOBAL()._flags.attacking === 0) {
                     okAttack = false;
-                    message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_attackingdisabled"));
+                    message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_attackingdisabled"));
                 } else {
                     switch (baseData.attackpermitted.Get()) {
                         case 1:
                             okAttack = true;
-                            if (MapRoom.BRIDGE.BASE._isProtected > GLOBAL.Timestamp()) {
-                                message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_protection", { "v1": MapRoom.BRIDGE.GLOBAL.ToTime(MapRoom.BRIDGE.BASE._isProtected - MapRoom.BRIDGE.GLOBAL.Timestamp(), false, false) }));
+                            if (MapRoom.BRIDGE.BASE._isProtected > getGLOBAL().Timestamp()) {
+                                message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_protection", { "v1": MapRoom.BRIDGE.getGLOBAL().ToTime(MapRoom.BRIDGE.BASE._isProtected - MapRoom.BRIDGE.getGLOBAL().Timestamp(), false, false) }));
                             } else if (baseData.friend.Get()) {
-                                message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_attackfriend", { "v1": baseData.ownerName }));
+                                message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_attackfriend", { "v1": baseData.ownerName }));
                             } else {
-                                message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_attackconfirm", { "v1": baseData.ownerName }));
+                                message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_attackconfirm", { "v1": baseData.ownerName }));
                             }
                             break;
                         case 2:
                             okAttack = true;
-                            message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_higherlevelconfirm", { "v1": baseData.ownerName }));
+                            message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_higherlevelconfirm", { "v1": baseData.ownerName }));
                             break;
                         case 3:
-                            message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_leveltoolow"));
+                            message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_leveltoolow"));
                             break;
                         case 4:
                             okAttack = true;
-                            message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_vengeance"));
+                            message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_vengeance"));
                             break;
                         case 5:
-                            message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_dp", { "v1": baseData.ownerName }));
+                            message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_dp", { "v1": baseData.ownerName }));
                             break;
                         case 6:
-                            message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_sp", { "v1": baseData.ownerName }));
+                            message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_sp", { "v1": baseData.ownerName }));
                             break;
                         case 7:
-                            message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_inprogress", { "v1": baseData.ownerName, "v2": baseData.attacker }));
+                            message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_inprogress", { "v1": baseData.ownerName, "v2": baseData.attacker }));
                             break;
                         case 9:
-                            message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_truceactive", { "v1": baseData.ownerName }));
+                            message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_truceactive", { "v1": baseData.ownerName }));
                             break;
                     }
                 }
             } else {
                 okAttack = true;
                 if (baseData.wm.Get() === 0) {
-                    message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_atatckconfirm", { "v1": baseData.ownerName }));
+                    message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_atatckconfirm", { "v1": baseData.ownerName }));
                     if (baseData.level.Get() > MapRoom.BRIDGE.BASE.BaseLevel().level) {
-                        message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_higherlevelconfirm", { "v1": baseData.ownerName }));
+                        message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_higherlevelconfirm", { "v1": baseData.ownerName }));
                     }
                 } else {
-                    const mode = baseData.wm.Get() === 1 ? "wmattack" : GLOBAL.e_BASE_MODE.ATTACK;
+                    const mode = baseData.wm.Get() === 1 ? "wmattack" : getGLOBAL().e_BASE_MODE.ATTACK;
                     if (hasMonsters) {
                         this.onAttackB(baseData.baseid.Get(), mode);
                         return;
@@ -298,25 +301,25 @@ export class PlayerHandler extends Sprite {
             }
         } else {
             okAttack = false;
-            if (MapRoom.BRIDGE.GLOBAL._bFlinger === null) {
-                message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_needflinger"));
-            } else if (MapRoom.BRIDGE.GLOBAL._bFlinger._countdownUpgrade.Get() > 0) {
-                message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_flingerupgrading"));
+            if (MapRoom.BRIDGE.getGLOBAL()._bFlinger === null) {
+                message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_needflinger"));
+            } else if (MapRoom.BRIDGE.getGLOBAL()._bFlinger._countdownUpgrade.Get() > 0) {
+                message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_flingerupgrading"));
             } else {
-                message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_flingerdamaged"));
+                message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_flingerdamaged"));
             }
         }
         if (okAttack) {
             MapRoom.BRIDGE.HOUSING.HousingSpace();
-            const mode = baseData.wm.Get() === 1 ? "wmattack" : GLOBAL.e_BASE_MODE.ATTACK;
+            const mode = baseData.wm.Get() === 1 ? "wmattack" : getGLOBAL().e_BASE_MODE.ATTACK;
             if (hasMonsters) {
-                MapRoom.BRIDGE.GLOBAL.Message(message, attackLabel, this.onAttackB.bind(this), [baseData.baseid.Get(), mode]);
+                MapRoom.BRIDGE.getGLOBAL().Message(message, attackLabel, this.onAttackB.bind(this), [baseData.baseid.Get(), mode]);
             } else {
-                message = String(MapRoom.BRIDGE.KEYS.Get("map_msg_nomonsters"));
-                MapRoom.BRIDGE.GLOBAL.Message(message);
+                message = String(MapRoom.BRIDGE.getKEYS().Get("map_msg_nomonsters"));
+                MapRoom.BRIDGE.getGLOBAL().Message(message);
             }
         } else {
-            MapRoom.BRIDGE.GLOBAL.Message(message);
+            MapRoom.BRIDGE.getGLOBAL().Message(message);
         }
     }
 

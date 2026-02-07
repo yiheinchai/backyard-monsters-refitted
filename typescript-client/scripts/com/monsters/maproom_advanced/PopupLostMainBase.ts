@@ -5,14 +5,17 @@ import Point from "openfl/geom/Point";
 
 import { MapRoom } from "./MapRoom";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGGER } from "../../../LOGGER";
 import { PLEASEWAIT } from "../../../PLEASEWAIT";
-import { POPUPS } from "../../../POPUPS";
-import { URLLoaderApi } from "../../../URLLoaderApi";
-import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { MapRoomPopup_LostMainBase_CLIP } from "../../../MapRoomPopup_LostMainBase_CLIP";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+function getPOPUPS(): any { return require("../../../POPUPS").POPUPS; }
+function getURLLoaderApi(): any { return require("../../../URLLoaderApi").URLLoaderApi; }
+function getMapRoomManager(): any { return require("../maproom_manager/MapRoomManager").MapRoomManager; }
+
 
 /**
  * Popup shown when player loses their main base.
@@ -23,22 +26,22 @@ export class PopupLostMainBase extends MapRoomPopup_LostMainBase_CLIP {
     }
 
     public Setup(): void {
-        this.tTitle.htmlText = KEYS.Get("empiredestroyed_title");
+        this.tTitle.htmlText = getKEYS().Get("empiredestroyed_title");
         this.bYes.SetupKey("empiredestroyed_btnflee");
         this.bYes.addEventListener(MouseEvent.CLICK, this.Relocate.bind(this));
         this.bYes.buttonMode = true;
         this.bNo.SetupKey("empiredestroyed_btnstay");
         this.bNo.addEventListener(MouseEvent.CLICK, this.Hide.bind(this));
         
-        if (GLOBAL._mapOutpost.length > 0) {
-            if (GLOBAL._mapOutpost.length > 1) {
-                this.tDesc.htmlText = "<b>" + KEYS.Get("empiredestroyed3", { v1: GLOBAL._mapOutpost.length }) + "</b>";
+        if (getGLOBAL()._mapOutpost.length > 0) {
+            if (getGLOBAL()._mapOutpost.length > 1) {
+                this.tDesc.htmlText = "<b>" + getKEYS().Get("empiredestroyed3", { v1: getGLOBAL()._mapOutpost.length }) + "</b>";
             } else {
-                this.tDesc.htmlText = "<b>" + KEYS.Get("empiredestroyed2") + "</b>";
+                this.tDesc.htmlText = "<b>" + getKEYS().Get("empiredestroyed2") + "</b>";
             }
-            this.tWarning.htmlText = "<b>" + KEYS.Get("msg_moveyard_warn2") + "</b>";
+            this.tWarning.htmlText = "<b>" + getKEYS().Get("msg_moveyard_warn2") + "</b>";
         } else {
-            this.tDesc.htmlText = "<b>" + KEYS.Get("empiredestroyed1") + "</b>";
+            this.tDesc.htmlText = "<b>" + getKEYS().Get("empiredestroyed1") + "</b>";
             this.tWarning.visible = false;
         }
     }
@@ -48,38 +51,38 @@ export class PopupLostMainBase extends MapRoomPopup_LostMainBase_CLIP {
             PLEASEWAIT.Hide();
             if (response.error === 0) {
                 if (response.cantMoveTill) {
-                    GLOBAL.Message(KEYS.Get("movebase_warning", { v1: GLOBAL.ToTime(response.cantMoveTill - response.currenttime) }));
+                    getGLOBAL().Message(getKEYS().Get("movebase_warning", { v1: getGLOBAL().ToTime(response.cantMoveTill - response.currenttime) }));
                     this.Hide();
                 } else {
-                    GLOBAL._mapOutpost = [];
+                    getGLOBAL()._mapOutpost = [];
                     MapRoom.ClearCells();
                     if (response.coords && response.coords.length === 2 && response.coords[0] > -1 && response.coords[1] > -1) {
-                        GLOBAL._mapHome = new Point(response.coords[0], response.coords[1]);
-                        MapRoomManager.instance.BookmarksClear();
-                        MapRoom._Setup(GLOBAL._mapHome);
+                        getGLOBAL()._mapHome = new Point(response.coords[0], response.coords[1]);
+                        getMapRoomManager().instance.BookmarksClear();
+                        MapRoom._Setup(getGLOBAL()._mapHome);
                         MapRoom.empireDestroyed = true;
-                        MapRoomManager.instance.ShowDelayed(true);
+                        getMapRoomManager().instance.ShowDelayed(true);
                     }
                 }
             } else {
-                GLOBAL.ErrorMessage("PopupLostMainBase.Relocate 1");
-                LOGGER.Log("err", "PopupLostMainBase.Relocate non-zero error " + response.error);
+                getGLOBAL().ErrorMessage("PopupLostMainBase.Relocate 1");
+                getLOGGER().Log("err", "PopupLostMainBase.Relocate non-zero error " + response.error);
             }
         };
 
         const RelocateFail = (event: IOErrorEvent): void => {
             PLEASEWAIT.Hide();
-            GLOBAL.ErrorMessage("PopupLostMainBase.Relocate 2");
-            LOGGER.Log("err", "PopupLostMainBase.Relocate HTTP");
+            getGLOBAL().ErrorMessage("PopupLostMainBase.Relocate 2");
+            getLOGGER().Log("err", "PopupLostMainBase.Relocate HTTP");
         };
 
         const relocateVars: any[][] = [["type", "random"], ["baseid", 0], ["shiny", 0]];
-        POPUPS.Next();
-        PLEASEWAIT.Show(KEYS.Get("wait_relocating"));
-        new URLLoaderApi().load(GLOBAL._baseURL + "migrate", relocateVars, RelocateSuccess, RelocateFail);
+        getPOPUPS().Next();
+        PLEASEWAIT.Show(getKEYS().Get("wait_relocating"));
+        new (getURLLoaderApi())().load(getGLOBAL()._baseURL + "migrate", relocateVars, RelocateSuccess, RelocateFail);
     }
 
     public Hide(event: MouseEvent | null = null): void {
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 }

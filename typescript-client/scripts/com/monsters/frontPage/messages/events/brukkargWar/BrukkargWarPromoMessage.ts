@@ -5,11 +5,14 @@ import { KeywordMessage } from "../../KeywordMessage";
 import { ReplayableEventHandler } from "../../../../replayableEvents/ReplayableEventHandler";
 import { ReplayableEventLibrary } from "../../../../replayableEvents/ReplayableEventLibrary";
 
-import { GLOBAL } from "../../../../../../GLOBAL";
-import { POPUPS } from "../../../../../../POPUPS";
-import { KEYS } from "../../../../../../KEYS";
-import { LOGIN } from "../../../../../../LOGIN";
 import { Button } from "../../../../../../Button";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../../../GLOBAL").GLOBAL; }
+function getPOPUPS(): any { return require("../../../../../../POPUPS").POPUPS; }
+function getKEYS(): any { return require("../../../../../../KEYS").KEYS; }
+function getLOGIN(): any { return require("../../../../../../LOGIN").LOGIN; }
+
 
 /**
  * Brukkarg War promo message - promotional message for Brukkarg War event.
@@ -34,7 +37,7 @@ export class BrukkargWarPromoMessage extends KeywordMessage {
     }
 
     protected override clickedButton(event: MouseEvent): void {
-        POPUPS.Next();
+        getPOPUPS().Next();
         this._action();
     }
 
@@ -45,6 +48,6 @@ export class BrukkargWarPromoMessage extends KeywordMessage {
 
     private optInForEventEmails(): void {
         ReplayableEventHandler.optInForEventEmails();
-        GLOBAL.Message(KEYS.Get("msg_rsvpconfirmed", { "v1": LOGIN._email }));
+        getGLOBAL().Message(getKEYS().Get("msg_rsvpconfirmed", { "v1": getLOGIN()._email }));
     }
 }

@@ -6,11 +6,14 @@ import GlowFilter from "openfl/filters/GlowFilter";
 import Point from "openfl/geom/Point";
 import getTimer from "openfl/utils/getTimer";
 
-import { MonsterBase } from "../monsters/MonsterBase";
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../monsters/MonsterBase").MonsterBase; }
+function getEFFECTS(): any { return require("../../../EFFECTS").EFFECTS; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getTargeting(): any { return require("../../../Targeting").Targeting; }
 
-import { EFFECTS } from "../../../EFFECTS";
-import { GLOBAL } from "../../../GLOBAL";
-import { Targeting } from "../../../Targeting";
+
+
 
 /**
  * Laser beam effect with animated glow.
@@ -96,8 +99,8 @@ export class LASER {
         }
         
         const angleSpeed = 4 / Math.sqrt(this._distance);
-        this._angle += angleSpeed / 2 * GLOBAL._loops;
-        this._duration += GLOBAL._loops;
+        this._angle += angleSpeed / 2 * getGLOBAL()._loops;
+        this._duration += getGLOBAL()._loops;
         
         const time = getTimer();
         const endX = this._pointA.x + Math.cos(this._angle * (Math.PI / 180)) * 
@@ -111,7 +114,7 @@ export class LASER {
             this._trackCallbackFunction(this._angle - 25);
         }
         
-        if (!GLOBAL._catchup) {
+        if (!getGLOBAL()._catchup) {
             // End point glow
             this._buffer = new Shape();
             this._buffer.graphics.beginFill(0xFCBB33, 1);
@@ -172,12 +175,12 @@ export class LASER {
             this._mc.addChild(this._buffer);
         }
         
-        for (let loop = 0; loop < GLOBAL._loops; loop++) {
+        for (let loop = 0; loop < getGLOBAL()._loops; loop++) {
             if (this._frameNumber % 8 === 0) {
                 this.Splash(this._pointB);
             }
             if (this._frameNumber % 16 === 0) {
-                EFFECTS.Burn(this._pointB.x, this._pointB.y);
+                getEFFECTS().Burn(this._pointB.x, this._pointB.y);
             }
             this._frameNumber++;
         }
@@ -186,7 +189,7 @@ export class LASER {
     }
 
     public Splash(pos: Point): void {
-        const targets = Targeting.getCreepsInRange(this._splash, pos, Targeting.getOldStyleTargets(-1));
+        const targets = getTargeting().getCreepsInRange(this._splash, pos, getTargeting().getOldStyleTargets(-1));
         let totalDamage = 0;
         
         for (const key in targets) {

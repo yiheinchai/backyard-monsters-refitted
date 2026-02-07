@@ -7,12 +7,15 @@ import MouseEvent from "openfl/events/MouseEvent";
 
 import { ImageCache } from "../display/ImageCache";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
 import { POPUPSETTINGS } from "../../../POPUPSETTINGS";
 import { MapRoomPopup_Migrate_CLIP } from "../../../MapRoomPopup_Migrate_CLIP";
 import { icon_costs } from "../../../icon_costs";
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+
 
 /**
  * Popup for migrating/upgrading the map room.
@@ -27,40 +30,40 @@ export class PopupMigrate extends MapRoomPopup_Migrate_CLIP {
         
         this._closeHandler = closeHandler;
         
-        const instantCost = GLOBAL._bMap.InstantUpgradeCost();
-        const upgradeCost = GLOBAL._bMap.UpgradeCost();
+        const instantCost = getGLOBAL()._bMap.InstantUpgradeCost();
+        const upgradeCost = getGLOBAL()._bMap.UpgradeCost();
         
-        this.tTitle.htmlText = KEYS.Get("msg_mr2pop_title");
-        this.tDescription.htmlText = KEYS.Get("msg_mr2pop_desc");
+        this.tTitle.htmlText = getKEYS().Get("msg_mr2pop_title");
+        this.tDescription.htmlText = getKEYS().Get("msg_mr2pop_desc");
         
         ImageCache.GetImageWithCallBack("popups/outpost-takeover.png", this.onAssetLoaded.bind(this));
         
-        this.mcInstant.tDescription.htmlText = KEYS.Get("buildoptions_upgradeinstant");
-        this.mcInstant.bAction.Setup("<b>" + KEYS.Get("btn_useshiny", { v1: instantCost }) + "</b>");
+        this.mcInstant.tDescription.htmlText = getKEYS().Get("buildoptions_upgradeinstant");
+        this.mcInstant.bAction.Setup("<b>" + getKEYS().Get("btn_useshiny", { v1: instantCost }) + "</b>");
         this.mcInstant.bAction.Highlight = true;
         this.mcInstant.bAction.addEventListener(MouseEvent.CLICK, this.InstantUpgrade.bind(this), false);
         this.mcInstant.gCoin.mouseEnabled = false;
         this.mcInstant.gCoin.mouseChildren = false;
         
-        this.mcResources.bAction.SetupKey("buildoptions_resources");
-        this.mcResources.bAction.addEventListener(MouseEvent.CLICK, this.Upgrade.bind(this), false);
+        (this.mcResources as any).bAction.SetupKey("buildoptions_resources");
+        (this.mcResources as any).bAction.addEventListener(MouseEvent.CLICK, this.Upgrade.bind(this), false);
         
-        const resourceNames = GLOBAL._resourceNames;
+        const resourceNames = getGLOBAL()._resourceNames;
         
         for (let i = 1; i < 5; i++) {
             const costMC = this.mcResources["mcR" + i] as icon_costs;
-            costMC.tTitle.htmlText = "<b>" + KEYS.Get(resourceNames[i - 1]) + "</b>";
-            costMC.tValue.htmlText = "<b>" + GLOBAL.FormatNumber(upgradeCost["r" + i]) + "</b>";
+            costMC.tTitle.htmlText = "<b>" + getKEYS().Get(resourceNames[i - 1]) + "</b>";
+            costMC.tValue.htmlText = "<b>" + getGLOBAL().FormatNumber(upgradeCost["r" + i]) + "</b>";
             
-            if (BASE._resources["r" + i] && BASE._resources["r" + i].Get() < upgradeCost["r" + i]) {
+            if (getBASE()._resources["r" + i] && getBASE()._resources["r" + i].Get() < upgradeCost["r" + i]) {
                 costMC.tValue.htmlText = '<font color="#FF0000">' + costMC.tValue.htmlText + '</font>';
             }
             costMC.gotoAndStop(i);
         }
         
-        this.mcResources.mcTime.tTitle.htmlText = "<b>" + KEYS.Get(resourceNames[5]) + "</b>";
-        this.mcResources.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(upgradeCost.time, true, false) + "</b>";
-        this.mcResources.mcTime.gotoAndStop(6);
+        (this.mcResources as any).mcTime.tTitle.htmlText = "<b>" + getKEYS().Get(resourceNames[5]) + "</b>";
+        (this.mcResources as any).mcTime.tValue.htmlText = "<b>" + getGLOBAL().ToTime(upgradeCost.time, true, false) + "</b>";
+        (this.mcResources as any).mcTime.gotoAndStop(6);
     }
 
     public static Show(closeHandler: Function | null = null): void {
@@ -68,7 +71,7 @@ export class PopupMigrate extends MapRoomPopup_Migrate_CLIP {
             PopupMigrate.Hide();
         }
         PopupMigrate.instance = new PopupMigrate(closeHandler);
-        GLOBAL._layerWindows.addChild(PopupMigrate.instance);
+        getGLOBAL()._layerWindows.addChild(PopupMigrate.instance);
         POPUPSETTINGS.AlignToCenter(PopupMigrate.instance);
         POPUPSETTINGS.ScaleUp(PopupMigrate.instance);
     }
@@ -77,7 +80,7 @@ export class PopupMigrate extends MapRoomPopup_Migrate_CLIP {
         if (!PopupMigrate.instance) {
             return;
         }
-        GLOBAL._layerWindows.removeChild(PopupMigrate.instance);
+        getGLOBAL()._layerWindows.removeChild(PopupMigrate.instance);
         PopupMigrate.instance = null;
     }
 
@@ -94,11 +97,11 @@ export class PopupMigrate extends MapRoomPopup_Migrate_CLIP {
 
     private InstantUpgrade(event: Event): void {
         this.HideInstance();
-        GLOBAL._bMap.DoInstantUpgrade();
+        getGLOBAL()._bMap.DoInstantUpgrade();
     }
 
     private Upgrade(event: Event): void {
         this.HideInstance();
-        GLOBAL._bMap.Upgrade();
+        getGLOBAL()._bMap.Upgrade();
     }
 }

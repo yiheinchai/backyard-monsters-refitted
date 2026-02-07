@@ -3,16 +3,19 @@ import Timer from "openfl/utils/Timer";
 
 import { SecNum } from "../../../cc/utils/SecNum";
 import { SiegeWeaponProperty } from "../SiegeWeaponProperty";
-import { SiegeWeapons } from "../SiegeWeapons";
 import { SiegeWeapon } from "./SiegeWeapon";
 import { IDurable } from "./IDurable";
 
-import { BASE } from "../../../../BASE";
-import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { BTOWER } from "../../../../BTOWER";
 import { DROPZONE } from "../../../../DROPZONE";
-import { KEYS } from "../../../../KEYS";
-import { SPRITES } from "../../../../SPRITES";
+
+// Lazy imports to break circular dependency chains
+function getSiegeWeapons(): any { return require("../SiegeWeapons").SiegeWeapons; }
+function getBASE(): any { return require("../../../../BASE").BASE; }
+function getBFOUNDATION(): any { return require("../../../../BFOUNDATION").BFOUNDATION; }
+function getBTOWER(): any { return require("../../../../BTOWER").BTOWER; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getSPRITES(): any { return require("../../../../SPRITES").SPRITES; }
+
 
 /**
  * Jars - siege weapon that places protective jars on towers.
@@ -72,11 +75,11 @@ export class Jars extends SiegeWeapon implements IDurable {
             { "r4": 0, "r1": 3205295, "r2": 3205295, "r3": 1602648, "time": 86400 },
             { "r4": 0, "r1": 4853386, "r2": 4853386, "r3": 2426693, "time": 172800 }
         ]));
-        SPRITES.SetupSprite(Jars.JAR_GRAPHIC);
+        getSPRITES().SetupSprite(Jars.JAR_GRAPHIC);
     }
 
     public override get logMessage(): string {
-        return KEYS.Get("attack_log_siegeplural", {
+        return getKEYS().Get("attack_log_siegeplural", {
             "v1": this.level,
             "v2": this.name
         });
@@ -99,7 +102,7 @@ export class Jars extends SiegeWeapon implements IDurable {
     }
 
     public override onActivation(x: number, y: number): void {
-        SPRITES.SetupSprite(Jars.JAR_GRAPHIC);
+        getSPRITES().SetupSprite(Jars.JAR_GRAPHIC);
         this._targets = this.getValidTargets(x, y);
         for (let i = 0; i < this._targets.length; i++) {
             this._targets[i].ApplyJar(this.durability);
@@ -110,8 +113,8 @@ export class Jars extends SiegeWeapon implements IDurable {
     }
 
     private update(event: TimerEvent): void {
-        if (Boolean(SiegeWeapons.activeWeapon) && this.activeDurability <= 0) {
-            SiegeWeapons.deactivateWeapon();
+        if (Boolean(getSiegeWeapons().activeWeapon) && this.activeDurability <= 0) {
+            getSiegeWeapons().deactivateWeapon();
         }
     }
 
@@ -125,10 +128,10 @@ export class Jars extends SiegeWeapon implements IDurable {
 
     private getValidTargets(x: number, y: number): Array<BTOWER> {
         const buildings: Array<BFOUNDATION> = [];
-        BASE.GetBuildingOverlap(x, y, this.range, buildings);
+        getBASE().GetBuildingOverlap(x, y, this.range, buildings);
         const towers: Array<BTOWER> = [];
         for (const building of buildings) {
-            if (building instanceof BTOWER) {
+            if (building instanceof getBTOWER()) {
                 towers.push(building);
             }
         }

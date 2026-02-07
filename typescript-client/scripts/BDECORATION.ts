@@ -5,7 +5,10 @@ import Event from 'openfl/events/Event';
 import MouseEvent from 'openfl/events/MouseEvent';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BFOUNDATION } from './BFOUNDATION';
-import { GLOBAL } from './GLOBAL';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+
 
 /**
  * BDECORATION - Decoration building class
@@ -19,7 +22,7 @@ export class BDECORATION extends BFOUNDATION {
     public _animBitmap: BitmapData | null = null;
 
     constructor(buildingType: number) {
-        const size: number = GLOBAL._buildingProps[buildingType - 1].size;
+        const size: number = getGLOBAL()._buildingProps[buildingType - 1].size;
         super();
         this._type = buildingType;
         this._footprint = [new Rectangle(0, 0, size, size)];
@@ -33,7 +36,7 @@ export class BDECORATION extends BFOUNDATION {
 
     public override TickFast(event: Event | null = null): void {
         super.TickFast(event);
-        if (GLOBAL._render && this._frameNumber % 2 === 0) {
+        if (getGLOBAL()._render && this._frameNumber % 2 === 0) {
             this.AnimFrame();
         }
         ++this._frameNumber;

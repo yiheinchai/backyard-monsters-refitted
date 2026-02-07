@@ -1,15 +1,18 @@
 import { BYMConfig } from './com/monsters/configs/BYMConfig';
 import { CreepEvent } from './com/monsters/events/CreepEvent';
-import { MonsterBase } from './com/monsters/monsters/MonsterBase';
 import { ChampionBase } from './com/monsters/monsters/champions/ChampionBase';
 import { CreepBase } from './com/monsters/monsters/creeps/CreepBase';
 import Point from 'openfl/geom/Point';
-import { BFOUNDATION } from './BFOUNDATION';
-import { CHAMPIONCAGE } from './CHAMPIONCAGE';
-import { CREATURELOCKER } from './CREATURELOCKER';
-import { GLOBAL } from './GLOBAL';
-import { MAP } from './MAP';
-import { SPECIALEVENT } from './SPECIALEVENT';
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getCHAMPIONCAGE(): any { return require("./CHAMPIONCAGE").CHAMPIONCAGE; }
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getSPECIALEVENT(): any { return require("./SPECIALEVENT").SPECIALEVENT; }
+
 
 /**
  * CREATURES - Defending Monster Management System
@@ -38,33 +41,33 @@ export class CREATURES {
             if (monsterID === "C100") {
                 monsterID = "C12";
             }
-            if (!GLOBAL.player.m_upgrades[monsterID]) {
-                GLOBAL.player.m_upgrades[monsterID] = { level: 1 };
+            if (!getGLOBAL().player.m_upgrades[monsterID]) {
+                getGLOBAL().player.m_upgrades[monsterID] = { level: 1 };
             }
-            const stat: number[] = CREATURELOCKER._creatures[monsterID].props[statID];
+            const stat: number[] = getCREATURELOCKER()._creatures[monsterID].props[statID];
             if (!stat) {
                 return 0;
             }
             let checkID: string = monsterID;
-            if (CREATURELOCKER._creatures[checkID].dependent) {
-                checkID = CREATURELOCKER._creatures[checkID].dependent;
+            if (getCREATURELOCKER()._creatures[checkID].dependent) {
+                checkID = getCREATURELOCKER()._creatures[checkID].dependent;
             }
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK || !friendly) {
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK || !friendly) {
                 if (level === 0) {
-                    if (!friendly && GLOBAL.attackingPlayer) {
-                        if (GLOBAL.attackingPlayer.m_upgrades[checkID] != null) {
-                            level = GLOBAL.attackingPlayer.m_upgrades[checkID].level;
+                    if (!friendly && getGLOBAL().attackingPlayer) {
+                        if (getGLOBAL().attackingPlayer.m_upgrades[checkID] != null) {
+                            level = getGLOBAL().attackingPlayer.m_upgrades[checkID].level;
                         }
-                    } else if (GLOBAL.player.m_upgrades[checkID] != null) {
-                        level = GLOBAL.player.m_upgrades[checkID].level;
+                    } else if (getGLOBAL().player.m_upgrades[checkID] != null) {
+                        level = getGLOBAL().player.m_upgrades[checkID].level;
                     }
                 }
-            } else if (level === 0 && GLOBAL.player.m_upgrades[checkID] != null) {
-                const activeEvent = SPECIALEVENT.getActiveSpecialEvent();
+            } else if (level === 0 && getGLOBAL().player.m_upgrades[checkID] != null) {
+                const activeEvent = getSPECIALEVENT().getActiveSpecialEvent();
                 if (activeEvent.active && !friendly) {
-                    level = GLOBAL._wmCreatureLevels[monsterID];
+                    level = getGLOBAL()._wmCreatureLevels[monsterID];
                 }
-                level = GLOBAL.player.m_upgrades[checkID].level;
+                level = getGLOBAL().player.m_upgrades[checkID].level;
             }
             if (stat.length < level) {
                 level = stat.length;
@@ -81,13 +84,13 @@ export class CREATURES {
             if (creature.tick()) {
                 if (!creature.dying || creature.juiceReady) {
                     creature.die();
-                    if (!creature.isDisposable && GLOBAL.player.monsterListByID(creature._creatureID)) {
-                        GLOBAL.player.monsterListByID(creature._creatureID).unlinkCreepFromData(creature);
+                    if (!creature.isDisposable && getGLOBAL().player.monsterListByID(creature._creatureID)) {
+                        getGLOBAL().player.monsterListByID(creature._creatureID).unlinkCreepFromData(creature);
                     }
                 }
                 if (creature.dead) {
                     if (!BYMConfig.instance.RENDERER_ON) {
-                        MAP._BUILDINGTOPS.removeChild(creature.graphic);
+                        getMAP()._BUILDINGTOPS.removeChild(creature.graphic);
                     }
                     --CREATURES._creatureCount;
                     delete CREATURES._creatures[key];
@@ -102,12 +105,12 @@ export class CREATURES {
     public static Spawn(creatureId: string, parent: any, behaviour: string, pos: Point, rotation: number, 
                         targetPos: Point | null = null, targetBuilding: BFOUNDATION | null = null, 
                         level: number = 0, health: number = Number.MAX_SAFE_INTEGER): MonsterBase | null {
-        if (!CREATURELOCKER._creatures[creatureId]) {
+        if (!getCREATURELOCKER()._creatures[creatureId]) {
             return null;
         }
         ++CREATURES._creatureID;
         ++CREATURES._creatureCount;
-        let CreatureClass = CREATURELOCKER._creatures[creatureId].classType;
+        let CreatureClass = getCREATURELOCKER()._creatures[creatureId].classType;
         if (!CreatureClass) {
             CreatureClass = CreepBase;
         }
@@ -116,10 +119,10 @@ export class CREATURES {
             parent.addChild(creature.graphic);
         }
         CREATURES._creatures[CREATURES._creatureID] = creature;
-        if (GLOBAL._render) {
+        if (getGLOBAL()._render) {
             creature._spawned = true;
         }
-        GLOBAL.eventDispatcher.dispatchEvent(new CreepEvent(CreepEvent.DEFENDING_CREEP_SPAWNED, creature));
+        getGLOBAL().eventDispatcher.dispatchEvent(new CreepEvent(CreepEvent.DEFENDING_CREEP_SPAWNED, creature));
         return creature;
     }
 
@@ -128,14 +131,14 @@ export class CREATURES {
             const creature: MonsterBase = CREATURES._creatures[key];
             creature.clear();
             if (!BYMConfig.instance.RENDERER_ON) {
-                MAP._BUILDINGTOPS.removeChild(creature.graphic);
+                getMAP()._BUILDINGTOPS.removeChild(creature.graphic);
             }
         }
         CREATURES._creatures = {};
         CREATURES._creatureCount = 0;
         for (let i = 0; i < CREATURES._guardianList.length; i++) {
             if (!BYMConfig.instance.RENDERER_ON) {
-                MAP._BUILDINGTOPS.removeChild(CREATURES._guardianList[i].graphic);
+                getMAP()._BUILDINGTOPS.removeChild(CREATURES._guardianList[i].graphic);
             }
             CREATURES._guardianList[i] = null as any;
         }
@@ -153,7 +156,7 @@ export class CREATURES {
 
     public static get _guardian(): ChampionBase | null {
         for (let i = 0; i < CREATURES._guardianList.length; i++) {
-            if (CREATURES._guardianList[i] && CHAMPIONCAGE.isBasicGuardian(CREATURES._guardianList[i]._creatureID)) {
+            if (CREATURES._guardianList[i] && getCHAMPIONCAGE().isBasicGuardian(CREATURES._guardianList[i]._creatureID)) {
                 return CREATURES._guardianList[i];
             }
         }
@@ -190,7 +193,7 @@ export class CREATURES {
     public static set _guardian(guardian: ChampionBase | null) {
         let foundIndex = -1;
         for (let i = 0; i < CREATURES._guardianList.length; i++) {
-            if (CREATURES._guardianList[i] && CHAMPIONCAGE.isBasicGuardian(CREATURES._guardianList[i]._creatureID)) {
+            if (CREATURES._guardianList[i] && getCHAMPIONCAGE().isBasicGuardian(CREATURES._guardianList[i]._creatureID)) {
                 foundIndex = i;
             }
         }
@@ -231,7 +234,7 @@ export class CREATURES {
         }
         if (i < CREATURES._guardianList.length) {
             if (!BYMConfig.instance.RENDERER_ON) {
-                MAP._BUILDINGTOPS.removeChild(CREATURES._guardianList[i].graphic);
+                getMAP()._BUILDINGTOPS.removeChild(CREATURES._guardianList[i].graphic);
             }
             if (CREATURES._guardianList[i] === CREATURES._guardian) {
                 CREATURES._guardian = null;
@@ -245,7 +248,7 @@ export class CREATURES {
         const count = CREATURES._guardianList.length;
         for (let i = 0; i < count; i++) {
             if (!BYMConfig.instance.RENDERER_ON) {
-                MAP._BUILDINGTOPS.removeChild(CREATURES._guardianList[i].graphic);
+                getMAP()._BUILDINGTOPS.removeChild(CREATURES._guardianList[i].graphic);
             }
         }
         CREATURES._guardianList.length = 0;

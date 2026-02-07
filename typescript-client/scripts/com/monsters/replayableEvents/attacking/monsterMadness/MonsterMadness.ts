@@ -1,7 +1,6 @@
 import Event from "openfl/events/Event";
 
 import { SecNum } from "../../../../cc/utils/SecNum";
-import { Console } from "../../../debug/Console";
 import { KorathReward } from "../../looting/wotc/rewards/KorathReward";
 import { MonsterMadnessPopup } from "../../monsterMadness/popups/MonsterMadnessPopup";
 import { MonsterMadnessInfoBar } from "./MonsterMadnessInfoBar";
@@ -9,10 +8,14 @@ import { Reward } from "../../../rewarding/Reward";
 import { RewardHandler } from "../../../rewarding/RewardHandler";
 import { RewardLibrary } from "../../../rewarding/RewardLibrary";
 
-import { BASE } from "../../../../../BASE";
-import { GLOBAL } from "../../../../../GLOBAL";
-import { POPUPS } from "../../../../../POPUPS";
-import { TUTORIAL } from "../../../../../TUTORIAL";
+// Lazy imports to break circular dependency chains
+function getConsole(): any { return require("../../../debug/Console").Console; }
+function getBASE(): any { return require("../../../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+function getPOPUPS(): any { return require("../../../../../POPUPS").POPUPS; }
+function getTUTORIAL(): any { return require("../../../../../TUTORIAL").TUTORIAL; }
+
+
 
 /**
  * Monster Madness - community event tracking and management.
@@ -46,7 +49,7 @@ export class MonsterMadness {
     public static set points(value: number) {
         MonsterMadness._points = new SecNum(value);
         MonsterMadness.stage = MonsterMadness.getStage();
-        GLOBAL.StatSet(MonsterMadness.LAST_SCORE, value);
+        getGLOBAL().StatSet(MonsterMadness.LAST_SCORE, value);
     }
 
     public static updateKorathStats(): void {
@@ -68,7 +71,7 @@ export class MonsterMadness {
         if (!reward) {
             reward = RewardLibrary.getRewardByID(KorathReward.k_REWARD_ID);
             if (!reward) {
-                Console.warning("reward handler isnt working, you cant apply rewards here");
+                getConsole().warning("reward handler isnt working, you cant apply rewards here");
                 return;
             }
             reward.value = level;
@@ -88,7 +91,7 @@ export class MonsterMadness {
     }
 
     public static get currentTime(): number {
-        return GLOBAL.Timestamp();
+        return getGLOBAL().Timestamp();
     }
 
     public static get timeUntilNextPhase(): number {
@@ -136,26 +139,26 @@ export class MonsterMadness {
     }
 
     public static showPopup(forceShow: boolean = false): boolean {
-        if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD) {
             return false;
         }
         if (MonsterMadness.hasNewPopupToShow() || forceShow) {
             const popup = new MonsterMadnessPopup();
-            POPUPS.Push(popup);
-            GLOBAL.StatSet(MonsterMadness.LAST_POPUP_INDEX, popup.infoIndex);
+            getPOPUPS().Push(popup);
+            getGLOBAL().StatSet(MonsterMadness.LAST_POPUP_INDEX, popup.infoIndex);
         }
         return true;
     }
 
     public static initialize(): void {
-        const lastScore = GLOBAL.StatGet(MonsterMadness.LAST_SCORE);
-        const loadedScore = BASE.loadObject[MonsterMadness.SAVE_ID];
+        const lastScore = getGLOBAL().StatGet(MonsterMadness.LAST_SCORE);
+        const loadedScore = getBASE().loadObject[MonsterMadness.SAVE_ID];
         if (loadedScore && loadedScore >= lastScore && !MonsterMadness.hasEventEnded || lastScore === -2126479027) {
             MonsterMadness.points = loadedScore;
         } else {
             MonsterMadness.points = lastScore;
         }
-        if (MonsterMadness.hasEventEnded || GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD || TUTORIAL._stage < 200 || GLOBAL._sessionCount < 5) {
+        if (MonsterMadness.hasEventEnded || getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD || getTUTORIAL()._stage < 200 || getGLOBAL()._sessionCount < 5) {
             return;
         }
         MonsterMadness.infoBar = new MonsterMadnessInfoBar();
@@ -164,7 +167,7 @@ export class MonsterMadness {
     }
 
     private static hasNewPopupToShow(): boolean {
-        return MonsterMadnessPopup.getSetIndex() > GLOBAL.StatGet(MonsterMadness.LAST_POPUP_INDEX);
+        return MonsterMadnessPopup.getSetIndex() > getGLOBAL().StatGet(MonsterMadness.LAST_POPUP_INDEX);
     }
 
     public static addInfoBar(): void {

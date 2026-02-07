@@ -15,7 +15,10 @@ import { WMListViewItem } from "./WMListViewItem";
 
 import { MAPROOM_DESCENT } from "../../../../MAPROOM_DESCENT";
 import { MAPROOM_INFERNO } from "../../../../MAPROOM_INFERNO";
-import { SOUNDS } from "../../../../SOUNDS";
+
+// Lazy imports to break circular dependency chains
+function getSOUNDS(): any { return require("../../../../SOUNDS").SOUNDS; }
+
 
 /**
  * ListView - paginated list view of bases in the Inferno map room.
@@ -129,14 +132,14 @@ export class ListView extends ListView_CLIP {
     }
 
     private nextDown(event: MouseEvent): void {
-        SOUNDS.Play("click1");
+        getSOUNDS().Play("click1");
         if (this.currentPage < this.pageLimit) {
             this.scrollToPage(this.currentPage + 1);
         }
     }
 
     private prevDown(event: MouseEvent): void {
-        SOUNDS.Play("click1");
+        getSOUNDS().Play("click1");
         if (this.currentPage > 0) {
             this.scrollToPage(this.currentPage - 1);
         }

@@ -8,9 +8,12 @@ import { SmokeParticle } from "./SmokeParticle";
 import { SmokeSystem } from "./SmokeSystem";
 import { smoke1 } from "../../../../smoke1";
 
-import { GLOBAL } from "../../../../GLOBAL";
-import { LOGGER } from "../../../../LOGGER";
-import { MAP } from "../../../../MAP";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getLOGGER(): any { return require("../../../../LOGGER").LOGGER; }
+function getMAP(): any { return require("../../../../MAP").MAP; }
+
+
 
 /**
  * Smoke - particle system for smoke effects.
@@ -54,7 +57,7 @@ export class Smoke {
                 Smoke.setupCompleted = true;
             }
             Smoke._bmd = new BitmapData(Smoke._rect.width, Smoke._rect.height, true, 0);
-            Smoke._mc = MAP._EFFECTSTOP.addChild(new Bitmap(Smoke._bmd));
+            Smoke._mc = getMAP()._EFFECTSTOP.addChild(new Bitmap(Smoke._bmd));
             Smoke._mc.x = -Smoke._rect.width;
             Smoke._mc.y = -Smoke._rect.height;
             Smoke._mc.scaleX = Smoke._mc.scaleY = 2;
@@ -62,7 +65,7 @@ export class Smoke {
             Smoke._particles = [];
             Smoke._bmd.fillRect(Smoke._bmd.rect, 0);
         } catch (e: any) {
-            LOGGER.Log("err", "Smoke.Setup " + Smoke.setupCompleted);
+            getLOGGER().Log("err", "Smoke.Setup " + Smoke.setupCompleted);
         }
     }
 
@@ -70,7 +73,7 @@ export class Smoke {
         if (!Smoke._enabled) {
             return;
         }
-        if (GLOBAL._fps < 30) {
+        if (getGLOBAL()._fps < 30) {
             return;
         }
         Smoke.Add(pos, 5, 100 * density, size, 2);
@@ -80,7 +83,7 @@ export class Smoke {
         if (!Smoke._enabled) {
             return;
         }
-        if (GLOBAL._fps < 30) {
+        if (getGLOBAL()._fps < 30) {
             return;
         }
         Smoke.Add(pos, 200, 4, 2, 1);
@@ -135,7 +138,7 @@ export class Smoke {
         let particleCount = Smoke._particles.length;
         let sourceCount = Smoke._sources.length;
         if (Smoke._frameNumber % 2 === 0) {
-            if (particleCount < 700 && GLOBAL._fps > 20) {
+            if (particleCount < 700 && getGLOBAL()._fps > 20) {
                 for (let i = 0; i < sourceCount; i++) {
                     const source = Smoke._sources[i];
                     const halfSize = source.basesize * 0.5;
@@ -175,7 +178,7 @@ export class Smoke {
                     const clearSize = Smoke._smokeParticleBMD[age].rect.width + 2;
                     Smoke._bmd.fillRect(new Rectangle(particle.position.x - 1, particle.position.y - 1, clearSize, clearSize), 0);
                 }
-                for (let loop = 0; loop < GLOBAL._loops; loop++) {
+                for (let loop = 0; loop < getGLOBAL()._loops; loop++) {
                     for (let i = 0; i < particleCount; i++) {
                         const particle = Smoke._particles[i];
                         particle.position.x = particle.position.x + particle.wind * 0.25;
@@ -193,7 +196,7 @@ export class Smoke {
                     const particle = Smoke._particles[i];
                     const age = Math.floor(100 - 100 / 3 * particle.speed);
                     const bmd = Smoke._smokeParticleBMD[age];
-                    if (!GLOBAL._catchup) {
+                    if (!getGLOBAL()._catchup) {
                         Smoke._bmd.copyPixels(bmd, bmd.rect, particle.position, null, null, true);
                     }
                 }

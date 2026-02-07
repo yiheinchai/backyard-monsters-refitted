@@ -14,7 +14,11 @@ import { CModifiableProperty } from "./monsters/components/CModifiableProperty";
 import { MaxHealthProperty } from "./monsters/components/MaxHealthProperty";
 import { RasterData } from "./rendering/RasterData";
 
-import { MAP } from "../../MAP";
+// Lazy import to break circular dependency: GameObject -> MAP -> BFOUNDATION -> GameObject
+function getMAP(): any { return require("../../MAP").MAP; }
+const MAP: any = new Proxy({} as any, {
+    get(_t, p) { return getMAP()?.[p]; },
+});
 
 /**
  * Container for RasterData with source display object tracking.

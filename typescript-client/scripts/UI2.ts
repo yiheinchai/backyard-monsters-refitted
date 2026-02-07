@@ -18,13 +18,16 @@ import { UI_BOTTOM } from "./com/monsters/ui/UI_BOTTOM";
 import { UI_WORKERS } from "./UI_WORKERS";
 import { UI_BAITERSCAREAWAY } from "./UI_BAITERSCAREAWAY";
 import { UI_WILDMONSTERBAR } from "./UI_WILDMONSTERBAR";
-import { BUILDINGINFO } from "./BUILDINGINFO";
-import { GLOBAL } from "./GLOBAL";
-import { KEYS } from "./KEYS";
-import { BASE } from "./BASE";
-import { TUTORIAL } from "./TUTORIAL";
-import { SPECIALEVENT } from "./SPECIALEVENT";
 import { SPECIALEVENT_WM1 } from "./SPECIALEVENT_WM1";
+
+// Lazy imports to break circular dependency chains
+function getBUILDINGINFO(): any { return require("./BUILDINGINFO").BUILDINGINFO; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+function getSPECIALEVENT(): any { return require("./SPECIALEVENT").SPECIALEVENT; }
+
 
 export class UI2 {
     public static _top: UI_TOP;
@@ -47,14 +50,14 @@ export class UI2 {
     constructor() {}
 
     public static Setup(): void {
-        UI2.activeEvent = SPECIALEVENT.getActiveSpecialEvent();
+        UI2.activeEvent = getSPECIALEVENT().getActiveSpecialEvent();
 
-        UI2._tutorial = GLOBAL._layerUI.addChild(new MovieClip()) as MovieClip;
-        UI2._top = GLOBAL._layerUI.addChild(new UI_TOP()) as UI_TOP;
-        UI2._warning = GLOBAL._layerUI.addChild(new UI_WARNING()) as UI_WARNING;
+        UI2._tutorial = getGLOBAL()._layerUI.addChild(new MovieClip()) as MovieClip;
+        UI2._top = getGLOBAL()._layerUI.addChild(new UI_TOP()) as UI_TOP;
+        UI2._warning = getGLOBAL()._layerUI.addChild(new UI_WARNING()) as UI_WARNING;
         
-        if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD && GLOBAL.mode !== GLOBAL.e_BASE_MODE.IBUILD) {
-            UI2._visitor = GLOBAL._layerUI.addChild(new UI_VISITOR()) as UI_VISITOR;
+        if (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD && getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.IBUILD) {
+            UI2._visitor = getGLOBAL()._layerUI.addChild(new UI_VISITOR()) as UI_VISITOR;
         } else {
             UI2._visitor = null;
         }
@@ -67,7 +70,7 @@ export class UI2 {
         UI2._showWarning = false;
         UI_BOTTOM.Setup();
         
-        if (BASE.isMainYardOrInfernoMainYard) {
+        if (getBASE().isMainYardOrInfernoMainYard) {
             UI_WORKERS.Setup();
         }
         
@@ -77,29 +80,29 @@ export class UI2 {
             Chat.initChat();
         }
         if (Chat.flagsShouldChatDisplay()) {
-            Chat.setChatPosition(GLOBAL._layerUI, 10, 300);
+            Chat.setChatPosition(getGLOBAL()._layerUI, 10, 300);
         }
         
         UI2._timers = [];
         UI2._timers.push(UI2._top.mcProtected);
         UI2._timers.push(UI2._top.mcReinforcements);
         
-        if (!GLOBAL._flags.viximo && !GLOBAL._flags.kongregate) {
+        if (!getGLOBAL()._flags.viximo && !getGLOBAL()._flags.kongregate) {
             UI2._timers.push(UI2._top.mcSpecialEvent);
-            if (GLOBAL._countryCode !== "ph") {
+            if (getGLOBAL()._countryCode !== "ph") {
                 UI2._top.mcSpecialEvent.buttonMode = true;
                 UI2._top.mcSpecialEvent.mouseChildren = false;
                 UI2._top.mcSpecialEvent.addEventListener(MouseEvent.CLICK, UI2.activeEvent.TimerClicked);
             }
         }
         
-        if (GLOBAL._aiDesignMode) {
+        if (getGLOBAL()._aiDesignMode) {
             UI2.DebugWarning();
         }
     }
 
     public static SetupHUD(): void {
-        UI2._tutorial = GLOBAL._layerUI.addChild(new MovieClip()) as MovieClip;
+        UI2._tutorial = getGLOBAL()._layerUI.addChild(new MovieClip()) as MovieClip;
         UI_BOTTOM.Setup();
         UI_BOTTOM.Hide();
         
@@ -107,7 +110,7 @@ export class UI2 {
             Chat.initChat();
         }
         if (Chat.flagsShouldChatDisplay()) {
-            Chat.setChatPosition(GLOBAL._layerUI, 10, 300);
+            Chat.setChatPosition(getGLOBAL()._layerUI, 10, 300);
         }
     }
 
@@ -118,25 +121,25 @@ export class UI2 {
         } else if (what === "bottom" && !UI2._showBottom) {
             UI2._showBottom = true;
             UI_BOTTOM.Show();
-            if (TUTORIAL._stage >= 200) {
+            if (getTUTORIAL()._stage >= 200) {
                 UI_WORKERS.Show();
             }
         } else if (what === "warning" && !UI2._showWarning) {
             UI2._showWarning = true;
-            if (GLOBAL._render) {
+            if (getGLOBAL()._render) {
                 TweenLite.to(UI2._warning.mc, 1, { "y": 0, "ease": Elastic.easeOut });
             } else {
                 UI2._warning.mc.y = 0;
             }
         } else if (what === "scareAway" || what === "surrender") {
-            if (GLOBAL._render && !UI2._scareAway) {
-                UI2._scareAway = GLOBAL._layerUI.addChild(new UI_BAITERSCAREAWAY(what === "scareAway")) as UI_BAITERSCAREAWAY;
+            if (getGLOBAL()._render && !UI2._scareAway) {
+                UI2._scareAway = getGLOBAL()._layerUI.addChild(new UI_BAITERSCAREAWAY(what === "scareAway")) as UI_BAITERSCAREAWAY;
                 UI2.ResizeHandler();
             }
         } else if (what === "wmbar") {
-            if (GLOBAL._render) {
+            if (getGLOBAL()._render) {
                 UI2._wildMonsterBar = new UI_WILDMONSTERBAR();
-                GLOBAL._layerUI.addChild(UI2._wildMonsterBar);
+                getGLOBAL()._layerUI.addChild(UI2._wildMonsterBar);
                 UI2._wildMonsterBar.y = 0;
                 UI2.ResizeHandler();
             }
@@ -191,14 +194,14 @@ export class UI2 {
             if (Chat._bymChat) {
                 Chat._bymChat.show();
             }
-            if (GLOBAL._render) {
+            if (getGLOBAL()._render) {
                 TweenLite.to(UI2._warning.mc, 0.5, { "y": -100, "ease": Back.easeIn });
             } else {
                 UI2._warning.mc.y = -100;
             }
         } else if (what === "scareAway" && UI2._scareAway) {
-            if (GLOBAL._layerUI.contains(UI2._scareAway)) {
-                GLOBAL._layerUI.removeChild(UI2._scareAway);
+            if (getGLOBAL()._layerUI.contains(UI2._scareAway)) {
+                getGLOBAL()._layerUI.removeChild(UI2._scareAway);
                 if (Chat._bymChat) {
                     Chat._bymChat.show();
                 }
@@ -206,7 +209,7 @@ export class UI2 {
             }
         } else if (what === "wmbar") {
             if (UI2._wildMonsterBar != null) {
-                if (GLOBAL._render) {
+                if (getGLOBAL()._render) {
                     TweenLite.to(UI2._wildMonsterBar, 0.5, {
                         "y": UI2._wildMonsterBar.y - 22,
                         "onComplete": (): void => {
@@ -225,7 +228,7 @@ export class UI2 {
             }
         }
         
-        if (GLOBAL._render) {
+        if (getGLOBAL()._render) {
             UI2.ResizeHandler();
         }
     }
@@ -239,11 +242,11 @@ export class UI2 {
     }
 
     public static Update(): void {
-        if (!GLOBAL._catchup) {
+        if (!getGLOBAL()._catchup) {
             if (UI2._top) {
                 UI2._top.Update();
                 
-                if (TUTORIAL._stage < TUTORIAL.k_STAGE_DAMAGE_PROTECT) {
+                if (getTUTORIAL()._stage < getTUTORIAL().k_STAGE_DAMAGE_PROTECT) {
                     if (UI2._top.mcProtected.visible) {
                         UI2._top.mcProtected.visible = false;
                     }
@@ -267,30 +270,30 @@ export class UI2 {
                     }
                 } else {
                     // Update protected timer
-                    if (BASE._isProtected - GLOBAL.Timestamp() > 0 && 
-                        (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === GLOBAL.e_BASE_MODE.IBUILD)) {
+                    if (getBASE()._isProtected - getGLOBAL().Timestamp() > 0 && 
+                        (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.IBUILD)) {
                         if (!UI2._top.mcProtected.visible) {
                             UI2._top.mcProtected.visible = true;
                         }
-                        if (BASE._isProtected - GLOBAL.Timestamp() > 86400) {
-                            (UI2._top.mcProtected as any).tCountdown.htmlText = GLOBAL.ToTime(BASE._isProtected - GLOBAL.Timestamp(), true, false);
+                        if (getBASE()._isProtected - getGLOBAL().Timestamp() > 86400) {
+                            (UI2._top.mcProtected as any).tCountdown.htmlText = getGLOBAL().ToTime(getBASE()._isProtected - getGLOBAL().Timestamp(), true, false);
                         } else {
-                            (UI2._top.mcProtected as any).tCountdown.htmlText = GLOBAL.ToTime(BASE._isProtected - GLOBAL.Timestamp(), true);
+                            (UI2._top.mcProtected as any).tCountdown.htmlText = getGLOBAL().ToTime(getBASE()._isProtected - getGLOBAL().Timestamp(), true);
                         }
                     } else if (UI2._top.mcProtected.visible) {
                         UI2._top.mcProtected.visible = false;
                     }
                     
                     // Update reinforcements timer
-                    if (BASE._isReinforcements - GLOBAL.Timestamp() > 0 && 
-                        (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === GLOBAL.e_BASE_MODE.IBUILD)) {
+                    if (getBASE()._isReinforcements - getGLOBAL().Timestamp() > 0 && 
+                        (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.IBUILD)) {
                         if (!UI2._top.mcReinforcements.visible) {
                             UI2._top.mcReinforcements.visible = true;
                         }
-                        if (BASE._isReinforcements - GLOBAL.Timestamp() > 86400) {
-                            UI2._top.mcReinforcements.tCountdown.htmlText = GLOBAL.ToTime(BASE._isReinforcements - GLOBAL.Timestamp(), true, false);
+                        if (getBASE()._isReinforcements - getGLOBAL().Timestamp() > 86400) {
+                            UI2._top.mcReinforcements.tCountdown.htmlText = getGLOBAL().ToTime(getBASE()._isReinforcements - getGLOBAL().Timestamp(), true, false);
                         } else {
-                            UI2._top.mcReinforcements.tCountdown.htmlText = GLOBAL.ToTime(BASE._isReinforcements - GLOBAL.Timestamp(), true);
+                            UI2._top.mcReinforcements.tCountdown.htmlText = getGLOBAL().ToTime(getBASE()._isReinforcements - getGLOBAL().Timestamp(), true);
                         }
                     } else if (UI2._top.mcReinforcements.visible) {
                         UI2._top.mcReinforcements.visible = false;
@@ -320,7 +323,7 @@ export class UI2 {
                     }
                 }
                 
-                if ((GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD && GLOBAL.mode !== GLOBAL.e_BASE_MODE.IBUILD) || !GLOBAL._flags.saveicon) {
+                if ((getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD && getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.IBUILD) || !getGLOBAL()._flags.saveicon) {
                     UI2._top.mcSave.visible = false;
                 }
                 
@@ -336,13 +339,13 @@ export class UI2 {
                 UI2.updateZoom();
             }
             
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === GLOBAL.e_BASE_MODE.IBUILD) {
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.IBUILD) {
                 UI_BOTTOM.Update();
                 UI_BOTTOM.Resize();
                 if (UI2._scareAway) {
-                    GLOBAL.RefreshScreen();
-                    UI2._scareAway.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - UI2._scareAway.mcBG.width - 10;
-                    UI2._scareAway.y = GLOBAL._SCREENHUD.y - (UI2._scareAway.mcBG.height + 10);
+                    getGLOBAL().RefreshScreen();
+                    UI2._scareAway.x = getGLOBAL()._SCREEN.x + getGLOBAL()._SCREEN.width - UI2._scareAway.mcBG.width - 10;
+                    UI2._scareAway.y = getGLOBAL()._SCREENHUD.y - (UI2._scareAway.mcBG.height + 10);
                 }
             } else {
                 UI_BOTTOM.Resize();
@@ -354,22 +357,22 @@ export class UI2 {
                 }
             }
             
-            BUILDINGINFO.Update();
+            getBUILDINGINFO().Update();
         }
     }
 
     private static updateSpecialEventTimer(): void {
-        const activeEvent = SPECIALEVENT.getActiveSpecialEvent();
-        const isBuildMode = GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD;
-        const isMainYard = !BASE.isOutpost && !BASE.isInfernoMainYardOrOutpost;
-        const isAllowedPlatform = !GLOBAL._flags.viximo && !GLOBAL._flags.kongregate;
+        const activeEvent = getSPECIALEVENT().getActiveSpecialEvent();
+        const isBuildMode = getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD;
+        const isMainYard = !getBASE().isOutpost && !getBASE().isInfernoMainYardOrOutpost;
+        const isAllowedPlatform = !getGLOBAL()._flags.viximo && !getGLOBAL()._flags.kongregate;
         const isWMI1Active = activeEvent === SPECIALEVENT_WM1 && 
             (SPECIALEVENT_WM1.invasionpop === 4 || SPECIALEVENT_WM1.invasionpop === 5);
-        const isWMI2Active = activeEvent === SPECIALEVENT && SPECIALEVENT.invasionpop === 4;
+        const isWMI2Active = activeEvent === SPECIALEVENT && getSPECIALEVENT().invasionpop === 4;
         const isEventActive = isWMI1Active || isWMI2Active;
 
         if (!activeEvent || 
-            (activeEvent === SPECIALEVENT && SPECIALEVENT.GetTimeUntilEnd() < 0) ||
+            (activeEvent === SPECIALEVENT && getSPECIALEVENT().GetTimeUntilEnd() < 0) ||
             (activeEvent === SPECIALEVENT_WM1 && 
                 (SPECIALEVENT_WM1.GetTimeUntilEnd() < 0 || 
                  SPECIALEVENT_WM1.wave > SPECIALEVENT_WM1.numWaves || 
@@ -377,12 +380,12 @@ export class UI2 {
             if (UI2._top.mcSpecialEvent && UI2._top.mcSpecialEvent.visible) {
                 UI2._top.mcSpecialEvent.visible = false;
             }
-            SPECIALEVENT.updateNextWaveUI();
+            getSPECIALEVENT().updateNextWaveUI();
         } else if (activeEvent && isBuildMode && isAllowedPlatform && isEventActive) {
             if (!UI2._top.mcSpecialEvent.visible) {
                 UI2._top.mcSpecialEvent.visible = true;
             }
-            SPECIALEVENT.updateNextWaveUI();
+            getSPECIALEVENT().updateNextWaveUI();
             
             let timeRemaining: number;
             if (activeEvent === SPECIALEVENT_WM1) {
@@ -391,13 +394,13 @@ export class UI2 {
                     timeRemaining = SPECIALEVENT_WM1.GetTimeUntilEnd();
                 }
             } else {
-                timeRemaining = SPECIALEVENT.GetTimeUntilEnd();
+                timeRemaining = getSPECIALEVENT().GetTimeUntilEnd();
             }
             
             if (timeRemaining > 86400) {
-                UI2._top.mcSpecialEvent.tCountdown.htmlText = GLOBAL.ToTime(timeRemaining, true, false);
+                UI2._top.mcSpecialEvent.tCountdown.htmlText = getGLOBAL().ToTime(timeRemaining, true, false);
             } else {
-                UI2._top.mcSpecialEvent.tCountdown.htmlText = GLOBAL.ToTime(timeRemaining, true);
+                UI2._top.mcSpecialEvent.tCountdown.htmlText = getGLOBAL().ToTime(timeRemaining, true);
             }
         } else if (isBuildMode && isMainYard && isAllowedPlatform) {
             // Pre-event timing
@@ -411,22 +414,22 @@ export class UI2 {
                         UI2._top.mcSpecialEvent.visible = false;
                     }
                 }
-                SPECIALEVENT.updateNextWaveUI();
+                getSPECIALEVENT().updateNextWaveUI();
                 
                 const timeUntilStart = SPECIALEVENT_WM1.GetTimeUntilStart();
                 const daysUntil = Math.ceil(timeUntilStart / 86400);
                 if (daysUntil > 1) {
-                    UI2._top.mcSpecialEvent.tCountdown.htmlText = daysUntil + " " + KEYS.Get("global_days");
+                    UI2._top.mcSpecialEvent.tCountdown.htmlText = daysUntil + " " + getKEYS().Get("global_days");
                 } else {
                     const hoursUntil = Math.ceil(timeUntilStart / 3600);
                     if (hoursUntil > 1) {
-                        UI2._top.mcSpecialEvent.tCountdown.htmlText = hoursUntil + " " + KEYS.Get("global_hours");
+                        UI2._top.mcSpecialEvent.tCountdown.htmlText = hoursUntil + " " + getKEYS().Get("global_hours");
                     } else {
-                        UI2._top.mcSpecialEvent.tCountdown.htmlText = "< 1 " + KEYS.Get("global_hour");
+                        UI2._top.mcSpecialEvent.tCountdown.htmlText = "< 1 " + getKEYS().Get("global_hour");
                     }
                 }
             } else if (activeEvent === SPECIALEVENT) {
-                if (SPECIALEVENT.invasionpop >= 0 && SPECIALEVENT.invasionpop <= 3) {
+                if (getSPECIALEVENT().invasionpop >= 0 && getSPECIALEVENT().invasionpop <= 3) {
                     if (!UI2._top.mcSpecialEvent.visible) {
                         UI2._top.mcSpecialEvent.visible = true;
                     }
@@ -435,18 +438,18 @@ export class UI2 {
                         UI2._top.mcSpecialEvent.visible = false;
                     }
                 }
-                SPECIALEVENT.updateNextWaveUI();
+                getSPECIALEVENT().updateNextWaveUI();
                 
-                const timeUntilStart = SPECIALEVENT.GetTimeUntilStart();
+                const timeUntilStart = getSPECIALEVENT().GetTimeUntilStart();
                 const daysUntil = Math.ceil(timeUntilStart / 86400);
                 if (daysUntil > 1) {
-                    UI2._top.mcSpecialEvent.tCountdown.htmlText = daysUntil + " " + KEYS.Get("global_days");
+                    UI2._top.mcSpecialEvent.tCountdown.htmlText = daysUntil + " " + getKEYS().Get("global_days");
                 } else {
                     const hoursUntil = Math.ceil(timeUntilStart / 3600);
                     if (hoursUntil > 1) {
-                        UI2._top.mcSpecialEvent.tCountdown.htmlText = hoursUntil + " " + KEYS.Get("global_hours");
+                        UI2._top.mcSpecialEvent.tCountdown.htmlText = hoursUntil + " " + getKEYS().Get("global_hours");
                     } else {
-                        UI2._top.mcSpecialEvent.tCountdown.htmlText = "< 1 " + KEYS.Get("global_hour");
+                        UI2._top.mcSpecialEvent.tCountdown.htmlText = "< 1 " + getKEYS().Get("global_hour");
                     }
                 }
             }
@@ -454,14 +457,14 @@ export class UI2 {
             if (UI2._top.mcSpecialEvent && UI2._top.mcSpecialEvent.visible) {
                 UI2._top.mcSpecialEvent.visible = false;
             }
-            SPECIALEVENT.updateNextWaveUI();
+            getSPECIALEVENT().updateNextWaveUI();
         }
     }
 
     public static updateZoom(): void {
         let yOffset = 0;
         
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
             yOffset = 6;
             UI2._top.mcZoom.y = yOffset;
             UI2._top.mcFullscreen.y = yOffset;
@@ -470,13 +473,13 @@ export class UI2 {
             UI2._top.mcSave.y = yOffset + 24 + 24;
             UI2._top.mcFullscreen.gotoAndStop(1 + 2);
             
-            if (GLOBAL._ROOT.stage.displayState === StageDisplayState.NORMAL) {
+            if (getGLOBAL()._ROOT.stage.displayState === StageDisplayState.NORMAL) {
                 UI2._top.mcZoom.gotoAndStop(1 + 3);
             } else {
                 UI2._top.mcZoom.gotoAndStop(3 + 3);
             }
-            if (GLOBAL._ROOT.stage.displayState !== StageDisplayState.FULL_SCREEN) {
-                if (GLOBAL._zoomed) {
+            if (getGLOBAL()._ROOT.stage.displayState !== StageDisplayState.FULL_SCREEN) {
+                if (getGLOBAL()._zoomed) {
                     UI2._top.mcZoom.gotoAndStop(2 + 3);
                 }
             }
@@ -488,13 +491,13 @@ export class UI2 {
             UI2._top.mcSave.y = yOffset;
             UI2._top.mcFullscreen.gotoAndStop(1);
             
-            if (GLOBAL._ROOT.stage.displayState === StageDisplayState.NORMAL) {
+            if (getGLOBAL()._ROOT.stage.displayState === StageDisplayState.NORMAL) {
                 UI2._top.mcZoom.gotoAndStop(1);
             } else {
                 UI2._top.mcZoom.gotoAndStop(3);
             }
-            if (GLOBAL._ROOT.stage.displayState !== StageDisplayState.FULL_SCREEN) {
-                if (GLOBAL._zoomed) {
+            if (getGLOBAL()._ROOT.stage.displayState !== StageDisplayState.FULL_SCREEN) {
+                if (getGLOBAL()._zoomed) {
                     UI2._top.mcZoom.gotoAndStop(2);
                 }
             }
@@ -502,13 +505,13 @@ export class UI2 {
     }
 
     public static ResizeHandler(e: Event = null): void {
-        const stageWidth = GLOBAL._ROOT.stage.stageWidth;
-        const stageHeight = GLOBAL.GetGameHeight();
+        const stageWidth = getGLOBAL()._ROOT.stage.stageWidth;
+        const stageHeight = getGLOBAL().GetGameHeight();
         const wmBarOffset = UI2._wildMonsterBar != null ? 40 : 0;
         
         const rect = new Rectangle(
-            0 - (stageWidth - GLOBAL._SCREENINIT.width) / 2,
-            0 - (stageHeight - (GLOBAL._SCREENINIT.height + wmBarOffset)) / 2,
+            0 - (stageWidth - getGLOBAL()._SCREENINIT.width) / 2,
+            0 - (stageHeight - (getGLOBAL()._SCREENINIT.height + wmBarOffset)) / 2,
             stageWidth,
             stageHeight
         );
@@ -532,14 +535,14 @@ export class UI2 {
         
         if (UI2._visitor) {
             UI2._visitor.Update();
-            UI2._visitor.mc.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - (UI2._visitor.mc as any).mcBG.width - 10;
-            UI2._visitor.mc.y = GLOBAL._SCREENHUD.y - (UI2._visitor.mc.height + 10);
+            UI2._visitor.mc.x = getGLOBAL()._SCREEN.x + getGLOBAL()._SCREEN.width - (UI2._visitor.mc as any).mcBG.width - 10;
+            UI2._visitor.mc.y = getGLOBAL()._SCREENHUD.y - (UI2._visitor.mc.height + 10);
         }
         
         if (UI2._scareAway) {
-            GLOBAL.RefreshScreen();
-            UI2._scareAway.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - UI2._scareAway.mcBG.width - 10;
-            UI2._scareAway.y = GLOBAL._SCREENHUD.y - (UI2._scareAway.mcBG.height + 10);
+            getGLOBAL().RefreshScreen();
+            UI2._scareAway.x = getGLOBAL()._SCREEN.x + getGLOBAL()._SCREEN.width - UI2._scareAway.mcBG.width - 10;
+            UI2._scareAway.y = getGLOBAL()._SCREENHUD.y - (UI2._scareAway.mcBG.height + 10);
         }
         
         if (Chat._bymChat) {
@@ -585,9 +588,9 @@ export class UI2 {
         UI2._debugWarningTxt.autoSize = TextFieldAutoSize.LEFT;
         UI2._debugWarningTxt.text = text;
         UI2._debugWarningTxt.setTextFormat(format);
-        UI2._debugWarningTxt.x = GLOBAL._SCREEN.x + 15;
-        UI2._debugWarningTxt.y = GLOBAL._SCREEN.y + GLOBAL._SCREEN.height - UI2._debugWarningTxt.height * 0.75;
-        GLOBAL._layerUI.addChild(UI2._debugWarningTxt);
+        UI2._debugWarningTxt.x = getGLOBAL()._SCREEN.x + 15;
+        UI2._debugWarningTxt.y = getGLOBAL()._SCREEN.y + getGLOBAL()._SCREEN.height - UI2._debugWarningTxt.height * 0.75;
+        getGLOBAL()._layerUI.addChild(UI2._debugWarningTxt);
     }
 
     public static DebugWarningEdit(text: string = null): void {
@@ -608,8 +611,8 @@ export class UI2 {
             UI2._debugWarningTxt.autoSize = TextFieldAutoSize.LEFT;
             UI2._debugWarningTxt.text = displayText;
             UI2._debugWarningTxt.setTextFormat(format);
-            UI2._debugWarningTxt.x = GLOBAL._SCREEN.x + 15;
-            UI2._debugWarningTxt.y = GLOBAL._SCREEN.y + GLOBAL._SCREEN.height - UI2._debugWarningTxt.height * 0.75;
+            UI2._debugWarningTxt.x = getGLOBAL()._SCREEN.x + 15;
+            UI2._debugWarningTxt.y = getGLOBAL()._SCREEN.y + getGLOBAL()._SCREEN.height - UI2._debugWarningTxt.height * 0.75;
         }
     }
 }

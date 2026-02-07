@@ -1,12 +1,8 @@
 import { ImageCache } from "./com/monsters/display/ImageCache";
 import { ResourceBombs } from "./com/monsters/effects/ResourceBombs";
 import { SiegeWeaponProperty } from "./com/monsters/siege/SiegeWeaponProperty";
-import { SiegeWeapons } from "./com/monsters/siege/SiegeWeapons";
-import { Decoy } from "./com/monsters/siege/weapons/Decoy";
 import { IDurable } from "./com/monsters/siege/weapons/IDurable";
-import { Jars } from "./com/monsters/siege/weapons/Jars";
 import { SiegeWeapon } from "./com/monsters/siege/weapons/SiegeWeapon";
-import { Vacuum } from "./com/monsters/siege/weapons/Vacuum";
 import Bitmap from "openfl/display/Bitmap";
 import BitmapData from "openfl/display/BitmapData";
 import BlendMode from "openfl/display/BlendMode";
@@ -24,14 +20,21 @@ import Timer from "openfl/utils/Timer";
 import { TweenLite } from "gs/TweenLite";
 import { Bounce, Sine, Circ, Linear } from "gs/easing";
 import { SIEGEWEAPONPOPUP_view } from "./SIEGEWEAPONPOPUP_view";
-import { GLOBAL } from "./GLOBAL";
-import { KEYS } from "./KEYS";
-import { UI2 } from "./UI2";
-import { ATTACK } from "./ATTACK";
-import { BASE } from "./BASE";
 import { POPUPSETTINGS } from "./POPUPSETTINGS";
 import { bubblepopupUpSiegeWeapon_CLIP } from "./bubblepopupUpSiegeWeapon_CLIP";
 import { bmp_healthbarlarge } from "./bmp_healthbarlarge";
+
+// Lazy imports to break circular dependency chains
+function getSiegeWeapons(): any { return require("./com/monsters/siege/SiegeWeapons").SiegeWeapons; }
+function getDecoy(): any { return require("./com/monsters/siege/weapons/Decoy").Decoy; }
+function getJars(): any { return require("./com/monsters/siege/weapons/Jars").Jars; }
+function getVacuum(): any { return require("./com/monsters/siege/weapons/Vacuum").Vacuum; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getUI2(): any { return require("./UI2").UI2; }
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getBASE(): any { return require("./BASE").BASE; }
+
 
 export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
     private readonly DOES_USE_NEW_DISPLAY: boolean = true;
@@ -63,10 +66,10 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
         let _loc4_: string = null;
         if (param1 > 1000000) {
             _loc3_ = "" + param1 / 1000000;
-            _loc4_ = param2 ? " " + KEYS.Get("bomb_million_long") : KEYS.Get("bomb_million_short");
+            _loc4_ = param2 ? " " + getKEYS().Get("bomb_million_long") : getKEYS().Get("bomb_million_short");
             _loc3_ += _loc4_;
         } else {
-            _loc3_ = GLOBAL.FormatNumber(param1);
+            _loc3_ = getGLOBAL().FormatNumber(param1);
         }
         return _loc3_;
     }
@@ -85,13 +88,13 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
         this.timeLeftMC.alpha = 0;
         const _loc2_: number = 0;
         const _loc3_: number = 0;
-        this._currentSiegeWeapon = SiegeWeapons.availableWeapon as SiegeWeapon;
+        this._currentSiegeWeapon = getSiegeWeapons().availableWeapon as SiegeWeapon;
         if (this._currentSiegeWeapon == null) {
-            UI2._top.ClearSiegeWeapon();
+            getUI2()._top.ClearSiegeWeapon();
             return;
         }
         if (param1) {
-            ImageCache.GetImageWithCallBack((SiegeWeapons.availableWeapon as any).image, this.onImageLoaded.bind(this));
+            ImageCache.GetImageWithCallBack((getSiegeWeapons().availableWeapon as any).image, this.onImageLoaded.bind(this));
             return;
         }
         this._iconbg.buttonMode = true;
@@ -107,9 +110,9 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
     public Cancel(): void {
         if (this._currentSiegeWeapon.quantity > 0 && this._state == 1) {
             this._state = 0;
-            this.txtName.htmlText = "<b>\n" + KEYS.Get("siege_firebtn") + "</b>";
+            this.txtName.htmlText = "<b>\n" + getKEYS().Get("siege_firebtn") + "</b>";
             TweenLite.to(this._bar, 0.3, { "autoAlpha": 0, "y": 23 });
-            ATTACK.RemoveDropZone();
+            getATTACK().RemoveDropZone();
         }
         if (this._state <= 1) {
             this._t.stop();
@@ -128,7 +131,7 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
             ImageCache.GetImageWithCallBack(this._currentSiegeWeapon.image, this.onImageLoaded.bind(this));
         }
         if (this._state == 0) {
-            this.txtName.htmlText = "<b>" + KEYS.Get("siege_firebtn") + "</b>";
+            this.txtName.htmlText = "<b>" + getKEYS().Get("siege_firebtn") + "</b>";
             if (this._currentSiegeWeapon.canFire()) {
                 if (this._currentSiegeWeapon.quantity <= 0) {
                     this._image.alpha = 0.5;
@@ -138,17 +141,17 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
                 TweenLite.to(this._bar, 0.3, { "autoAlpha": 0, "y": 23 });
             }
         } else if (this._state == 1) {
-            this.txtName.htmlText = "<b><font color=\"#FF0000\">\n" + KEYS.Get("siege_cancelbtn") + "</font></b>";
+            this.txtName.htmlText = "<b><font color=\"#FF0000\">\n" + getKEYS().Get("siege_cancelbtn") + "</font></b>";
             if (this._bar.parent) {
                 this._bar.parent.setChildIndex(this._bar, this._bar.parent.numChildren - 1);
             }
             TweenLite.to(this._bar, 0.3, { "autoAlpha": 1, "y": 65, "ease": Bounce.easeOut });
-            if (this._currentSiegeWeapon.weaponID == Decoy.ID) {
-                (this._bar as any)._tA.htmlText = KEYS.Get("siege_target_ground");
-            } else if (this._currentSiegeWeapon.weaponID == Jars.ID) {
-                (this._bar as any)._tA.htmlText = KEYS.Get("siege_target_towers");
+            if (this._currentSiegeWeapon.weaponID == getDecoy().ID) {
+                (this._bar as any)._tA.htmlText = getKEYS().Get("siege_target_ground");
+            } else if (this._currentSiegeWeapon.weaponID == getJars().ID) {
+                (this._bar as any)._tA.htmlText = getKEYS().Get("siege_target_towers");
             } else {
-                (this._bar as any)._tA.htmlText = KEYS.Get("siege_target_targets");
+                (this._bar as any)._tA.htmlText = getKEYS().Get("siege_target_targets");
             }
             (this._bar as any)._tA.y = 12;
             (this._bar as any)._tB.y = (this._bar as any).timebar.y;
@@ -156,7 +159,7 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
             (this._bar as any).timebar.visible = false;
         } else if (this._state == 2) {
             if (this.DOES_USE_NEW_DISPLAY) {
-                if (SiegeWeapons.activeWeapon) {
+                if (getSiegeWeapons().activeWeapon) {
                     if (this._currentSiegeWeapon.duration) {
                         this.updateTimeRemaining();
                     }
@@ -168,7 +171,7 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
                 }
                 this.txtName.visible = false;
             } else {
-                _loc2_ = SiegeWeapons.getTimeRemaingOnActiveWeapon();
+                _loc2_ = getSiegeWeapons().getTimeRemaingOnActiveWeapon();
                 _loc3_ = _loc2_ * 10 / 10;
                 if (_loc2_ > 0) {
                     TweenLite.to(this._bar, 0.3, { "autoAlpha": 1, "y": 65, "ease": Sine.easeOut });
@@ -230,7 +233,7 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
     }
 
     private updateTimeRemaining(): void {
-        const _loc1_: number = SiegeWeapons.getTimeRemaingOnActiveWeapon();
+        const _loc1_: number = getSiegeWeapons().getTimeRemaingOnActiveWeapon();
         const _loc2_: number = _loc1_ < 10 ? 16711680 : 255;
         this.timeLeftMC.alpha = 1;
         (this.timeLeftMC as any).timeLeftText.text = _loc1_ + "s";
@@ -299,11 +302,11 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
         } else if (this._state == 0) {
             this.ZeroOutAttacks();
             if (this._currentSiegeWeapon.range > 0) {
-                ATTACK.DropZone(this._currentSiegeWeapon.range, this._currentSiegeWeapon.dropTarget);
+                getATTACK().DropZone(this._currentSiegeWeapon.range, this._currentSiegeWeapon.dropTarget);
                 _loc2_ = true;
                 this._state = 1;
             } else {
-                _loc2_ = SiegeWeapons.activateWeapon(this._currentSiegeWeapon.weaponID);
+                _loc2_ = getSiegeWeapons().activateWeapon(this._currentSiegeWeapon.weaponID);
                 if (_loc2_) {
                     this.HasFired();
                 }
@@ -319,11 +322,11 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
         this._tooltip = new bubblepopupUpSiegeWeapon_CLIP();
         this._tooltip.x = -40;
         this._tooltip.y = 70;
-        let _loc2_: string = "<b>" + this._currentSiegeWeapon.name + "</b>" + "<br>" + "<b>" + KEYS.Get("siege_tooltip_level", { "v1": this._currentSiegeWeapon.level }) + "</b>";
+        let _loc2_: string = "<b>" + this._currentSiegeWeapon.name + "</b>" + "<br>" + "<b>" + getKEYS().Get("siege_tooltip_level", { "v1": this._currentSiegeWeapon.level }) + "</b>";
         const _loc3_: Array<SiegeWeaponProperty> = this._currentSiegeWeapon.getProperties();
         let _loc4_: string = "";
-        if (BASE.isOutpost && !this._currentSiegeWeapon.canUseInOutposts) {
-            _loc4_ += "<b>" + KEYS.Get("vacuum_nooutposts", { "v1": this._currentSiegeWeapon.name }) + "</b><br>";
+        if (getBASE().isOutpost && !this._currentSiegeWeapon.canUseInOutposts) {
+            _loc4_ += "<b>" + getKEYS().Get("vacuum_nooutposts", { "v1": this._currentSiegeWeapon.name }) + "</b><br>";
         } else {
             _loc4_ += this._currentSiegeWeapon.tooltip;
         }
@@ -350,11 +353,11 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
     public Fire(param1: number, param2: number): void {
         let _loc3_: boolean = false;
         if (this._state == 1) {
-            _loc3_ = SiegeWeapons.activateWeapon(this._currentSiegeWeapon.weaponID, param1, param2);
+            _loc3_ = getSiegeWeapons().activateWeapon(this._currentSiegeWeapon.weaponID, param1, param2);
             if (!_loc3_) {
                 return;
             }
-            ATTACK.RemoveDropZone();
+            getATTACK().RemoveDropZone();
             this.HasFired();
         }
     }
@@ -382,16 +385,16 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
     public ZeroOutAttacks(): void {
         let _loc1_: string = null;
         let _loc2_: any = undefined;
-        for (_loc1_ in ATTACK._flingerBucket) {
-            if (ATTACK._flingerBucket[_loc1_].Get() > 0) {
-                (ATTACK._curCreaturesAvailable[_loc1_] as any).Add(ATTACK._flingerBucket[_loc1_].Get());
-                ATTACK._flingerBucket[_loc1_].Set(0);
+        for (_loc1_ in getATTACK()._flingerBucket) {
+            if (getATTACK()._flingerBucket[_loc1_].Get() > 0) {
+                (getATTACK()._curCreaturesAvailable[_loc1_] as any).Add(getATTACK()._flingerBucket[_loc1_].Get());
+                getATTACK()._flingerBucket[_loc1_].Set(0);
             }
         }
-        for (_loc2_ of UI2._top._creatureButtons) {
+        for (_loc2_ of getUI2()._top._creatureButtons) {
             _loc2_.Update();
         }
-        ATTACK.RemoveDropZone();
+        getATTACK().RemoveDropZone();
         ResourceBombs.BombRemove();
     }
 
@@ -405,8 +408,8 @@ export class SIEGEWEAPONPOPUP extends SIEGEWEAPONPOPUP_view {
     public validate(): boolean {
         let _loc1_: boolean = true;
         switch (this._currentSiegeWeapon.weaponID) {
-            case Vacuum.ID:
-                _loc1_ = Boolean(GLOBAL.townHall) && GLOBAL.townHall._destroyed === false;
+            case getVacuum().ID:
+                _loc1_ = Boolean(getGLOBAL().townHall) && getGLOBAL().townHall._destroyed === false;
                 this.enabled = _loc1_;
                 break;
         }

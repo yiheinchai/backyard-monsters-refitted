@@ -1,11 +1,14 @@
 import Point from "openfl/geom/Point";
 
-import { MonsterBase } from "../../MonsterBase";
 import { AOEDamageOnAttackOncePerTarget } from "../../components/abilities/AOEDamageOnAttackOncePerTarget";
-import { Targeting } from "../../../../../Targeting";
 import { CreepBase } from "../CreepBase";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+function getTargeting(): any { return require("../../../../../Targeting").Targeting; }
+function getBFOUNDATION(): any { return require("../../../../../BFOUNDATION").BFOUNDATION; }
+
+
 
 /**
  * King Wormzer - inferno creep with AOE damage on attack (buildings only).
@@ -29,13 +32,13 @@ export class KingWormzer extends CreepBase {
     ) {
         super(id, type, startPos, velocity, startFrame, endFrame, targetPos, ownedByAttacker, building, scale, flipped, parent);
         
-        const targetFlags = Targeting.k_TARGETS_BUILDINGS | Targeting.k_TARGETS_GROUND;
+        const targetFlags = getTargeting().k_TARGETS_BUILDINGS | getTargeting().k_TARGETS_GROUND;
         // Monster targeting parameters disabled.
         // King Wormer's splash damage did not work against monsters in the original game, and is too overpowered when re-enabled.
         //if(ownedByAttacker) {
-        //   targetFlags |= Targeting.k_TARGETS_ATTACKERS;
+        //   targetFlags |= getTargeting().k_TARGETS_ATTACKERS;
         //} else {
-        //   targetFlags |= Targeting.k_TARGETS_DEFENDERS;
+        //   targetFlags |= getTargeting().k_TARGETS_DEFENDERS;
         //}
         this.addComponent(new AOEDamageOnAttackOncePerTarget(100, targetFlags, 4));
     }

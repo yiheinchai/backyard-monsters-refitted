@@ -1,4 +1,7 @@
-import { KEYS } from "../../../../KEYS";
+
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
 
 /**
  * Contact - represents a player contact for mailbox.
@@ -38,7 +41,7 @@ export class Contact {
     }
 
     public toString(): string {
-        return KEYS.Get("contact_tostring", {
+        return getKEYS().Get("contact_tostring", {
             "v1": this.lastname,
             "v2": this.firstname,
             "v3": this.userid

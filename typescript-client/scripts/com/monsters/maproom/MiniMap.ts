@@ -11,7 +11,10 @@ import { PlayerLayer } from "./PlayerLayer";
 import { Ring } from "./Ring";
 import { WildMonsterBase } from "./WildMonsterBase";
 
-import { TUTORIAL } from "../../../TUTORIAL";
+// Lazy imports to break circular dependency chains
+function getTUTORIAL(): any { return require("../../../TUTORIAL").TUTORIAL; }
+
+
 
 /**
  * Mini map - displays an overview of the map room with player and AI bases.
@@ -75,7 +78,7 @@ export class MiniMap extends MiniMap_CLIP {
     }
 
     private mapDown(event: MouseEvent): void {
-        if (TUTORIAL._stage < 110) {
+        if (getTUTORIAL()._stage < 110) {
             return;
         }
         if (event.target !== this.selector) {
@@ -102,7 +105,7 @@ export class MiniMap extends MiniMap_CLIP {
     }
 
     private selectorDown(event: MouseEvent): void {
-        if (TUTORIAL._stage < 110) {
+        if (getTUTORIAL()._stage < 110) {
             return;
         }
         const bounds = new Rectangle(this.background_mc.x, this.background_mc.y, this.background_mc.width - this.selector!.width + 1, this.background_mc.height - this.selector!.height + 1);

@@ -8,11 +8,14 @@ import { ReplayableEventHandler } from "../replayableEvents/ReplayableEventHandl
 import { RewardHandler } from "../rewarding/RewardHandler";
 import { EventStorePrize } from "./EventStorePrize";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { POPUPS } from "../../../POPUPS";
 import { POPUPSETTINGS } from "../../../POPUPSETTINGS";
 import { EventStoreItemSelectedPopupMC } from "../../../EventStoreItemSelectedPopupMC";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getPOPUPS(): any { return require("../../../POPUPS").POPUPS; }
+
 
 /**
  * Singleton lock for singleton pattern
@@ -48,8 +51,8 @@ export class EventStoreItemSelectedPopup extends EventStoreItemSelectedPopupMC {
         }
         
         this.m_PrizeBeingDisplayed = prize;
-        GLOBAL.BlockerAdd(GLOBAL._layerTop);
-        POPUPS.Add(this);
+        getGLOBAL().BlockerAdd(getGLOBAL()._layerTop);
+        getPOPUPS().Add(this);
         POPUPSETTINGS.AlignToCenter(this);
         
         if (ReplayableEventHandler.activeEvent && ReplayableEventHandler.activeEvent.eventStoreTitleImage) {
@@ -61,22 +64,22 @@ export class EventStoreItemSelectedPopup extends EventStoreItemSelectedPopupMC {
         ImageCache.GetImageWithCallBack(this.m_PrizeBeingDisplayed.previewImageURL, this.OnPreviewImageLoaded.bind(this));
         
         const xpBalance = ReplayableEventHandler.eventXP;
-        const prizeName = KEYS.Get(this.m_PrizeBeingDisplayed.nameKey);
+        const prizeName = getKEYS().Get(this.m_PrizeBeingDisplayed.nameKey);
         
-        this.prizeNameText.htmlText = KEYS.Get("prize_title", { v1: prizeName });
-        this.descriptionText.htmlText = KEYS.Get(this.m_PrizeBeingDisplayed.descriptionKey);
-        this.experienceDisplay.xpBalanceText.htmlText = KEYS.Get("event_store_xp_balance", { v1: xpBalance });
-        this.xpCostText.htmlText = KEYS.Get("event_store_cost", { v1: this.m_PrizeBeingDisplayed.xpCost });
+        this.prizeNameText.htmlText = getKEYS().Get("prize_title", { v1: prizeName });
+        this.descriptionText.htmlText = getKEYS().Get(this.m_PrizeBeingDisplayed.descriptionKey);
+        (this.experienceDisplay as any).xpBalanceText.htmlText = getKEYS().Get("event_store_xp_balance", { v1: xpBalance });
+        this.xpCostText.htmlText = getKEYS().Get("event_store_cost", { v1: this.m_PrizeBeingDisplayed.xpCost });
         
         if (this.m_PrizeBeingDisplayed.lockIcon.visible) {
-            this.purchaseButton.Setup(KEYS.Get("event_store_prize_locked"));
+            this.purchaseButton.Setup(getKEYS().Get("event_store_prize_locked"));
             this.purchaseButton.Enabled = false;
         } else if (xpBalance < this.m_PrizeBeingDisplayed.xpCost) {
             const xpNeeded = this.m_PrizeBeingDisplayed.xpCost - xpBalance;
-            this.purchaseButton.Setup(KEYS.Get("event_store_xp_needed", { v1: xpNeeded }));
+            this.purchaseButton.Setup(getKEYS().Get("event_store_xp_needed", { v1: xpNeeded }));
             this.purchaseButton.Enabled = false;
         } else {
-            this.purchaseButton.Setup(KEYS.Get("event_store_purchase"));
+            this.purchaseButton.Setup(getKEYS().Get("event_store_purchase"));
             this.purchaseButton.Enabled = true;
             this.purchaseButton.addEventListener(MouseEvent.CLICK, this.OnPurchaseClicked.bind(this));
         }
@@ -110,8 +113,8 @@ export class EventStoreItemSelectedPopup extends EventStoreItemSelectedPopupMC {
             this.m_PreviewImage.bitmapData = null;
         }
         
-        POPUPS.Remove(this);
-        GLOBAL.BlockerRemove();
+        getPOPUPS().Remove(this);
+        getGLOBAL().BlockerRemove();
         this.m_PrizeBeingDisplayed = null;
     }
 

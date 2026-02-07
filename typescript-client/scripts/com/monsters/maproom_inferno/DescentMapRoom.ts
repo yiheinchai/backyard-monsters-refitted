@@ -10,8 +10,11 @@ import { Obstruction } from "./Obstruction";
 import { PushPin } from "./PushPin";
 import { MapRoomPopup_InfernoDescent } from "../../../MapRoomPopup_InfernoDescent";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { SOUNDS } from "../../../SOUNDS";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+
+
 
 /**
  * Descent map room - inferno descent map room popup.
@@ -39,8 +42,8 @@ export class DescentMapRoom extends MapRoomPopup_InfernoDescent {
     }
 
     public Setup(): void {
-        this.x = GLOBAL._SCREENCENTER.x;
-        this.y = GLOBAL._SCREENCENTER.y + 20;
+        this.x = getGLOBAL()._SCREENCENTER.x;
+        this.y = getGLOBAL()._SCREENCENTER.y + 20;
         DescentMapRoom.top = new Sprite();
         DescentMapRoom.top.addChild(this.bReturn);
         this.addChild(DescentMapRoom.top);
@@ -87,7 +90,7 @@ export class DescentMapRoom extends MapRoomPopup_InfernoDescent {
 
     public setView(view: MovieClip): void {
         if (!this.firstRun) {
-            SOUNDS.Play("click1");
+            getSOUNDS().Play("click1");
         }
         if (Boolean(DescentMapRoom.currentView) && Boolean(DescentMapRoom.currentView!.parent)) {
             DescentMapRoom.currentView!.parent.removeChild(DescentMapRoom.currentView!);
@@ -123,7 +126,7 @@ export class DescentMapRoom extends MapRoomPopup_InfernoDescent {
     }
 
     public Resize(): void {
-        this.x = GLOBAL._SCREENCENTER.x;
-        this.y = GLOBAL._SCREENCENTER.y + 20;
+        this.x = getGLOBAL()._SCREENCENTER.x;
+        this.y = getGLOBAL()._SCREENCENTER.y + 20;
     }
 }

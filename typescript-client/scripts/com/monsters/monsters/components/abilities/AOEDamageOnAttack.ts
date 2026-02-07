@@ -3,7 +3,10 @@ import { ITargetable } from "../../../interfaces/ITargetable";
 import { IAttackingComponent } from "../IAttackingComponent";
 import { AOEDamage } from "./AOEDamage";
 
-import { GLOBAL } from "../../../../../GLOBAL";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+
+
 
 /**
  * AOE damage on attack - deals AOE damage when monster attacks.
@@ -25,7 +28,7 @@ export class AOEDamageOnAttack extends AOEDamage implements IAttackingComponent 
     }
 
     public onAttack(target: IAttackable, damageDealt: number, projectile: ITargetable | null = null): number {
-        if (GLOBAL.Timestamp() >= this.m_timeAbilityIsRecharged) {
+        if (getGLOBAL().Timestamp() >= this.m_timeAbilityIsRecharged) {
             this.dealAOEDamage(damageDealt, target);
         }
         return 0;
@@ -33,6 +36,6 @@ export class AOEDamageOnAttack extends AOEDamage implements IAttackingComponent 
 
     protected override dealAOEDamage(damage: number, initialTarget: IAttackable | null = null): void {
         super.dealAOEDamage(damage, initialTarget);
-        this.m_timeAbilityIsRecharged = GLOBAL.Timestamp() + this.m_rechargeDuration;
+        this.m_timeAbilityIsRecharged = getGLOBAL().Timestamp() + this.m_rechargeDuration;
     }
 }

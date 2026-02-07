@@ -3,9 +3,12 @@ import BitmapData from 'openfl/display/BitmapData';
 import MouseEvent from 'openfl/events/MouseEvent';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { WMIEXTENSIONPOPUP_CLIP } from './WMIEXTENSIONPOPUP_CLIP';
-import { KEYS } from './KEYS';
-import { POPUPS } from './POPUPS';
-import { SPECIALEVENT } from './SPECIALEVENT';
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSPECIALEVENT(): any { return require("./SPECIALEVENT").SPECIALEVENT; }
+
 
 export class WMIEXTENSIONPOPUP extends WMIEXTENSIONPOPUP_CLIP {
     private static _open: boolean = false;
@@ -26,11 +29,11 @@ export class WMIEXTENSIONPOPUP extends WMIEXTENSIONPOPUP_CLIP {
             this.mcImage.height = 200;
         };
         super();
-        ImageCache.GetImageWithCallBack(SPECIALEVENT.BANNERIMAGE, bannerComplete);
+        ImageCache.GetImageWithCallBack(getSPECIALEVENT().BANNERIMAGE, bannerComplete);
         ImageCache.GetImageWithCallBack("specialevent/wmi2_4-v2.png", imageComplete);
         this.mcFrame.Setup(true);
         this.closeBtn.visible = false;
-        this.mcText.htmlText = KEYS.Get("wmi2_popup4");
+        this.mcText.htmlText = getKEYS().Get("wmi2_popup4");
         WMIEXTENSIONPOPUP._open = true;
     }
 
@@ -40,7 +43,7 @@ export class WMIEXTENSIONPOPUP extends WMIEXTENSIONPOPUP_CLIP {
 
     public Hide(): void {
         WMIEXTENSIONPOPUP._open = false;
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 
     private CloseButtonClicked(param1: MouseEvent): void {

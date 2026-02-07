@@ -3,7 +3,6 @@ import MouseEvent from "openfl/events/MouseEvent";
 
 import { Chat } from "../chat/Chat";
 import { MapRoom3 } from "../maproom3/MapRoom3";
-import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { UI_MISSIONMENU } from "../missions/UI_MISSIONMENU";
 import { MonsterMadness } from "../replayableEvents/attacking/monsterMadness/MonsterMadness";
 import { MonsterMadnessInfoBar } from "../replayableEvents/attacking/monsterMadness/MonsterMadnessInfoBar";
@@ -12,15 +11,19 @@ import { UI_NEXTWAVE } from "../../../UI_NEXTWAVE";
 import { UI_NEXTWAVE_WM1 } from "../../../UI_NEXTWAVE_WM1";
 import { popup_prefab_help } from "../../../popup_prefab_help";
 
-import { BASE } from "../../../BASE";
-import { BUILDINGS } from "../../../BUILDINGS";
-import { GLOBAL } from "../../../GLOBAL";
-import { POPUPS } from "../../../POPUPS";
-import { QUESTS } from "../../../QUESTS";
-import { SPECIALEVENT } from "../../../SPECIALEVENT";
-import { STORE } from "../../../STORE";
-import { TUTORIAL } from "../../../TUTORIAL";
-import { UI2 } from "../../../UI2";
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getBUILDINGS(): any { return require("../../../BUILDINGS").BUILDINGS; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getPOPUPS(): any { return require("../../../POPUPS").POPUPS; }
+function getQUESTS(): any { return require("../../../QUESTS").QUESTS; }
+function getSPECIALEVENT(): any { return require("../../../SPECIALEVENT").SPECIALEVENT; }
+function getSTORE(): any { return require("../../../STORE").STORE; }
+function getTUTORIAL(): any { return require("../../../TUTORIAL").TUTORIAL; }
+function getUI2(): any { return require("../../../UI2").UI2; }
+
+
 
 /**
  * UI_BOTTOM - manages the bottom UI bar with build, quests, store, and map buttons.
@@ -39,55 +42,55 @@ export class UI_BOTTOM {
     public static Setup(): void {
         UI_BOTTOM._children = [];
         UI_BOTTOM._mc = new UI_MENU();
-        if (!UI_BOTTOM._missions && !GLOBAL._flags.viximo) {
+        if (!UI_BOTTOM._missions && !getGLOBAL()._flags.viximo) {
             UI_BOTTOM._missions = new UI_MISSIONMENU();
         }
         UI_BOTTOM._mc.Setup();
-        UI_BOTTOM._mc.bBuild.addEventListener(MouseEvent.CLICK, BUILDINGS.Show);
-        UI_BOTTOM._mc.bQuests.addEventListener(MouseEvent.CLICK, QUESTS.Show);
+        UI_BOTTOM._mc.bBuild.addEventListener(MouseEvent.CLICK, getBUILDINGS().Show);
+        UI_BOTTOM._mc.bQuests.addEventListener(MouseEvent.CLICK, getQUESTS().Show);
         UI_BOTTOM._mc.bStore.addEventListener(MouseEvent.CLICK, UI_BOTTOM.clickedStore);
-        UI_BOTTOM._mc.bMap.addEventListener(MouseEvent.CLICK, GLOBAL.ShowMap);
+        UI_BOTTOM._mc.bMap.addEventListener(MouseEvent.CLICK, getGLOBAL().ShowMap);
         if (UI_BOTTOM._missions) {
-            GLOBAL._layerUI.addChild(UI_BOTTOM._missions);
+            getGLOBAL()._layerUI.addChild(UI_BOTTOM._missions);
         }
         if (UI_BOTTOM._mc) {
-            GLOBAL._layerUI.addChild(UI_BOTTOM._mc);
+            getGLOBAL()._layerUI.addChild(UI_BOTTOM._mc);
         }
-        if (BASE.isOutpostMapRoom2Only) {
+        if (getBASE().isOutpostMapRoom2Only) {
             UI_BOTTOM._mc.bKits.addEventListener(MouseEvent.CLICK, UI_BOTTOM.ShowStarterKits);
         }
-        if (!UI2._showBottom) {
+        if (!getUI2()._showBottom) {
             UI_BOTTOM.Hide();
         }
         UI_BOTTOM._nextwave = new UI_NEXTWAVE();
         UI_BOTTOM._nextwave.Setup();
         if (UI_BOTTOM._nextwave) {
-            GLOBAL._layerUI.addChild(UI_BOTTOM._nextwave);
+            getGLOBAL()._layerUI.addChild(UI_BOTTOM._nextwave);
         }
         UI_BOTTOM._nextwave.visible = false;
 
         UI_BOTTOM._nextwave_wm1 = new UI_NEXTWAVE_WM1();
         UI_BOTTOM._nextwave_wm1.Setup();
         if (UI_BOTTOM._nextwave_wm1) {
-            GLOBAL._layerUI.addChild(UI_BOTTOM._nextwave_wm1);
+            getGLOBAL()._layerUI.addChild(UI_BOTTOM._nextwave_wm1);
         }
         UI_BOTTOM._nextwave_wm1.visible = false;
     }
 
     public static clickedStore(event: MouseEvent): void {
-        if (MapRoomManager.instance.isInMapRoom3 && !BASE.isMainYardOrInfernoMainYard) {
+        if (getMapRoomManager().instance.isInMapRoom3 && !getBASE().isMainYardOrInfernoMainYard) {
             return;
         }
-        STORE.Show(1, 1)(event);
+        getSTORE().Show(1, 1)(event);
     }
 
     public static ShowStarterKits(event: MouseEvent | null = null): void {
-        POPUPS.Push(new popup_prefab_help());
+        getPOPUPS().Push(new popup_prefab_help());
     }
 
     public static Update(): void {
         let completedCount = 0;
-        for (const completed of QUESTS._completed) {
+        for (const completed of getQUESTS()._completed) {
             if (completed === 1) {
                 completedCount += 1;
             }
@@ -97,20 +100,20 @@ export class UI_BOTTOM {
             UI_BOTTOM._missions.Update();
         }
         if (UI_BOTTOM._mc!.bStore) {
-            if (MapRoomManager.instance.isInMapRoom3 && BASE.isMainYardOrInfernoMainYard && Boolean(GLOBAL._bStore)) {
+            if (getMapRoomManager().instance.isInMapRoom3 && getBASE().isMainYardOrInfernoMainYard && Boolean(getGLOBAL()._bStore)) {
                 UI_BOTTOM._mc!.bStore.Enabled = true;
-            } else if (!MapRoomManager.instance.isInMapRoom3 && (GLOBAL._bStore || !BASE.isMainYard)) {
+            } else if (!getMapRoomManager().instance.isInMapRoom3 && (getGLOBAL()._bStore || !getBASE().isMainYard)) {
                 UI_BOTTOM._mc!.bStore.Enabled = true;
             } else {
-                UI_BOTTOM._mc!.bStore.Enabled = BASE.isMainYardInfernoOnly;
+                UI_BOTTOM._mc!.bStore.Enabled = getBASE().isMainYardInfernoOnly;
             }
         }
-        if (Boolean(GLOBAL._bMap) || !BASE.isMainYard) {
+        if (Boolean(getGLOBAL()._bMap) || !getBASE().isMainYard) {
             UI_BOTTOM._mc!.bMap.Enabled = true;
         } else {
             UI_BOTTOM._mc!.bMap.Enabled = false;
         }
-        const inMR3NonMainYard = !BASE.isMainYardOrInfernoMainYard && MapRoomManager.instance.isInMapRoom3;
+        const inMR3NonMainYard = !getBASE().isMainYardOrInfernoMainYard && getMapRoomManager().instance.isInMapRoom3;
         UI_BOTTOM._mc!.bQuests.Enabled = !inMR3NonMainYard;
         UI_BOTTOM._mc!.bQuests.mouseEnabled = !inMR3NonMainYard;
         if (!UI_BOTTOM._mc!._sorted) {
@@ -128,8 +131,8 @@ export class UI_BOTTOM {
         if (UI_BOTTOM._nextwave_wm1) {
             UI_BOTTOM._nextwave_wm1.Resize();
         }
-        if (TUTORIAL._stage < TUTORIAL._endstage) {
-            TUTORIAL.Resize();
+        if (getTUTORIAL()._stage < getTUTORIAL()._endstage) {
+            getTUTORIAL().Resize();
         }
         if (MapRoom3.mapRoom3Window) {
             MapRoom3.mapRoom3WindowHUD.PositionRightMenuButtonsBar();
@@ -138,10 +141,10 @@ export class UI_BOTTOM {
 
     public static Clear(): void {
         if (Boolean(UI_BOTTOM._mc) && Boolean(UI_BOTTOM._mc!.parent)) {
-            UI_BOTTOM._mc!.bBuild.removeEventListener(MouseEvent.CLICK, BUILDINGS.Show);
-            UI_BOTTOM._mc!.bQuests.removeEventListener(MouseEvent.CLICK, QUESTS.Show);
-            UI_BOTTOM._mc!.bStore.removeEventListener(MouseEvent.CLICK, STORE.Show(1, 1));
-            UI_BOTTOM._mc!.bMap.removeEventListener(MouseEvent.CLICK, GLOBAL.ShowMap);
+            UI_BOTTOM._mc!.bBuild.removeEventListener(MouseEvent.CLICK, getBUILDINGS().Show);
+            UI_BOTTOM._mc!.bQuests.removeEventListener(MouseEvent.CLICK, getQUESTS().Show);
+            UI_BOTTOM._mc!.bStore.removeEventListener(MouseEvent.CLICK, getSTORE().Show(1, 1));
+            UI_BOTTOM._mc!.bMap.removeEventListener(MouseEvent.CLICK, getGLOBAL().ShowMap);
             UI_BOTTOM._mc!.parent.removeChild(UI_BOTTOM._mc!);
             UI_BOTTOM._mc = null;
         }
@@ -159,7 +162,7 @@ export class UI_BOTTOM {
                 Chat._bymChat.show();
             }
         }
-        SPECIALEVENT.updateNextWaveUI();
+        getSPECIALEVENT().updateNextWaveUI();
         if (MonsterMadness.infoBar) {
             MonsterMadness.addInfoBar();
         }
@@ -202,7 +205,7 @@ export class UI_BOTTOM {
 
     public static addChild(child: DisplayObject): void {
         UI_BOTTOM._children.push(child);
-        GLOBAL._layerUI.addChild(child);
+        getGLOBAL()._layerUI.addChild(child);
     }
 
     public static removeChild(child: DisplayObject): void {

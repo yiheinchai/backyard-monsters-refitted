@@ -3,8 +3,11 @@ import { BookmarksDisplayList } from "./BookmarksDisplayList";
 import { BookmarksPopupMenuItem } from "./BookmarksPopupMenuItem";
 import { Bookmark } from "./Bookmark";
 
-import { KEYS } from "../../../../KEYS";
-import { POPUPS } from "../../../../POPUPS";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getPOPUPS(): any { return require("../../../../POPUPS").POPUPS; }
+
+
 
 /**
  * Bookmarks popup - displays bookmarked map locations in map room 3.
@@ -16,7 +19,7 @@ export class BookmarksPopup extends MapRoom3BookmarksPopup {
 
     constructor() {
         super();
-        this.titleText.text = KEYS.Get("mr3_bookmarks_popup_title");
+        this.titleText.text = getKEYS().Get("mr3_bookmarks_popup_title");
         this.contentsFrame.mouseEnabled = false;
         this.contentsMask.mouseEnabled = false;
     }
@@ -29,7 +32,7 @@ export class BookmarksPopup extends MapRoom3BookmarksPopup {
             BookmarksPopup.MAX_BOOKMARKS_DISPLAY_LIST_LENGTH
         );
         this.contentsContainer.addChild(this.m_BookmarkDisplayList);
-        POPUPS.Push(this);
+        getPOPUPS().Push(this);
     }
 
     private CreateNewBookmarksPopupMenuItem(bookmark: Bookmark, index: number): BookmarksPopupMenuItem {
@@ -37,7 +40,7 @@ export class BookmarksPopup extends MapRoom3BookmarksPopup {
     }
 
     public Hide(): void {
-        POPUPS.Next();
+        getPOPUPS().Next();
         if (this.m_BookmarkDisplayList !== null) {
             this.contentsContainer.removeChild(this.m_BookmarkDisplayList);
             this.m_BookmarkDisplayList = null;

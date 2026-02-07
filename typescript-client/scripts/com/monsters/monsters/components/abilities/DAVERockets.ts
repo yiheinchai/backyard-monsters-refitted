@@ -3,7 +3,10 @@ import { ITargetable } from "../../../interfaces/ITargetable";
 import { Component } from "../Component";
 import { IAttackingComponent } from "../IAttackingComponent";
 
-import { SPRITES } from "../../../../../SPRITES";
+// Lazy imports to break circular dependency chains
+function getSPRITES(): any { return require("../../../../../SPRITES").SPRITES; }
+
+
 
 /**
  * DAVE rockets - ability that enables rocket attacks for DAVE monster.
@@ -15,7 +18,7 @@ export class DAVERockets extends Component implements IAttackingComponent {
 
     protected override onRegister(): void {
         this.owner.targetMode = 1;
-        SPRITES.SetupSprite("rocket");
+        getSPRITES().SetupSprite("rocket");
         this.owner.range = 100 + 40 * this.owner.powerUpLevel();
     }
 

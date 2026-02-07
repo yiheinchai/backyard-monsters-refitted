@@ -9,19 +9,22 @@ import Rectangle from 'openfl/geom/Rectangle';
 import { SecNum } from './com/cc/utils/SecNum';
 import { BuildingAssetContainer } from './com/monsters/display/BuildingAssetContainer';
 import { IAttackable } from './com/monsters/interfaces/IAttackable';
-import { MonsterBase } from './com/monsters/monsters/MonsterBase';
 import { Spurtz } from './com/monsters/monsters/creeps/inferno/Spurtz';
 import { MathUtils } from './com/monsters/utils/MathUtils';
 import { BTOWER } from './BTOWER';
-import { SPRITES } from './SPRITES';
-import { FIREBALL } from './FIREBALL';
-import { FIREBALLS } from './FIREBALLS';
-import { GLOBAL } from './GLOBAL';
-import { SOUNDS } from './SOUNDS';
-import { ATTACK } from './ATTACK';
-import { MAP } from './MAP';
-import { CREATURES } from './CREATURES';
-import { Targeting } from './Targeting';
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getSPRITES(): any { return require("./SPRITES").SPRITES; }
+function getFIREBALL(): any { return require("./FIREBALL").FIREBALL; }
+function getFIREBALLS(): any { return require("./FIREBALLS").FIREBALLS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getTargeting(): any { return require("./Targeting").Targeting; }
+
 
 export class SpurtzCannon extends BTOWER {
     public static readonly TYPE: number = 136;
@@ -52,8 +55,8 @@ export class SpurtzCannon extends BTOWER {
         }
         this._type = param1;
         this.SetProps();
-        this._projectileType = FIREBALL.TYPE_SPURTZ;
-        SPRITES.SetupSprite(SpurtzCannon.SPURTZ_PROJECTILE);
+        this._projectileType = getFIREBALL().TYPE_SPURTZ;
+        getSPRITES().SetupSprite(SpurtzCannon.SPURTZ_PROJECTILE);
         this._spurts = [];
         this._buildInstant = true;
         this._buildInstantCost = new SecNum(0);
@@ -163,7 +166,7 @@ export class SpurtzCannon extends BTOWER {
     }
 
     private shoot(): void {
-        SOUNDS.Play(Math.random() > 0.5 ? "magma2" : "magma1");
+        getSOUNDS().Play(Math.random() > 0.5 ? "magma2" : "magma1");
         if (this.isJard) {
             this.shootJar();
             return;
@@ -174,11 +177,11 @@ export class SpurtzCannon extends BTOWER {
         const _loc4_ = (this._barrelRotation + 180) * (Math.PI / 180);
         let _loc5_ = new Point(this.x + Math.cos(_loc4_) * _loc3_, this.y + Math.sin(_loc4_) * _loc3_);
         _loc5_ = _loc5_.add(new Point(this.getSpreadFromDistance(_loc3_ * 0.2), this.getSpreadFromDistance(_loc3_ * 0.2)));
-        if (GLOBAL._towerOverdrive && GLOBAL._towerOverdrive.Get() >= GLOBAL.Timestamp()) {
+        if (getGLOBAL()._towerOverdrive && getGLOBAL()._towerOverdrive.Get() >= getGLOBAL().Timestamp()) {
             _loc2_ = 1.25;
         }
-        this._projectile = FIREBALLS.Spawn2(new Point(this._mc.x, this._mc.y + this._top), _loc5_, null, this._speed, Math.floor(this.damage * _loc1_ * _loc2_), this._splash, this._projectileType, 3, this);
-        this._projectile.addEventListener(FIREBALL.COLLIDED, this.collidedWithTarget.bind(this), false, 0, true);
+        this._projectile = getFIREBALLS().Spawn2(new Point(this._mc.x, this._mc.y + this._top), _loc5_, null, this._speed, Math.floor(this.damage * _loc1_ * _loc2_), this._splash, this._projectileType, 3, this);
+        this._projectile.addEventListener(getFIREBALL().COLLIDED, this.collidedWithTarget.bind(this), false, 0, true);
         ++this._shotsFired;
         this.scaleDisplayObjectRandomly(this._projectile._graphic);
     }
@@ -186,12 +189,12 @@ export class SpurtzCannon extends BTOWER {
     private shootJar(): void {
         const _loc1_ = 0.5 + 0.5 / this.maxHealth * this.health;
         let _loc2_ = 1;
-        if (GLOBAL._towerOverdrive && GLOBAL._towerOverdrive.Get() >= GLOBAL.Timestamp()) {
+        if (getGLOBAL()._towerOverdrive && getGLOBAL()._towerOverdrive.Get() >= getGLOBAL().Timestamp()) {
             _loc2_ = 1.25;
         }
         const _loc3_ = Math.floor(this.damage * 0.25 * _loc1_ * _loc2_);
         this._jarHealth.Add(-_loc3_);
-        ATTACK.Damage(this._mc.x, this._mc.y + this._top, _loc3_);
+        getATTACK().Damage(this._mc.x, this._mc.y + this._top, _loc3_);
     }
 
     private scaleDisplayObjectRandomly(param1: DisplayObject): void {
@@ -215,7 +218,7 @@ export class SpurtzCannon extends BTOWER {
 
     protected collidedWithTarget(param1: Event): void {
         const _loc2_ = param1.target as FIREBALL;
-        _loc2_.removeEventListener(FIREBALL.COLLIDED, this.collidedWithTarget.bind(this));
+        _loc2_.removeEventListener(getFIREBALL().COLLIDED, this.collidedWithTarget.bind(this));
         const _loc3_ = Math.atan2(_loc2_._startPoint.x - _loc2_._targetPoint.x, _loc2_._startPoint.y - _loc2_._targetPoint.y);
         const _loc4_ = _loc3_ * (180 / Math.PI);
         this.dealAoEDamage(_loc2_);
@@ -227,14 +230,14 @@ export class SpurtzCannon extends BTOWER {
     private dealAoEDamage(param1: FIREBALL): void {
         const _loc2_ = this._projectile._graphic.width + this._projectile._graphic.height;
         const _loc3_ = new Point(param1._tmpX, this._projectile._tmpY);
-        const _loc4_ = Targeting.getCreepsInRange(_loc2_, _loc3_, Targeting.getOldStyleTargets(0));
+        const _loc4_ = getTargeting().getCreepsInRange(_loc2_, _loc3_, getTargeting().getOldStyleTargets(0));
         if (_loc4_.length > 0) {
-            Targeting.DealLinearAEDamage(_loc3_, _loc2_, this._projectile._damage, _loc4_);
+            getTargeting().DealLinearAEDamage(_loc3_, _loc2_, this._projectile._damage, _loc4_);
         }
     }
 
     private spawnSpurtzAt(param1: number, param2: number, param3: number, param4: number): void {
-        const _loc5_ = CREATURES.Spawn("IC1", MAP._BUILDINGTOPS, "defend", new Point(param1, param2), param3) as Spurtz;
+        const _loc5_ = getCREATURES().Spawn("IC1", getMAP()._BUILDINGTOPS, "defend", new Point(param1, param2), param3) as Spurtz;
         _loc5_.isDisposable = true;
         _loc5_.findDefenseTargets();
         _loc5_.graphic.scaleX = param4;

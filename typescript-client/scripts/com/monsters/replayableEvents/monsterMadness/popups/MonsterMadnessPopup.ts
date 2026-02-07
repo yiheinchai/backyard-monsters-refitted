@@ -4,7 +4,6 @@ import MovieClip from "openfl/display/MovieClip";
 import Event from "openfl/events/Event";
 
 import { ImageCache } from "../../../display/ImageCache";
-import { MapRoomManager } from "../../../maproom_manager/MapRoomManager";
 import { MonsterMadness } from "../../attacking/monsterMadness/MonsterMadness";
 import { MonsterMadnessPopupInfo } from "./MonsterMadnessPopupInfo";
 import { MonsterMadnessPopupInfoSet1 } from "./MonsterMadnessPopupInfoSet1";
@@ -20,12 +19,16 @@ import { MonsterMadnessPopupInfoGoal3Complete } from "./MonsterMadnessPopupInfoG
 import { MonsterMadnessPopupInfoEventComplete } from "./MonsterMadnessPopupInfoEventComplete";
 import { MonsterMadnessPopup_CLIP } from "../../../../../MonsterMadnessPopup_CLIP";
 
-import { GLOBAL } from "../../../../../GLOBAL";
-import { KEYS } from "../../../../../KEYS";
-import { CREATURES } from "../../../../../CREATURES";
-import { CHAMPIONCAGE } from "../../../../../CHAMPIONCAGE";
 import { MAPROOM_DESCENT } from "../../../../../MAPROOM_DESCENT";
-import { UI2 } from "../../../../../UI2";
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../../../maproom_manager/MapRoomManager").MapRoomManager; }
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../../KEYS").KEYS; }
+function getCREATURES(): any { return require("../../../../../CREATURES").CREATURES; }
+function getCHAMPIONCAGE(): any { return require("../../../../../CHAMPIONCAGE").CHAMPIONCAGE; }
+function getUI2(): any { return require("../../../../../UI2").UI2; }
+
 
 /**
  * Monster Madness popup - main event popup displaying goals and progress.
@@ -62,10 +65,10 @@ export class MonsterMadnessPopup extends MonsterMadnessPopup_CLIP {
         this.infoIndex = MonsterMadnessPopup._infoSets.indexOf(infoSet);
         ImageCache.GetImageWithCallBack(infoSet.getBanner(userState), this.onImageLoad.bind(this), true, 4, "", [this.mcImage]);
         let guardianName: string = "";
-        if (CREATURES._guardian) {
-            guardianName = String(CHAMPIONCAGE._guardians["G" + CREATURES._guardian._type].name);
+        if (getCREATURES()._guardian) {
+            guardianName = String(getCHAMPIONCAGE()._guardians["G" + getCREATURES()._guardian._type].name);
         }
-        this.tCopy.htmlText = KEYS.Get(infoSet.getCopy(userState), {
+        this.tCopy.htmlText = getKEYS().Get(infoSet.getCopy(userState), {
             "v1": guardianName,
             "v2": guardianName
         });
@@ -73,7 +76,7 @@ export class MonsterMadnessPopup extends MonsterMadnessPopup_CLIP {
         infoSet.setupButton(this.bAction, userState);
         infoSet.setupButton2(this.bAction2, userState);
         this.mcVideo.addChild(infoSet.getMedia(userState));
-        UI2.DebugWarningEdit("MM Userstate: " + userState);
+        getUI2().DebugWarningEdit("MM Userstate: " + userState);
     }
 
     public static getSetIndex(): number {
@@ -90,7 +93,7 @@ export class MonsterMadnessPopup extends MonsterMadnessPopup_CLIP {
             } else {
                 setIndex = 4;
             }
-            const lastPopupIndex: number = GLOBAL.StatGet(MonsterMadness.LAST_POPUP_INDEX);
+            const lastPopupIndex: number = getGLOBAL().StatGet(MonsterMadness.LAST_POPUP_INDEX);
             if (setIndex <= lastPopupIndex && MonsterMadnessPopup._infoSets[setIndex].isOnlySeenOnce) {
                 setIndex++;
             }
@@ -116,16 +119,16 @@ export class MonsterMadnessPopup extends MonsterMadnessPopup_CLIP {
     }
 
     private getUserState(): number {
-        if (MapRoomManager.instance.isInMapRoom2 && MAPROOM_DESCENT.DescentPassed) {
+        if (getMapRoomManager().instance.isInMapRoom2 && MAPROOM_DESCENT.DescentPassed) {
             return MonsterMadnessPopup.MR2_AND_INFERNO;
         }
-        if (MapRoomManager.instance.isInMapRoom2) {
+        if (getMapRoomManager().instance.isInMapRoom2) {
             return MonsterMadnessPopup.MR2;
         }
         if (MAPROOM_DESCENT.DescentPassed) {
             return MonsterMadnessPopup.INFERNO;
         }
-        if (Boolean(GLOBAL.townHall) && GLOBAL.townHall._lvl.Get() >= 5) {
+        if (Boolean(getGLOBAL().townHall) && getGLOBAL().townHall._lvl.Get() >= 5) {
             return MonsterMadnessPopup.TOWNHALL_GREATER_THAN_5;
         }
         return MonsterMadnessPopup.TOWNHALL_LESS_THAN_5;

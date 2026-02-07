@@ -2,20 +2,23 @@ import { AuthForm } from './com/auth/AuthForm';
 import { SecNum } from './com/cc/utils/SecNum';
 import { BYMDevConfig } from './com/monsters/configs/BYMDevConfig';
 import { EnumYardType } from './com/monsters/enums/EnumYardType';
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
 import { Player } from './com/monsters/player/Player';
 import { RADIO } from './com/monsters/radio/RADIO';
 import Event from 'openfl/events/Event';
 import IOErrorEvent from 'openfl/events/IOErrorEvent';
-import { BASE } from './BASE';
 import { GAME } from './GAME';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { LOGGER } from './LOGGER';
 import { md5 } from './md5';
 import { PLEASEWAIT } from './PLEASEWAIT';
-import { POPUPS } from './POPUPS';
-import { URLLoaderApi } from './URLLoaderApi';
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getURLLoaderApi(): any { return require("./URLLoaderApi").URLLoaderApi; }
+
 
 /**
  * LOGIN - User Authentication System
@@ -42,17 +45,17 @@ export class LOGIN {
     public static Login(): void {
         if (GAME.token) {
             PLEASEWAIT.Show("Logging in...");
-            GLOBAL.eventDispatcher.addEventListener(KEYS.LANGUAGE_FILE_LOADED, LOGIN.onLanguageLoaded);
-            GLOBAL.LanguageSetup();
+            getGLOBAL().eventDispatcher.addEventListener(getKEYS().LANGUAGE_FILE_LOADED, LOGIN.onLanguageLoaded);
+            getGLOBAL().LanguageSetup();
         } else {
             LOGIN.authForm = new AuthForm();
-            GLOBAL._layerTop.addChild(LOGIN.authForm);
+            getGLOBAL()._layerTop.addChild(LOGIN.authForm);
         }
     }
 
     private static onLanguageLoaded(event: Event): void {
-        GLOBAL.eventDispatcher.removeEventListener(KEYS.LANGUAGE_FILE_LOADED, LOGIN.onLanguageLoaded);
-        new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null,
+        getGLOBAL().eventDispatcher.removeEventListener(getKEYS().LANGUAGE_FILE_LOADED, LOGIN.onLanguageLoaded);
+        new (getURLLoaderApi())().load(getGLOBAL()._apiURL + "bm/getnewmap", null,
             (serverData: any): void => {
                 LOGIN.OnGetNewMap(serverData, [["token", GAME.sharedObj.data.token]]);
             });
@@ -63,38 +66,38 @@ export class LOGIN {
     }
 
     private static _Login(newmap: boolean, mapheaderurl: string, authInfo: [string, string][]): void {
-        MapRoomManager.instance.init(newmap, mapheaderurl);
-        if (GLOBAL._local) {
+        getMapRoomManager().instance.init(newmap, mapheaderurl);
+        if (getGLOBAL()._local) {
             const handleLoadSuccessful = (serverData: any): void => {
                 if (serverData.hasOwnProperty("error") && serverData.error !== 0) {
-                    GLOBAL.Message(serverData.error);
+                    getGLOBAL().Message(serverData.error);
                     return;
                 }
                 if (serverData.error === 0) {
-                    if (GLOBAL._local) {
+                    if (getGLOBAL()._local) {
                         LOGIN.token = serverData.token;
                         LOGIN.Process(serverData);
                     }
                 }
             };
             const handleLoadError = (error: IOErrorEvent): void => {
-                GLOBAL._layerTop.addChild(GLOBAL.Message("An error occurred during login on the server."));
+                getGLOBAL()._layerTop.addChild(getGLOBAL().Message("An error occurred during login on the server."));
             };
-            new URLLoaderApi().load(GLOBAL._apiURL + "player/getinfo", 
-                [["version", GLOBAL._version.Get()], ...authInfo], handleLoadSuccessful, handleLoadError);
+            new (getURLLoaderApi())().load(getGLOBAL()._apiURL + "player/getinfo", 
+                [["version", getGLOBAL()._version.Get()], ...authInfo], handleLoadSuccessful, handleLoadError);
         } else {
             // Browser mode with ExternalInterface - not implemented for local version
             if (BYMDevConfig.instance.USE_CLIENT_WITH_CALLBACK) {
-                GLOBAL.CallJSWithClient("cc.initApplication", "loginsuccessful", [GLOBAL._version.Get()]);
+                getGLOBAL().CallJSWithClient("cc.initApplication", "loginsuccessful", [getGLOBAL()._version.Get()]);
             } else {
-                GLOBAL.CallJS("cc.initApplication", [GLOBAL._version.Get(), "loginsuccessful"]);
+                getGLOBAL().CallJS("cc.initApplication", [getGLOBAL()._version.Get(), "loginsuccessful"]);
             }
             LOGIN.logFlashCapabilities();
         }
     }
 
     public static Process(serverData: any): void {
-        if (serverData.version !== GLOBAL._version.Get()) {
+        if (serverData.version !== getGLOBAL()._version.Get()) {
             LOGIN.handleVersionMismatch(serverData);
         } else {
             LOGIN.handleUserLogin(serverData);
@@ -106,13 +109,13 @@ export class LOGIN {
             LOGIN.authForm.disposeUI();
         }
         if (serverData) {
-            GLOBAL.player = new Player();
-            GLOBAL.player.ID = serverData.userid;
-            GLOBAL.player.name = serverData.username;
-            GLOBAL.player.lastName = serverData.last_name;
-            GLOBAL.player.picture = serverData.pic_square;
-            GLOBAL.player.timePlayed = serverData.timeplayed;
-            GLOBAL.player.email = serverData.email;
+            getGLOBAL().player = new Player();
+            getGLOBAL().player.ID = serverData.userid;
+            getGLOBAL().player.name = serverData.username;
+            getGLOBAL().player.lastName = serverData.last_name;
+            getGLOBAL().player.picture = serverData.pic_square;
+            getGLOBAL().player.timePlayed = serverData.timeplayed;
+            getGLOBAL().player.email = serverData.email;
             LOGIN._playerID = serverData.userid;
             LOGIN._playerName = serverData.username;
             LOGIN._playerLastName = serverData.last_name;
@@ -124,20 +127,20 @@ export class LOGIN {
                     LOGIN._inferno = serverData.stats.inferno;
                 }
             }
-            GLOBAL._friendCount = serverData.friendcount;
-            GLOBAL._sessionCount = serverData.sessioncount;
-            GLOBAL._addTime = serverData.addtime;
-            GLOBAL._mapVersion = serverData.mapversion;
-            GLOBAL._mailVersion = serverData.mailversion;
-            GLOBAL._soundVersion = serverData.soundversion;
-            GLOBAL._languageVersion = serverData.languageversion;
-            GLOBAL._appid = serverData.app_id;
-            GLOBAL._tpid = serverData.tpid;
-            GLOBAL._currencyURL = serverData.currency_url;
+            getGLOBAL()._friendCount = serverData.friendcount;
+            getGLOBAL()._sessionCount = serverData.sessioncount;
+            getGLOBAL()._addTime = serverData.addtime;
+            getGLOBAL()._mapVersion = serverData.mapversion;
+            getGLOBAL()._mailVersion = serverData.mailversion;
+            getGLOBAL()._soundVersion = serverData.soundversion;
+            getGLOBAL()._languageVersion = serverData.languageversion;
+            getGLOBAL()._appid = serverData.app_id;
+            getGLOBAL()._tpid = serverData.tpid;
+            getGLOBAL()._currencyURL = serverData.currency_url;
             if (serverData.bookmarks) {
-                MapRoomManager.instance.bookmarkData = serverData.bookmarks;
+                getMapRoomManager().instance.bookmarkData = serverData.bookmarks;
             } else {
-                MapRoomManager.instance.bookmarkData = {};
+                getMapRoomManager().instance.bookmarkData = {};
             }
             if (serverData.settings) {
                 LOGIN._settings = serverData.settings;
@@ -147,19 +150,19 @@ export class LOGIN {
                 LOGIN._proxymail = serverData.proxy_email;
             }
             if (!serverData.languageversion) {
-                GLOBAL._languageVersion = 8;
+                getGLOBAL()._languageVersion = 8;
             }
             if (serverData.sendgift === 1) {
-                GLOBAL._canGift = true;
+                getGLOBAL()._canGift = true;
             }
             if (serverData.sendinvite === 1) {
-                GLOBAL._canInvite = true;
+                getGLOBAL()._canInvite = true;
             }
-            BASE._isFan = serverData.isfan;
+            getBASE()._isFan = serverData.isfan;
             if (serverData.ncpCandidate === 1) {
-                GLOBAL._fbcncp = serverData.ncpCandidate;
+                getGLOBAL()._fbcncp = serverData.ncpCandidate;
             }
-            POPUPS.Setup();
+            getPOPUPS().Setup();
             LOGIN.Digits(LOGIN._playerID);
             LOGIN.Done();
         }
@@ -170,10 +173,10 @@ export class LOGIN {
             tag: "userload",
             version_mismatch_h: 1,
             vh2: serverData.version,
-            vh1: GLOBAL._version.Get()
+            vh1: getGLOBAL()._version.Get()
         };
-        GLOBAL.CallJS("cc.logGenericEvent", [eventData]);
-        GLOBAL.ErrorMessage(KEYS.Get("msg_updatedgame"), GLOBAL.ERROR_ORANGE_BOX_ONLY);
+        getGLOBAL().CallJS("cc.logGenericEvent", [eventData]);
+        getGLOBAL().ErrorMessage(getKEYS().Get("msg_updatedgame"), getGLOBAL().ERROR_ORANGE_BOX_ONLY);
     }
 
     public static Digits(playerId: number): void {
@@ -193,27 +196,27 @@ export class LOGIN {
     }
 
     public static Done(): void {
-        GLOBAL.Setup();
-        if (GLOBAL._openBase && GLOBAL._openBase.url && 
-            (GLOBAL._openBase.userid || GLOBAL._openBase.baseid) && 
-            GLOBAL._openBase.userid !== LOGIN._playerID) {
-            BASE.yardType = MapRoomManager.instance.isInMapRoom3 ? EnumYardType.PLAYER : EnumYardType.MAIN_YARD;
-            if (!GLOBAL._openBase.userid) GLOBAL._openBase.userid = 0;
-            if (!GLOBAL._openBase.baseid) GLOBAL._openBase.baseid = 0;
-            GLOBAL._currentCell = null;
-            GLOBAL.setMode(GLOBAL.e_BASE_MODE.HELP);
+        getGLOBAL().Setup();
+        if (getGLOBAL()._openBase && getGLOBAL()._openBase.url && 
+            (getGLOBAL()._openBase.userid || getGLOBAL()._openBase.baseid) && 
+            getGLOBAL()._openBase.userid !== LOGIN._playerID) {
+            getBASE().yardType = getMapRoomManager().instance.isInMapRoom3 ? EnumYardType.PLAYER : EnumYardType.MAIN_YARD;
+            if (!getGLOBAL()._openBase.userid) getGLOBAL()._openBase.userid = 0;
+            if (!getGLOBAL()._openBase.baseid) getGLOBAL()._openBase.baseid = 0;
+            getGLOBAL()._currentCell = null;
+            getGLOBAL().setMode(getGLOBAL().e_BASE_MODE.HELP);
             for (let i = 1; i < 5; i++) {
-                GLOBAL._resources["r" + i] = new SecNum(0);
-                GLOBAL._hpResources["r" + i] = 0;
+                getGLOBAL()._resources["r" + i] = new SecNum(0);
+                getGLOBAL()._hpResources["r" + i] = 0;
             }
-            BASE.Load(GLOBAL._openBase.url, GLOBAL._openBase.userid, GLOBAL._openBase.baseid);
+            getBASE().Load(getGLOBAL()._openBase.url, getGLOBAL()._openBase.userid, getGLOBAL()._openBase.baseid);
         } else if (LOGIN._inferno !== 0) {
-            MapRoomManager.instance.mapRoomVersion = MapRoomManager.MAP_ROOM_VERSION_1;
-            BASE.yardType = EnumYardType.INFERNO_YARD;
-            BASE.LoadBase(GLOBAL._infBaseURL, 0, 0, "ibuild", false, EnumYardType.INFERNO_YARD);
+            getMapRoomManager().instance.mapRoomVersion = getMapRoomManager().MAP_ROOM_VERSION_1;
+            getBASE().yardType = EnumYardType.INFERNO_YARD;
+            getBASE().LoadBase(getGLOBAL()._infBaseURL, 0, 0, "ibuild", false, EnumYardType.INFERNO_YARD);
         } else {
-            BASE.yardType = MapRoomManager.instance.isInMapRoom3 ? EnumYardType.PLAYER : EnumYardType.MAIN_YARD;
-            BASE.Load();
+            getBASE().yardType = getMapRoomManager().instance.isInMapRoom3 ? EnumYardType.PLAYER : EnumYardType.MAIN_YARD;
+            getBASE().Load();
         }
     }
 
@@ -223,7 +226,7 @@ export class LOGIN {
             screen_resolution: window.screen.width + "x" + window.screen.height,
             screen_dpi: window.devicePixelRatio * 96
         };
-        GLOBAL.CallJS("cc.logFlashCapabilities", [capabilities]);
+        getGLOBAL().CallJS("cc.logFlashCapabilities", [capabilities]);
     }
 
     public static checkHash(data: string): boolean {

@@ -1,4 +1,7 @@
-import { MonsterBase } from "../monsters/MonsterBase";
+
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../monsters/MonsterBase").MonsterBase; }
 
 /**
  * Information about a single creep/monster instance.

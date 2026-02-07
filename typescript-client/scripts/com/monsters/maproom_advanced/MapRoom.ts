@@ -12,14 +12,12 @@ import Timer from "openfl/utils/Timer";
 import { SecNum } from "../../cc/utils/SecNum";
 import { ALLIANCES } from "../alliances/ALLIANCES";
 import { Chat } from "../chat/Chat";
-import { Smoke } from "../effects/smoke/Smoke";
 import { EnumYardType } from "../enums/EnumYardType";
 import { FriendPicker } from "../mailbox/FriendPicker";
 import { MailBox } from "../mailbox/MailBox";
 import { Thread } from "../mailbox/Thread";
 import { IMapRoom } from "../maproom_manager/IMapRoom";
 import { IMapRoomCell } from "../maproom_manager/IMapRoomCell";
-import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { UI_BOTTOM } from "../ui/UI_BOTTOM";
 import { MapRoomCell } from "./MapRoomCell";
 import { MapRoomPopup } from "./MapRoomPopup";
@@ -27,20 +25,25 @@ import { PopupRelocateMe } from "./PopupRelocateMe";
 import { bubble_acceptInvite } from "../../../bubble_acceptInvite";
 import { bubble_selecttarget } from "../../../bubble_selecttarget";
 import { objZone } from "./objZone";
-import { URLLoaderApi } from "../../../URLLoaderApi";
 
-import { BASE } from "../../../BASE";
-import { CREATURES } from "../../../CREATURES";
-import { GLOBAL } from "../../../GLOBAL";
 import { JSON } from "../../../JSON";
-import { KEYS } from "../../../KEYS";
-import { LOGGER } from "../../../LOGGER";
 import { MAILBOX } from "../../../MAILBOX";
 import { PLEASEWAIT } from "../../../PLEASEWAIT";
-import { POPUPS } from "../../../POPUPS";
-import { SOUNDS } from "../../../SOUNDS";
 import { Tutorial } from "./Tutorial";
-import { UI2 } from "../../../UI2";
+
+// Lazy imports to break circular dependency chains
+function getSmoke(): any { return require("../effects/smoke/Smoke").Smoke; }
+function getMapRoomManager(): any { return require("../maproom_manager/MapRoomManager").MapRoomManager; }
+function getURLLoaderApi(): any { return require("../../../URLLoaderApi").URLLoaderApi; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getCREATURES(): any { return require("../../../CREATURES").CREATURES; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+function getPOPUPS(): any { return require("../../../POPUPS").POPUPS; }
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+function getUI2(): any { return require("../../../UI2").UI2; }
+
 
 /**
  * MapRoom - Main map room controller class (implements IMapRoom).
@@ -112,7 +115,7 @@ export class MapRoom implements IMapRoom {
             MapRoom._migrateThread = migrateThread;
         }
         MapRoom._bubbleSelectTarget = new bubble_selecttarget();
-        MapRoom._bubbleSelectTarget.tDesc.htmlText = "<b>" + KEYS.Get("bubble_selecttarget_desc") + "</b>";
+        MapRoom._bubbleSelectTarget.tDesc.htmlText = "<b>" + getKEYS().Get("bubble_selecttarget_desc") + "</b>";
         MapRoom._bubbleSelectTarget.bCancel.SetupKey("btn_cancel");
         MapRoom._bubbleSelectTarget.bCancel.addEventListener(MouseEvent.CLICK, MapRoom.TransferCancel);
         MapRoom._bubbleSelectTarget.x = 270;
@@ -125,13 +128,13 @@ export class MapRoom implements IMapRoom {
     }
 
     public static HideFromViewOnly(): void {
-        if (MapRoom._open && GLOBAL.mode !== GLOBAL.e_BASE_MODE.ATTACK && GLOBAL.mode !== GLOBAL.e_BASE_MODE.WMATTACK) {
-            SOUNDS.Play("close");
+        if (MapRoom._open && getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.ATTACK && getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.WMATTACK) {
+            getSOUNDS().Play("close");
             MapRoom._worldID = 0;
             MapRoom._inviteBaseID = 0;
             MapRoom._viewOnly = false;
-            GLOBAL._currentCell = null;
-            MapRoom._Setup(GLOBAL._mapHome);
+            getGLOBAL()._currentCell = null;
+            MapRoom._Setup(getGLOBAL()._mapHome);
             if (MapRoom._mc!.parent) MapRoom._mc!.parent.removeChild(MapRoom._mc!);
             MapRoom.ClearCells();
             MapRoom._mc!.Cleanup();
@@ -147,77 +150,77 @@ export class MapRoom implements IMapRoom {
     public static SetPendingInvitation(): void { MapRoom._mc!._popupInfoMine.PendingInvite(); }
 
     public static PreAcceptInvitation(container: DisplayObjectContainer): void {
-        if (ALLIANCES._myAlliance) { GLOBAL.Message(KEYS.Get("msg_mustleavealliance")); return; }
+        if (ALLIANCES._myAlliance) { getGLOBAL().Message(getKEYS().Get("msg_mustleavealliance")); return; }
         MapRoom._popupRelocateMe = new PopupRelocateMe();
         MapRoom._popupRelocateMe.Setup(null, "invite");
-        if (container) { GLOBAL.BlockerAdd(container as Sprite); container.addChild(MapRoom._popupRelocateMe); }
+        if (container) { getGLOBAL().BlockerAdd(container as Sprite); container.addChild(MapRoom._popupRelocateMe); }
     }
 
     public static AcceptInvitation(useShiny: boolean = false): void {
-        if (ALLIANCES._myAlliance) { GLOBAL.Message(KEYS.Get("msg_mustleavealliance")); return; }
+        if (ALLIANCES._myAlliance) { getGLOBAL().Message(getKEYS().Get("msg_mustleavealliance")); return; }
         if (Boolean(MapRoom._migrateThread) && MapRoom._inviteBaseID !== 0) {
             const handleAcceptSuccessful = (serverData: any): void => {
                 PLEASEWAIT.Hide();
                 if (serverData.error === 0) {
                     if (serverData.cantMoveTill) {
-                        if (MapRoom._open) { GLOBAL.Message(KEYS.Get("movebase_warning", { "v1": GLOBAL.ToTime(serverData.cantMoveTill - serverData.currenttime) }), KEYS.Get("btn_returnhome"), MapRoom.ReturnFromFailedInvite); }
-                        else { GLOBAL.Message(KEYS.Get("movebase_warning", { "v1": GLOBAL.ToTime(serverData.cantMoveTill - serverData.currenttime) })); GLOBAL.BlockerRemove(); }
+                        if (MapRoom._open) { getGLOBAL().Message(getKEYS().Get("movebase_warning", { "v1": getGLOBAL().ToTime(serverData.cantMoveTill - serverData.currenttime) }), getKEYS().Get("btn_returnhome"), MapRoom.ReturnFromFailedInvite); }
+                        else { getGLOBAL().Message(getKEYS().Get("movebase_warning", { "v1": getGLOBAL().ToTime(serverData.cantMoveTill - serverData.currenttime) })); getGLOBAL().BlockerRemove(); }
                     } else {
                         if (serverData.coords && serverData.coords.length === 2 && serverData.coords[0] > -1 && serverData.coords[1] > -1) {
-                            GLOBAL._mapHome = new Point(serverData.coords[0], serverData.coords[1]);
-                            MapRoom._Setup(GLOBAL._mapHome);
+                            getGLOBAL()._mapHome = new Point(serverData.coords[0], serverData.coords[1]);
+                            MapRoom._Setup(getGLOBAL()._mapHome);
                         }
-                        MapRoomManager.instance.BookmarksClear();
-                        BASE._loadedFriendlyBaseID = 0;
-                        GLOBAL._homeBaseID = 0;
-                        GLOBAL._currentCell = null;
-                        GLOBAL._mapOutpost = [];
-                        if (MapRoom._open) MapRoomManager.instance.Hide();
+                        getMapRoomManager().instance.BookmarksClear();
+                        getBASE()._loadedFriendlyBaseID = 0;
+                        getGLOBAL()._homeBaseID = 0;
+                        getGLOBAL()._currentCell = null;
+                        getGLOBAL()._mapOutpost = [];
+                        if (MapRoom._open) getMapRoomManager().instance.Hide();
                         MapRoom.ClearCells();
-                        MapRoom._Setup(GLOBAL._mapHome);
+                        MapRoom._Setup(getGLOBAL()._mapHome);
                         MapRoom._reposition = true;
-                        GLOBAL._showMapWaiting = 1;
+                        getGLOBAL()._showMapWaiting = 1;
                     }
-                } else { GLOBAL.Message(serverData.error); }
+                } else { getGLOBAL().Message(serverData.error); }
             };
-            const handleAcceptError = (event: IOErrorEvent): void => { LOGGER.Log("err", "MapRoom.AcceptInvitation HTTP"); };
-            const url = GLOBAL._baseURL + "migratetofriend";
+            const handleAcceptError = (event: IOErrorEvent): void => { getLOGGER().Log("err", "MapRoom.AcceptInvitation HTTP"); };
+            const url = getGLOBAL()._baseURL + "migratetofriend";
             const loadvars: Array<any> = [["baseid", MapRoom._inviteBaseID], ["threadid", MapRoom._migrateThread!.data.threadid]];
             const SHINYCOST = new SecNum(1200);
             const RESOURCECOST = new SecNum(10000000);
             if (MapRoom._popupRelocateMe) { MapRoom._popupRelocateMe.Cleanup(); MapRoom._popupRelocateMe.Hide(); MapRoom._popupRelocateMe = null; }
             if (useShiny) {
-                if (GLOBAL._credits.Get() < SHINYCOST.Get()) { POPUPS.DisplayGetShiny(); return; }
+                if (getGLOBAL()._credits.Get() < SHINYCOST.Get()) { getPOPUPS().DisplayGetShiny(); return; }
                 loadvars.push(["shiny", SHINYCOST.Get()]);
             } else {
-                if (GLOBAL._resources.r1.Get() < RESOURCECOST.Get() || GLOBAL._resources.r2.Get() < RESOURCECOST.Get() || GLOBAL._resources.r3.Get() < RESOURCECOST.Get() || GLOBAL._resources.r4.Get() < RESOURCECOST.Get()) { GLOBAL.Message(KEYS.Get("map_rel_res")); return; }
+                if (getGLOBAL()._resources.r1.Get() < RESOURCECOST.Get() || getGLOBAL()._resources.r2.Get() < RESOURCECOST.Get() || getGLOBAL()._resources.r3.Get() < RESOURCECOST.Get() || getGLOBAL()._resources.r4.Get() < RESOURCECOST.Get()) { getGLOBAL().Message(getKEYS().Get("map_rel_res")); return; }
                 loadvars.push(["resources", JSON.encode({ "r1": RESOURCECOST.Get(), "r2": RESOURCECOST.Get(), "r3": RESOURCECOST.Get(), "r4": RESOURCECOST.Get() })]);
             }
-            PLEASEWAIT.Show(KEYS.Get("wait_movebase"));
+            PLEASEWAIT.Show(getKEYS().Get("wait_movebase"));
             MailBox.Hide();
             if (MapRoom._migrateThread!.parent) { if (MapRoom._migrateThread!.numChildren > 0) MapRoom._migrateThread!.removeChildAt(1); MapRoom._migrateThread!.parent.removeChild(MapRoom._migrateThread!); }
-            new URLLoaderApi().load(url, loadvars, handleAcceptSuccessful, handleAcceptError);
+            new (getURLLoaderApi())().load(url, loadvars, handleAcceptSuccessful, handleAcceptError);
         }
     }
 
-    public static ReturnFromFailedInvite(): void { MapRoomManager.instance.Hide(); BASE.Load(); }
+    public static ReturnFromFailedInvite(): void { getMapRoomManager().instance.Hide(); getBASE().Load(); }
 
     public static RejectInvitation(event: MouseEvent | null = null): void {
         if (Boolean(MapRoom._migrateThread) && MapRoom._inviteBaseID !== 0) {
             const handleRejectSuccessful = (serverData: any): void => {
                 PLEASEWAIT.Hide();
                 if (serverData.error === 0) {
-                    GLOBAL._currentCell = null;
-                    if (MapRoom._open) { MapRoomManager.instance.Hide(); MapRoom.ClearCells(); MapRoom._Setup(GLOBAL._mapHome); BASE.LoadBase(null, 0, GLOBAL._homeBaseID, GLOBAL.e_BASE_MODE.BUILD, false, EnumYardType.MAIN_YARD); }
+                    getGLOBAL()._currentCell = null;
+                    if (MapRoom._open) { getMapRoomManager().instance.Hide(); MapRoom.ClearCells(); MapRoom._Setup(getGLOBAL()._mapHome); getBASE().LoadBase(null, 0, getGLOBAL()._homeBaseID, getGLOBAL().e_BASE_MODE.BUILD, false, EnumYardType.MAIN_YARD); }
                     else { MAILBOX.Show(); }
-                } else { LOGGER.Log("err", "MapRoom.RejectInvitation", serverData.error); }
+                } else { getLOGGER().Log("err", "MapRoom.RejectInvitation", serverData.error); }
             };
-            const handleRejectError = (event: IOErrorEvent): void => { LOGGER.Log("err", "MapRoom.RejectInvitation HTTP"); };
-            PLEASEWAIT.Show(KEYS.Get("wait_rejecting"));
-            const url = GLOBAL._baseURL + "rejectmigratetofriend";
+            const handleRejectError = (event: IOErrorEvent): void => { getLOGGER().Log("err", "MapRoom.RejectInvitation HTTP"); };
+            PLEASEWAIT.Show(getKEYS().Get("wait_rejecting"));
+            const url = getGLOBAL()._baseURL + "rejectmigratetofriend";
             const loadvars: Array<any> = [["baseid", MapRoom._inviteBaseID], ["threadid", MapRoom._migrateThread!.data.threadid]];
             if (MapRoom._migrateThread!.parent) { if (MapRoom._migrateThread!.numChildren > 0) MapRoom._migrateThread!.removeChildAt(1); MapRoom._migrateThread!.data.Changed(); MapRoom._migrateThread!.parent.removeChild(MapRoom._migrateThread!); MapRoom._migrateThread = null; MAILBOX.Hide(); }
-            new URLLoaderApi().load(url, loadvars, handleRejectSuccessful, handleRejectError);
+            new (getURLLoaderApi())().load(url, loadvars, handleRejectSuccessful, handleRejectError);
         }
     }
 
@@ -239,21 +242,21 @@ export class MapRoom implements IMapRoom {
     }
 
     public static BookmarksSave(): void {
-        const handleBMSaveSuccessful = (serverData: any): void => { if (serverData.error !== 0) LOGGER.Log("err", "MapRoom.BookmarksSave", serverData.error); };
-        const handleBMSaveError = (event: IOErrorEvent): void => { LOGGER.Log("err", "MapRoom.BookmarksSave HTTP"); };
-        const url = GLOBAL._apiURL + "player/savebookmarks";
+        const handleBMSaveSuccessful = (serverData: any): void => { if (serverData.error !== 0) getLOGGER().Log("err", "MapRoom.BookmarksSave", serverData.error); };
+        const handleBMSaveError = (event: IOErrorEvent): void => { getLOGGER().Log("err", "MapRoom.BookmarksSave HTTP"); };
+        const url = getGLOBAL()._apiURL + "player/savebookmarks";
         const loadvars: Array<any> = [["bookmarks", JSON.encode(MapRoom._bookmarkData)]];
-        new URLLoaderApi().load(url, loadvars, handleBMSaveSuccessful, handleBMSaveError);
+        new (getURLLoaderApi())().load(url, loadvars, handleBMSaveSuccessful, handleBMSaveError);
     }
 
     public static AddBookmark(name: string, save: boolean = true): any {
         name = name.replace(/^\s+|\s+$/g, "");
-        if (name.length === 0) return { "hide": false, "message": KEYS.Get("newmap_bm_name") };
-        if (name.length > 20) return { "hide": false, "message": KEYS.Get("newmap_bm_long") };
+        if (name.length === 0) return { "hide": false, "message": getKEYS().Get("newmap_bm_name") };
+        if (name.length > 20) return { "hide": false, "message": getKEYS().Get("newmap_bm_long") };
         if (MapRoom._currentPosition.x < 0 || MapRoom._currentPosition.x >= MapRoom._mapWidth || MapRoom._currentPosition.y < 0 || MapRoom._currentPosition.y >= MapRoom._mapHeight) return { "hide": true, "message": "ERROR: Bookmark point is not on the map." };
-        if (MapRoom._bookmarks.length >= 8) return { "hide": true, "message": KEYS.Get("newmap_bm_full") };
+        if (MapRoom._bookmarks.length >= 8) return { "hide": true, "message": getKEYS().Get("newmap_bm_full") };
         const len = MapRoom._bookmarks.length;
-        for (let i = 0; i < len; i++) { if (MapRoom._bookmarks[i].location.x === MapRoom._currentPosition.x && MapRoom._bookmarks[i].location.y === MapRoom._currentPosition.y) return { "hide": true, "message": KEYS.Get("newmap_bm_done") }; }
+        for (let i = 0; i < len; i++) { if (MapRoom._bookmarks[i].location.x === MapRoom._currentPosition.x && MapRoom._bookmarks[i].location.y === MapRoom._currentPosition.y) return { "hide": true, "message": getKEYS().Get("newmap_bm_done") }; }
         if (save) { MapRoom.BookmarkDataSet("mbm" + len, MapRoom._currentPosition.x * 10000 + MapRoom._currentPosition.y, false); MapRoom.BookmarkDataSetStr("mbmn" + len, name, false); MapRoom.BookmarkDataSet("mbms", len + 1); }
         MapRoom._bookmarks.push({ "name": name, "location": MapRoom._currentPosition });
         return { "hide": true, "message": "SUCCESS" };
@@ -261,10 +264,10 @@ export class MapRoom implements IMapRoom {
 
     private static RequestData(zonePoint: Point, force: boolean = false): void {
         const zoneID = zonePoint.x * 10000 + zonePoint.y;
-        const getAreaURL = GLOBAL._mapURL + "getarea";
+        const getAreaURL = getGLOBAL()._mapURL + "getarea";
         let getResources = 0;
         let requestRetryTimer: Timer | null = null;
-        if (force || GLOBAL.Timestamp() > MapRoom._resourceCounter + 20) { getResources = 1; MapRoom._resourceCounter = GLOBAL.Timestamp(); force = true; }
+        if (force || getGLOBAL().Timestamp() > MapRoom._resourceCounter + 20) { getResources = 1; MapRoom._resourceCounter = getGLOBAL().Timestamp(); force = true; }
         let z: objZone;
         if (MapRoom._zones[zoneID]) { z = MapRoom._zones[zoneID]; }
         else { z = new objZone(); MapRoom._zones[zoneID] = z; }
@@ -272,23 +275,23 @@ export class MapRoom implements IMapRoom {
         const handleLoadSuccessful = (serverData: any): void => {
             MapRoom._pendingMapCellDataRequests.shift();
             if (MapRoom._pendingMapCellDataRequests.length > 0) trySendRequest();
-            if (!MapRoom._open && !BASE._needCurrentCell) return;
+            if (!MapRoom._open && !getBASE()._needCurrentCell) return;
             if (serverData && !serverData.error && Boolean(serverData.data)) {
                 const zId = serverData.x * 10000 + serverData.y;
                 if (!MapRoom._zones[zId]) MapRoom._zones[zId] = new objZone();
                 MapRoom._zones[zId].data = serverData.data;
-                if (serverData.resources) { for (let i = 1; i < 5; i++) { GLOBAL._resources["r" + i].Set(serverData.resources["r" + i]); GLOBAL._hpResources["r" + i] = GLOBAL._resources["r" + i].Get(); GLOBAL._resources["r" + i + "max"] = serverData.resources["r" + i + "max"]; GLOBAL._hpResources["r" + i + "max"] = serverData.resources["r" + i + "max"]; } }
+                if (serverData.resources) { for (let i = 1; i < 5; i++) { getGLOBAL()._resources["r" + i].Set(serverData.resources["r" + i]); getGLOBAL()._hpResources["r" + i] = getGLOBAL()._resources["r" + i].Get(); getGLOBAL()._resources["r" + i + "max"] = serverData.resources["r" + i + "max"]; getGLOBAL()._hpResources["r" + i + "max"] = serverData.resources["r" + i + "max"]; } }
                 if (serverData.alliancedata) ALLIANCES.ProcessAlliances(serverData.alliancedata);
                 if (MapRoom._open) MapRoom._mc!.Update(true);
-                else if (BASE._needCurrentCell) { if (MapRoom._zones && MapRoom._zones[zId] && Boolean(MapRoom._zones[zId].data) && Boolean(MapRoom._zones[zId].data[BASE._currentCellLoc.x])) { const cell = MapRoom._zones[zId].data[BASE._currentCellLoc.x][BASE._currentCellLoc.y]; GLOBAL._currentCell = new MapRoomCell(); (GLOBAL._currentCell as MapRoomCell).Setup(cell); (GLOBAL._currentCell as MapRoomCell).cellX = BASE._currentCellLoc.x; (GLOBAL._currentCell as MapRoomCell).cellY = BASE._currentCellLoc.y; MapRoom._zones = {}; } }
-            } else if (Boolean(serverData) && !serverData.data) { LOGGER.Log("err", "MapRoom.Data NO DATA"); }
-            else { LOGGER.Log("err", "MapRoom.Data", serverData.error); }
+                else if (getBASE()._needCurrentCell) { if (MapRoom._zones && MapRoom._zones[zId] && Boolean(MapRoom._zones[zId].data) && Boolean(MapRoom._zones[zId].data[getBASE()._currentCellLoc.x])) { const cell = MapRoom._zones[zId].data[getBASE()._currentCellLoc.x][getBASE()._currentCellLoc.y]; getGLOBAL()._currentCell = new MapRoomCell(); (getGLOBAL()._currentCell as MapRoomCell).Setup(cell); (getGLOBAL()._currentCell as MapRoomCell).cellX = getBASE()._currentCellLoc.x; (getGLOBAL()._currentCell as MapRoomCell).cellY = getBASE()._currentCellLoc.y; MapRoom._zones = {}; } }
+            } else if (Boolean(serverData) && !serverData.data) { getLOGGER().Log("err", "MapRoom.Data NO DATA"); }
+            else { getLOGGER().Log("err", "MapRoom.Data", serverData.error); }
         };
-        const handleLoadError = (event: IOErrorEvent): void => { ++MapRoom._saveErrors; if (MapRoom._saveErrors >= 3) { LOGGER.Log("err", "MapRoom.RequestData HTTP"); GLOBAL.ErrorMessage("WorldMapRoom.RequestData HTTP"); } };
+        const handleLoadError = (event: IOErrorEvent): void => { ++MapRoom._saveErrors; if (MapRoom._saveErrors >= 3) { getLOGGER().Log("err", "MapRoom.RequestData HTTP"); getGLOBAL().ErrorMessage("WorldMapRoom.RequestData HTTP"); } };
         const trySendRequest = (): void => {
             while (MapRoom._priorityMapCellsToRequest.length > 0) { const point = MapRoom._priorityMapCellsToRequest[0]; const pendingIndex = MapRoom.GetPendingZoneRequestIndex(point.x, point.y); if (pendingIndex === -1) { addRequestToQueue(point, 0, true); } else if (pendingIndex > 0) { const pendingRequest = MapRoom._pendingMapCellDataRequests[pendingIndex].loadvars; MapRoom._pendingMapCellDataRequests.splice(pendingIndex, 1); addRequestToQueue(point, pendingRequest[4][1], true); } MapRoom._priorityMapCellsToRequest.shift(); }
             const getCellData = MapRoom._pendingMapCellDataRequests[0];
-            if (!MapRoom.ZoneHasPendingTransferRequest(getCellData.loadvars[0][1] * 10000 + getCellData.loadvars[1][1])) { if (requestRetryTimer) { requestRetryTimer.stop(); requestRetryTimer = null; } new URLLoaderApi().load(getCellData.url, getCellData.loadvars, handleLoadSuccessful, handleLoadError); }
+            if (!MapRoom.ZoneHasPendingTransferRequest(getCellData.loadvars[0][1] * 10000 + getCellData.loadvars[1][1])) { if (requestRetryTimer) { requestRetryTimer.stop(); requestRetryTimer = null; } new (getURLLoaderApi())().load(getCellData.url, getCellData.loadvars, handleLoadSuccessful, handleLoadError); }
             else { if (!requestRetryTimer) { requestRetryTimer = new Timer(200, 1); requestRetryTimer.addEventListener(TimerEvent.TIMER, trySendRequest as any); } requestRetryTimer.reset(); requestRetryTimer.start(); }
         };
         const addRequestToQueue = (point: Point, resources: number, addToFront: boolean = false): void => {
@@ -299,8 +302,8 @@ export class MapRoom implements IMapRoom {
             else MapRoom._pendingMapCellDataRequests.push(dataRequest);
         };
 
-        if (force || GLOBAL.Timestamp() - z.updated > 30) {
-            z.updated = GLOBAL.Timestamp() + Math.floor(Math.random() * 10);
+        if (force || getGLOBAL().Timestamp() - z.updated > 30) {
+            z.updated = getGLOBAL().Timestamp() + Math.floor(Math.random() * 10);
             MapRoom._saveErrors = 0;
             addRequestToQueue(zonePoint, getResources);
             if (MapRoom._pendingMapCellDataRequests.length === 1) trySendRequest();
@@ -347,7 +350,7 @@ export class MapRoom implements IMapRoom {
         let transferRetryTimer: Timer | null = null;
         if (MapRoom._monsterTransferInProgress) {
             if (MapRoom._monsterTargetRef._mine && MapRoom._monsterSource!._mine) {
-                PLEASEWAIT.Show(KEYS.Get("wait_processing"));
+                PLEASEWAIT.Show(getKEYS().Get("wait_processing"));
                 MapRoom._mc!.HideMonstersB();
                 if (MapRoom._monsterTargetRef._monsters && MapRoom._monsterSource && MapRoom._monsterTargetRef._monsterData.space.Get() > 0) {
                     const actualTransfer: any = {};
@@ -356,13 +359,13 @@ export class MapRoom implements IMapRoom {
                     let spaceRemaining = Math.floor(MapRoom._monsterTargetRef._monsterData.space.Get());
                     if (MapRoom._bubbleSelectTarget.parent) MapRoom._bubbleSelectTarget.parent.removeChild(MapRoom._bubbleSelectTarget);
                     MapRoom._monsterTransferInProgress = false;
-                    for (const dst in MapRoom._monsterTargetRef._monsters) { finalMonsters[dst] = MapRoom._monsterTargetRef._monsters[dst].Get(); spaceRemaining -= MapRoom._monsterTargetRef._monsters[dst].Get() * CREATURES.GetProperty(dst, "cStorage"); }
+                    for (const dst in MapRoom._monsterTargetRef._monsters) { finalMonsters[dst] = MapRoom._monsterTargetRef._monsters[dst].Get(); spaceRemaining -= MapRoom._monsterTargetRef._monsters[dst].Get() * getCREATURES().GetProperty(dst, "cStorage"); }
                     for (const src in MapRoom._monsterSource!._monsters) { finalSrcMonsters[src] = MapRoom._monsterSource!._monsters[src].Get(); }
                     MapRoom._monstersTransferred = 0;
                     MapRoom._allMonstersTransferred = true;
                     for (const src in MapRoom._monsterTransfer) {
                         if (MapRoom._monsterTransfer[src].Get() > 0) {
-                            const cost = CREATURES.GetProperty(src, "cStorage");
+                            const cost = getCREATURES().GetProperty(src, "cStorage");
                             if (spaceRemaining >= MapRoom._monsterTransfer[src].Get() * cost) { actualTransfer[src] = MapRoom._monsterTransfer[src].Get(); MapRoom._monstersTransferred += MapRoom._monsterTransfer[src].Get(); }
                             else { MapRoom._allMonstersTransferred = false; actualTransfer[src] = Math.floor(spaceRemaining / cost); MapRoom._monstersTransferred += Math.floor(spaceRemaining / cost); }
                             if (MapRoom._monsterTargetRef._monsters[src]) finalMonsters[src] = MapRoom._monsterTargetRef._monsters[src].Get() + actualTransfer[src];
@@ -372,47 +375,47 @@ export class MapRoom implements IMapRoom {
                             if (spaceRemaining <= 0) break;
                         }
                     }
-                    const srcMonsterData = { "hcount": MapRoom._monsterSource!._hpMonsterData.hcount, "overdrivepower": MapRoom._monsterSource!._monsterData.overdrivepower.Get(), "hcc": MapRoom._monsterSource!._hpMonsterData.hcc, "space": MapRoom._monsterSource!._monsterData.space.Get(), "h": MapRoom._monsterSource!._hpMonsterData.h, "finishtime": MapRoom._monsterSource!._hpMonsterData.finishtime, "overdrivetime": MapRoom._monsterSource!._monsterData.overdrivetime.Get(), "housed": finalSrcMonsters, "hid": MapRoom._monsterSource!._hpMonsterData.hid, "hstage": MapRoom._monsterSource!._hpMonsterData.hstage, "saved": GLOBAL.Timestamp() };
-                    const targetMonsterData = { "hcount": MapRoom._monsterTargetRef._hpMonsterData.hcount, "overdrivepower": MapRoom._monsterTargetRef._monsterData.overdrivepower.Get(), "hcc": MapRoom._monsterTargetRef._hpMonsterData.hcc, "space": MapRoom._monsterTargetRef._monsterData.space.Get(), "h": MapRoom._monsterTargetRef._hpMonsterData.h, "finishtime": MapRoom._monsterTargetRef._hpMonsterData.finishtime, "overdrivetime": MapRoom._monsterTargetRef._monsterData.overdrivetime.Get(), "housed": finalMonsters, "hid": MapRoom._monsterTargetRef._hpMonsterData.hid, "hstage": MapRoom._monsterTargetRef._hpMonsterData.hstage, "saved": GLOBAL.Timestamp() };
+                    const srcMonsterData = { "hcount": MapRoom._monsterSource!._hpMonsterData.hcount, "overdrivepower": MapRoom._monsterSource!._monsterData.overdrivepower.Get(), "hcc": MapRoom._monsterSource!._hpMonsterData.hcc, "space": MapRoom._monsterSource!._monsterData.space.Get(), "h": MapRoom._monsterSource!._hpMonsterData.h, "finishtime": MapRoom._monsterSource!._hpMonsterData.finishtime, "overdrivetime": MapRoom._monsterSource!._monsterData.overdrivetime.Get(), "housed": finalSrcMonsters, "hid": MapRoom._monsterSource!._hpMonsterData.hid, "hstage": MapRoom._monsterSource!._hpMonsterData.hstage, "saved": getGLOBAL().Timestamp() };
+                    const targetMonsterData = { "hcount": MapRoom._monsterTargetRef._hpMonsterData.hcount, "overdrivepower": MapRoom._monsterTargetRef._monsterData.overdrivepower.Get(), "hcc": MapRoom._monsterTargetRef._hpMonsterData.hcc, "space": MapRoom._monsterTargetRef._monsterData.space.Get(), "h": MapRoom._monsterTargetRef._hpMonsterData.h, "finishtime": MapRoom._monsterTargetRef._hpMonsterData.finishtime, "overdrivetime": MapRoom._monsterTargetRef._monsterData.overdrivetime.Get(), "housed": finalMonsters, "hid": MapRoom._monsterTargetRef._hpMonsterData.hid, "hstage": MapRoom._monsterTargetRef._hpMonsterData.hstage, "saved": getGLOBAL().Timestamp() };
                     const transferVars: Array<any> = [["frombaseid", MapRoom._monsterSource!._baseID], ["tobaseid", MapRoom._monsterTargetRef._baseID], ["monsters", JSON.encode([srcMonsterData, targetMonsterData])]];
 
                     const transferSuccessful = (serverData: any): void => {
                         PLEASEWAIT.Hide();
                         if (serverData.error === 0) {
-                            if (MapRoom._allMonstersTransferred) GLOBAL.Message(KEYS.Get("newmap_tr_done"));
-                            else { GLOBAL.Message(KEYS.Get("newmap_tr_space", { "v1": MapRoom._monstersTransferred })); if (MapRoom._monstersTransferred === 0) { MapRoom._monsterTransfer = {}; MapRoom._pendingTransferRequest = false; return; } }
+                            if (MapRoom._allMonstersTransferred) getGLOBAL().Message(getKEYS().Get("newmap_tr_done"));
+                            else { getGLOBAL().Message(getKEYS().Get("newmap_tr_space", { "v1": MapRoom._monstersTransferred })); if (MapRoom._monstersTransferred === 0) { MapRoom._monsterTransfer = {}; MapRoom._pendingTransferRequest = false; return; } }
                             for (const dst in finalMonsters) { if (MapRoom._monsterTargetRef!._monsters[dst]) { MapRoom._monsterTargetRef!._monsters[dst].Set(finalMonsters[dst]); MapRoom._monsterTargetRef!._hpMonsters[dst] = finalMonsters[dst]; } else { MapRoom._monsterTargetRef!._monsters[dst] = new SecNum(finalMonsters[dst]); MapRoom._monsterTargetRef!._hpMonsters[dst] = finalMonsters[dst]; } }
                             if (MapRoom._monsterSourceRef!.cellX === MapRoom._monsterSource!.cellX && MapRoom._monsterSourceRef!.cellY === MapRoom._monsterSource!.cellY) { for (const src in finalSrcMonsters) { if (finalSrcMonsters[src] > 0) { MapRoom._monsterSourceRef!._monsters[src].Set(finalSrcMonsters[src]); MapRoom._monsterSourceRef!._hpMonsters[src] = finalSrcMonsters[src]; } else { delete MapRoom._monsterSourceRef!._monsters[src]; delete MapRoom._monsterSourceRef!._hpMonsters[src]; } } }
                             if (MapRoom._zones) { if (MapRoom._zones[zoneSource.id] && MapRoom._zones[zoneSource.id].data) MapRoom._zones[zoneSource.id].data[MapRoom._monsterSource!.cellX][MapRoom._monsterSource!.cellY].m.housed = finalSrcMonsters; else MapRoom._zones[zoneSource.id] = new objZone(); if (MapRoom._zones[zoneTarget.id] && MapRoom._zones[zoneTarget.id].data) MapRoom._zones[zoneTarget.id].data[MapRoom._monsterTargetRef!.cellX][MapRoom._monsterTargetRef!.cellY].m.housed = finalMonsters; else MapRoom._zones[zoneTarget.id] = new objZone(); }
-                        } else { GLOBAL.Message(KEYS.Get("msg_err_transfer") + serverData.error); }
+                        } else { getGLOBAL().Message(getKEYS().Get("msg_err_transfer") + serverData.error); }
                         MapRoom._monsterTransfer = {};
                         MapRoom._pendingTransferRequest = false;
                     };
-                    const transferError = (event: IOErrorEvent): void => { PLEASEWAIT.Hide(); GLOBAL.Message(KEYS.Get("msg_err_transfer") + event.text); MapRoom._monsterTransfer = {}; MapRoom._pendingTransferRequest = false; };
+                    const transferError = (event: IOErrorEvent): void => { PLEASEWAIT.Hide(); getGLOBAL().Message(getKEYS().Get("msg_err_transfer") + event.text); MapRoom._monsterTransfer = {}; MapRoom._pendingTransferRequest = false; };
                     const trySendTransfer = (): void => {
                         const sourcePendingZoneIdx = MapRoom.GetPendingZoneRequestIndex(MapRoom._monsterSource!.cellX, MapRoom._monsterSource!.cellY);
                         const targetPendingZoneIdx = zoneSource.id === zoneTarget.id ? sourcePendingZoneIdx : MapRoom.GetPendingZoneRequestIndex(MapRoom._monsterTargetRef!.cellX, MapRoom._monsterTargetRef!.cellY);
-                        if (sourcePendingZoneIdx === -1 && targetPendingZoneIdx === -1) { if (transferRetryTimer) { transferRetryTimer.stop(); transferRetryTimer = null; } MapRoom._pendingTransferRequest = true; new URLLoaderApi().load(GLOBAL._mapURL + "transferassets", transferVars, transferSuccessful, transferError); }
+                        if (sourcePendingZoneIdx === -1 && targetPendingZoneIdx === -1) { if (transferRetryTimer) { transferRetryTimer.stop(); transferRetryTimer = null; } MapRoom._pendingTransferRequest = true; new (getURLLoaderApi())().load(getGLOBAL()._mapURL + "transferassets", transferVars, transferSuccessful, transferError); }
                         else { if (!transferRetryTimer) { transferRetryTimer = new Timer(200, 1); transferRetryTimer.addEventListener(TimerEvent.TIMER, trySendTransfer as any); } transferRetryTimer.reset(); transferRetryTimer.start(); if (!addedToPriority) { if (sourcePendingZoneIdx > 0) MapRoom._priorityMapCellsToRequest.push(zoneSource.point); if (targetPendingZoneIdx > 0 && zoneSource.id !== zoneTarget.id) MapRoom._priorityMapCellsToRequest.push(zoneTarget.point); addedToPriority = true; } }
                     };
                     trySendTransfer();
                     return "";
                 }
-                if (MapRoom._monsterTargetRef._monsterData.space.Get() === 0) GLOBAL.Message(KEYS.Get("newmap_tr_err1"));
+                if (MapRoom._monsterTargetRef._monsterData.space.Get() === 0) getGLOBAL().Message(getKEYS().Get("newmap_tr_err1"));
                 PLEASEWAIT.Hide();
-                return KEYS.Get("newmap_tr_err1");
+                return getKEYS().Get("newmap_tr_err1");
             }
-            GLOBAL.Message(KEYS.Get("newmap_tr_err2"));
+            getGLOBAL().Message(getKEYS().Get("newmap_tr_err2"));
             PLEASEWAIT.Hide();
-            return KEYS.Get("newmap_tr_err2");
+            return getKEYS().Get("newmap_tr_err2");
         }
         PLEASEWAIT.Hide();
-        return KEYS.Get("newmap_tr_err3");
+        return getKEYS().Get("newmap_tr_err3");
     }
 
     public static TransferCancel(event: MouseEvent | null = null): void { if (MapRoom._bubbleSelectTarget.parent) MapRoom._bubbleSelectTarget.parent.removeChild(MapRoom._bubbleSelectTarget); MapRoom._resourceTransfer = {}; MapRoom._monsterTransfer = {}; MapRoom._resourceTransferInProgress = false; MapRoom._monsterTransferInProgress = false; MapRoom._pendingTransferRequest = false; }
 
-    public static Resize(): void { MapRoom._mc!.x = 0; MapRoom._mc!.y = 0; MapRoomManager.instance.ResizeHandler(); }
+    public static Resize(): void { MapRoom._mc!.x = 0; MapRoom._mc!.y = 0; getMapRoomManager().instance.ResizeHandler(); }
 
     public static SmokeAdd(): void { if (MapRoom._smokeBMD) return; MapRoom.SmokeRemove(); MapRoom._smokeBMD = new BitmapData(100, 100, true, 16777215); MapRoom._smokeParticles = []; }
     public static SmokeRemove(): void { MapRoom._smokeBMD = null; }
@@ -430,7 +433,7 @@ export class MapRoom implements IMapRoom {
                 if (p.speed > 0.1) p.speed -= 0.02;
                 let alpha = Math.floor(100 - 100 / 4 * p.speed);
                 if (alpha < 60) alpha = 60;
-                const bmd = Smoke._smokeParticleBMD[alpha];
+                const bmd = getSmoke()._smokeParticleBMD[alpha];
                 MapRoom._smokeBMD.copyPixels(bmd, bmd.rect, p.position, null, null, true);
                 if (alpha >= 95) MapRoom._smokeParticles![i] = { "position": new Point(2 + Math.random() * 15, 90), "speed": 3 + Math.random(), "wind": 0.6 + Math.random() * 0.5 };
             }
@@ -471,33 +474,33 @@ export class MapRoom implements IMapRoom {
     public get playerOwnedCells(): Array<IMapRoomCell> | null { return null; }
     public get allianceDataById(): Map<string, any> | null { return null; }
 
-    public Setup(): void { MapRoom._Setup(GLOBAL._mapHome, this.worldID, MapRoom._inviteBaseID, this.viewOnly); }
+    public Setup(): void { MapRoom._Setup(getGLOBAL()._mapHome, this.worldID, MapRoom._inviteBaseID, this.viewOnly); }
     public ReadyToShow(): boolean { return true; }
     public ShowDelayed(force: boolean = false): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) GLOBAL.m_mapRoomFunctional = true;
-        if (force || MapRoom._reposition || ((!BASE.isMainYard || GLOBAL._bMap && GLOBAL._bMap._canFunction || GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD) && (GLOBAL.mode === GLOBAL.e_BASE_MODE.HELP || !MapRoom._open))) {
-            SOUNDS.Play("click1");
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) getGLOBAL().m_mapRoomFunctional = true;
+        if (force || MapRoom._reposition || ((!getBASE().isMainYard || getGLOBAL()._bMap && getGLOBAL()._bMap._canFunction || getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD) && (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.HELP || !MapRoom._open))) {
+            getSOUNDS().Play("click1");
             MapRoom._open = true;
             MapRoom._reposition = false;
             if (MapRoom._mc !== null) { MapRoom._mc.Cleanup(); MapRoom._mc = null; }
             MapRoom._mc = new MapRoomPopup();
             MapRoom._mc.Setup();
-            BASE.Cleanup();
-            GLOBAL._layerUI.addChild(MapRoom._mc);
-            UI2.SetupHUD();
-            if (GLOBAL._currentCell) { MapRoom.GetCell(GLOBAL._currentCell.cellX, GLOBAL._currentCell.cellY, true); MapRoom._mc.JumpTo(new Point(GLOBAL._currentCell.cellX, GLOBAL._currentCell.cellY)); if (MapRoom._showEnemyWait) { MapRoom._mc.ShowInfoEnemy(GLOBAL._currentCell as MapRoomCell, true); MapRoom._showEnemyWait = false; } else if (MapRoom._showAttackWait) { MapRoom._mc.ShowAttack(GLOBAL._currentCell as MapRoomCell); MapRoom._showAttackWait = false; } }
-            if (MapRoom._empiredestroyed) { GLOBAL.Message(KEYS.Get("empiredestroyed_newbase")); MapRoom._empiredestroyed = false; }
-            if (GLOBAL._ROOT.stage.displayState === StageDisplayState.NORMAL) { if (Chat._bymChat) Chat._bymChat.show(); if (UI_BOTTOM._missions) UI_BOTTOM._missions.visible = true; }
+            getBASE().Cleanup();
+            getGLOBAL()._layerUI.addChild(MapRoom._mc);
+            getUI2().SetupHUD();
+            if (getGLOBAL()._currentCell) { MapRoom.GetCell(getGLOBAL()._currentCell.cellX, getGLOBAL()._currentCell.cellY, true); MapRoom._mc.JumpTo(new Point(getGLOBAL()._currentCell.cellX, getGLOBAL()._currentCell.cellY)); if (MapRoom._showEnemyWait) { MapRoom._mc.ShowInfoEnemy(getGLOBAL()._currentCell as MapRoomCell, true); MapRoom._showEnemyWait = false; } else if (MapRoom._showAttackWait) { MapRoom._mc.ShowAttack(getGLOBAL()._currentCell as MapRoomCell); MapRoom._showAttackWait = false; } }
+            if (MapRoom._empiredestroyed) { getGLOBAL().Message(getKEYS().Get("empiredestroyed_newbase")); MapRoom._empiredestroyed = false; }
+            if (getGLOBAL()._ROOT.stage.displayState === StageDisplayState.NORMAL) { if (Chat._bymChat) Chat._bymChat.show(); if (UI_BOTTOM._missions) UI_BOTTOM._missions.visible = true; }
             else { if (Chat._bymChat) Chat._bymChat.hide(); if (UI_BOTTOM._missions) UI_BOTTOM._missions.visible = false; }
         }
         Tutorial.ShowIfNeeded();
     }
-    public Hide(): void { if (MapRoom._open && GLOBAL.mode !== GLOBAL.e_BASE_MODE.ATTACK && GLOBAL.mode !== GLOBAL.e_BASE_MODE.WMATTACK) { SOUNDS.Play("close"); if (MapRoom._mc!.parent) MapRoom._mc!.parent.removeChild(MapRoom._mc!); MapRoom.ClearCells(); MapRoom._mc!.Cleanup(); MapRoom._mc = null; } MapRoom._open = false; }
+    public Hide(): void { if (MapRoom._open && getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.ATTACK && getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.WMATTACK) { getSOUNDS().Play("close"); if (MapRoom._mc!.parent) MapRoom._mc!.parent.removeChild(MapRoom._mc!); MapRoom.ClearCells(); MapRoom._mc!.Cleanup(); MapRoom._mc = null; } MapRoom._open = false; }
     public BookmarksClear(): void { MapRoom._bookmarkData = {}; MapRoom._bookmarks = []; MapRoom.BookmarksSave(); }
     public FindCell(cellX: number, cellY: number): IMapRoomCell | null { return MapRoom.GetCell(cellX, cellY) as IMapRoomCell; }
     public LoadCell(cellX: number, cellY: number, force: boolean = false): void { MapRoom.GetCell(cellX, cellY, force); }
     public CalculateCellId(cellX: number, cellY: number): number { return cellY * MapRoom._mapWidth + cellX + 1; }
-    public Tick(): void { if (MapRoom._open && MapRoom._mc && Boolean(MapRoom._mc.parent)) MapRoom._mc.Tick(); if (MapRoom._open && (!MapRoom._mc || MapRoom._mc && !MapRoom._mc.parent) && BASE._saveCounterA === BASE._saveCounterB) { PLEASEWAIT.Hide(); if (MapRoom._mc) { MapRoom._mc.Cleanup(); MapRoom._mc = null; } MapRoom._mc = new MapRoomPopup(); MapRoom._mc.Setup(); BASE.Cleanup(); GLOBAL._layerWindows.addChild(MapRoom._mc); } }
+    public Tick(): void { if (MapRoom._open && MapRoom._mc && Boolean(MapRoom._mc.parent)) MapRoom._mc.Tick(); if (MapRoom._open && (!MapRoom._mc || MapRoom._mc && !MapRoom._mc.parent) && getBASE()._saveCounterA === getBASE()._saveCounterB) { PLEASEWAIT.Hide(); if (MapRoom._mc) { MapRoom._mc.Cleanup(); MapRoom._mc = null; } MapRoom._mc = new MapRoomPopup(); MapRoom._mc.Setup(); getBASE().Cleanup(); getGLOBAL()._layerWindows.addChild(MapRoom._mc); } }
     public TickFast(): void { }
-    public ResizeHandler(): void { if (!MapRoom._viewOnly) MapRoomManager.instance.Hide(); else MapRoom.HideFromViewOnly(); MapRoomManager.instance.ShowDelayed(true); }
+    public ResizeHandler(): void { if (!MapRoom._viewOnly) getMapRoomManager().instance.Hide(); else MapRoom.HideFromViewOnly(); getMapRoomManager().instance.ShowDelayed(true); }
 }

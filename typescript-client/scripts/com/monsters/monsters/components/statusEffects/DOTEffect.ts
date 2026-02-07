@@ -1,9 +1,12 @@
 import { SpriteData } from "../../../display/SpriteData";
 import { SpriteSheetAnimation } from "../../../display/SpriteSheetAnimation";
-import { MonsterBase } from "../../MonsterBase";
 import { CStatusEffect } from "./CStatusEffect";
 
-import { SPRITES } from "../../../../../SPRITES";
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+function getSPRITES(): any { return require("../../../../../SPRITES").SPRITES; }
+
+
 
 /**
  * DOT effect - damage over time status effect with stacking/renewal options.
@@ -22,8 +25,8 @@ export class DOTEffect extends CStatusEffect {
         super(target);
         this._renewsPerAttack = this._numRenews = numRenews;
         this._initialDPS = this._dps = dps;
-        SPRITES.SetupSprite(spriteKey);
-        this._icon = new SpriteSheetAnimation(SPRITES.GetSpriteDescriptor(spriteKey) as SpriteData, 1);
+        getSPRITES().SetupSprite(spriteKey);
+        this._icon = new SpriteSheetAnimation(getSPRITES().GetSpriteDescriptor(spriteKey) as SpriteData, 1);
         this._icon.play();
     }
 

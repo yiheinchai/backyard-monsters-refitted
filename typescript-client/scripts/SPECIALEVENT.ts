@@ -4,32 +4,35 @@ import Point from "openfl/geom/Point";
 
 import { SecNum } from "./com/cc/utils/SecNum";
 import { EnumInvasionType } from "./com/monsters/enums/EnumInvasionType";
-import { InstanceManager } from "./com/monsters/managers/InstanceManager";
 import { ChampionBase } from "./com/monsters/monsters/champions/ChampionBase";
 import { UI_BOTTOM } from "./com/monsters/ui/UI_BOTTOM";
 
-import { BASE } from "./BASE";
-import { BFOUNDATION } from "./BFOUNDATION";
-import { BTOTEM } from "./BTOTEM";
-import { CREEPS } from "./CREEPS";
 import { CUSTOMATTACKS } from "./CUSTOMATTACKS";
 import { DEFENSEEVENTPOPUP } from "./DEFENSEEVENTPOPUP";
-import { GLOBAL } from "./GLOBAL";
-import { GRID } from "./GRID";
-import { KEYS } from "./KEYS";
-import { LOGGER } from "./LOGGER";
-import { MAP } from "./MAP";
-import { POPUPS } from "./POPUPS";
-import { SOUNDS } from "./SOUNDS";
 import { SPECIALEVENT_WM1 } from "./SPECIALEVENT_WM1";
-import { TUTORIAL } from "./TUTORIAL";
-import { UI2 } from "./UI2";
 import { UI_NEXTWAVE } from "./UI_NEXTWAVE";
 import { UI_NEXTWAVE_WM1 } from "./UI_NEXTWAVE_WM1";
-import { URLLoaderApi } from "./URLLoaderApi";
-import { WMATTACK } from "./WMATTACK";
 import { WMIEXTENSIONPOPUP } from "./WMIEXTENSIONPOPUP";
 import { WMIROUNDCOMPLETE } from "./WMIROUNDCOMPLETE";
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBTOTEM(): any { return require("./BTOTEM").BTOTEM; }
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getGRID(): any { return require("./GRID").GRID; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+function getUI2(): any { return require("./UI2").UI2; }
+function getURLLoaderApi(): any { return require("./URLLoaderApi").URLLoaderApi; }
+function getWMATTACK(): any { return require("./WMATTACK").WMATTACK; }
+
 
 export class SPECIALEVENT {
     private static _eventCount: SecNum = new SecNum(1);
@@ -127,7 +130,7 @@ export class SPECIALEVENT {
     
     public static Setup(): void {
         if (SPECIALEVENT._setupCalled) return;
-        if (GLOBAL._flags.activeInvasion != EnumInvasionType.WMI2) return;
+        if (getGLOBAL()._flags.activeInvasion != EnumInvasionType.WMI2) return;
         
         SPECIALEVENT._setupCalled = true;
         SPECIALEVENT._wave = new SecNum(SPECIALEVENT.GetStat("wmi2_wave"));
@@ -137,8 +140,8 @@ export class SPECIALEVENT {
     }
     
     private static InitializeTimes(): void {
-        new URLLoaderApi().load(
-            GLOBAL._apiURL + "events/wmi?type=wmi2",
+        new (getURLLoaderApi())().load(
+            getGLOBAL()._apiURL + "events/wmi?type=wmi2",
             null,
             function(serverData: any): void {
                 if (serverData) {
@@ -150,7 +153,7 @@ export class SPECIALEVENT {
     }
     
     public static getActiveSpecialEvent(): any {
-        if (GLOBAL._flags.activeInvasion == EnumInvasionType.WMI1) {
+        if (getGLOBAL()._flags.activeInvasion == EnumInvasionType.WMI1) {
             return SPECIALEVENT_WM1;
         }
         return SPECIALEVENT;
@@ -198,7 +201,7 @@ export class SPECIALEVENT {
         SPECIALEVENT._retreatAllMonsters = false;
         SPECIALEVENT._randomDirection = Math.floor(Math.random() * 4) * 90;
         
-        LOGGER.Stat([83, SPECIALEVENT._wave.Get()]);
+        getLOGGER().Stat([83, SPECIALEVENT._wave.Get()]);
         SPECIALEVENT.SendWave();
     }
     
@@ -211,39 +214,39 @@ export class SPECIALEVENT {
         let _loc8_: BFOUNDATION = null;
         
         if (param1) {
-            LOGGER.Stat([84, SPECIALEVENT._wave.Get()]);
+            getLOGGER().Stat([84, SPECIALEVENT._wave.Get()]);
             SPECIALEVENT.StartRepairs();
             
             if (SPECIALEVENT.isMajorWave(SPECIALEVENT.wave) && SPECIALEVENT.wave != 1) {
-                BTOTEM.UpgradeTotem();
+                getBTOTEM().UpgradeTotem();
             }
             
             _loc3_ = new WMIROUNDCOMPLETE(SPECIALEVENT.wave);
-            POPUPS.Push(_loc3_, null, null, null, null, false, "now");
+            getPOPUPS().Push(_loc3_, null, null, null, null, false, "now");
             SPECIALEVENT._wave.Add(1);
             SPECIALEVENT.updateWaveDisplay(SPECIALEVENT.wave);
             SPECIALEVENT.SetStat("wmi2_wave", SPECIALEVENT._wave.Get());
         } else {
-            LOGGER.Stat([85, SPECIALEVENT._wave.Get()]);
+            getLOGGER().Stat([85, SPECIALEVENT._wave.Get()]);
             SPECIALEVENT.StartRepairs();
             _loc3_ = new WMIROUNDCOMPLETE(-1, param2);
-            POPUPS.Push(_loc3_, null, null, null, null, false, "now");
+            getPOPUPS().Push(_loc3_, null, null, null, null, false, "now");
         }
         
-        if (GLOBAL._aiDesignMode) {
+        if (getGLOBAL()._aiDesignMode) {
             _loc4_ = 0;
             _loc5_ = 0;
-            _loc7_ = InstanceManager.getInstancesByClass(BFOUNDATION);
+            _loc7_ = getInstanceManager().getInstancesByClass(getBFOUNDATION());
             
             for (_loc8_ of _loc7_) {
-                if (_loc8_._class != "wall" && (_loc8_._type == 53 && _loc8_._expireTime < GLOBAL.Timestamp()) === false && (_loc8_._class == "trap" && _loc8_._fired) === false) {
+                if (_loc8_._class != "wall" && (_loc8_._type == 53 && _loc8_._expireTime < getGLOBAL().Timestamp()) === false && (_loc8_._class == "trap" && _loc8_._fired) === false) {
                     _loc4_ += _loc8_.health;
                     _loc5_ += _loc8_.maxHealth;
                 }
             }
             
             _loc6_ = 100 - 100 / _loc5_ * _loc4_;
-            GLOBAL.Message("Base is " + _loc6_ + " percent destroyed.");
+            getGLOBAL().Message("Base is " + _loc6_ + " percent destroyed.");
         }
         
         SPECIALEVENT.ClearWildMonsterPowerups();
@@ -258,7 +261,7 @@ export class SPECIALEVENT {
     
     private static StartRepairs(): void {
         let _loc2_: BFOUNDATION = null;
-        const _loc1_: any = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const _loc1_: any = getInstanceManager().getInstancesByClass(getBFOUNDATION());
         
         for (_loc2_ of _loc1_) {
             if (_loc2_.health < _loc2_.maxHealth && _loc2_._repairing == 0) {
@@ -283,10 +286,10 @@ export class SPECIALEVENT {
             return;
         }
         
-        if (BASE.isInfernoMainYardOrOutpost) {
-            SOUNDS.PlayMusic("musicipanic");
+        if (getBASE().isInfernoMainYardOrOutpost) {
+            getSOUNDS().PlayMusic("musicipanic");
         } else {
-            SOUNDS.PlayMusic("musicpanic");
+            getSOUNDS().PlayMusic("musicpanic");
         }
         
         SPECIALEVENT._spawningWaves = true;
@@ -299,20 +302,20 @@ export class SPECIALEVENT {
                 _loc4_ = Number(SPECIALEVENT.WAVES[SPECIALEVENT._wave.Get()][SPECIALEVENT._group].level);
                 _loc5_ = Number(SPECIALEVENT.WAVES[SPECIALEVENT._wave.Get()][SPECIALEVENT._group].rage);
                 
-                GLOBAL._wmCreaturePowerups[_loc2_] = _loc3_;
-                GLOBAL._wmCreatureLevels[_loc2_] = _loc4_;
+                getGLOBAL()._wmCreaturePowerups[_loc2_] = _loc3_;
+                getGLOBAL()._wmCreatureLevels[_loc2_] = _loc4_;
                 
                 _loc1_[0][4] = (_loc1_[0][4] + SPECIALEVENT._randomDirection) % 360;
-                _loc1_[0][3] = GLOBAL._mapWidth * 0.25;
+                _loc1_[0][3] = getGLOBAL()._mapWidth * 0.25;
                 
                 if (_loc5_) {
-                    WMATTACK._rage = _loc5_;
+                    getWMATTACK()._rage = _loc5_;
                 }
                 
                 _loc6_ = CUSTOMATTACKS.WMIAttack(_loc1_);
                 
                 if (_loc5_) {
-                    WMATTACK._rage = 0;
+                    getWMATTACK()._rage = 0;
                 }
                 
                 SPECIALEVENT._currentAttackers = SPECIALEVENT._currentAttackers.concat(_loc6_);
@@ -321,13 +324,13 @@ export class SPECIALEVENT {
             case SPECIALEVENT.GUARDIAN:
                 _loc7_ = SPECIALEVENT.WAVES[SPECIALEVENT._wave.Get()][SPECIALEVENT._group];
                 _loc8_ = (_loc7_.angle + SPECIALEVENT._randomDirection) % 360;
-                _loc9_ = GRID.ToISO(Math.cos(_loc8_ * 0.0174532925) * 900, Math.sin(_loc8_ * 0.0174532925) * 900, 0);
-                _loc10_ = CREEPS.SpawnGuardian(_loc7_.guardianID, MAP._BUILDINGTOPS, "bounce", _loc7_.level, _loc9_, _loc7_.direction, _loc7_.health, _loc7_.foodbonus, 0, true);
+                _loc9_ = getGRID().ToISO(Math.cos(_loc8_ * 0.0174532925) * 900, Math.sin(_loc8_ * 0.0174532925) * 900, 0);
+                _loc10_ = getCREEPS().SpawnGuardian(_loc7_.guardianID, getMAP()._BUILDINGTOPS, "bounce", _loc7_.level, _loc9_, _loc7_.direction, _loc7_.health, _loc7_.foodbonus, 0, true);
                 SPECIALEVENT._currentAttackers.push([_loc10_]);
                 break;
         }
         
-        SPECIALEVENT._timeOfNextWave = GLOBAL.Timestamp();
+        SPECIALEVENT._timeOfNextWave = getGLOBAL().Timestamp();
         
         while (++SPECIALEVENT._group < SPECIALEVENT.WAVES[SPECIALEVENT._wave.Get()].length && Boolean(SPECIALEVENT.WAVES[SPECIALEVENT._wave.Get()][SPECIALEVENT._group] as number)) {
             SPECIALEVENT._timeOfNextWave += SPECIALEVENT.WAVES[SPECIALEVENT._wave.Get()][SPECIALEVENT._group];
@@ -356,25 +359,25 @@ export class SPECIALEVENT {
     }
     
     private static updateWarningText(): void {
-        let _loc1_: string = KEYS.Get("wmi_warning", { "v1": String(SPECIALEVENT.wave) });
+        let _loc1_: string = getKEYS().Get("wmi_warning", { "v1": String(SPECIALEVENT.wave) });
         
         if (SPECIALEVENT.wave == SPECIALEVENT.BONUSWAVE) {
-            _loc1_ = KEYS.Get("wmi_warningbonus");
+            _loc1_ = getKEYS().Get("wmi_warningbonus");
         } else if (SPECIALEVENT.wave == SPECIALEVENT.BONUSWAVE2) {
-            _loc1_ = KEYS.Get("wmi_warningbonus2");
+            _loc1_ = getKEYS().Get("wmi_warningbonus2");
         }
         
-        UI2._warning.Update('<font size="26">' + _loc1_ + "</font>");
+        getUI2()._warning.Update('<font size="26">' + _loc1_ + "</font>");
     }
     
     public static ClearWildMonsterPowerups(): void {
         let _loc1_: number = 0;
         let _loc2_: number = 0;
         
-        for (_loc1_ of GLOBAL._wmCreaturePowerups) {
+        for (_loc1_ of getGLOBAL()._wmCreaturePowerups) {
             _loc1_ = 0;
         }
-        for (_loc2_ of GLOBAL._wmCreatureLevels) {
+        for (_loc2_ of getGLOBAL()._wmCreatureLevels) {
             _loc2_ = 0;
         }
     }
@@ -384,17 +387,17 @@ export class SPECIALEVENT {
         let _loc2_: any[] = null;
         let _loc3_: number = 0;
         
-        if (GLOBAL._flags.viximo || GLOBAL._flags.kongregate) {
+        if (getGLOBAL()._flags.viximo || getGLOBAL()._flags.kongregate) {
             return;
         }
-        if (!BASE.isMainYard) {
+        if (!getBASE().isMainYard) {
             return;
         }
-        if (GLOBAL.Timestamp() == SPECIALEVENT._lastTimestamp) {
+        if (getGLOBAL().Timestamp() == SPECIALEVENT._lastTimestamp) {
             return;
         }
         
-        SPECIALEVENT._lastTimestamp = GLOBAL.Timestamp();
+        SPECIALEVENT._lastTimestamp = getGLOBAL().Timestamp();
         
         if (SPECIALEVENT._knownFlag != SPECIALEVENT.invasionpop) {
             SPECIALEVENT.FlagChanged();
@@ -424,24 +427,24 @@ export class SPECIALEVENT {
         }
         
         if (SPECIALEVENT._active) {
-            GLOBAL.UpdateAFKTimer();
+            getGLOBAL().UpdateAFKTimer();
         }
         
-        if (GLOBAL.Timestamp() >= SPECIALEVENT._timeOfNextWave || CREEPS._creepCount == 0) {
+        if (getGLOBAL().Timestamp() >= SPECIALEVENT._timeOfNextWave || getCREEPS()._creepCount == 0) {
             SPECIALEVENT.SendWave();
         }
     }
     
     public static MonstersRetreating(): boolean {
-        return SPECIALEVENT._retreatAllMonsters || CREEPS._creepCount > 0;
+        return SPECIALEVENT._retreatAllMonsters || getCREEPS()._creepCount > 0;
     }
     
     public static GetTimeUntilStart(): number {
-        return SPECIALEVENT._eventStartTime.Get() - GLOBAL.Timestamp();
+        return SPECIALEVENT._eventStartTime.Get() - getGLOBAL().Timestamp();
     }
     
     public static GetTimeUntilEnd(): number {
-        return SPECIALEVENT._eventEndTime.Get() - GLOBAL.Timestamp();
+        return SPECIALEVENT._eventEndTime.Get() - getGLOBAL().Timestamp();
     }
     
     public static TimerClicked(param1: MouseEvent): void {
@@ -462,7 +465,7 @@ export class SPECIALEVENT {
                 _loc2_ = new DEFENSEEVENTPOPUP(SPECIALEVENT.invasionpop);
             }
             
-            POPUPS.Push(_loc2_, null, null, null, null, false, param1);
+            getPOPUPS().Push(_loc2_, null, null, null, null, false, param1);
             SPECIALEVENT.SetStat("lasttdpopup", SPECIALEVENT.invasionpop);
         }
     }
@@ -472,13 +475,13 @@ export class SPECIALEVENT {
         
         if (!WMIROUNDCOMPLETE.open && !DEFENSEEVENTPOPUP.open && !WMIEXTENSIONPOPUP.open && !SPECIALEVENT._active) {
             _loc1_ = new WMIROUNDCOMPLETE(SPECIALEVENT.EVENTEND);
-            POPUPS.Push(_loc1_, null, null, null, null, false, "now");
+            getPOPUPS().Push(_loc1_, null, null, null, null, false, "now");
             SPECIALEVENT.SetStat("wmi_end", 1);
         }
     }
     
     public static EventActive(): boolean {
-        if (!BASE.isMainYard) {
+        if (!getBASE().isMainYard) {
             return false;
         }
         if (SPECIALEVENT.ACTIVE_OVERRIDE) {
@@ -499,7 +502,7 @@ export class SPECIALEVENT {
         _loc1_ = 0;
         
         while (_loc1_ < SPECIALEVENT.TIME_OFFSETS.length) {
-            if (GLOBAL.Timestamp() < SPECIALEVENT._eventStartTime.Get() + SPECIALEVENT.TIME_OFFSETS[_loc1_].Get()) {
+            if (getGLOBAL().Timestamp() < SPECIALEVENT._eventStartTime.Get() + SPECIALEVENT.TIME_OFFSETS[_loc1_].Get()) {
                 return _loc1_;
             }
             _loc1_++;
@@ -516,7 +519,7 @@ export class SPECIALEVENT {
         if (!SPECIALEVENT._whatsNewComplete) {
             return;
         }
-        if (GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD || !BASE.isMainYard || TUTORIAL._stage <= 200 || GLOBAL._sessionCount < 5) {
+        if (getGLOBAL().mode != getGLOBAL().e_BASE_MODE.BUILD || !getBASE().isMainYard || getTUTORIAL()._stage <= 200 || getGLOBAL()._sessionCount < 5) {
             return;
         }
         
@@ -560,37 +563,37 @@ export class SPECIALEVENT {
                 _loc2_ = 0;
                 _loc3_ = 1;
                 for (_loc4_ of SPECIALEVENT.DEBUGCREATURES) {
-                    GLOBAL._wmCreatureLevels[_loc4_] = _loc3_;
+                    getGLOBAL()._wmCreatureLevels[_loc4_] = _loc3_;
                 }
                 for (_loc4_ of SPECIALEVENT.DEBUGCREATURES) {
-                    GLOBAL._wmCreaturePowerups[_loc4_] = _loc2_;
+                    getGLOBAL()._wmCreaturePowerups[_loc4_] = _loc2_;
                 }
                 break;
             case 2:
                 _loc2_ = 0;
                 _loc3_ = 6;
                 for (_loc4_ of SPECIALEVENT.DEBUGCREATURES) {
-                    GLOBAL._wmCreatureLevels[_loc4_] = _loc3_;
+                    getGLOBAL()._wmCreatureLevels[_loc4_] = _loc3_;
                 }
                 for (_loc4_ of SPECIALEVENT.DEBUGCREATURES) {
-                    GLOBAL._wmCreaturePowerups[_loc4_] = _loc2_;
+                    getGLOBAL()._wmCreaturePowerups[_loc4_] = _loc2_;
                 }
                 break;
             case 3:
                 _loc2_ = 3;
                 _loc3_ = 6;
                 for (_loc4_ of SPECIALEVENT.DEBUGCREATURES) {
-                    GLOBAL._wmCreatureLevels[_loc4_] = _loc3_;
+                    getGLOBAL()._wmCreatureLevels[_loc4_] = _loc3_;
                 }
                 for (_loc4_ of SPECIALEVENT.DEBUGCREATURES) {
-                    GLOBAL._wmCreaturePowerups[_loc4_] = _loc2_;
+                    getGLOBAL()._wmCreaturePowerups[_loc4_] = _loc2_;
                 }
                 break;
         }
     }
     
     public static GetStat(param1: string): number {
-        let _loc2_: number = GLOBAL.StatGet(param1);
+        let _loc2_: number = getGLOBAL().StatGet(param1);
         
         if (_loc2_ < SPECIALEVENT._eventCount.Get() * 100) {
             _loc2_ = 0;
@@ -606,7 +609,7 @@ export class SPECIALEVENT {
             param2 = 0;
         }
         param2 += SPECIALEVENT._eventCount.Get() * 100;
-        GLOBAL.StatSet(param1, param2);
+        getGLOBAL().StatSet(param1, param2);
     }
     
     public static get wave(): number {

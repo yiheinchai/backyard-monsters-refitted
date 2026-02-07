@@ -20,10 +20,13 @@ import MouseCursor from "openfl/ui/MouseCursor";
 import Timer from "openfl/utils/Timer";
 import DropShadowFilter from "openfl/filters/DropShadowFilter";
 
-import { GLOBAL } from "../../GLOBAL";
-import { KEYS } from "../../KEYS";
-import { LOGIN } from "../../LOGIN";
-import { URLLoaderApi } from "../../URLLoaderApi";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../KEYS").KEYS; }
+function getLOGIN(): any { return require("../../LOGIN").LOGIN; }
+function getURLLoaderApi(): any { return require("../../URLLoaderApi").URLLoaderApi; }
+
+
 
 /**
  * AuthForm - Authentication form UI for login/registration.
@@ -69,14 +72,14 @@ export class AuthForm extends Sprite {
     constructor() {
         super();
         this.addEventListener(Event.ADDED_TO_STAGE, this.formAddedToStageHandler.bind(this));
-        GLOBAL.eventDispatcher.addEventListener("initError", ((event: Event) => { this.errMessage!.text = GLOBAL.initError; if (this.loadingContainer && this.loadingContainer.parent) this.Loading(); }).bind(this));
+        getGLOBAL().eventDispatcher.addEventListener("initError", ((event: Event) => { this.errMessage!.text = getGLOBAL().initError; if (this.loadingContainer && this.loadingContainer.parent) this.Loading(); }).bind(this));
         this.checkContentLoadedTimer = new Timer(1000);
         this.checkContentLoadedTimer.addEventListener(TimerEvent.TIMER, this.checkContentLoaded.bind(this));
         this.checkContentLoadedTimer.start();
     }
 
     private checkContentLoaded(event: TimerEvent): void {
-        if (GLOBAL.textContentLoaded && GLOBAL.supportedLangsLoaded) {
+        if (getGLOBAL().textContentLoaded && getGLOBAL().supportedLangsLoaded) {
             this.checkContentLoadedTimer!.stop();
             this.checkContentLoadedTimer!.removeEventListener(TimerEvent.TIMER, this.checkContentLoaded.bind(this));
             this.removeChild(this.loadingContainer!);
@@ -90,7 +93,7 @@ export class AuthForm extends Sprite {
         this.removeEventListener(Event.ADDED_TO_STAGE, this.formAddedToStageHandler.bind(this));
         try { if (this.stage) (this.stage as any).color = this.BACKGROUND; }
         catch (e) { this.graphics.beginFill(this.BACKGROUND); this.graphics.drawRect(0, 0, this.stage.stageWidth, this.stage.stageHeight); this.graphics.endFill(); }
-        if (!GLOBAL.textContentLoaded && !GLOBAL.supportedLangsLoaded) this.Loading();
+        if (!getGLOBAL().textContentLoaded && !getGLOBAL().supportedLangsLoaded) this.Loading();
         else { this.removeChild(this.loadingContainer!); this.handleContentLoaded(); }
     }
 
@@ -107,7 +110,7 @@ export class AuthForm extends Sprite {
 
         const formWidth = 450;
         const formHeight = 600;
-        this.languages = KEYS.supportedLanguagesJson;
+        this.languages = getKEYS().supportedLanguagesJson;
         const selectInput = this.createSelectInput();
         this.addChild(selectInput);
         selectInput.x = 20;
@@ -120,7 +123,7 @@ export class AuthForm extends Sprite {
         this.addChild(this.formContainer);
         this.startY = 345;
         this.loader = new Loader();
-        this.loader.load(new URLRequest(GLOBAL.cdnUrl + "assets/popups/C5-LAB-150.png"));
+        this.loader.load(new URLRequest(getGLOBAL().cdnUrl + "assets/popups/C5-LAB-150.png"));
         this.loader.contentLoaderInfo.addEventListener(Event.COMPLETE, this.onImageLoaded.bind(this));
         this.loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, (e: IOErrorEvent) => { });
         this.usernameInput = this.createBlock(0, 0, "Username");
@@ -148,7 +151,7 @@ export class AuthForm extends Sprite {
         titleFormat.color = this.WHITE;
         titleFormat.align = TextFormatAlign.CENTER;
         loadingTitle.defaultTextFormat = titleFormat;
-        loadingTitle.text = GLOBAL.versionMismatch ? "New Update Available!" : "Connecting to the server";
+        loadingTitle.text = getGLOBAL().versionMismatch ? "New Update Available!" : "Connecting to the server";
         loadingTitle.width = contentWidth;
         loadingTitle.height = 38;
         loadingTitle.x = 0;
@@ -158,7 +161,7 @@ export class AuthForm extends Sprite {
         loadingTitle.autoSize = TextFieldAutoSize.NONE;
 
         let loadingDesc: TextField | null = null;
-        if (!GLOBAL.versionMismatch) {
+        if (!getGLOBAL().versionMismatch) {
             loadingDesc = new TextField();
             const descFormat = new TextFormat();
             descFormat.font = "Verdana";
@@ -188,7 +191,7 @@ export class AuthForm extends Sprite {
         errFormat.align = TextFormatAlign.CENTER;
         errFormat.leading = 5;
         this.errMessage.defaultTextFormat = errFormat;
-        this.errMessage.htmlText = GLOBAL.initError;
+        this.errMessage.htmlText = getGLOBAL().initError;
         this.errMessage.width = contentWidth;
         this.errMessage.x = 0;
         this.errMessage.wordWrap = true;
@@ -197,11 +200,11 @@ export class AuthForm extends Sprite {
         this.errMessage.antiAliasType = AntiAliasType.ADVANCED;
         this.errMessage.autoSize = TextFieldAutoSize.LEFT;
 
-        if (GLOBAL.versionMismatch) {
+        if (getGLOBAL().versionMismatch) {
             loadingTitle.y = 140;
             this.errMessage.y = 190;
             const updateImageLoader = new Loader();
-            updateImageLoader.load(new URLRequest(GLOBAL.serverUrl + "assets/popups/fantastic.png"));
+            updateImageLoader.load(new URLRequest(getGLOBAL().serverUrl + "assets/popups/fantastic.png"));
             updateImageLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, ((e: Event) => { const img = updateImageLoader.content as Bitmap; img.x = (contentWidth - img.width) / 2; img.y = 0; this.loadingContainer!.addChildAt(img, 0); }).bind(this));
         } else { loadingTitle.y = 0; this.errMessage.y = 90; }
         this.loadingContainer.addChild(loadingTitle);
@@ -210,7 +213,7 @@ export class AuthForm extends Sprite {
         this.loadingContainer.y = 200;
     }
 
-    public static DiscordLink(event: Event | null = null): void { GLOBAL.gotoURL("https://discord.gg/bymrefitted"); }
+    public static DiscordLink(event: Event | null = null): void { getGLOBAL().gotoURL("https://discord.gg/bymrefitted"); }
 
     private HeaderTitle(): void {
         const navWidth = 800;
@@ -220,9 +223,9 @@ export class AuthForm extends Sprite {
         this.navContainer!.y = 50;
         const textContainer = new Sprite();
         this.navContainer!.addChild(textContainer);
-        const titlePrefix = this.createRichText(KEYS.Get("auth_header_prefix"), this.WHITE);
+        const titlePrefix = this.createRichText(getKEYS().Get("auth_header_prefix"), this.WHITE);
         textContainer.addChild(titlePrefix);
-        const titleSuffix = this.createRichText(KEYS.Get("auth_header_suffix"), this.SECONDARY);
+        const titleSuffix = this.createRichText(getKEYS().Get("auth_header_suffix"), this.SECONDARY);
         textContainer.addChild(titleSuffix);
         titleSuffix.x = titlePrefix.x + titlePrefix.width;
         textContainer.x = (navWidth - textContainer.width) / 2;
@@ -344,8 +347,8 @@ export class AuthForm extends Sprite {
         this.selectField!.graphics.clear();
         this.selectField!.graphics.lineStyle(1, this.WHITE);
         this.selectField!.graphics.drawRect(0, 0, newSelectWidth, 30);
-        for (const language of this.languages) { if (selectedLanguage.toLocaleLowerCase() === language.toLocaleLowerCase()) { KEYS.Setup(language.toLowerCase()); return; } }
-        KEYS.Setup("english");
+        for (const language of this.languages) { if (selectedLanguage.toLocaleLowerCase() === language.toLocaleLowerCase()) { getKEYS().Setup(language.toLowerCase()); return; } }
+        getKEYS().Setup("english");
     }
 
     private CreateBorder(input: TextField): Sprite {
@@ -409,9 +412,9 @@ export class AuthForm extends Sprite {
     }
 
     private updateFormFields(): void { if (this.isRegisterForm) { this.usernameInput!.width = 350; this.usernameInput!.height = 35; this.usernameInput!.x = 50; this.usernameInput!.y = this.emailInput!.y - this.usernameInput!.height - 20; this.CreateBorder(this.usernameInput!); } }
-    private updateLinkText(): void { this.hasAccountText!.embedFonts = true; this.hasAccountText!.antiAliasType = AntiAliasType.NORMAL; this.hasAccountText!.text = this.isRegisterForm ? KEYS.Get("auth_login_link") : KEYS.Get("auth_register_link"); }
+    private updateLinkText(): void { this.hasAccountText!.embedFonts = true; this.hasAccountText!.antiAliasType = AntiAliasType.NORMAL; this.hasAccountText!.text = this.isRegisterForm ? getKEYS().Get("auth_login_link") : getKEYS().Get("auth_register_link"); }
     private updateLinkColour(): void { this.hasAccountFormat!.color = this.isRegisterForm ? this.SECONDARY : this.PRIMARY; this.hasAccountFormat!.font = "Verdana"; this.hasAccountText!.defaultTextFormat = this.hasAccountFormat!; this.hasAccountText!.setTextFormat(this.hasAccountFormat!); }
-    private updateButtonText(): void { this.button!.graphics.beginFill(this.isRegisterForm ? this.PRIMARY : this.SECONDARY); this.buttonText!.text = this.isRegisterForm ? KEYS.Get("auth_register_btn").toUpperCase() : KEYS.Get("auth_login_btn").toUpperCase(); }
+    private updateButtonText(): void { this.button!.graphics.beginFill(this.isRegisterForm ? this.PRIMARY : this.SECONDARY); this.buttonText!.text = this.isRegisterForm ? getKEYS().Get("auth_register_btn").toUpperCase() : getKEYS().Get("auth_login_btn").toUpperCase(); }
     private updateButtonColor(): void { this.button!.graphics.beginFill(this.isRegisterForm ? this.SECONDARY : this.PRIMARY); this.button!.graphics.drawRoundRect(0, 0, 350, 50, 12); this.button!.graphics.endFill(); }
 
     private mousePointerCursor(element: any): void {
@@ -428,18 +431,18 @@ export class AuthForm extends Sprite {
             if (this.isRegisterForm) {
                 if (isUsernameValid) {
                     const newUser: Array<any> = [["username", this.usernameValue], ["email", this.emailValue], ["password", this.passwordValue], ["last_name", ""], ["pic_square", ""]];
-                    new URLLoaderApi().load(GLOBAL._apiURL + "player/register", newUser, this.registerNewUser.bind(this), (event: IOErrorEvent) => { GLOBAL.Message("An error occurred during registration on the server."); });
-                } else { GLOBAL.Message("<b>Usernames must be:</b><br><br>• At least 2 characters long.<br>• No longer than 12 characters.<br>• Can only include numbers and letters."); }
-            } else { new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", null, this.postAuthDetails.bind(this), (event: IOErrorEvent) => { GLOBAL.Message("We cannot connect you to the server at this time. Please try again later or check our server status."); }); }
+                    new (getURLLoaderApi())().load(getGLOBAL()._apiURL + "player/register", newUser, this.registerNewUser.bind(this), (event: IOErrorEvent) => { getGLOBAL().Message("An error occurred during registration on the server."); });
+                } else { getGLOBAL().Message("<b>Usernames must be:</b><br><br>• At least 2 characters long.<br>• No longer than 12 characters.<br>• Can only include numbers and letters."); }
+            } else { new (getURLLoaderApi())().load(getGLOBAL()._apiURL + "bm/getnewmap", null, this.postAuthDetails.bind(this), (event: IOErrorEvent) => { getGLOBAL().Message("We cannot connect you to the server at this time. Please try again later or check our server status."); }); }
         } else {
             if (!isEmailValid) this.showErrorMessage(this.emailInput!, "Please enter a valid email address");
             if (!isPasswordValid) this.showErrorMessage(this.passwordInput!, "Password must be at least 8 characters long, contain at least 1 uppercase\nletter, and 1 special character");
-            if (!isUsernameValid && this.isRegisterForm) GLOBAL.Message("<b>Usernames must be:</b><br><br>• At least 2 characters long.<br>• No longer than 12 characters.<br>• Can only include numbers and letters.");
+            if (!isUsernameValid && this.isRegisterForm) getGLOBAL().Message("<b>Usernames must be:</b><br><br>• At least 2 characters long.<br>• No longer than 12 characters.<br>• Can only include numbers and letters.");
         }
     }
 
-    private postAuthDetails(serverData: any): void { LOGIN.OnGetNewMap(serverData, [["email", this.emailValue], ["password", this.passwordValue]]); }
-    private registerNewUser(serverData: any): void { if (serverData.hasOwnProperty("error")) { GLOBAL.Message(serverData.error); return; } GLOBAL.Message("You have successfully registered an account. Please login to continue."); this.isRegisterForm = false; this.updateState(); }
+    private postAuthDetails(serverData: any): void { getLOGIN().OnGetNewMap(serverData, [["email", this.emailValue], ["password", this.passwordValue]]); }
+    private registerNewUser(serverData: any): void { if (serverData.hasOwnProperty("error")) { getGLOBAL().Message(serverData.error); return; } getGLOBAL().Message("You have successfully registered an account. Please login to continue."); this.isRegisterForm = false; this.updateState(); }
     private isValidUsername(username: string): boolean { const pattern = /^[a-zA-Z0-9_]+$/; return username.length >= 2 && username.length <= 12 && pattern.test(username); }
     private isValidEmail(email: string): boolean { const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/; return emailPattern.test(email); }
     private isValidPassword(password: string): boolean { const passwordRegex = /^(?=.*[A-Z])(?=.*[\W_])(?=.{8,})/; return passwordRegex.test(password); }

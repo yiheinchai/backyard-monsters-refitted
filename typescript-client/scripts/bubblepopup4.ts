@@ -1,7 +1,10 @@
 import { TweenLite } from 'gs/TweenLite';
 import { Elastic } from 'gs/easing';
 import { bubblepopup4_CLIP } from './bubblepopup4_CLIP';
-import { UI2 } from './UI2';
+
+// Lazy imports to break circular dependency chains
+function getUI2(): any { return require("./UI2").UI2; }
+
 
 export class bubblepopup4 extends bubblepopup4_CLIP {
     constructor() {
@@ -29,7 +32,7 @@ export class bubblepopup4 extends bubblepopup4_CLIP {
 
     public Remove(): void {
         try {
-            UI2._top.OverchargeHide();
+            getUI2()._top.OverchargeHide();
         } catch (e) {
         }
     }

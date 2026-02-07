@@ -9,10 +9,13 @@ import { ITargetable } from "../interfaces/ITargetable";
 import { DummyTarget } from "../monsters/DummyTarget";
 import { RasterData } from "../rendering/RasterData";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { MAP } from "../../../MAP";
 import { GameObject } from "../GameObject";
 import { CreepBase } from "../monsters/creeps/CreepBase";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getMAP(): any { return require("../../../MAP").MAP; }
+
 
 // Interface for tickable
 interface ITickable {
@@ -85,7 +88,7 @@ export class Projectilev2 extends EventDispatcher implements IAttackable, ITicka
         this.m_speed = speed;
         this.m_damage = damage;
         this.m_source = source;
-        GLOBAL.addFastTickable(this);
+        getGLOBAL().addFastTickable(this);
         
         if (target instanceof (globalThis as any).GameObject && Projectilev2.k_DO_PROJECTILES_HAVE_RANDOM_OFFSET) {
             this.targetOffset = (target as unknown as GameObject).getRandomPointOnGraphic();
@@ -162,7 +165,7 @@ export class Projectilev2 extends EventDispatcher implements IAttackable, ITicka
 
     protected render(): void {
         if (!this.m_rasterData) return;
-        const offset = MAP.instance.offset;
+        const offset = getMAP().instance.offset;
         this.m_rasterData.pt = new Point(this.m_x - offset.x, this.m_y - offset.y);
     }
 
@@ -198,7 +201,7 @@ export class Projectilev2 extends EventDispatcher implements IAttackable, ITicka
             this.m_rasterData = null;
         }
         this.targetOffset = null;
-        GLOBAL.removeFastTickable(this);
+        getGLOBAL().removeFastTickable(this);
         this.m_components = [];
     }
 

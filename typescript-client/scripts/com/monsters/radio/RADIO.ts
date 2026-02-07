@@ -2,14 +2,17 @@ import StageDisplayState from "openfl/display/StageDisplayState";
 
 import { RADIOSETTINGSPOPUP } from "./RADIOSETTINGSPOPUP";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGGER } from "../../../LOGGER";
-import { LOGIN } from "../../../LOGIN";
-import { MAP } from "../../../MAP";
-import { QUESTS } from "../../../QUESTS";
-import { UI2 } from "../../../UI2";
-import { URLLoaderApi } from "../../../URLLoaderApi";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+function getLOGIN(): any { return require("../../../LOGIN").LOGIN; }
+function getMAP(): any { return require("../../../MAP").MAP; }
+function getQUESTS(): any { return require("../../../QUESTS").QUESTS; }
+function getUI2(): any { return require("../../../UI2").UI2; }
+function getURLLoaderApi(): any { return require("../../../URLLoaderApi").URLLoaderApi; }
+
+
 
 // JSON declaration for encoding/decoding
 declare const JSON: {
@@ -40,8 +43,8 @@ export class RADIO {
     public static Setup(settings: any = null): void {
         if (settings) {
             RADIO._settings = settings;
-        } else if (LOGIN._settings) {
-            RADIO._settings = LOGIN._settings;
+        } else if (getLOGIN()._settings) {
+            RADIO._settings = getLOGIN()._settings;
         } else {
             RADIO._settings = {};
         }
@@ -61,8 +64,8 @@ export class RADIO {
     public static setProp(key: string, value: any): void {
         RADIO._settings[key] = value;
         const encoded = JSON.encode(RADIO._settings);
-        new URLLoaderApi().load(
-            GLOBAL._apiURL + "player/updateemail",
+        new (getURLLoaderApi())().load(
+            getGLOBAL()._apiURL + "player/updateemail",
             [["settings", encoded]],
             RADIO.handleSettingsSaveSucc,
             RADIO.handleSettingsSaveFail
@@ -75,25 +78,25 @@ export class RADIO {
         RADIO._isSaving = false;
         if (RADIO._mc) RADIO._mc.bSaveToggle();
         if (response.error === 0) {
-            GLOBAL.Message(KEYS.Get("radio_saveSucc"), null, null, null);
+            getGLOBAL().Message(getKEYS().Get("radio_saveSucc"), null, null, null);
             RADIO.Hide();
         } else {
-            LOGGER.Log("err", "|RADIO| - handleSettingsSaveSucc - Fail" + JSON.encode(response));
-            GLOBAL.Message(KEYS.Get("radio_saveFail"), null, null, null);
+            getLOGGER().Log("err", "|RADIO| - handleSettingsSaveSucc - Fail" + JSON.encode(response));
+            getGLOBAL().Message(getKEYS().Get("radio_saveFail"), null, null, null);
         }
     }
 
     private static handleSettingsSaveFail(response: any): void {
         RADIO._isSaving = false;
-        GLOBAL.Message(KEYS.Get("radio_saveFail"), null, null, null);
+        getGLOBAL().Message(getKEYS().Get("radio_saveFail"), null, null, null);
     }
 
     public static TwitterCallback(data: string): void {
         const parsed = JSON.decode(data);
         if (parsed.error) {
             if (parsed.error !== "noname") {
-                LOGGER.Log("err", "radio: " + parsed.error);
-                GLOBAL.Message(KEYS.Get("msg_err_radio") + parsed.error + "<br><br>" + KEYS.Get("msg_tryagain"));
+                getLOGGER().Log("err", "radio: " + parsed.error);
+                getGLOBAL().Message(getKEYS().Get("msg_err_radio") + parsed.error + "<br><br>" + getKEYS().Get("msg_tryagain"));
             }
         } else if (parsed.name) {
             RADIO._twitterAccount = parsed.name;
@@ -101,36 +104,36 @@ export class RADIO {
     }
 
     public static TwitterSetName(name: string): void {
-        GLOBAL.CallJS("twitterInterface.setName", ["" + name, "twitteraccount"], false);
+        getGLOBAL().CallJS("twitterInterface.setName", ["" + name, "twitteraccount"], false);
         RADIO._twitterAccount = name;
     }
 
     public static TwitterRemoveName(): void {
-        GLOBAL.CallJS("twitterInterface.deleteName", ["twitteraccount"], false);
+        getGLOBAL().CallJS("twitterInterface.deleteName", ["twitteraccount"], false);
     }
 
     public static RemoveName(): void {
         const handleRemoveSucc = (response: any): void => {
             RADIO._isSaving = false;
             if (response.error === 0) {
-                GLOBAL.Message(KEYS.Get("radio_recycleConfirm"), null, null, null);
+                getGLOBAL().Message(getKEYS().Get("radio_recycleConfirm"), null, null, null);
                 RADIO.Hide();
             } else {
-                LOGGER.Log("err", "|RADIO| - handleSettingsSaveSucc - Fail" + JSON.encode(response));
-                GLOBAL.Message(KEYS.Get("radio_recycleConfirm"), null, null, null);
+                getLOGGER().Log("err", "|RADIO| - handleSettingsSaveSucc - Fail" + JSON.encode(response));
+                getGLOBAL().Message(getKEYS().Get("radio_recycleConfirm"), null, null, null);
             }
         };
 
         const handleRemoveFail = (response: any): void => {
             RADIO._isSaving = false;
-            GLOBAL.Message(KEYS.Get("radio_saveFail"), null, null, null);
+            getGLOBAL().Message(getKEYS().Get("radio_saveFail"), null, null, null);
         };
 
         const removeEmail = (key: string, value: any): void => {
             RADIO._settings[key] = value;
             const encoded = JSON.encode(RADIO._settings);
-            new URLLoaderApi().load(
-                GLOBAL._apiURL + "player/updateemail",
+            new (getURLLoaderApi())().load(
+                getGLOBAL()._apiURL + "player/updateemail",
                 [["settings", encoded]],
                 handleRemoveSucc,
                 handleRemoveFail
@@ -141,22 +144,22 @@ export class RADIO {
         const obj: { [key: string]: any } = {};
         obj[RADIO.ATTACK_KEY] = 0;
         if (obj[RADIO.ATTACK_KEY] === 1) {
-            QUESTS._global.email_att = 1;
+            getQUESTS()._global.email_att = 1;
         }
         obj[RADIO.NEWS_KEY] = 0;
         if (obj[RADIO.NEWS_KEY] === 1) {
-            QUESTS._global.email_news = 1;
+            getQUESTS()._global.email_news = 1;
         }
-        obj[RADIO.ADDRESS_KEY] = LOGIN._email;
+        obj[RADIO.ADDRESS_KEY] = getLOGIN()._email;
         removeEmail("o1", obj);
     }
 
     public static TwitterFollow(): void {
-        GLOBAL.CallJS("openUrl", ["http://twitter.com/#!/BackyardMonster"], true);
+        getGLOBAL().CallJS("openUrl", ["http://twitter.com/#!/BackyardMonster"], true);
     }
 
     public static TwitterBrag(): void {
-        GLOBAL.CallJS("sendFeed", ["build-radio", KEYS.Get("radiobuilt_streamtitle"), KEYS.Get("radiobuilt_streambody"), "build-radio.v2.png"]);
+        getGLOBAL().CallJS("sendFeed", ["build-radio", getKEYS().Get("radiobuilt_streamtitle"), getKEYS().Get("radiobuilt_streambody"), "build-radio.v2.png"]);
     }
 
     public static Export(): { [key: string]: any } {
@@ -165,29 +168,29 @@ export class RADIO {
 
     public static Show(): void {
         if (!RADIO._open) {
-            if (GLOBAL._ROOT.stage.displayState === StageDisplayState.FULL_SCREEN) {
-                if (GLOBAL.mode === (GLOBAL as any).e_BASE_MODE.ATTACK || GLOBAL.mode === (GLOBAL as any).e_BASE_MODE.WMATTACK) {
-                    UI2._top.mcZoom.gotoAndStop(1 + 3);
+            if (getGLOBAL()._ROOT.stage.displayState === StageDisplayState.FULL_SCREEN) {
+                if (getGLOBAL().mode === (GLOBAL as any).e_BASE_MODE.ATTACK || getGLOBAL().mode === (GLOBAL as any).e_BASE_MODE.WMATTACK) {
+                    getUI2()._top.mcZoom.gotoAndStop(1 + 3);
                 } else {
-                    UI2._top.mcZoom.gotoAndStop(1);
+                    getUI2()._top.mcZoom.gotoAndStop(1);
                 }
-                GLOBAL._ROOT.stage.displayState = StageDisplayState.NORMAL;
-                GLOBAL._zoomed = false;
-                MAP._GROUND.scaleX = MAP._GROUND.scaleY = 1;
-                MAP.Focus(0, 0);
+                getGLOBAL()._ROOT.stage.displayState = StageDisplayState.NORMAL;
+                getGLOBAL()._zoomed = false;
+                getMAP()._GROUND.scaleX = getMAP()._GROUND.scaleY = 1;
+                getMAP().Focus(0, 0);
             }
-            GLOBAL.BlockerAdd();
+            getGLOBAL().BlockerAdd();
             RADIO._mc = new RADIOSETTINGSPOPUP();
             RADIO._mc.Center();
             RADIO._mc.ScaleUp();
-            GLOBAL._layerWindows.addChild(RADIO._mc);
+            getGLOBAL()._layerWindows.addChild(RADIO._mc);
             RADIO._open = true;
         }
     }
 
     public static Hide(): void {
         if (RADIO._open) {
-            GLOBAL.BlockerRemove();
+            getGLOBAL().BlockerRemove();
             if (RADIO._mc && RADIO._mc.parent) {
                 RADIO._mc.parent.removeChild(RADIO._mc);
             }

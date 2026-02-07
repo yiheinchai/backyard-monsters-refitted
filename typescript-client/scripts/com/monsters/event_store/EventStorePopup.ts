@@ -8,10 +8,13 @@ import { ImageCache } from "../display/ImageCache";
 import { ReplayableEventHandler } from "../replayableEvents/ReplayableEventHandler";
 import { EventStoreDisplayGrid } from "./EventStoreDisplayGrid";
 
-import { KEYS } from "../../../KEYS";
-import { POPUPS } from "../../../POPUPS";
 import { EventStorePopupMC } from "../../../EventStorePopupMC";
 import { ButtonBrown } from "../../../ButtonBrown";
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getPOPUPS(): any { return require("../../../POPUPS").POPUPS; }
+
 
 /**
  * Singleton lock for singleton pattern
@@ -73,7 +76,7 @@ export class EventStorePopup extends EventStorePopupMC {
             // No active event
         }
         
-        POPUPS.Push(this);
+        getPOPUPS().Push(this);
         this.m_IsShowing = true;
         
         if (ReplayableEventHandler.activeEvent && ReplayableEventHandler.activeEvent.eventStoreTitleImage) {
@@ -83,7 +86,7 @@ export class EventStorePopup extends EventStorePopupMC {
         }
         
         const xpBalance = ReplayableEventHandler.eventXP;
-        this.experienceDisplay.xpBalanceText.htmlText = KEYS.Get("event_store_xp_balance", { v1: xpBalance });
+        (this.experienceDisplay as any).xpBalanceText.htmlText = getKEYS().Get("event_store_xp_balance", { v1: xpBalance });
         
         if (this.m_EventStoreDisplayGrid) {
             this.m_EventStoreDisplayGrid.Populate();
@@ -112,7 +115,7 @@ export class EventStorePopup extends EventStorePopupMC {
             this.m_TitleImage.bitmapData = null;
         }
         
-        POPUPS.Next();
+        getPOPUPS().Next();
         this.m_IsShowing = false;
     }
 
