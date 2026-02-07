@@ -1,15 +1,18 @@
 import MovieClip from 'openfl/display/MovieClip';
 import MouseEvent from 'openfl/events/MouseEvent';
-import { BFOUNDATION } from './BFOUNDATION';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { LOGGER } from './LOGGER';
-import { MAP } from './MAP';
-import { STORE } from './STORE';
-import { TUTORIAL } from './TUTORIAL';
 import { UI_WORKERS } from './UI_WORKERS';
 import { WORKERS } from './WORKERS';
+
+// Lazy imports to break circular dependency chains
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+
 
 /**
  * QUEUE - Worker Task Queue Manager
@@ -34,7 +37,7 @@ export class QUEUE {
     }
 
     public static Spawn(count: number = 0): void {
-        if (!BASE.isMainYard) {
+        if (!getBASE().isMainYard) {
             if (QUEUE._workerCount > 0) {
                 QUEUE._workerCount = WORKERS._workers.length;
                 return;
@@ -44,20 +47,20 @@ export class QUEUE {
         
         if (count === 0) {
             count = 1;
-            if (STORE._storeData?.BEW) {
-                if (!BASE.isMainYard) {
-                    if (STORE._storeData.BEW.q > 0) {
-                        LOGGER.Log("log", "QUEUE.Spawn Outpost " + BASE._loadedBaseID + "  has store data for " + STORE._storeData.BEW.q + " extra worker(s)");
+            if (getSTORE()._storeData?.BEW) {
+                if (!getBASE().isMainYard) {
+                    if (getSTORE()._storeData.BEW.q > 0) {
+                        getLOGGER().Log("log", "QUEUE.Spawn Outpost " + getBASE()._loadedBaseID + "  has store data for " + getSTORE()._storeData.BEW.q + " extra worker(s)");
                     }
                 } else {
-                    count += STORE._storeData.BEW.q;
+                    count += getSTORE()._storeData.BEW.q;
                 }
             }
         }
         
         QUEUE._workerCount += count;
         
-        if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.WMATTACK && GLOBAL.mode !== GLOBAL.e_BASE_MODE.WMVIEW) {
+        if (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.WMATTACK && getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.WMVIEW) {
             for (let i = 0; i < count; i++) {
                 const worker = WORKERS.Spawn();
                 QUEUE._stack.push({
@@ -83,30 +86,30 @@ export class QUEUE {
         }
         
         let errorName: string;
-        if (!STORE.CheckUpgrade("BEW")) {
-            if (GLOBAL._bStore) {
-                errorName = KEYS.Get("ui_worker_busy");
+        if (!getSTORE().CheckUpgrade("BEW")) {
+            if (getGLOBAL()._bStore) {
+                errorName = getKEYS().Get("ui_worker_busy");
             } else {
-                errorName = KEYS.Get("ui_worker_waitforfinish");
-                if (TUTORIAL._stage >= 200) {
-                    errorName += " " + KEYS.Get("ui_worker_impatient");
+                errorName = getKEYS().Get("ui_worker_waitforfinish");
+                if (getTUTORIAL()._stage >= 200) {
+                    errorName += " " + getKEYS().Get("ui_worker_impatient");
                 } else {
-                    errorName += " " + KEYS.Get("ui_worker_tute");
+                    errorName += " " + getKEYS().Get("ui_worker_tute");
                 }
             }
-        } else if (STORE.CheckUpgrade("BEW").q + 1 === 5) {
-            errorName = KEYS.Get("ui_worker_5busy");
+        } else if (getSTORE().CheckUpgrade("BEW").q + 1 === 5) {
+            errorName = getKEYS().Get("ui_worker_5busy");
         } else {
-            errorName = KEYS.Get("ui_worker_xbusy", {
-                v1: STORE.CheckUpgrade("BEW").q + 1,
-                v2: STORE.CheckUpgrade("BEW").q + 1
+            errorName = getKEYS().Get("ui_worker_xbusy", {
+                v1: getSTORE().CheckUpgrade("BEW").q + 1,
+                v2: getSTORE().CheckUpgrade("BEW").q + 1
             });
         }
         return { error: true, errormessage: errorName };
     }
 
     public static GetBuilding(): BFOUNDATION | null {
-        if (!BASE.isMainYard) {
+        if (!getBASE().isMainYard) {
             if (QUEUE._stack[0]?.active) {
                 return QUEUE._stack[0].building;
             }
@@ -132,7 +135,7 @@ export class QUEUE {
         const building = QUEUE.GetBuilding();
         if (building) {
             const time = building._countdownUpgrade.Get() + building._countdownBuild.Get() + building._countdownFortify.Get();
-            return STORE.GetTimeCost(time);
+            return getSTORE().GetTimeCost(time);
         }
         return 0;
     }
@@ -150,7 +153,7 @@ export class QUEUE {
                         QUEUE._stack[i].active = true;
                         QUEUE._stack[i].building = building;
                         QUEUE._stack[i].say = worker.say;
-                        QUEUE._stack[i].timestamp = GLOBAL.Timestamp();
+                        QUEUE._stack[i].timestamp = getGLOBAL().Timestamp();
                         break;
                     }
                 }
@@ -199,12 +202,12 @@ export class QUEUE {
                             title = s.title;
                             msg = s.message;
                         } else {
-                            title = KEYS.Get("ui_worker_waiting");
+                            title = getKEYS().Get("ui_worker_waiting");
                         }
                     } else {
-                        s.title = KEYS.Get("ui_worker_walking");
+                        s.title = getKEYS().Get("ui_worker_walking");
                         s.message = s.say;
-                        title = KEYS.Get("ui_worker_walking");
+                        title = getKEYS().Get("ui_worker_walking");
                         msg = s.say;
                     }
                     
@@ -214,7 +217,7 @@ export class QUEUE {
                 }
             }
         } catch (e: any) {
-            LOGGER.Log("err", "Queue.Tick: " + (e.message || "") + " | " + (e.stack || ""));
+            getLOGGER().Log("err", "Queue.Tick: " + (e.message || "") + " | " + (e.stack || ""));
         }
         UI_WORKERS.Update();
     }
@@ -232,7 +235,7 @@ export class QUEUE {
 
     public static JumpToWorker(index: number): void {
         const workermc: MovieClip = QUEUE._stack[index].workermc;
-        MAP.FocusTo(workermc.x, workermc.y, 0.5);
+        getMAP().FocusTo(workermc.x, workermc.y, 0.5);
     }
 
     public static Move(from: number, to: number): void {
@@ -240,7 +243,7 @@ export class QUEUE {
     }
 
     public static Speed(event: MouseEvent): void {
-        STORE.SpeedUp("SP4");
+        getSTORE().SpeedUp("SP4");
     }
 
     public static Sort(): void {

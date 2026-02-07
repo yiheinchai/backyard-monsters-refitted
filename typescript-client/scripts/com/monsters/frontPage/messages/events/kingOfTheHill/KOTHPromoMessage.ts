@@ -2,10 +2,13 @@ import URLRequest from "openfl/net/URLRequest";
 
 import { KeywordMessage } from "../../KeywordMessage";
 import { Message } from "../../Message";
-import { MapRoomManager } from "../../../../maproom_manager/MapRoomManager";
 
-import { GLOBAL } from "../../../../../../GLOBAL";
 import { MAPROOM } from "../../../../../../MAPROOM";
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../../../../maproom_manager/MapRoomManager").MapRoomManager; }
+function getGLOBAL(): any { return require("../../../../../../GLOBAL").GLOBAL; }
+
 
 // Forward declaration
 declare function navigateToURL(request: URLRequest): void;
@@ -21,12 +24,12 @@ export class KOTHPromoMessage extends Message {
         let buttonCopy = "";
         let body = keyword;
         
-        if (MapRoomManager.instance.isInMapRoom2or3) {
+        if (getMapRoomManager().instance.isInMapRoom2or3) {
             buttonCopy = "btn_rsvp";
             body = keyword;
         } else {
             body = keyword + "mr1";
-            if (GLOBAL._bMap && GLOBAL.townHall._lvl.Get() >= 6) {
+            if (getGLOBAL()._bMap && getGLOBAL().townHall._lvl.Get() >= 6) {
                 buttonCopy = "btn_upgradenow";
             }
         }
@@ -38,13 +41,13 @@ export class KOTHPromoMessage extends Message {
             buttonCopy
         );
         
-        if (MapRoomManager.instance.isInMapRoom2or3) {
+        if (getMapRoomManager().instance.isInMapRoom2or3) {
             this._action = this.rsvp.bind(this);
             this._buttonCopy = "btn_rsvp";
             this.body = keyword;
         } else {
             this.body = keyword + "mr1";
-            if (GLOBAL._bMap && GLOBAL.townHall._lvl.Get() >= 6) {
+            if (getGLOBAL()._bMap && getGLOBAL().townHall._lvl.Get() >= 6) {
                 this._action = this.upgradeMapRoom.bind(this);
                 this._buttonCopy = "btn_upgradenow";
             }

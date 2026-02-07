@@ -1,7 +1,10 @@
 import { KeywordMessage } from "../../KeywordMessage";
 
-import { GLOBAL } from "../../../../../../GLOBAL";
-import { KEYS } from "../../../../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../../../KEYS").KEYS; }
+
+
 
 /**
  * Battletoads reward message - shown when player gets Battletoads reward.
@@ -17,10 +20,10 @@ export class BattletoadsRewardMessage extends KeywordMessage {
     }
 
     protected override onButtonClick(): void {
-        GLOBAL.CallJS("sendFeed", [
+        getGLOBAL().CallJS("sendFeed", [
             "event1-reward",
-            KEYS.Get("event1reward_streamtitle"),
-            KEYS.Get("event1reward_streambody"),
+            getKEYS().Get("event1reward_streamtitle"),
+            getKEYS().Get("event1reward_streambody"),
             "event1reward_stream.png"
         ]);
     }

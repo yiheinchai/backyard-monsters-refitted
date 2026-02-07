@@ -3,8 +3,11 @@ import BitmapData from 'openfl/display/BitmapData';
 import MouseEvent from 'openfl/events/MouseEvent';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { popup_prefab_enlarge_CLIP } from './popup_prefab_enlarge_CLIP';
-import { GLOBAL } from './GLOBAL';
 import { POPUPSETTINGS } from './POPUPSETTINGS';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+
 
 /**
  * popup_prefab_enlarge - Enlarged prefab popup for displaying large prefab images
@@ -29,7 +32,7 @@ export class popup_prefab_enlarge extends popup_prefab_enlarge_CLIP {
     }
 
     public Hide(param1: MouseEvent | null = null): void {
-        GLOBAL.BlockerRemove();
+        getGLOBAL().BlockerRemove();
         if (this.parent) {
             this.parent.removeChild(this);
         }

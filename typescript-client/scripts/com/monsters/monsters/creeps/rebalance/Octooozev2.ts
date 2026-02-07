@@ -1,10 +1,13 @@
 import Point from "openfl/geom/Point";
 
-import { MonsterBase } from "../../MonsterBase";
 import { AbsorbProjectiles } from "../../components/abilities/AbsorbProjectiles";
 import { CreepBase } from "../CreepBase";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+function getBFOUNDATION(): any { return require("../../../../../BFOUNDATION").BFOUNDATION; }
+
+
 
 /**
  * Octooozev2 - rebalanced octoooze creep with absorb projectiles ability.

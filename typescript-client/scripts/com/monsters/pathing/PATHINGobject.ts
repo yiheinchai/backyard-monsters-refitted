@@ -1,4 +1,7 @@
-import { BFOUNDATION } from "../../../BFOUNDATION";
+
+
+// Lazy imports to break circular dependency chains
+function getBFOUNDATION(): any { return require("../../../BFOUNDATION").BFOUNDATION; }
 
 /**
  * Pathfinding node object - represents a point in the pathfinding grid.

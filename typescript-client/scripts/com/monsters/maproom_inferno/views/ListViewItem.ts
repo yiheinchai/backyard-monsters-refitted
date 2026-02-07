@@ -9,9 +9,12 @@ import { ListViewItem_CLIP } from "../../maproom/views/ListViewItem_CLIP";
 import { PlayerHandler } from "../PlayerHandler";
 import { BaseObject } from "../model/BaseObject";
 
-import { KEYS } from "../../../../KEYS";
-import { GLOBAL } from "../../../../GLOBAL";
-import { LOGGER } from "../../../../LOGGER";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getLOGGER(): any { return require("../../../../LOGGER").LOGGER; }
+
+
 
 /**
  * List view item (Inferno) - displays player base info in inferno map room list.
@@ -49,7 +52,7 @@ export class ListViewItem extends ListViewItem_CLIP {
                 this.loader.load(new URLRequest(this.data!.pic), new LoaderContext(true));
                 this.loaded = true;
             } catch (e: any) {
-                LOGGER.Log("err", "MapRoom ListViewItem Display: " + e.stack);
+                getLOGGER().Log("err", "MapRoom ListViewItem Display: " + e.stack);
             }
         }
     }
@@ -71,9 +74,9 @@ export class ListViewItem extends ListViewItem_CLIP {
     public Update(event: Event | null = null): void {
         const config: any = this.handler!.configure(this);
         this.name_txt.htmlText = "<b>" + this.data!.ownerName;
-        this.userid_txt.text = KEYS.Get("label_userid", { "v1": this.data!.userid.Get() });
+        this.userid_txt.text = getKEYS().Get("label_userid", { "v1": this.data!.userid.Get() });
         this.online_txt.text = "";
-        if (this.data!.saved.Get() >= GLOBAL.Timestamp() - 62) {
+        if (this.data!.saved.Get() >= getGLOBAL().Timestamp() - 62) {
             this.dot.gotoAndStop(2);
         } else {
             this.dot.gotoAndStop(1);
@@ -87,7 +90,7 @@ export class ListViewItem extends ListViewItem_CLIP {
         const levels: Array<number> = [1, 10, 85, 200];
         const attackColor: string = this.attackStarPoints === 0 ? "#666666" : "#990000";
         const battleKey: string = this.attackStarPoints === 1 ? "map_battle" : "map_battles";
-        this.attacks_txt.htmlText = "<font color='" + attackColor + "'>" + KEYS.Get(battleKey, { "v1": this.attackStarPoints });
+        this.attacks_txt.htmlText = "<font color='" + attackColor + "'>" + getKEYS().Get(battleKey, { "v1": this.attackStarPoints });
         this.status_txt.htmlText = "<font color='" + config.relationColor + "'>" + config.relation;
         this.extraStatus_txt.htmlText = "<b><font color='" + config.extraStatusColor + "'>" + config.extraStatus;
         (this.levelStar as any).lv_txt.htmlText = "<b>" + this.level;

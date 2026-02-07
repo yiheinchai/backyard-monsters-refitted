@@ -18,7 +18,10 @@ import { Obstruction } from "../Obstruction";
 import { PlayerLayer } from "../PlayerLayer";
 import { map_bg_inferno } from "../../../../map_bg_inferno";
 
-import { TUTORIAL } from "../../../../TUTORIAL";
+// Lazy imports to break circular dependency chains
+function getTUTORIAL(): any { return require("../../../../TUTORIAL").TUTORIAL; }
+
+
 
 /**
  * MapView - Normal map room view with draggable map and minimap.
@@ -128,7 +131,7 @@ export class MapView extends MapView_CLIP {
     }
 
     public onAdd(): void {
-        if (TUTORIAL._stage < 130) {
+        if (getTUTORIAL()._stage < 130) {
             this.scrollToBase(this.players!.basesWM[0]);
         } else {
             this.scrollToBase(this.players!.player);
@@ -137,7 +140,7 @@ export class MapView extends MapView_CLIP {
 
     private onPlayersData(event: Event): void {
         if (!this.gotFirstData) {
-            if (MapRoom.BRIDGE.TUTORIAL._stage < 130) {
+            if (MapRoom.BRIDGE.getTUTORIAL()._stage < 130) {
                 this.scrollToBase(this.players!.basesWM[0]);
             } else {
                 this.scrollToBase(this.players!.player);
@@ -201,7 +204,7 @@ export class MapView extends MapView_CLIP {
 
     private shellDown(event: MouseEvent): void {
         TweenLite.killTweensOf(this.shell, false);
-        if (TUTORIAL._stage < 110) {
+        if (getTUTORIAL()._stage < 110) {
             return;
         }
         this.dragging = true;

@@ -5,14 +5,17 @@ import MouseEvent from "openfl/events/MouseEvent";
 import Point from "openfl/geom/Point";
 import Rectangle from "openfl/geom/Rectangle";
 
-import { InstanceManager } from "../managers/InstanceManager";
 import { PATHINGobject } from "./PATHINGobject";
 import { PATHINGfloodobject } from "./PATHINGfloodobject";
 
-import { BFOUNDATION } from "../../../BFOUNDATION";
-import { BMUSHROOM } from "../../../BMUSHROOM";
-import { GLOBAL } from "../../../GLOBAL";
-import { GRID } from "../../../GRID";
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("../managers/InstanceManager").InstanceManager; }
+function getBFOUNDATION(): any { return require("../../../BFOUNDATION").BFOUNDATION; }
+function getBMUSHROOM(): any { return require("../../../BMUSHROOM").BMUSHROOM; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getGRID(): any { return require("../../../GRID").GRID; }
+
+
 
 /**
  * Pathfinding system using flood fill algorithm.
@@ -114,9 +117,9 @@ export class PATHING {
             }
             
             // Recalculate costs for all buildings
-            const buildings = InstanceManager.getInstancesByClass(BFOUNDATION);
+            const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION);
             for (const building of buildings) {
-                if (building._gridCost && (building.health > 0 || building instanceof BMUSHROOM)) {
+                if (building._gridCost && (building.health > 0 || building instanceof getBMUSHROOM())) {
                     for (const gridCost of building._gridCost) {
                         const pos = new Point(building.x, building.y);
                         PATHING.Cost(pos, gridCost[0], gridCost[1]);
@@ -523,16 +526,16 @@ export class PATHING {
         
         const candidates: Point[] = [];
         for (let i = -radius; i < radius; i += 10) {
-            if (!GRID.Blocked(center.add(new Point(i, -radius)))) {
+            if (!getGRID().Blocked(center.add(new Point(i, -radius)))) {
                 candidates.push(center.add(new Point(i, -radius)));
             }
-            if (!GRID.Blocked(center.add(new Point(i, radius)))) {
+            if (!getGRID().Blocked(center.add(new Point(i, radius)))) {
                 candidates.push(center.add(new Point(i, radius)));
             }
-            if (!GRID.Blocked(center.add(new Point(-radius, i)))) {
+            if (!getGRID().Blocked(center.add(new Point(-radius, i)))) {
                 candidates.push(center.add(new Point(-radius, i)));
             }
-            if (!GRID.Blocked(center.add(new Point(radius, i)))) {
+            if (!getGRID().Blocked(center.add(new Point(radius, i)))) {
                 candidates.push(center.add(new Point(radius, i)));
             }
         }

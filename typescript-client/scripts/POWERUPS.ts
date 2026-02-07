@@ -4,10 +4,13 @@ import { BaseBuffHandler } from './com/monsters/baseBuffs/BaseBuffHandler';
 import { AllianceArmamentBuff } from './com/monsters/baseBuffs/buffs/AllianceArmamentBuff';
 import { AllianceConquestBuff } from './com/monsters/baseBuffs/buffs/AllianceConquestBuff';
 import { AllianceDeclareWarBuff } from './com/monsters/baseBuffs/buffs/AllianceDeclareWarBuff';
-import { Console } from './com/monsters/debug/Console';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { LOGIN } from './LOGIN';
+
+// Lazy imports to break circular dependency chains
+function getConsole(): any { return require("./com/monsters/debug/Console").Console; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getLOGIN(): any { return require("./LOGIN").LOGIN; }
+
 
 export class POWERUPS {
     public static _powerups: any;
@@ -126,7 +129,7 @@ export class POWERUPS {
         if (POWERUPS.NORMAL) {
             if (POWERUPS._powerupProps && POWERUPS._powerupProps[param1] && POWERUPS._mypowerups && POWERUPS._mypowerups[param1]) {
                 _loc4_ = POWERUPS._powerupProps[param1].mod;
-                if (POWERUPS._expireRealTime && POWERUPS._mypowerups[param1].endtime.Get() < GLOBAL.Timestamp()) {
+                if (POWERUPS._expireRealTime && POWERUPS._mypowerups[param1].endtime.Get() < getGLOBAL().Timestamp()) {
                     _loc3_ = Number(param2[0]);
                 } else {
                     _loc3_ = _loc4_.apply(null, param2);
@@ -138,7 +141,7 @@ export class POWERUPS {
         if (POWERUPS.DEFENSE) {
             if (POWERUPS._powerupProps && POWERUPS._powerupProps[param1] && POWERUPS._powerups && POWERUPS._powerups[param1]) {
                 _loc4_ = POWERUPS._powerupProps[param1].mod;
-                if (POWERUPS._expireRealTime && POWERUPS._powerups[param1].endtime.Get() < GLOBAL.Timestamp()) {
+                if (POWERUPS._expireRealTime && POWERUPS._powerups[param1].endtime.Get() < getGLOBAL().Timestamp()) {
                     _loc3_ = Number(param2[0]);
                 } else {
                     _loc3_ = _loc4_.apply(null, param2);
@@ -150,7 +153,7 @@ export class POWERUPS {
         if (POWERUPS.OFFENSE) {
             if (POWERUPS._powerupProps && POWERUPS._powerupProps[param1] && POWERUPS._attpowerups && POWERUPS._attpowerups[param1]) {
                 _loc4_ = POWERUPS._powerupProps[param1].mod;
-                if (POWERUPS._expireRealTime && POWERUPS._attpowerups[param1].endtime.Get() < GLOBAL.Timestamp()) {
+                if (POWERUPS._expireRealTime && POWERUPS._attpowerups[param1].endtime.Get() < getGLOBAL().Timestamp()) {
                     _loc3_ = Number(param2[0]);
                 } else {
                     _loc3_ = _loc4_.apply(null, param2);
@@ -188,7 +191,7 @@ export class POWERUPS {
         if (param1) {
             if (_loc3_ && _loc3_[param1]) {
                 if (POWERUPS._expireRealTime) {
-                    if (_loc3_[param1].endtime.Get() < GLOBAL.Timestamp()) {
+                    if (_loc3_[param1].endtime.Get() < getGLOBAL().Timestamp()) {
                         return 0;
                     }
                 }
@@ -199,7 +202,7 @@ export class POWERUPS {
         let _loc4_ = 0;
         for (const _loc5_ in _loc3_) {
             if (POWERUPS._expireRealTime) {
-                if (_loc3_[_loc5_].endtime.Get() > GLOBAL.Timestamp()) {
+                if (_loc3_[_loc5_].endtime.Get() > getGLOBAL().Timestamp()) {
                     _loc4_++;
                 }
             } else {
@@ -233,7 +236,7 @@ export class POWERUPS {
             }
         }
         if (_loc3_ && _loc3_[param1]) {
-            return _loc3_[param1].endtime.Get() - GLOBAL.Timestamp();
+            return _loc3_[param1].endtime.Get() - getGLOBAL().Timestamp();
         }
         return 0;
     }
@@ -242,27 +245,27 @@ export class POWERUPS {
         POWERUPS.GetMode();
         if (POWERUPS.NORMAL || param2 == "NORMAL") {
             if (POWERUPS._powerupProps && POWERUPS._powerupProps[param1] && POWERUPS._mypowerups && POWERUPS._mypowerups[param1]) {
-                POWERUPS._mypowerups[param1].endtime.Set(GLOBAL.Timestamp());
+                POWERUPS._mypowerups[param1].endtime.Set(getGLOBAL().Timestamp());
             }
         }
         if (POWERUPS.DEFENSE || param2 == "DEFENSE") {
             if (POWERUPS._powerupProps && POWERUPS._powerupProps[param1] && POWERUPS._powerups && POWERUPS._powerups[param1]) {
-                POWERUPS._powerups[param1].endtime.Set(GLOBAL.Timestamp());
+                POWERUPS._powerups[param1].endtime.Set(getGLOBAL().Timestamp());
             }
         }
         if (POWERUPS.OFFENSE || param2 == "OFFENSE") {
             if (POWERUPS._powerupProps && POWERUPS._powerupProps[param1] && POWERUPS._attpowerups && POWERUPS._attpowerups[param1]) {
-                POWERUPS._attpowerups[param1].endtime.Set(GLOBAL.Timestamp());
+                POWERUPS._attpowerups[param1].endtime.Set(getGLOBAL().Timestamp());
             }
         }
     }
 
     public static GetMode(): void {
-        if (GLOBAL.mode == GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode == GLOBAL.e_BASE_MODE.WMATTACK) {
+        if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode == getGLOBAL().e_BASE_MODE.WMATTACK) {
             POWERUPS.OFFENSE = true;
             POWERUPS.DEFENSE = false;
             POWERUPS.NORMAL = false;
-        } else if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
+        } else if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD) {
             POWERUPS.OFFENSE = false;
             POWERUPS.DEFENSE = true;
             POWERUPS.NORMAL = false;
@@ -300,7 +303,7 @@ export class POWERUPS {
     }
 
     private static PowArmament(...rest: any[]): number {
-        Console.warning("Alliance Armament shouldnt be called this way, it should be a base buff");
+        getConsole().warning("Alliance Armament shouldnt be called this way, it should be a base buff");
         return 0;
     }
 
@@ -338,13 +341,13 @@ export class POWERUPS {
             }
             POWERUPS._mypowerups = {};
         }
-        if (POWERUPS.DEFENSE && !ALLIANCES._allianceID && BASE._userID == LOGIN._playerID) {
+        if (POWERUPS.DEFENSE && !ALLIANCES._allianceID && getBASE()._userID == getLOGIN()._playerID) {
             if (POWERUPS._powerups) {
                 POWERUPS._powerups = null;
             }
             POWERUPS._powerups = {};
         }
-        if (POWERUPS.OFFENSE && !ALLIANCES._allianceID && BASE._userID != LOGIN._playerID) {
+        if (POWERUPS.OFFENSE && !ALLIANCES._allianceID && getBASE()._userID != getLOGIN()._playerID) {
             if (POWERUPS._attpowerups) {
                 POWERUPS._attpowerups = null;
             }

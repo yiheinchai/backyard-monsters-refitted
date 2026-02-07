@@ -7,9 +7,12 @@ import { MapRoom } from "./MapRoom";
 import { MapRoomCell } from "./MapRoomCell";
 import { PopupInfoMonster } from "./PopupInfoMonster";
 
-import { KEYS } from "../../../KEYS";
 import { SecNum } from "../../cc/utils/SecNum";
 import { PopupMonstersB_CLIP } from "../../../PopupMonstersB_CLIP";
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+
 
 /**
  * Monster transfer confirmation popup (step B in transfer flow).
@@ -48,7 +51,7 @@ export class PopupMonstersB extends PopupMonstersB_CLIP {
     }
 
     public Setup(transfer: { [key: string]: SecNum }, cell: MapRoomCell): void {
-        this.tDesc.htmlText = KEYS.Get("popup_desc_monstertransferb");
+        this.tDesc.htmlText = getKEYS().Get("popup_desc_monstertransferb");
         
         if (this._mcMonsters) {
             while (this._mcMonsters.numChildren > 0) {

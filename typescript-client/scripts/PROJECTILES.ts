@@ -1,8 +1,11 @@
 import { IAttackable } from './com/monsters/interfaces/IAttackable';
 import Point from 'openfl/geom/Point';
-import { GLOBAL } from './GLOBAL';
-import { MAP } from './MAP';
 import { PROJECTILE } from './PROJECTILE';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getMAP(): any { return require("./MAP").MAP; }
+
 
 /**
  * PROJECTILES - Projectile Management System
@@ -21,9 +24,9 @@ export class PROJECTILES {
     public static Spawn(start: Point, end: Point, target: IAttackable | null, speed: number, damage: number, 
                         isRocket: boolean = false, splash: number = 0, splashTargetFlags: number = 0): void {
         const projectile: PROJECTILE = PROJECTILES.PoolGet();
-        if (!GLOBAL._catchup) {
+        if (!getGLOBAL()._catchup) {
             projectile._graphic = new (GLOBAL as any).PROJECTILE_CLIP();
-            MAP._PROJECTILES.addChild(projectile._graphic);
+            getMAP()._PROJECTILES.addChild(projectile._graphic);
         }
         projectile._id = PROJECTILES._id;
         projectile._startPoint = start;
@@ -58,7 +61,7 @@ export class PROJECTILES {
         const projectile: PROJECTILE = PROJECTILES._projectiles[id];
         try {
             if (projectile._graphic) {
-                MAP._PROJECTILES.removeChild(projectile._graphic);
+                getMAP()._PROJECTILES.removeChild(projectile._graphic);
             }
         } catch (e) {
             // Ignore errors
@@ -80,7 +83,7 @@ export class PROJECTILES {
             const projectile: PROJECTILE = PROJECTILES._projectiles[key];
             try {
                 if (projectile._graphic) {
-                    MAP._PROJECTILES.removeChild(projectile._graphic);
+                    getMAP()._PROJECTILES.removeChild(projectile._graphic);
                 }
             } catch (e) {
                 // Ignore errors

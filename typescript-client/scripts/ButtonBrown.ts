@@ -3,7 +3,10 @@ import MouseEvent from 'openfl/events/MouseEvent';
 import TextField from 'openfl/text/TextField';
 import TextFormat from 'openfl/text/TextFormat';
 import TextFormatAlign from 'openfl/text/TextFormatAlign';
-import { KEYS } from './KEYS';
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("./KEYS").KEYS; }
+
 
 /**
  * ButtonBrown - Brown styled button class
@@ -73,7 +76,7 @@ export class ButtonBrown extends MovieClip {
 
     public SetupKey(param1: string = "", param2: boolean = false, param3: number = 0, param4: number = 0, param5: string = "#333333"): void {
         this.labelKey = param1;
-        this.Setup(KEYS.Get(this.labelKey), param2, param3, param4);
+        this.Setup(getKEYS().Get(this.labelKey), param2, param3, param4);
     }
 
     public Update(): void {

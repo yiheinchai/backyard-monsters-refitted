@@ -1,8 +1,11 @@
 import { BaseBuff } from "../BaseBuff";
-import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
 import { MultiplicationPropertyModifier } from "../../monsters/components/modifiers/MultiplicationPropertyModifier";
 
-import { KEYS } from "../../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../../maproom_manager/MapRoomManager").MapRoomManager; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+
+
 
 /**
  * Conquest attack cost multiplier - internal class for attack cost reduction.
@@ -25,16 +28,16 @@ export class AllianceConquestBuff extends BaseBuff {
     }
 
     public override get description(): string {
-        return KEYS.Get(MapRoomManager.instance.isInMapRoom2 ? "ap_conquest_desc" : "nwm_ap_conquest_desc");
+        return getKEYS().Get(getMapRoomManager().instance.isInMapRoom2 ? "ap_conquest_desc" : "nwm_ap_conquest_desc");
     }
 
     public override apply(): void {
-        MapRoomManager.instance.attackCostMultiplier.addModifier(new ConquestAttackCostMultiplier());
+        getMapRoomManager().instance.attackCostMultiplier.addModifier(new ConquestAttackCostMultiplier());
     }
 
     public override clear(): void {
-        MapRoomManager.instance.attackCostMultiplier.removeModifier(
-            MapRoomManager.instance.attackCostMultiplier.getModifierByType(ConquestAttackCostMultiplier)
+        getMapRoomManager().instance.attackCostMultiplier.removeModifier(
+            getMapRoomManager().instance.attackCostMultiplier.getModifierByType(ConquestAttackCostMultiplier)
         );
     }
 }

@@ -4,18 +4,21 @@ import Event from "openfl/events/Event";
 import { Category } from "./categories/Category";
 import { FrontPageEvent } from "./events/FrontPageEvent";
 import { FrontPageGraphic } from "./FrontPageGraphic";
-import { FrontPageLibrary } from "./FrontPageLibrary";
 import { Message } from "./messages/Message";
 
-import { BASE } from "../../../BASE";
-import { BUILDINGS } from "../../../BUILDINGS";
-import { BUILDINGOPTIONS } from "../../../BUILDINGOPTIONS";
-import { GLOBAL } from "../../../GLOBAL";
 import { INFERNO_EMERGENCE_EVENT } from "../../../INFERNO_EMERGENCE_EVENT";
-import { LOGGER } from "../../../LOGGER";
-import { POPUPS } from "../../../POPUPS";
-import { TUTORIAL } from "../../../TUTORIAL";
 import { News } from "./categories/News";
+
+// Lazy imports to break circular dependency chains
+function getFrontPageLibrary(): any { return require("./FrontPageLibrary").FrontPageLibrary; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getBUILDINGS(): any { return require("../../../BUILDINGS").BUILDINGS; }
+function getBUILDINGOPTIONS(): any { return require("../../../BUILDINGOPTIONS").BUILDINGOPTIONS; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+function getPOPUPS(): any { return require("../../../POPUPS").POPUPS; }
+function getTUTORIAL(): any { return require("../../../TUTORIAL").TUTORIAL; }
+
 
 /**
  * Front page handler - manages front page popup display and navigation.
@@ -67,19 +70,19 @@ export class FrontPageHandler {
 
     public static interupt(): void {
         FrontPageHandler.closedPopup();
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 
     public static initialize(data: any = null): void {
-        FrontPageLibrary.initialize();
+        getFrontPageLibrary().initialize();
         if (data) {
             FrontPageHandler.setup(data);
         }
     }
 
     public static showPopup(force: boolean = false): boolean {
-        if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD || BASE.isOutpost || !TUTORIAL.hasFinished || 
-            FrontPageHandler._hasBeenSeenThisSession || !BASE.isMainYard || INFERNO_EMERGENCE_EVENT.isGoingToAttack) {
+        if (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD || getBASE().isOutpost || !getTUTORIAL().hasFinished || 
+            FrontPageHandler._hasBeenSeenThisSession || !getBASE().isMainYard || INFERNO_EMERGENCE_EVENT.isGoingToAttack) {
             return false;
         }
         
@@ -90,7 +93,7 @@ export class FrontPageHandler {
         if (FrontPageHandler._graphic) {
             const oldGraphic = FrontPageHandler._graphic as DisplayObject;
             FrontPageHandler.closedPopup();
-            POPUPS.Remove(oldGraphic);
+            getPOPUPS().Remove(oldGraphic);
         }
         
         FrontPageHandler._graphic = new FrontPageGraphic();
@@ -100,10 +103,10 @@ export class FrontPageHandler {
         FrontPageHandler._graphic.addEventListener(Event.REMOVED_FROM_STAGE, FrontPageHandler.closedPopup);
         
         FrontPageHandler._messagesSeen = [];
-        FrontPageHandler._timeSpentViewing = GLOBAL.Timestamp();
+        FrontPageHandler._timeSpentViewing = getGLOBAL().Timestamp();
         FrontPageHandler.activeCategory = FrontPageHandler._qualifiedCategories![0];
         
-        POPUPS.Push(FrontPageHandler._graphic, null, null, null, null, false, "wait");
+        getPOPUPS().Push(FrontPageHandler._graphic, null, null, null, null, false, "wait");
         FrontPageHandler._hasBeenSeenThisSession = true;
         return true;
     }
@@ -118,11 +121,11 @@ export class FrontPageHandler {
         FrontPageHandler._graphic = null;
         
         if (e) {
-            const timeSpent = GLOBAL.Timestamp() - FrontPageHandler._timeSpentViewing;
-            LOGGER.StatB({
+            const timeSpent = getGLOBAL().Timestamp() - FrontPageHandler._timeSpentViewing;
+            getLOGGER().StatB({
                 st1: "GTP",
                 st2: "time",
-                value: GLOBAL.Timestamp() - FrontPageHandler._timeSpentViewing
+                value: getGLOBAL().Timestamp() - FrontPageHandler._timeSpentViewing
             }, "time_seen");
             FrontPageHandler.save();
         }
@@ -133,12 +136,12 @@ export class FrontPageHandler {
             const message = FrontPageHandler._messagesSeen[i];
             message.viewed();
             message.category.lastMessageSeen = message;
-            LOGGER.StatB({
+            getLOGGER().StatB({
                 st1: "GTP",
                 st2: "View"
             }, message.name);
         }
-        BASE.Save();
+        getBASE().Save();
     }
 
     public static refresh(): void {
@@ -150,8 +153,8 @@ export class FrontPageHandler {
     protected static updateQualifiedCategories(): Array<Category> | null {
         FrontPageHandler._qualifiedCategories = [];
         
-        for (let i = 0; i < FrontPageLibrary.CATEGORIES.length; i++) {
-            const category = FrontPageLibrary.CATEGORIES[i];
+        for (let i = 0; i < getFrontPageLibrary().CATEGORIES.length; i++) {
+            const category = getFrontPageLibrary().CATEGORIES[i];
             const message = category.getNextQualifiedMessage();
             if (message) {
                 FrontPageHandler._qualifiedCategories.push(category);
@@ -205,7 +208,7 @@ export class FrontPageHandler {
     public static setup(data: any): void {
         FrontPageHandler._hasBeenSetupThisSession = true;
         for (const categoryName in data) {
-            const category = FrontPageLibrary.getCategoryByName(categoryName);
+            const category = getFrontPageLibrary().getCategoryByName(categoryName);
             if (category) {
                 category.setup(data[categoryName]);
             }
@@ -215,8 +218,8 @@ export class FrontPageHandler {
     public static export(): any {
         let result: any = null;
         
-        for (let i = 0; i < FrontPageLibrary.CATEGORIES.length; i++) {
-            const category = FrontPageLibrary.CATEGORIES[i];
+        for (let i = 0; i < getFrontPageLibrary().CATEGORIES.length; i++) {
+            const category = getFrontPageLibrary().CATEGORIES[i];
             const categoryData = category.export();
             if (categoryData) {
                 if (!result) {
@@ -229,14 +232,14 @@ export class FrontPageHandler {
     }
 
     public static closeAll(): void {
-        if (POPUPS._open) {
-            POPUPS.Next();
+        if (getPOPUPS()._open) {
+            getPOPUPS().Next();
         }
-        if (BUILDINGS._open) {
-            BUILDINGS.Hide();
+        if (getBUILDINGS()._open) {
+            getBUILDINGS().Hide();
         }
-        if (BUILDINGOPTIONS._open) {
-            BUILDINGOPTIONS.Hide();
+        if (getBUILDINGOPTIONS()._open) {
+            getBUILDINGOPTIONS().Hide();
         }
     }
 }

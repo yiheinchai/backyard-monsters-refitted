@@ -2,8 +2,11 @@ import { RADIO } from './com/monsters/radio/RADIO';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BFOUNDATION } from './BFOUNDATION';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+
 
 /**
  * BUILDING113 - Radio Tower
@@ -22,8 +25,8 @@ export class BUILDING113 extends BFOUNDATION {
 
     public override Description(): void {
         super.Description();
-        this._buildingDescription = KEYS.Get("radio_upgradedesc");
-        this._recycleDescription = KEYS.Get("radio_recycledesc");
+        this._buildingDescription = getKEYS().Get("radio_upgradedesc");
+        this._recycleDescription = getKEYS().Get("radio_recycledesc");
     }
 
     public override Update(force: boolean = false): void {
@@ -38,18 +41,18 @@ export class BUILDING113 extends BFOUNDATION {
         super.RecycleC();
         RADIO.TwitterRemoveName();
         RADIO.RemoveName();
-        GLOBAL._bRadio = null;
+        getGLOBAL()._bRadio = null;
     }
 
     public override Upgraded(): void {
         super.Upgraded();
-        GLOBAL._bRadio = this;
+        getGLOBAL()._bRadio = this;
     }
 
     public override Setup(building: any): void {
         super.Setup(building);
         if (this._countdownBuild.Get() === 0) {
-            GLOBAL._bRadio = this;
+            getGLOBAL()._bRadio = this;
         }
     }
 }

@@ -18,7 +18,10 @@ import { MapRoom3CellMouseover } from "./MapRoom3CellMouseover";
 import { MapRoom3TileSetManager } from "./tiles/MapRoom3TileSetManager";
 import { MapRoom3Tutorial } from "./MapRoom3Tutorial";
 
-import { GLOBAL } from "../../../GLOBAL";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+
+
 
 /**
  * MapRoom3Window - Map room 3 window with scrolling and cell display.
@@ -195,8 +198,8 @@ export class MapRoom3Window extends Sprite {
     }
 
     private AdjustCenterPoint(): void {
-        this.m_CenterPoint.x = Math.floor(-(this.m_ScrollingCanvas!.x - (GLOBAL.StageX + GLOBAL.StageWidth * 0.5) + (this.m_CenterPoint.y % 2 ? MapRoom3CellGraphic.HEX_WIDTH * 0.5 : 0)) / MapRoom3CellGraphic.HEX_WIDTH);
-        this.m_CenterPoint.y = Math.floor(-(this.m_ScrollingCanvas!.y - (GLOBAL.StageY + GLOBAL.StageHeight * 0.5)) / MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP);
+        this.m_CenterPoint.x = Math.floor(-(this.m_ScrollingCanvas!.x - (getGLOBAL().StageX + getGLOBAL().StageWidth * 0.5) + (this.m_CenterPoint.y % 2 ? MapRoom3CellGraphic.HEX_WIDTH * 0.5 : 0)) / MapRoom3CellGraphic.HEX_WIDTH);
+        this.m_CenterPoint.y = Math.floor(-(this.m_ScrollingCanvas!.y - (getGLOBAL().StageY + getGLOBAL().StageHeight * 0.5)) / MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP);
         this.m_CenterPoint.x /= this.m_ScrollingCanvas!.scaleX;
         this.m_CenterPoint.y /= this.m_ScrollingCanvas!.scaleY;
         if (!this.m_CenterPointForLoadingLocked) {
@@ -372,17 +375,17 @@ export class MapRoom3Window extends Sprite {
     }
 
     private CenterOn(point: Point): void {
-        this.m_ScrollingCanvas!.x = this.AdjustHorizontalBounds(-(this.m_CenterPoint.x * MapRoom3CellGraphic.HEX_WIDTH + (this.m_CenterPoint.y % 2 ? MapRoom3CellGraphic.HEX_WIDTH * 0.5 : 0)) + (GLOBAL.StageX + GLOBAL.StageWidth * 0.5) - MapRoom3CellGraphic.HEX_WIDTH * 0.5);
-        this.m_ScrollingCanvas!.y = this.AdjustVerticalBounds(-this.m_CenterPoint.y * MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP + (GLOBAL.StageY + GLOBAL.StageHeight * 0.5) - MapRoom3CellGraphic.HEX_HEIGHT * 0.5);
+        this.m_ScrollingCanvas!.x = this.AdjustHorizontalBounds(-(this.m_CenterPoint.x * MapRoom3CellGraphic.HEX_WIDTH + (this.m_CenterPoint.y % 2 ? MapRoom3CellGraphic.HEX_WIDTH * 0.5 : 0)) + (getGLOBAL().StageX + getGLOBAL().StageWidth * 0.5) - MapRoom3CellGraphic.HEX_WIDTH * 0.5);
+        this.m_ScrollingCanvas!.y = this.AdjustVerticalBounds(-this.m_CenterPoint.y * MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP + (getGLOBAL().StageY + getGLOBAL().StageHeight * 0.5) - MapRoom3CellGraphic.HEX_HEIGHT * 0.5);
         this.UpdateMap(true);
     }
 
     private GetBufferWidth(): number {
-        return Math.floor(GLOBAL.StageWidth / (MapRoom3CellGraphic.HEX_WIDTH * this.m_ScrollingCanvas!.scaleX)) + 5;
+        return Math.floor(getGLOBAL().StageWidth / (MapRoom3CellGraphic.HEX_WIDTH * this.m_ScrollingCanvas!.scaleX)) + 5;
     }
 
     private GetBufferHeight(): number {
-        return Math.floor(GLOBAL.StageHeight / (MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP * this.m_ScrollingCanvas!.scaleY)) + 4;
+        return Math.floor(getGLOBAL().StageHeight / (MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP * this.m_ScrollingCanvas!.scaleY)) + 4;
     }
 
     public Refresh(): void {
@@ -604,8 +607,8 @@ export class MapRoom3Window extends Sprite {
 
     private OnZoomUpdate(): void {
         const ratio = this.m_ScrollingCanvas!.scaleX / this.m_ScrollingCanvas!.scaleY;
-        const centerX = GLOBAL.StageX + GLOBAL.StageWidth * 0.5;
-        const centerY = GLOBAL.StageY + GLOBAL.StageHeight * 0.5;
+        const centerX = getGLOBAL().StageX + getGLOBAL().StageWidth * 0.5;
+        const centerY = getGLOBAL().StageY + getGLOBAL().StageHeight * 0.5;
         this.m_ScrollingCanvas!.x -= centerX;
         this.m_ScrollingCanvas!.y -= centerY;
         this.m_ScrollingCanvas!.scaleY = this.m_ScrollingCanvas!.scaleX;
@@ -633,8 +636,8 @@ export class MapRoom3Window extends Sprite {
 
     private AdjustHorizontalBounds(posX: number): number {
         const cellWidth = MapRoom3CellGraphic.HEX_WIDTH * this.m_ScrollingCanvas!.scaleX;
-        const maxX = GLOBAL.StageX + cellWidth * 1.5;
-        const minX = GLOBAL.StageX + GLOBAL.StageWidth - this.m_MapData.mapWidth * cellWidth - cellWidth * 2;
+        const maxX = getGLOBAL().StageX + cellWidth * 1.5;
+        const minX = getGLOBAL().StageX + getGLOBAL().StageWidth - this.m_MapData.mapWidth * cellWidth - cellWidth * 2;
         if (posX > maxX) {
             posX = maxX;
         }
@@ -647,8 +650,8 @@ export class MapRoom3Window extends Sprite {
     private AdjustVerticalBounds(posY: number): number {
         const cellHeight = MapRoom3CellGraphic.HEX_HEIGHT * this.m_ScrollingCanvas!.scaleY;
         const cellHeightOverlap = MapRoom3CellGraphic.HEX_HEIGHT_OVERLAP * this.m_ScrollingCanvas!.scaleY;
-        const maxY = GLOBAL.StageY + cellHeight * 2;
-        const minY = GLOBAL.StageY + GLOBAL.StageHeight - this.m_MapData.mapHeight * cellHeightOverlap - cellHeight * 3 + cellHeightOverlap;
+        const maxY = getGLOBAL().StageY + cellHeight * 2;
+        const minY = getGLOBAL().StageY + getGLOBAL().StageHeight - this.m_MapData.mapHeight * cellHeightOverlap - cellHeight * 3 + cellHeightOverlap;
         if (posY > maxY) {
             posY = maxY;
         }
@@ -667,14 +670,14 @@ export class MapRoom3Window extends Sprite {
         matrix.scale(this.m_ScrollingCanvas!.scaleX, this.m_ScrollingCanvas!.scaleY);
         this.graphics.clear();
         this.graphics.beginBitmapFill(this.m_BackgroundImage, matrix, true);
-        this.graphics.drawRect(GLOBAL.StageX, GLOBAL.StageY, GLOBAL.StageWidth, GLOBAL.StageHeight);
+        this.graphics.drawRect(getGLOBAL().StageX, getGLOBAL().StageY, getGLOBAL().StageWidth, getGLOBAL().StageHeight);
         this.graphics.endFill();
     }
 
     private DrawRangeAlphaLayer(layer: Sprite): void {
         layer.graphics.clear();
         layer.graphics.beginFill(0xFFFFFF, MapRoom3Window.RANGE_LAYER_ALPHA);
-        layer.graphics.drawRect((GLOBAL.StageX - this.m_ScrollingCanvas!.x) / this.m_ScrollingCanvas!.scaleX, (GLOBAL.StageY - this.m_ScrollingCanvas!.y) / this.m_ScrollingCanvas!.scaleY, GLOBAL.StageWidth / this.m_ScrollingCanvas!.scaleX, GLOBAL.StageHeight / this.m_ScrollingCanvas!.scaleY);
+        layer.graphics.drawRect((getGLOBAL().StageX - this.m_ScrollingCanvas!.x) / this.m_ScrollingCanvas!.scaleX, (getGLOBAL().StageY - this.m_ScrollingCanvas!.y) / this.m_ScrollingCanvas!.scaleY, getGLOBAL().StageWidth / this.m_ScrollingCanvas!.scaleX, getGLOBAL().StageHeight / this.m_ScrollingCanvas!.scaleY);
         layer.graphics.endFill();
     }
 }

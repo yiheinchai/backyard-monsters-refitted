@@ -1,10 +1,13 @@
 import MovieClip from 'openfl/display/MovieClip';
 import StageDisplayState from 'openfl/display/StageDisplayState';
 import MouseEvent from 'openfl/events/MouseEvent';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { LOGGER } from './LOGGER';
 import { TweenLite, Elastic } from './gs/TweenLite';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+
 
 /**
  * ERRORMESSAGE - Error Display System
@@ -22,15 +25,15 @@ export class ERRORMESSAGE {
 
     public Show(message: string, errorType: number = 0): void {
         const Resume = (event: MouseEvent | null = null): void => {
-            GLOBAL.CallJS("reloadPage");
+            getGLOBAL().CallJS("reloadPage");
         };
 
-        if (GLOBAL._ROOT.stage.displayState === StageDisplayState.FULL_SCREEN) {
-            GLOBAL._ROOT.stage.displayState = StageDisplayState.NORMAL;
+        if (getGLOBAL()._ROOT.stage.displayState === StageDisplayState.FULL_SCREEN) {
+            getGLOBAL()._ROOT.stage.displayState = StageDisplayState.NORMAL;
         }
 
-        if (errorType !== GLOBAL.ERROR_OOPS_ONLY) {
-            this._mc = GLOBAL._layerTop.addChild(this as any) as MovieClip;
+        if (errorType !== getGLOBAL().ERROR_OOPS_ONLY) {
+            this._mc = getGLOBAL()._layerTop.addChild(this as any) as MovieClip;
             this.tMessage.autoSize = "left";
             if (message) {
                 this.tMessage.htmlText = message;
@@ -38,26 +41,26 @@ export class ERRORMESSAGE {
                 this.tMessage.htmlText = "No message???";
             }
             this.bg.height = this.tMessage.height + 20;
-            LOGGER.Log("err", "HALT: " + message);
+            getLOGGER().Log("err", "HALT: " + message);
         }
 
-        if (errorType !== GLOBAL.ERROR_ORANGE_BOX_ONLY) {
+        if (errorType !== getGLOBAL().ERROR_ORANGE_BOX_ONLY) {
             console.log(" *** ERRORMESSAGE SHOWING OOPS " + message);
-            GLOBAL.RefreshScreen();
+            getGLOBAL().RefreshScreen();
             try {
                 throw new Error(message);
             } catch (e: any) {
-                LOGGER.Log("err", "HALT " + message + " | " + e.stack);
-                this._mc = GLOBAL._ROOT.addChild(new (GLOBAL as any).popup_error()) as MovieClip;
+                getLOGGER().Log("err", "HALT " + message + " | " + e.stack);
+                this._mc = getGLOBAL()._ROOT.addChild(new (GLOBAL as any).popup_error()) as MovieClip;
                 (this._mc as any).mcFrame.Setup(false);
-                if (KEYS._setup) {
-                    (this._mc as any).tA.htmlText = "<b>" + KEYS.Get("pop_oops_title") + "</b>";
-                    (this._mc as any).tB.htmlText = KEYS.Get("pop_oops_body");
-                    (this._mc as any).tB.htmlText = KEYS.Get(message);
+                if (getKEYS()._setup) {
+                    (this._mc as any).tA.htmlText = "<b>" + getKEYS().Get("pop_oops_title") + "</b>";
+                    (this._mc as any).tB.htmlText = getKEYS().Get("pop_oops_body");
+                    (this._mc as any).tB.htmlText = getKEYS().Get(message);
                 }
                 this._blocker = (this._mc as any).blocker;
-                this._blocker.x = GLOBAL._SCREENCENTER.x - 1400;
-                this._blocker.y = GLOBAL._SCREENCENTER.y - 1400;
+                this._blocker.x = getGLOBAL()._SCREENCENTER.x - 1400;
+                this._blocker.y = getGLOBAL()._SCREENCENTER.y - 1400;
                 this._blocker.width = 2800;
                 this._blocker.height = 2800;
                 (this._mc as any).bAction.Setup("Reload");
@@ -72,17 +75,17 @@ export class ERRORMESSAGE {
                 ease: Elastic.easeOut
             });
         }
-        LOGGER.Log("err", "OOPS");
-        GLOBAL._halt = true;
+        getLOGGER().Log("err", "OOPS");
+        getGLOBAL()._halt = true;
     }
 
     public Resize(): void {
-        GLOBAL.RefreshScreen();
-        this.x = GLOBAL._SCREEN.x;
-        this.y = GLOBAL._SCREEN.y;
+        getGLOBAL().RefreshScreen();
+        this.x = getGLOBAL()._SCREEN.x;
+        this.y = getGLOBAL()._SCREEN.y;
         if (this._blocker) {
-            this._blocker.width = GLOBAL._SCREEN.width;
-            this._blocker.height = GLOBAL._SCREEN.height;
+            this._blocker.width = getGLOBAL()._SCREEN.width;
+            this._blocker.height = getGLOBAL()._SCREEN.height;
         }
     }
 }

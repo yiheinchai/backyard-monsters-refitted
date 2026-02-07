@@ -5,10 +5,13 @@ import Event from "openfl/events/Event";
 import MouseEvent from "openfl/events/MouseEvent";
 
 import { ImageCache } from "../../../../display/ImageCache";
-import { MapRoomManager } from "../../../../maproom_manager/MapRoomManager";
 import { HellRaisersBattleSummary_CLIP } from "../../../../../../HellRaisersBattleSummary_CLIP";
 
-import { KEYS } from "../../../../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../../../../maproom_manager/MapRoomManager").MapRoomManager; }
+function getKEYS(): any { return require("../../../../../../KEYS").KEYS; }
+
+
 
 /**
  * Hell Raisers battle summary - displays win/lose summary after battle.
@@ -29,12 +32,12 @@ export class HellRaisersBattleSummary {
         }
         ImageCache.GetImageWithCallBack(imageURL, this.loadedImage.bind(this));
         this.m_graphic.tBody.htmlText = ">YOU GOT SUM POINTS, LOL :" + points;
-        this.m_graphic.bAction.Setup(KEYS.Get("btn_openmap"));
+        this.m_graphic.bAction.Setup(getKEYS().Get("btn_openmap"));
         this.m_graphic.bAction.addEventListener(MouseEvent.CLICK, this.clickedActionButton.bind(this));
     }
 
     protected clickedActionButton(event: Event): void {
-        MapRoomManager.instance.SetupAndShow();
+        getMapRoomManager().instance.SetupAndShow();
     }
 
     private loadedImage(url: string, bitmapData: BitmapData): void {

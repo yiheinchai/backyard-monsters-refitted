@@ -1,10 +1,13 @@
 import { SecNum } from "../../../cc/utils/SecNum";
 import { SiegeWeaponProperty } from "../SiegeWeaponProperty";
 
-import { BASE } from "../../../../BASE";
-import { GLOBAL } from "../../../../GLOBAL";
-import { KEYS } from "../../../../KEYS";
-import { STORE } from "../../../../STORE";
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getSTORE(): any { return require("../../../../STORE").STORE; }
+
+
 
 /**
  * SiegeWeapon - base class for siege weapons.
@@ -44,14 +47,14 @@ export class SiegeWeapon {
         this.icon = SiegeWeapon._ICON_FOLDER_URL + "siege_icon_" + this.weaponID + ".png";
         this.video = "assets/videos/" + this.weaponID + "400x175.flv";
         this.videopreview = "videos/" + this.weaponID + "_preview" + ".png";
-        this.name = KEYS.Get("#w_" + this.weaponID + "#");
-        this.description = KEYS.Get("w_" + this.weaponID + "desc");
-        this.tooltip = KEYS.Get("w_" + this.weaponID + "_tooltip");
+        this.name = getKEYS().Get("#w_" + this.weaponID + "#");
+        this.description = getKEYS().Get("w_" + this.weaponID + "desc");
+        this.tooltip = getKEYS().Get("w_" + this.weaponID + "_tooltip");
         this.quantity = 0;
     }
 
     public canFire(): boolean {
-        return GLOBAL.isInAttackMode;
+        return getGLOBAL().isInAttackMode;
     }
 
     public get buildCosts(): Record<string, any> {
@@ -79,15 +82,15 @@ export class SiegeWeapon {
     }
 
     public get instantUpgradeCost(): number {
-        return STORE.GetInstantBuyCost(this.upgradeCosts);
+        return getSTORE().GetInstantBuyCost(this.upgradeCosts);
     }
 
     public get instantBuildCost(): number {
-        return STORE.GetInstantBuyCost(this.buildCosts);
+        return getSTORE().GetInstantBuyCost(this.buildCosts);
     }
 
     public get logMessage(): string {
-        return KEYS.Get("attack_log_siege", { "v1": this.level, "v2": this.name });
+        return getKEYS().Get("attack_log_siege", { "v1": this.level, "v2": this.name });
     }
 
     public get warnPopupImage(): string {
@@ -143,7 +146,7 @@ export class SiegeWeapon {
     public addProperty(name: string, prop: SiegeWeaponProperty): void {
         this._properties[name] = prop;
         if (prop.order) {
-            prop.label = KEYS.Get("label_" + this.weaponID + "_stat" + prop.order);
+            prop.label = getKEYS().Get("label_" + this.weaponID + "_stat" + prop.order);
             prop.descriptionKey = this.weaponID + "_stat" + prop.order;
         }
     }
@@ -163,7 +166,7 @@ export class SiegeWeapon {
 
     public get hasCapacityToUpgrade(): boolean {
         for (let i = 1; i < 5; i++) {
-            if (BASE._iresources["r" + i + "max"] < this.upgradeCosts["r" + i]) {
+            if (getBASE()._iresources["r" + i + "max"] < this.upgradeCosts["r" + i]) {
                 return false;
             }
         }
@@ -172,7 +175,7 @@ export class SiegeWeapon {
 
     public get hasCapacityToBuild(): boolean {
         for (let i = 1; i < 5; i++) {
-            if (BASE._iresources["r" + i + "max"] < this.buildCosts["r" + i]) {
+            if (getBASE()._iresources["r" + i + "max"] < this.buildCosts["r" + i]) {
                 return false;
             }
         }
@@ -190,7 +193,7 @@ export class SiegeWeapon {
     public get numResourcesToUpgradeNeeded(): number {
         let total = 0;
         for (let i = 1; i < 5; i++) {
-            total += Math.max(this.upgradeCosts["r" + i] - BASE._iresources["r" + i].Get(), 0);
+            total += Math.max(this.upgradeCosts["r" + i] - getBASE()._iresources["r" + i].Get(), 0);
         }
         return total;
     }
@@ -198,7 +201,7 @@ export class SiegeWeapon {
     public get numResourcesToBuildNeeded(): number {
         let total = 0;
         for (let i = 1; i < 5; i++) {
-            total += Math.max(this.buildCosts["r" + i] - BASE._iresources["r" + i].Get(), 0);
+            total += Math.max(this.buildCosts["r" + i] - getBASE()._iresources["r" + i].Get(), 0);
         }
         return total;
     }
@@ -226,36 +229,36 @@ export class SiegeWeapon {
     public get instantBuildResourceCost(): number {
         const needed: Record<string, number> = {};
         for (let i = 1; i < 5; i++) {
-            needed["r" + i] = Math.max(this.buildCosts["r" + i] - BASE._iresources["r" + i].Get(), 0);
+            needed["r" + i] = Math.max(this.buildCosts["r" + i] - getBASE()._iresources["r" + i].Get(), 0);
         }
-        return STORE.GetInstantBuyCost(needed);
+        return getSTORE().GetInstantBuyCost(needed);
     }
 
     public get instantUpgradeResourceCost(): number {
         const needed: Record<string, number> = {};
         for (let i = 1; i < 5; i++) {
-            needed["r" + i] = Math.max(this.upgradeCosts["r" + i] - BASE._iresources["r" + i].Get(), 0);
+            needed["r" + i] = Math.max(this.upgradeCosts["r" + i] - getBASE()._iresources["r" + i].Get(), 0);
         }
-        return STORE.GetInstantBuyCost(needed);
+        return getSTORE().GetInstantBuyCost(needed);
     }
 
     public buyResourcesAndUpgrade(): void {
         const cost = this.instantUpgradeResourceCost;
-        BASE.Fund(1, Math.max(this.upgradeCosts.r1 - BASE._iresources.r1, 0), false, null, true);
-        BASE.Fund(2, Math.max(this.upgradeCosts.r2 - BASE._iresources.r2, 0), false, null, true);
-        BASE.Fund(3, Math.max(this.upgradeCosts.r3 - BASE._iresources.r3, 0), false, null, true);
-        BASE.Fund(4, Math.max(this.upgradeCosts.r4 - BASE._iresources.r4, 0), false, null, true);
-        GLOBAL._bSiegeLab.StartUpgradingWeapon(this.weaponID);
-        BASE.Purchase("BRAU", cost, "building");
+        getBASE().Fund(1, Math.max(this.upgradeCosts.r1 - getBASE()._iresources.r1, 0), false, null, true);
+        getBASE().Fund(2, Math.max(this.upgradeCosts.r2 - getBASE()._iresources.r2, 0), false, null, true);
+        getBASE().Fund(3, Math.max(this.upgradeCosts.r3 - getBASE()._iresources.r3, 0), false, null, true);
+        getBASE().Fund(4, Math.max(this.upgradeCosts.r4 - getBASE()._iresources.r4, 0), false, null, true);
+        getGLOBAL()._bSiegeLab.StartUpgradingWeapon(this.weaponID);
+        getBASE().Purchase("BRAU", cost, "building");
     }
 
     public buyResourcesAndBuild(): void {
         const cost = this.instantBuildResourceCost;
-        BASE.Fund(1, Math.max(this.buildCosts.r1 - BASE._iresources.r1, 0), false, null, true);
-        BASE.Fund(2, Math.max(this.buildCosts.r2 - BASE._iresources.r2, 0), false, null, true);
-        BASE.Fund(3, Math.max(this.buildCosts.r3 - BASE._iresources.r3, 0), false, null, true);
-        BASE.Fund(4, Math.max(this.buildCosts.r4 - BASE._iresources.r4, 0), false, null, true);
-        GLOBAL._bSiegeFactory.StartUpgradingWeapon(this.weaponID);
-        BASE.Purchase("BRAB", cost, "building");
+        getBASE().Fund(1, Math.max(this.buildCosts.r1 - getBASE()._iresources.r1, 0), false, null, true);
+        getBASE().Fund(2, Math.max(this.buildCosts.r2 - getBASE()._iresources.r2, 0), false, null, true);
+        getBASE().Fund(3, Math.max(this.buildCosts.r3 - getBASE()._iresources.r3, 0), false, null, true);
+        getBASE().Fund(4, Math.max(this.buildCosts.r4 - getBASE()._iresources.r4, 0), false, null, true);
+        getGLOBAL()._bSiegeFactory.StartUpgradingWeapon(this.weaponID);
+        getBASE().Purchase("BRAB", cost, "building");
     }
 }

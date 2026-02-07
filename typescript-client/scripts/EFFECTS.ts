@@ -11,10 +11,13 @@ import ColorTransform from 'openfl/geom/ColorTransform';
 import Matrix from 'openfl/geom/Matrix';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
-import { CREATURES } from './CREATURES';
-import { GIBLETS } from './GIBLETS';
-import { GLOBAL } from './GLOBAL';
-import { MAP } from './MAP';
+
+// Lazy imports to break circular dependency chains
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getGIBLETS(): any { return require("./GIBLETS").GIBLETS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getMAP(): any { return require("./MAP").MAP; }
+
 
 /**
  * EFFECTS - Visual Effects System
@@ -40,7 +43,7 @@ export class EFFECTS {
         EFFECTS._items = {};
         EFFECTS._itemCount = 0;
         EFFECTS._effects = effects;
-        EFFECTS._effectsLimit = GLOBAL._flags.efl;
+        EFFECTS._effectsLimit = getGLOBAL()._flags.efl;
         EFFECTS._effectDuration = 172800;
     }
 
@@ -49,7 +52,7 @@ export class EFFECTS {
         if (creatureId.substr(0, 1) === "G") {
             count = 10;
         } else {
-            count = CREATURES.GetProperty(creatureId, "cResource") / 100;
+            count = getCREATURES().GetProperty(creatureId, "cResource") / 100;
         }
         if (count > 5 && creatureId.substr(0, 1) !== "G") {
             count = 5;
@@ -62,7 +65,7 @@ export class EFFECTS {
                 EFFECTS.SplatParticle(30, x + Math.sin(angle) * radius, y + Math.cos(angle) * radius, angle, Math.random() * 20 / 15);
             }
         }
-        GIBLETS.Create(new Point(x, y + 3), 0.8, 75, count);
+        getGIBLETS().Create(new Point(x, y + 3), 0.8, 75, count);
     }
 
     public static SplatParticle(size: number, x: number, y: number, angle: number, speed: number): void {
@@ -93,16 +96,16 @@ export class EFFECTS {
 
     public static Burn(x: number, y: number): void {
         const offset: number = 80 * Math.floor(Math.random() * 4) - 80;
-        if (MAP.effectsBMD && EFFECTS._burns) {
-            MAP.effectsBMD.copyPixels(EFFECTS._burns, new Rectangle(offset, 0, 80, 40),
-                new Point(x + MAP.effectsBMD.width * 0.5 - 40, y + MAP.effectsBMD.height * 0.5 - 20), null, null, true);
+        if (getMAP().effectsBMD && EFFECTS._burns) {
+            getMAP().effectsBMD.copyPixels(EFFECTS._burns, new Rectangle(offset, 0, 80, 40),
+                new Point(x + getMAP().effectsBMD.width * 0.5 - 40, y + getMAP().effectsBMD.height * 0.5 - 20), null, null, true);
         }
     }
 
     public static Lightning(x1: number, y1: number, x2: number, y2: number, 
                             container: DisplayObjectContainer | null = null, color: number = 0x30C0DA): void {
         if (!container) {
-            container = MAP._PROJECTILES;
+            container = getMAP()._PROJECTILES;
         }
         const distance: number = Point.distance(new Point(x1, y1), new Point(x2, y2));
         const lightning: Shape = container.addChild(new Shape()) as Shape;
@@ -138,7 +141,7 @@ export class EFFECTS {
         }
         for (const key in EFFECTS._items) {
             const item = EFFECTS._items[key];
-            if (GLOBAL._render) {
+            if (getGLOBAL()._render) {
                 item.mc.x += item.xd * item.speed;
                 item.mc.y += item.yd * item.speed;
                 item.mc.scaleX = item.mc.scaleY = item.mc.scaleY + 0.02;
@@ -148,7 +151,7 @@ export class EFFECTS {
                 ++item.life;
                 if (item.speed <= 0 && item.life > 10) {
                     EFFECTS.SnapShot(item);
-                    EFFECTS.Remove(MAP._EFFECTS, item.mc);
+                    EFFECTS.Remove(getMAP()._EFFECTS, item.mc);
                     delete EFFECTS._items[key];
                 }
             } else {
@@ -156,7 +159,7 @@ export class EFFECTS {
                 item.mc.y += item.yd * (item.speed * 20);
                 item.mc.scaleX = item.mc.scaleY = item.mc.scaleY + 0.4;
                 EFFECTS.SnapShot(item);
-                EFFECTS.Remove(MAP._EFFECTS, item.mc);
+                EFFECTS.Remove(getMAP()._EFFECTS, item.mc);
                 delete EFFECTS._items[key];
             }
         }
@@ -222,9 +225,9 @@ export class EFFECTS {
                 matrix.tx = 100;
                 matrix.ty = 50;
             }
-            if (MAP.effectsBMD) {
-                MAP.effectsBMD.copyPixels(bmd!, new Rectangle(0, 0, width!, height!),
-                    new Point(x + MAP.effectsBMD.width * 0.5 - width! / 2, y + MAP.effectsBMD.height * 0.5 - height! / 2), null, null, true);
+            if (getMAP().effectsBMD) {
+                getMAP().effectsBMD.copyPixels(bmd!, new Rectangle(0, 0, width!, height!),
+                    new Point(x + getMAP().effectsBMD.width * 0.5 - width! / 2, y + getMAP().effectsBMD.height * 0.5 - height! / 2), null, null, true);
             }
         } catch (e) {
             // Ignore errors

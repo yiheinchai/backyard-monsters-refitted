@@ -3,11 +3,14 @@ import MouseEvent from 'openfl/events/MouseEvent';
 import { UI_BOTTOM } from './com/monsters/ui/UI_BOTTOM';
 import { bubblepopupDownBuff } from './bubblepopupDownBuff';
 import { NEXTWAVEBAR_CLIP } from './NEXTWAVEBAR_CLIP';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
 import { SPECIALEVENT_WM1 } from './SPECIALEVENT_WM1';
-import { TUTORIAL } from './TUTORIAL';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+
 
 /**
  * This is the original UI_NEXTWAVE.as class for Wild Monster Invasion 1.
@@ -24,16 +27,16 @@ export class UI_NEXTWAVE_WM1 extends NEXTWAVEBAR_CLIP {
     }
 
     public static ShouldDisplay(): boolean {
-        if (GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode != getGLOBAL().e_BASE_MODE.BUILD) {
             return false;
         }
-        if (BASE.isOutpost || BASE.isInfernoMainYardOrOutpost) {
+        if (getBASE().isOutpost || getBASE().isInfernoMainYardOrOutpost) {
             return false;
         }
-        if (GLOBAL._flags.invasionpop != 4 && GLOBAL._flags.invasionpop != 5) {
+        if (getGLOBAL()._flags.invasionpop != 4 && getGLOBAL()._flags.invasionpop != 5) {
             return false;
         }
-        if (TUTORIAL._stage < TUTORIAL._endstage) {
+        if (getTUTORIAL()._stage < getTUTORIAL()._endstage) {
             return false;
         }
         if (SPECIALEVENT_WM1.GetTimeUntilEnd() < 0) {
@@ -110,11 +113,11 @@ export class UI_NEXTWAVE_WM1 extends NEXTWAVEBAR_CLIP {
             this.visible = true;
         }
         if (param1 == 31) {
-            this.tR.htmlText = KEYS.Get("wmi_bonuswave");
+            this.tR.htmlText = getKEYS().Get("wmi_bonuswave");
         } else if (param1 == 32) {
-            this.tR.htmlText = KEYS.Get("wmi_bonuswave2");
+            this.tR.htmlText = getKEYS().Get("wmi_bonuswave2");
         } else {
-            this.tR.htmlText = KEYS.Get("wmi_nextwave", { "v1": param1 });
+            this.tR.htmlText = getKEYS().Get("wmi_nextwave", { "v1": param1 });
         }
     }
 }

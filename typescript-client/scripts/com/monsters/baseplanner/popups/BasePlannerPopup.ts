@@ -26,13 +26,16 @@ import { buttonFullscreenFrame_CLIP } from "../../../../buttonFullscreenFrame_CL
 import { Button_CLIP } from "../../../../Button_CLIP";
 import { Checkbox } from "../../../../Checkbox";
 
-import { BASE } from "../../../../BASE";
-import { GLOBAL } from "../../../../GLOBAL";
-import { KEYS } from "../../../../KEYS";
-import { PLANNER } from "../../../../PLANNER";
-import { POPUPS } from "../../../../POPUPS";
 import { POPUPSETTINGS } from "../../../../POPUPSETTINGS";
-import { STORE } from "../../../../STORE";
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getPLANNER(): any { return require("../../../../PLANNER").PLANNER; }
+function getPOPUPS(): any { return require("../../../../POPUPS").POPUPS; }
+function getSTORE(): any { return require("../../../../STORE").STORE; }
+
 
 /**
  * BasePlannerPopup - Base planner popup UI.
@@ -163,7 +166,7 @@ export class BasePlannerPopup extends Sprite {
         if (!this.sideBarHeader) {
             this.sideBarHeader = new BasePlannerPopup_ExplorerHeader();
         }
-        this.sideBarHeader.tLabel.htmlText = KEYS.Get("basePlanner_explorerHeader");
+        this.sideBarHeader.tLabel.htmlText = getKEYS().Get("basePlanner_explorerHeader");
         this.sideBarHeader.x = BasePlannerPopup._layoutSpacing.x + startPoint.x;
         this.sideBarHeader.y = BasePlannerPopup._layoutSpacing.y + startPoint.y;
         this.addChild(this.sideBarHeader);
@@ -232,7 +235,7 @@ export class BasePlannerPopup extends Sprite {
             this._bSave.height = this.bottomMenu.btnSave.height;
             this._bSave.SetupKey("basePlanner_btnSave");
             this._bSave.addEventListener(MouseEvent.CLICK, this.onSaveClick.bind(this));
-            this._bSave.addEventListener(MouseEvent.ROLL_OVER, this.onToolTipMouseHint(this.onToolTipHint.bind(this), [KEYS.Get("basePlanner_saveTool")]));
+            this._bSave.addEventListener(MouseEvent.ROLL_OVER, this.onToolTipMouseHint(this.onToolTipHint.bind(this), [getKEYS().Get("basePlanner_saveTool")]));
             this._bSave.addEventListener(MouseEvent.ROLL_OUT, this.onToolTipHide.bind(this));
             this.bottomMenu.addChild(this._bSave);
             this.bottomMenu.removeChild(this.bottomMenu.btnSave);
@@ -246,7 +249,7 @@ export class BasePlannerPopup extends Sprite {
             this._bLoad.height = this.bottomMenu.btnLoad.height;
             this._bLoad.SetupKey("basePlanner_btnLoad");
             this._bLoad.addEventListener(MouseEvent.CLICK, this.onLoadClick.bind(this));
-            this._bLoad.addEventListener(MouseEvent.ROLL_OVER, this.onToolTipMouseHint(this.onToolTipHint.bind(this), [KEYS.Get("basePlanner_loadTool")]));
+            this._bLoad.addEventListener(MouseEvent.ROLL_OVER, this.onToolTipMouseHint(this.onToolTipHint.bind(this), [getKEYS().Get("basePlanner_loadTool")]));
             this._bLoad.addEventListener(MouseEvent.ROLL_OUT, this.onToolTipHide.bind(this));
             this.bottomMenu.addChild(this._bLoad);
             this.bottomMenu.removeChild(this.bottomMenu.btnLoad);
@@ -260,7 +263,7 @@ export class BasePlannerPopup extends Sprite {
             this._bApply.height = this.bottomMenu.btnApply.height;
             this._bApply.SetupKey("basePlanner_btnApply");
             this._bApply.addEventListener(MouseEvent.CLICK, this.onApplyClick.bind(this));
-            this._bApply.addEventListener(MouseEvent.ROLL_OVER, this.onToolTipMouseHint(this.onToolTipHint.bind(this), [KEYS.Get("basePlanner_applyTool")]));
+            this._bApply.addEventListener(MouseEvent.ROLL_OVER, this.onToolTipMouseHint(this.onToolTipHint.bind(this), [getKEYS().Get("basePlanner_applyTool")]));
             this._bApply.addEventListener(MouseEvent.ROLL_OUT, this.onToolTipHide.bind(this));
             this.bottomMenu.addChild(this._bApply);
             this.bottomMenu.removeChild(this.bottomMenu.btnApply);
@@ -271,7 +274,7 @@ export class BasePlannerPopup extends Sprite {
             this._bClear.height = this.bottomMenu.btnClear.height;
             this._bClear.SetupKey("basePlanner_btnClear");
             this._bClear.addEventListener(MouseEvent.CLICK, this.onClearClick.bind(this));
-            this._bClear.addEventListener(MouseEvent.ROLL_OVER, this.onToolTipMouseHint(this.onToolTipHint.bind(this), [KEYS.Get("basePlanner_clearTool")]));
+            this._bClear.addEventListener(MouseEvent.ROLL_OVER, this.onToolTipMouseHint(this.onToolTipHint.bind(this), [getKEYS().Get("basePlanner_clearTool")]));
             this._bClear.addEventListener(MouseEvent.ROLL_OUT, this.onToolTipHide.bind(this));
             this.bottomMenu.addChild(this._bClear);
             this.bottomMenu.removeChild(this.bottomMenu.btnClear);
@@ -289,11 +292,11 @@ export class BasePlannerPopup extends Sprite {
                 check4.addEventListener(Checkbox.CHECK_EVENT, this.onCheckboxClick.bind(this));
                 this.bottomMenu.addChild(check4);
             }
-            this.bottomMenu.check1_txt.htmlText = KEYS.Get("basePlanner_groundrange");
-            this.bottomMenu.check2_txt.htmlText = KEYS.Get("basePlanner_aerialrange");
-            this.bottomMenu.check3_txt.htmlText = KEYS.Get("basePlanner_minerange");
+            this.bottomMenu.check1_txt.htmlText = getKEYS().Get("basePlanner_groundrange");
+            this.bottomMenu.check2_txt.htmlText = getKEYS().Get("basePlanner_aerialrange");
+            this.bottomMenu.check3_txt.htmlText = getKEYS().Get("basePlanner_minerange");
             if (this.bottomMenu.check4_txt) {
-                this.bottomMenu.check4_txt.htmlText = KEYS.Get("basePlanner_moreinfo");
+                this.bottomMenu.check4_txt.htmlText = getKEYS().Get("basePlanner_moreinfo");
             }
         }
         const bottomMenuWidth = 520;
@@ -312,11 +315,11 @@ export class BasePlannerPopup extends Sprite {
             this.toolMenu.mcStore.addEventListener(MouseEvent.CLICK, this.onToolClick.bind(this));
             this.toolMenu.mcStore.addEventListener(MouseEvent.ROLL_OVER, this.onToolOver.bind(this));
             this.toolMenu.mcStore.addEventListener(MouseEvent.ROLL_OUT, this.onToolOut.bind(this));
-            if (Boolean(STORE._storeData.ENL) && STORE._storeData.ENL.q === 6) {
+            if (Boolean(getSTORE()._storeData.ENL) && getSTORE()._storeData.ENL.q === 6) {
                 this.toolMenu.mcExpand.enabled = false;
                 this.toolMenu.mcExpand.mouseEnabled = false;
                 this.toolMenu.mcExpand.gotoAndStop("off");
-            } else if (BASE.isMainYardOrInfernoMainYard) {
+            } else if (getBASE().isMainYardOrInfernoMainYard) {
                 this.toolMenu.mcExpand.gotoAndStop(1);
                 this.toolMenu.mcExpand.buttonMode = true;
                 this.toolMenu.mcExpand.addEventListener(MouseEvent.CLICK, this.onStoreOpen.bind(this));
@@ -332,7 +335,7 @@ export class BasePlannerPopup extends Sprite {
         if (!this.zoomMenu) {
             this.zoomMenu = new BasePlannerPopup_ZoomLayout();
             this.addChild(this.zoomMenu);
-            if (GLOBAL.DOES_USE_SCROLL) {
+            if (getGLOBAL().DOES_USE_SCROLL) {
                 this.displayCanvas.addEventListener(MouseEvent.MOUSE_WHEEL, this.onScroll.bind(this));
             }
             this.zoomMenu.btnUp.addEventListener(MouseEvent.CLICK, this.onZoomUp.bind(this));
@@ -345,7 +348,7 @@ export class BasePlannerPopup extends Sprite {
         if (!this.fullscreenButton) {
             this.fullscreenButton = new Sprite();
             this.fullscreenButton.addChild(new buttonFullscreenFrame_CLIP());
-            this.fullscreenButton.addEventListener(MouseEvent.CLICK, GLOBAL.goFullScreen);
+            this.fullscreenButton.addEventListener(MouseEvent.CLICK, getGLOBAL().goFullScreen);
         }
         this._mcFrame.addChild(this.fullscreenButton);
         this.fullscreenButton.x = width - (BasePlannerPopup._layoutSpacing.x + 50) + startPoint.x;
@@ -402,11 +405,11 @@ export class BasePlannerPopup extends Sprite {
         } else if (this.designView!.currentTool === PlannerDesignView.TOOL_STORE) {
             this.toolMenu!.mcStore.gotoAndStop("over");
         }
-        if (Boolean(STORE._storeData.ENL) && STORE._storeData.ENL.q === 6) {
+        if (Boolean(getSTORE()._storeData.ENL) && getSTORE()._storeData.ENL.q === 6) {
             this.toolMenu!.mcExpand.enabled = false;
             this.toolMenu!.mcExpand.mouseEnabled = false;
             this.toolMenu!.mcExpand.gotoAndStop("off");
-        } else if (BASE.isMainYardOrInfernoMainYard) {
+        } else if (getBASE().isMainYardOrInfernoMainYard) {
             this.toolMenu!.mcExpand.visible = true;
         } else {
             this.toolMenu!.mcExpand.visible = false;
@@ -432,11 +435,11 @@ export class BasePlannerPopup extends Sprite {
     public onToolOver(event: MouseEvent): void {
         (event.target as any).gotoAndStop("over");
         if (event.target === this.toolMenu!.mcSelectMove) {
-            this.onToolTipHint(null, KEYS.Get("basePlanner_moveTool"));
+            this.onToolTipHint(null, getKEYS().Get("basePlanner_moveTool"));
         } else if (event.target === this.toolMenu!.mcStore) {
-            this.onToolTipHint(null, KEYS.Get("basePlanner_storageTool"));
+            this.onToolTipHint(null, getKEYS().Get("basePlanner_storageTool"));
         } else if (event.target === this.toolMenu!.mcExpand) {
-            this.onToolTipHint(null, KEYS.Get("basePlanner_expandTool"));
+            this.onToolTipHint(null, getKEYS().Get("basePlanner_expandTool"));
         }
     }
 
@@ -446,10 +449,10 @@ export class BasePlannerPopup extends Sprite {
     }
 
     public onStoreOpen(event: MouseEvent | null = null): void {
-        if (BASE.isMainYardOrInfernoMainYard) {
-            STORE.ShowB(1, 1, ["ENL"]);
-            if (STORE._mc) {
-                STORE._mc.addEventListener(Event.REMOVED_FROM_STAGE, this.onStoreClosed.bind(this));
+        if (getBASE().isMainYardOrInfernoMainYard) {
+            getSTORE().ShowB(1, 1, ["ENL"]);
+            if (getSTORE()._mc) {
+                getSTORE()._mc.addEventListener(Event.REMOVED_FROM_STAGE, this.onStoreClosed.bind(this));
             }
         }
     }
@@ -520,7 +523,7 @@ export class BasePlannerPopup extends Sprite {
         if (this._isTemplateApplicable) {
             this.dispatchEvent(new BasePlannerEvent(BasePlannerEvent.APPLY));
         } else {
-            GLOBAL.Message(KEYS.Get("basePlanner_cantApply"));
+            getGLOBAL().Message(getKEYS().Get("basePlanner_cantApply"));
         }
     }
 
@@ -537,7 +540,7 @@ export class BasePlannerPopup extends Sprite {
             return;
         }
         this._clearConfirmationPopup = new BasePlannerTransferConfirmation();
-        this._clearConfirmationPopup.tBody.htmlText = KEYS.Get("basePlanner_unsaved");
+        this._clearConfirmationPopup.tBody.htmlText = getKEYS().Get("basePlanner_unsaved");
         this._clearConfirmationPopup.bCancel.SetupKey("basePlanner_btnClear");
         this._clearConfirmationPopup.bCancel.addEventListener(MouseEvent.CLICK, this.clickedClearInConfirmationClear.bind(this), false, 0, true);
         if (BasePlanner.canSave === false) {
@@ -547,7 +550,7 @@ export class BasePlannerPopup extends Sprite {
             this._clearConfirmationPopup.bConfirm.addEventListener(MouseEvent.CLICK, this.clickedSaveInConfirmationClear.bind(this), false, 0, true);
         }
         this._clearConfirmationPopup.addEventListener(Event.CLOSE, this.clickedCloseInConfirmationClear.bind(this), false, 0, true);
-        POPUPS.Add(this._clearConfirmationPopup);
+        getPOPUPS().Add(this._clearConfirmationPopup);
         POPUPSETTINGS.AlignToCenter(this._clearConfirmationPopup);
     }
 
@@ -567,7 +570,7 @@ export class BasePlannerPopup extends Sprite {
 
     private removeClearConfirmationPopup(): void {
         if (this._clearConfirmationPopup) {
-            POPUPS.Remove(this._clearConfirmationPopup);
+            getPOPUPS().Remove(this._clearConfirmationPopup);
             this._clearConfirmationPopup = null;
         }
     }
@@ -660,15 +663,15 @@ export class BasePlannerPopup extends Sprite {
                 return;
             }
             this._confirmationPopup = new BasePlannerTransferConfirmation();
-            this._confirmationPopup.tBody.htmlText = KEYS.Get("basePlanner_unsaved");
+            this._confirmationPopup.tBody.htmlText = getKEYS().Get("basePlanner_unsaved");
             this._confirmationPopup.bCancel.SetupKey("basePlanner_btnDiscard");
             this._confirmationPopup.bCancel.addEventListener(MouseEvent.CLICK, this.clickedDiscardInConfirmation.bind(this), false, 0, true);
             this._confirmationPopup.bConfirm.addEventListener(MouseEvent.CLICK, this.clickedSaveInConfirmation.bind(this), false, 0, true);
             this._confirmationPopup.addEventListener(Event.CLOSE, this.clickedCloseInConfirmation.bind(this), false, 0, true);
-            POPUPS.Add(this._confirmationPopup);
+            getPOPUPS().Add(this._confirmationPopup);
             POPUPSETTINGS.AlignToCenter(this._confirmationPopup);
         } else {
-            PLANNER.Hide();
+            getPLANNER().Hide();
         }
     }
 
@@ -677,12 +680,12 @@ export class BasePlannerPopup extends Sprite {
     }
 
     private removeConfirmationPopup(): void {
-        POPUPS.Remove(this._confirmationPopup);
+        getPOPUPS().Remove(this._confirmationPopup);
         this._confirmationPopup = null;
     }
 
     protected clickedDiscardInConfirmation(event: Event): void {
-        PLANNER.Hide();
+        getPLANNER().Hide();
         this.removeConfirmationPopup();
     }
 
@@ -692,9 +695,9 @@ export class BasePlannerPopup extends Sprite {
     }
 
     public Resize(): void {
-        this.configPopupTemplate(GLOBAL._SCREEN.width - 30, GLOBAL._SCREEN.height - 30);
-        this.x = GLOBAL._SCREENCENTER.x + -(this._mcFrame!.width / 2) + 10;
-        this.y = GLOBAL._SCREENCENTER.y + -(this._mcFrame!.height / 2) + 10;
+        this.configPopupTemplate(getGLOBAL()._SCREEN.width - 30, getGLOBAL()._SCREEN.height - 30);
+        this.x = getGLOBAL()._SCREENCENTER.x + -(this._mcFrame!.width / 2) + 10;
+        this.y = getGLOBAL()._SCREENCENTER.y + -(this._mcFrame!.height / 2) + 10;
     }
 
     public debugBreakTrace(): void {
@@ -707,9 +710,9 @@ export class BasePlannerPopup extends Sprite {
     public set hasBeenSaved(value: boolean) {
         this._hasBeenSaved = value;
         if (value) {
-            this._bSave.Enabled = !BASE.isOutpost;
-            this._bSave.enabled = !BASE.isOutpost;
-            this._bSave.mouseEnabled = !BASE.isOutpost;
+            this._bSave.Enabled = !getBASE().isOutpost;
+            this._bSave.enabled = !getBASE().isOutpost;
+            this._bSave.mouseEnabled = !getBASE().isOutpost;
         } else {
             this._bSave.Enabled = BasePlanner.canSave;
             this._bSave.enabled = BasePlanner.canSave;

@@ -2,10 +2,13 @@ import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { IAttackable } from './com/monsters/interfaces/IAttackable';
 import { BTOWER } from './BTOWER';
-import { GLOBAL } from './GLOBAL';
 import { PROJECTILES } from './PROJECTILES';
-import { SOUNDS } from './SOUNDS';
-import { Targeting } from './Targeting';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getTargeting(): any { return require("./Targeting").Targeting; }
+
 
 export class INFERNO_CANNON_TOWER extends BTOWER {
     public static readonly TYPE: number = 130;
@@ -27,7 +30,7 @@ export class INFERNO_CANNON_TOWER extends BTOWER {
     }
 
     public override AnimFrame(param1: boolean = true): void {
-        if (this._animLoaded && GLOBAL._render) {
+        if (this._animLoaded && getGLOBAL()._render) {
             this._animRect.x = this._animRect.width * this._animTick;
             this._animContainerBMD.copyPixels(this._animBMD, this._animRect, this._nullPoint);
         }
@@ -35,12 +38,12 @@ export class INFERNO_CANNON_TOWER extends BTOWER {
 
     public override Fire(param1: IAttackable): void {
         super.Fire(param1);
-        SOUNDS.Play("icannon");
+        getSOUNDS().Play("icannon");
         const _loc2_ = 0.5 + 0.5 / this.maxHealth * this.health;
         let _loc3_ = 1;
-        if (GLOBAL._towerOverdrive && GLOBAL._towerOverdrive.Get() >= GLOBAL.Timestamp()) {
+        if (getGLOBAL()._towerOverdrive && getGLOBAL()._towerOverdrive.Get() >= getGLOBAL().Timestamp()) {
             _loc3_ = 1.25;
         }
-        PROJECTILES.Spawn(new Point(this._mc.x, this._mc.y + this._top), null, param1, this._speed, Math.floor(this.damage * _loc2_ * _loc3_), false, this._splash, Targeting.getOldStyleTargets(-1));
+        PROJECTILES.Spawn(new Point(this._mc.x, this._mc.y + this._top), null, param1, this._speed, Math.floor(this.damage * _loc2_ * _loc3_), false, this._splash, getTargeting().getOldStyleTargets(-1));
     }
 }

@@ -3,9 +3,6 @@ import DisplayObject from 'openfl/display/DisplayObject';
 import MovieClip from 'openfl/display/MovieClip';
 import Event from 'openfl/events/Event';
 import MouseEvent from 'openfl/events/MouseEvent';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { POPUPS } from './POPUPS';
 // Frame asset imports - these would be embedded assets in the original Flash
 import { frame2_bottom_left } from './frame2_bottom_left';
 import { frame2_bottom_right } from './frame2_bottom_right';
@@ -27,6 +24,12 @@ import { frame3_filler_bottom } from './frame3_filler_bottom';
 import { frame3_background } from './frame3_background';
 import { frame_button_close } from './frame_button_close';
 import { frame_button_help } from './frame_button_help';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+
 
 /**
  * frame - Base frame class for popup windows
@@ -69,7 +72,7 @@ export class frame extends MovieClip {
             this._buttonHelp = new Bitmap(new frame_button_help(0, 0));
         }
         
-        if (BASE.isInfernoMainYardOrOutpost) {
+        if (getBASE().isInfernoMainYardOrOutpost) {
             this._bottomLeft = new Bitmap(new frame3_bottom_left(0, 0));
             this._bottomRight = new Bitmap(new frame3_bottom_right(0, 0));
             this._topLeft = new Bitmap(new frame3_top_left(0, 0));
@@ -202,7 +205,7 @@ export class frame extends MovieClip {
         } else if (this._customCloseFunction) {
             this._customCloseFunction();
         } else {
-            POPUPS.Next();
+            getPOPUPS().Next();
         }
         
         if (this.parent) {
@@ -211,7 +214,7 @@ export class frame extends MovieClip {
     }
 
     public resize(): void {
-        if (BASE.isInfernoMainYardOrOutpost) {
+        if (getBASE().isInfernoMainYardOrOutpost) {
             this._topLeft!.x = this.x - 31;
             this._topLeft!.y = this.y - 18;
             this._topRight!.x = this.x + this.width - 80;
@@ -283,7 +286,7 @@ export class frame extends MovieClip {
     }
 
     private BtnFullScreen(param1: MouseEvent | null = null): void {
-        GLOBAL.goFullScreen();
+        getGLOBAL().goFullScreen();
         if (this.parent && "FullScreen" in (this.parent as any)) {
             (this.parent as any).FullScreen();
         }

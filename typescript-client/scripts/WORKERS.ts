@@ -1,14 +1,17 @@
 import MovieClip from 'openfl/display/MovieClip';
 import Point from 'openfl/geom/Point';
-import { BASE } from './BASE';
-import { BFOUNDATION } from './BFOUNDATION';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { MAP } from './MAP';
-import { QUESTS } from './QUESTS';
-import { TUTORIAL } from './TUTORIAL';
 import { WORKER } from './WORKER';
 import { TweenLite } from './gs/TweenLite';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getQUESTS(): any { return require("./QUESTS").QUESTS; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+
 
 /**
  * WORKERS - Worker Management System
@@ -22,43 +25,43 @@ export class WORKERS {
 
     public static Setup(): void {
         WORKERS._workers = [];
-        if (BASE.isInfernoMainYardOrOutpost) {
+        if (getBASE().isInfernoMainYardOrOutpost) {
             WORKERS._sayings = {
-                assign: [KEYS.Get("ai_worker_comment1"), KEYS.Get("ai_worker_comment2"), KEYS.Get("ai_worker_comment3"), KEYS.Get("ai_worker_comment5"), KEYS.Get("ai_worker_comment6"), KEYS.Get("ai_worker_comment7")],
-                remove: [KEYS.Get("ai_worker_cancel1"), KEYS.Get("ai_worker_cancel2"), KEYS.Get("ai_worker_cancel3"), KEYS.Get("ai_worker_cancel4")],
-                doneConstruct: [KEYS.Get("ai_worker_doneconstruct1"), KEYS.Get("ai_worker_doneconstruct2"), KEYS.Get("ai_worker_doneconstruct3"), KEYS.Get("ai_worker_doneconstruct4")],
-                doneRepair: [KEYS.Get("ai_worker_donerepair1"), KEYS.Get("ai_worker_donerepair2"), KEYS.Get("ai_worker_donerepair3"), KEYS.Get("ai_worker_donerepair4")],
-                doneUpgrade: [KEYS.Get("ai_worker_doneupgrade1"), KEYS.Get("ai_worker_doneupgrade2"), KEYS.Get("ai_worker_doneupgrade3"), KEYS.Get("ai_worker_doneupgrade4")]
+                assign: [getKEYS().Get("ai_worker_comment1"), getKEYS().Get("ai_worker_comment2"), getKEYS().Get("ai_worker_comment3"), getKEYS().Get("ai_worker_comment5"), getKEYS().Get("ai_worker_comment6"), getKEYS().Get("ai_worker_comment7")],
+                remove: [getKEYS().Get("ai_worker_cancel1"), getKEYS().Get("ai_worker_cancel2"), getKEYS().Get("ai_worker_cancel3"), getKEYS().Get("ai_worker_cancel4")],
+                doneConstruct: [getKEYS().Get("ai_worker_doneconstruct1"), getKEYS().Get("ai_worker_doneconstruct2"), getKEYS().Get("ai_worker_doneconstruct3"), getKEYS().Get("ai_worker_doneconstruct4")],
+                doneRepair: [getKEYS().Get("ai_worker_donerepair1"), getKEYS().Get("ai_worker_donerepair2"), getKEYS().Get("ai_worker_donerepair3"), getKEYS().Get("ai_worker_donerepair4")],
+                doneUpgrade: [getKEYS().Get("ai_worker_doneupgrade1"), getKEYS().Get("ai_worker_doneupgrade2"), getKEYS().Get("ai_worker_doneupgrade3"), getKEYS().Get("ai_worker_doneupgrade4")]
             };
         } else {
             WORKERS._sayings = {
-                assign: [KEYS.Get("ui_worker_assign1"), KEYS.Get("ui_worker_assign2"), KEYS.Get("ui_worker_assign3"), KEYS.Get("ui_worker_assign4"), KEYS.Get("ui_worker_assign5"), KEYS.Get("ui_worker_assign6")],
-                remove: [KEYS.Get("ui_worker_remove1"), KEYS.Get("ui_worker_remove2"), KEYS.Get("ui_worker_remove3"), KEYS.Get("ui_worker_remove4")],
-                doneConstruct: [KEYS.Get("ui_worker_doneconstruct1"), KEYS.Get("ui_worker_doneconstruct2"), KEYS.Get("ui_worker_doneconstruct3"), KEYS.Get("ui_worker_doneconstruct4"), KEYS.Get("ui_worker_doneconstruct5"), KEYS.Get("ui_worker_doneconstruct6"), KEYS.Get("ui_worker_doneconstruct7"), KEYS.Get("ui_worker_doneconstruct8")],
-                doneRepair: [KEYS.Get("ui_worker_donerepair1"), KEYS.Get("ui_worker_donerepair2")],
-                doneUpgrade: [KEYS.Get("ui_worker_doneupgrade1"), KEYS.Get("ui_worker_doneupgrade2"), KEYS.Get("ui_worker_doneupgrade3"), KEYS.Get("ui_worker_doneupgrade4"), KEYS.Get("ui_worker_doneupgrade5")]
+                assign: [getKEYS().Get("ui_worker_assign1"), getKEYS().Get("ui_worker_assign2"), getKEYS().Get("ui_worker_assign3"), getKEYS().Get("ui_worker_assign4"), getKEYS().Get("ui_worker_assign5"), getKEYS().Get("ui_worker_assign6")],
+                remove: [getKEYS().Get("ui_worker_remove1"), getKEYS().Get("ui_worker_remove2"), getKEYS().Get("ui_worker_remove3"), getKEYS().Get("ui_worker_remove4")],
+                doneConstruct: [getKEYS().Get("ui_worker_doneconstruct1"), getKEYS().Get("ui_worker_doneconstruct2"), getKEYS().Get("ui_worker_doneconstruct3"), getKEYS().Get("ui_worker_doneconstruct4"), getKEYS().Get("ui_worker_doneconstruct5"), getKEYS().Get("ui_worker_doneconstruct6"), getKEYS().Get("ui_worker_doneconstruct7"), getKEYS().Get("ui_worker_doneconstruct8")],
+                doneRepair: [getKEYS().Get("ui_worker_donerepair1"), getKEYS().Get("ui_worker_donerepair2")],
+                doneUpgrade: [getKEYS().Get("ui_worker_doneupgrade1"), getKEYS().Get("ui_worker_doneupgrade2"), getKEYS().Get("ui_worker_doneupgrade3"), getKEYS().Get("ui_worker_doneupgrade4"), getKEYS().Get("ui_worker_doneupgrade5")]
             };
         }
     }
 
     public static Spawn(): Record<string, any> {
         let spawnPoint: Point;
-        if (TUTORIAL._stage < 10) {
+        if (getTUTORIAL()._stage < 10) {
             spawnPoint = new Point(0, 0);
         } else {
-            spawnPoint = new Point(GLOBAL._mapWidth / 2 - Math.random() * GLOBAL._mapWidth, GLOBAL._mapHeight / 2 - Math.random() * GLOBAL._mapHeight);
+            spawnPoint = new Point(getGLOBAL()._mapWidth / 2 - Math.random() * getGLOBAL()._mapWidth, getGLOBAL()._mapHeight / 2 - Math.random() * getGLOBAL()._mapHeight);
         }
-        const worker: WORKER = MAP._BUILDINGTOPS.addChild(new WORKER(MAP._BUILDINGTOPS, spawnPoint, Math.random() * 360)) as WORKER;
+        const worker: WORKER = getMAP()._BUILDINGTOPS.addChild(new WORKER(getMAP()._BUILDINGTOPS, spawnPoint, Math.random() * 360)) as WORKER;
         WORKERS._workers.push({
             mc: worker,
             task: null
         });
-        QUESTS._global.worder_count = WORKERS._workers.length;
+        getQUESTS()._global.worder_count = WORKERS._workers.length;
         return { mc: worker };
     }
 
     public static Tick(): void {
-        if (GLOBAL._render) {
+        if (getGLOBAL()._render) {
             for (const key in WORKERS._workers) {
                 const workerData = WORKERS._workers[key];
                 workerData.mc.Tick();
@@ -84,7 +87,7 @@ export class WORKERS {
             closestWorker.mc.Target(new Point(building._mc!.x, building._mc!.y + building._mcFootprint!.height / 2), building);
             closestWorker.mc._targetTask = building;
             let saying: string = "";
-            if (!GLOBAL._catchup) {
+            if (!getGLOBAL()._catchup) {
                 saying = WORKERS._sayings.assign[Math.floor(Math.random() * WORKERS._sayings.assign.length)];
                 WORKERS.Say(saying, closestWorker.mc);
             } else {
@@ -106,7 +109,7 @@ export class WORKERS {
                 workerData.task = null;
                 workerData.mc._targetTask = null;
                 building._hasWorker = false;
-                if (GLOBAL._render) {
+                if (getGLOBAL()._render) {
                     workerData.mc.Wander();
                     if (success) {
                         const sayings: string[] = WORKERS._sayings["done" + taskType];

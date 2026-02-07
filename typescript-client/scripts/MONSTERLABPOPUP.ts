@@ -8,14 +8,17 @@ import MouseEvent from "openfl/events/MouseEvent";
 import TextField from "openfl/text/TextField";
 import { TweenLite } from "./gs/TweenLite";
 import { MONSTERLABPOPUP_CLIP } from "./MONSTERLABPOPUP_CLIP";
-import { MONSTERLAB } from "./MONSTERLAB";
 import { MONSTERLABITEM_CLIP } from "./MONSTERLABITEM_CLIP";
-import { GLOBAL } from "./GLOBAL";
-import { KEYS } from "./KEYS";
-import { CREATURELOCKER } from "./CREATURELOCKER";
-import { CREATURES } from "./CREATURES";
-import { STORE } from "./STORE";
 import { POPUPSETTINGS } from "./POPUPSETTINGS";
+
+// Lazy imports to break circular dependency chains
+function getMONSTERLAB(): any { return require("./MONSTERLAB").MONSTERLAB; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getSTORE(): any { return require("./STORE").STORE; }
+
 
 export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
     public static _page: number = 1;
@@ -77,38 +80,38 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
         this.btn_instant = this.mcInstant;
         this.list_mc = this.mcList;
         this._scrollbar = new ScrollSet();
-        MONSTERLABPOPUP._bMonsterLab = GLOBAL._bLab as MONSTERLAB;
+        MONSTERLABPOPUP._bMonsterLab = getGLOBAL()._bLab as MONSTERLAB;
 
         let _loc1_: number = 3;
         while (_loc1_ < 5) {
             this.btn_resource["mcR" + _loc1_].visible = false;
-            this.btn_resource["mcR" + _loc1_].tTitle.htmlText = "<b>" + KEYS.Get(GLOBAL._resourceNames[_loc1_ - 1]) + "</b>";
+            this.btn_resource["mcR" + _loc1_].tTitle.htmlText = "<b>" + getKEYS().Get(getGLOBAL()._resourceNames[_loc1_ - 1]) + "</b>";
             this.btn_resource["mcR" + _loc1_].tValue.htmlText = "<b>0</b>";
             this.btn_resource["mcR" + _loc1_].gotoAndStop(_loc1_);
             _loc1_++;
         }
         this.btn_resource.mcTime.visible = false;
-        this.btn_resource.mcTime.tTitle.htmlText = "<b>" + KEYS.Get("#r_time#") + "</b>";
+        this.btn_resource.mcTime.tTitle.htmlText = "<b>" + getKEYS().Get("#r_time#") + "</b>";
         this.btn_resource.mcTime.gotoAndStop(6);
-        this.btn_instant.tDescription.htmlText = "<b>" + KEYS.Get("lab_upgradeinstant") + "</b>";
-        this.tf_title.htmlText = "<b>" + KEYS.Get("monsterlab_title") + "</b>";
-        this.tf_statusIdle.htmlText = "<b>" + KEYS.Get("lab_selectability") + "</b>";
+        this.btn_instant.tDescription.htmlText = "<b>" + getKEYS().Get("lab_upgradeinstant") + "</b>";
+        this.tf_title.htmlText = "<b>" + getKEYS().Get("monsterlab_title") + "</b>";
+        this.tf_statusIdle.htmlText = "<b>" + getKEYS().Get("lab_selectability") + "</b>";
 
         if (MONSTERLABPOPUP._bMonsterLab._upgrading) {
-            this.tf_statusTitle.htmlText = KEYS.Get("monsterlab_currentlyresearching", { "v1": KEYS.Get(MONSTERLAB._powerupProps[MONSTERLABPOPUP._bMonsterLab._upgrading].name) });
-            this.tf_statusDesc.htmlText = "<b>" + KEYS.Get("lab_level", { "v1": MONSTERLABPOPUP._bMonsterLab._upgradeLevel }) + "</b>";
-            const _loc2_: number = MONSTERLABPOPUP._bMonsterLab._upgradeFinishTime.Get() - GLOBAL.Timestamp();
-            this.tf_statusPBarLabel.htmlText = "<b>" + GLOBAL.ToTime(_loc2_, true) + "</b>";
-            const _loc3_: number = MONSTERLAB.GetTimeCost(MONSTERLABPOPUP._bMonsterLab._upgrading, MONSTERLABPOPUP._bMonsterLab._upgradeLevel);
+            this.tf_statusTitle.htmlText = getKEYS().Get("monsterlab_currentlyresearching", { "v1": getKEYS().Get(getMONSTERLAB()._powerupProps[MONSTERLABPOPUP._bMonsterLab._upgrading].name) });
+            this.tf_statusDesc.htmlText = "<b>" + getKEYS().Get("lab_level", { "v1": MONSTERLABPOPUP._bMonsterLab._upgradeLevel }) + "</b>";
+            const _loc2_: number = MONSTERLABPOPUP._bMonsterLab._upgradeFinishTime.Get() - getGLOBAL().Timestamp();
+            this.tf_statusPBarLabel.htmlText = "<b>" + getGLOBAL().ToTime(_loc2_, true) + "</b>";
+            const _loc3_: number = getMONSTERLAB().GetTimeCost(MONSTERLABPOPUP._bMonsterLab._upgrading, MONSTERLABPOPUP._bMonsterLab._upgradeLevel);
             const _loc4_: number = 100 - 100 / _loc3_ * _loc2_;
             this.mcPBarStatus.mcBar.width = _loc4_;
             this.mcPBarStatus.mcBar2.width = _loc4_;
         }
 
-        this.tf_stats.htmlText = "<b>" + KEYS.Get("lab_rocketslevel", { "v1": 0 }) + "</b>" + "<br>" + KEYS.Get("lab_rockets_desc");
-        this.tf_statsPBar.htmlText = "<b>" + KEYS.Get("lab_ability") + "</b>";
-        this.tf_statsPBarLabel.htmlText = "<b>" + KEYS.Get("lab_davename") + "</b>";
-        this.tf_statsWarning.htmlText = "<b>" + KEYS.Get("lab_locked", { "v1": 2 }) + "</b>";
+        this.tf_stats.htmlText = "<b>" + getKEYS().Get("lab_rocketslevel", { "v1": 0 }) + "</b>" + "<br>" + getKEYS().Get("lab_rockets_desc");
+        this.tf_statsPBar.htmlText = "<b>" + getKEYS().Get("lab_ability") + "</b>";
+        this.tf_statsPBarLabel.htmlText = "<b>" + getKEYS().Get("lab_davename") + "</b>";
+        this.tf_statsWarning.htmlText = "<b>" + getKEYS().Get("lab_locked", { "v1": 2 }) + "</b>";
 
         if (MONSTERLABPOPUP._bMonsterLab._upgrading) {
             this.Setup(MONSTERLABPOPUP._bMonsterLab._upgrading);
@@ -167,27 +170,27 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
             MONSTERLABPOPUP._creatureID = MONSTERLABPOPUP._bMonsterLab._upgrading;
         }
 
-        const _loc3_: any = MONSTERLAB._powerupProps[MONSTERLABPOPUP._creatureID];
+        const _loc3_: any = getMONSTERLAB()._powerupProps[MONSTERLABPOPUP._creatureID];
         let _loc4_: number = 0;
 
-        if (Boolean(GLOBAL.player.m_upgrades[MONSTERLABPOPUP._creatureID]) && Boolean(GLOBAL.player.m_upgrades[MONSTERLABPOPUP._creatureID].powerup)) {
-            _loc4_ = Number(GLOBAL.player.m_upgrades[MONSTERLABPOPUP._creatureID].powerup);
+        if (Boolean(getGLOBAL().player.m_upgrades[MONSTERLABPOPUP._creatureID]) && Boolean(getGLOBAL().player.m_upgrades[MONSTERLABPOPUP._creatureID].powerup)) {
+            _loc4_ = Number(getGLOBAL().player.m_upgrades[MONSTERLABPOPUP._creatureID].powerup);
         } else {
             _loc4_ = 0;
         }
 
         MONSTERLABPOPUP._unlockLevel = _loc4_ + 1;
         const _loc5_: any = MONSTERLABPOPUP._bMonsterLab.CanPowerup(MONSTERLABPOPUP._creatureID, MONSTERLABPOPUP._unlockLevel);
-        const _loc6_: Array<any> = MONSTERLAB._powerupProps[MONSTERLABPOPUP._creatureID].costs[MONSTERLABPOPUP._unlockLevel - 1];
-        const _loc7_: any = CREATURELOCKER._creatures[MONSTERLABPOPUP._creatureID];
-        const _loc8_: any = MONSTERLAB._powerupProps[MONSTERLABPOPUP._creatureID];
+        const _loc6_: Array<any> = getMONSTERLAB()._powerupProps[MONSTERLABPOPUP._creatureID].costs[MONSTERLABPOPUP._unlockLevel - 1];
+        const _loc7_: any = getCREATURELOCKER()._creatures[MONSTERLABPOPUP._creatureID];
+        const _loc8_: any = getMONSTERLAB()._powerupProps[MONSTERLABPOPUP._creatureID];
 
         if (MONSTERLABPOPUP._unlockLevel == 1) {
-            this.tf_stats.htmlText = "<b>" + KEYS.Get(_loc8_.name) + "</b><br>" + KEYS.Get(_loc8_.description);
+            this.tf_stats.htmlText = "<b>" + getKEYS().Get(_loc8_.name) + "</b><br>" + getKEYS().Get(_loc8_.description);
         } else {
-            this.tf_stats.htmlText = "<b>" + KEYS.Get(_loc8_.name) + "</b><br>" + KEYS.Get(_loc8_.upgrade_description);
+            this.tf_stats.htmlText = "<b>" + getKEYS().Get(_loc8_.name) + "</b><br>" + getKEYS().Get(_loc8_.upgrade_description);
         }
-        this.tf_statsPBar.htmlText = "<b>" + KEYS.Get(_loc8_.name) + "</b>";
+        this.tf_statsPBar.htmlText = "<b>" + getKEYS().Get(_loc8_.name) + "</b>";
 
         let _loc9_: string = "";
         if (MONSTERLABPOPUP._bMonsterLab.CanPowerup(MONSTERLABPOPUP._creatureID, MONSTERLABPOPUP._unlockLevel).errorString == "Fully Powered Up") {
@@ -209,7 +212,7 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
             case "C8":
             case "C11":
             case "C13":
-                _loc9_ = CREATURELOCKER._creatures[MONSTERLABPOPUP._creatureID].props.damage[MONSTERLABPOPUP._unlockLevel - 1] * _loc8_.effect[MONSTERLABPOPUP._unlockLevel - 1] + " " + _loc8_.ability;
+                _loc9_ = getCREATURELOCKER()._creatures[MONSTERLABPOPUP._creatureID].props.damage[MONSTERLABPOPUP._unlockLevel - 1] * _loc8_.effect[MONSTERLABPOPUP._unlockLevel - 1] + " " + _loc8_.ability;
                 break;
             case "C9":
                 _loc9_ = String(_loc8_.effect[MONSTERLABPOPUP._unlockLevel - 1] + _loc8_.ability);
@@ -235,7 +238,7 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
         this.tf_statsWarning.visible = false;
         this.UpdatePortrait(MONSTERLABPOPUP._creatureID);
 
-        if (Boolean(MONSTERLABPOPUP._bMonsterLab._upgrading) && GLOBAL.Timestamp() < MONSTERLABPOPUP._bMonsterLab._upgradeFinishTime.Get()) {
+        if (Boolean(MONSTERLABPOPUP._bMonsterLab._upgrading) && getGLOBAL().Timestamp() < MONSTERLABPOPUP._bMonsterLab._upgradeFinishTime.Get()) {
             this.StatusChange("WORKING");
             this.btn_action.removeEventListener(MouseEvent.CLICK, this.SpeedUp.bind(this));
             this.btn_instant.bAction.removeEventListener(MouseEvent.CLICK, this.CancelMonsterPowerup.bind(this));
@@ -257,16 +260,16 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
         } else {
             this.StatusChange("IDLE");
             if (!_loc5_.error) {
-                _loc12_ = MONSTERLAB.GetPuttyCost(MONSTERLABPOPUP._creatureID, MONSTERLABPOPUP._unlockLevel);
-                _loc13_ = MONSTERLAB.GetTimeCost(MONSTERLABPOPUP._creatureID, MONSTERLABPOPUP._unlockLevel);
-                MONSTERLABPOPUP._instantUnlockCost = MONSTERLAB.GetShinyCost(MONSTERLABPOPUP._creatureID, MONSTERLABPOPUP._unlockLevel);
-                this.btn_instant.tDescription.htmlText = "<b>" + KEYS.Get("buildoptions_upgradeinstant") + "</b>";
+                _loc12_ = getMONSTERLAB().GetPuttyCost(MONSTERLABPOPUP._creatureID, MONSTERLABPOPUP._unlockLevel);
+                _loc13_ = getMONSTERLAB().GetTimeCost(MONSTERLABPOPUP._creatureID, MONSTERLABPOPUP._unlockLevel);
+                MONSTERLABPOPUP._instantUnlockCost = getMONSTERLAB().GetShinyCost(MONSTERLABPOPUP._creatureID, MONSTERLABPOPUP._unlockLevel);
+                this.btn_instant.tDescription.htmlText = "<b>" + getKEYS().Get("buildoptions_upgradeinstant") + "</b>";
                 this.btn_instant.gArrow.visible = true;
                 this.btn_instant.tDescription.visible = true;
                 this.btn_instant.gCoin.visible = true;
                 this.btn_instant.bAction.removeEventListener(MouseEvent.CLICK, this.InstantMonsterPowerup.bind(this));
                 this.btn_instant.bAction.removeEventListener(MouseEvent.CLICK, this.CancelMonsterPowerup.bind(this));
-                this.btn_instant.bAction.Setup(KEYS.Get("btn_useshiny", { "v1": MONSTERLABPOPUP._instantUnlockCost }));
+                this.btn_instant.bAction.Setup(getKEYS().Get("btn_useshiny", { "v1": MONSTERLABPOPUP._instantUnlockCost }));
                 this.btn_instant.bAction.Enabled = true;
                 this.btn_instant.bAction.Highlight = true;
                 this.btn_instant.bAction.addEventListener(MouseEvent.CLICK, this.InstantMonsterPowerup.bind(this));
@@ -276,32 +279,32 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
                 this.btn_resource.bAction.addEventListener(MouseEvent.CLICK, this.StartMonsterPowerup.bind(this));
                 this.btn_resource.bAction.visible = true;
                 this.btn_resource.mcR3.visible = true;
-                this.btn_resource.mcR3.tValue.htmlText = "<b><font color=\"#" + (_loc6_[0] > GLOBAL._resources.r3.Get() ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc12_) + "</font></b>";
+                this.btn_resource.mcR3.tValue.htmlText = "<b><font color=\"#" + (_loc6_[0] > getGLOBAL()._resources.r3.Get() ? "FF0000" : "000000") + "\">" + getGLOBAL().FormatNumber(_loc12_) + "</font></b>";
                 this.btn_resource.mcR4.visible = true;
                 this.btn_resource.mcTime.visible = true;
-                this.btn_resource.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(_loc13_) + "</b>";
+                this.btn_resource.mcTime.tValue.htmlText = "<b>" + getGLOBAL().ToTime(_loc13_) + "</b>";
                 this.btn_instant.visible = true;
                 this.btn_resource.visible = true;
-            } else if (_loc5_.errorString == KEYS.Get("acad_err_putty")) {
+            } else if (_loc5_.errorString == getKEYS().Get("acad_err_putty")) {
                 this.StatusChange("IDLE");
-                _loc12_ = MONSTERLAB.GetPuttyCost(MONSTERLABPOPUP._creatureID, MONSTERLABPOPUP._unlockLevel);
-                _loc13_ = MONSTERLAB.GetTimeCost(MONSTERLABPOPUP._creatureID, MONSTERLABPOPUP._unlockLevel);
-                MONSTERLABPOPUP._instantUnlockCost = MONSTERLAB.GetShinyCost(MONSTERLABPOPUP._creatureID, MONSTERLABPOPUP._unlockLevel);
-                this.btn_instant.tDescription.htmlText = KEYS.Get("academy_traininstantly");
+                _loc12_ = getMONSTERLAB().GetPuttyCost(MONSTERLABPOPUP._creatureID, MONSTERLABPOPUP._unlockLevel);
+                _loc13_ = getMONSTERLAB().GetTimeCost(MONSTERLABPOPUP._creatureID, MONSTERLABPOPUP._unlockLevel);
+                MONSTERLABPOPUP._instantUnlockCost = getMONSTERLAB().GetShinyCost(MONSTERLABPOPUP._creatureID, MONSTERLABPOPUP._unlockLevel);
+                this.btn_instant.tDescription.htmlText = getKEYS().Get("academy_traininstantly");
                 this.btn_instant.tDescription.visible = true;
                 this.btn_instant.gArrow.visible = true;
                 this.btn_instant.gCoin.visible = true;
                 this.btn_instant.bAction.removeEventListener(MouseEvent.CLICK, this.InstantMonsterPowerup.bind(this));
                 this.btn_instant.bAction.removeEventListener(MouseEvent.CLICK, this.CancelMonsterPowerup.bind(this));
-                this.btn_instant.bAction.Setup(KEYS.Get("btn_useshiny", { "v1": MONSTERLABPOPUP._instantUnlockCost }));
+                this.btn_instant.bAction.Setup(getKEYS().Get("btn_useshiny", { "v1": MONSTERLABPOPUP._instantUnlockCost }));
                 this.btn_instant.bAction.Enabled = true;
                 this.btn_instant.bAction.Highlight = true;
                 this.btn_instant.bAction.addEventListener(MouseEvent.CLICK, this.InstantMonsterPowerup.bind(this));
                 this.btn_resource.mcR3.visible = true;
-                this.btn_resource.mcR3.tValue.htmlText = "<b><font color=\"#" + (_loc6_[0] > GLOBAL._resources.r3.Get() ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc6_[0]) + "</font></b>";
+                this.btn_resource.mcR3.tValue.htmlText = "<b><font color=\"#" + (_loc6_[0] > getGLOBAL()._resources.r3.Get() ? "FF0000" : "000000") + "\">" + getGLOBAL().FormatNumber(_loc6_[0]) + "</font></b>";
                 this.btn_resource.mcR4.visible = true;
                 this.btn_resource.mcTime.visible = true;
-                this.btn_resource.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(_loc6_[1], true) + "</b>";
+                this.btn_resource.mcTime.tValue.htmlText = "<b>" + getGLOBAL().ToTime(_loc6_[1], true) + "</b>";
                 this.btn_resource.bAction.Setup(_loc5_.errorString);
                 this.btn_resource.bAction.removeEventListener(MouseEvent.CLICK, this.StartMonsterPowerup.bind(this));
                 this.btn_resource.bAction.Enabled = false;
@@ -309,7 +312,7 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
                 this.btn_resource.bAction.visible = true;
                 this.btn_instant.visible = true;
                 this.btn_resource.visible = true;
-            } else if (Boolean(GLOBAL.player.m_upgrades[MONSTERLABPOPUP._creatureID]) && GLOBAL.player.m_upgrades[MONSTERLABPOPUP._creatureID].powerup == MONSTERLABPOPUP._maxLevel) {
+            } else if (Boolean(getGLOBAL().player.m_upgrades[MONSTERLABPOPUP._creatureID]) && getGLOBAL().player.m_upgrades[MONSTERLABPOPUP._creatureID].powerup == MONSTERLABPOPUP._maxLevel) {
                 this.btn_instant.bAction.SetupKey("acad_err_fullytrained");
                 this.btn_instant.bAction.Enabled = false;
                 this.btn_instant.bAction.Highlight = false;
@@ -331,17 +334,17 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
                 this.btn_resource.bAction.removeEventListener(MouseEvent.CLICK, this.StartMonsterPowerup.bind(this));
                 this.btn_resource.visible = false;
                 if (MONSTERLABPOPUP._bMonsterLab._lvl.Get() < MONSTERLABPOPUP._unlockLevel) {
-                    this.tf_statsWarning.htmlText = KEYS.Get("monsterlab_requiredlevel", { "v1": MONSTERLABPOPUP._unlockLevel });
+                    this.tf_statsWarning.htmlText = getKEYS().Get("monsterlab_requiredlevel", { "v1": MONSTERLABPOPUP._unlockLevel });
                     this.tf_statsWarning.visible = true;
-                } else if (CREATURELOCKER._lockerData[MONSTERLABPOPUP._creatureID] == null || CREATURELOCKER._lockerData[MONSTERLABPOPUP._creatureID].t < 2 || GLOBAL.player.m_upgrades[MONSTERLABPOPUP._creatureID] == null || GLOBAL.player.m_upgrades[MONSTERLABPOPUP._creatureID].level <= MONSTERLABPOPUP._unlockLevel) {
+                } else if (getCREATURELOCKER()._lockerData[MONSTERLABPOPUP._creatureID] == null || getCREATURELOCKER()._lockerData[MONSTERLABPOPUP._creatureID].t < 2 || getGLOBAL().player.m_upgrades[MONSTERLABPOPUP._creatureID] == null || getGLOBAL().player.m_upgrades[MONSTERLABPOPUP._creatureID].level <= MONSTERLABPOPUP._unlockLevel) {
                     if (MONSTERLABPOPUP._bMonsterLab._lvl.Get() < MONSTERLABPOPUP._unlockLevel) {
-                        this.tf_statsWarning.htmlText += "<br>" + KEYS.Get("monsterlab_requiredlevel2", {
-                            "v1": KEYS.Get(CREATURELOCKER._creatures[MONSTERLABPOPUP._creatureID].name),
+                        this.tf_statsWarning.htmlText += "<br>" + getKEYS().Get("monsterlab_requiredlevel2", {
+                            "v1": getKEYS().Get(getCREATURELOCKER()._creatures[MONSTERLABPOPUP._creatureID].name),
                             "v2": MONSTERLABPOPUP._unlockLevel + 1
                         });
                     } else {
-                        this.tf_statsWarning.htmlText = KEYS.Get("monsterlab_requiredlevel2", {
-                            "v1": KEYS.Get(CREATURELOCKER._creatures[MONSTERLABPOPUP._creatureID].name),
+                        this.tf_statsWarning.htmlText = getKEYS().Get("monsterlab_requiredlevel2", {
+                            "v1": getKEYS().Get(getCREATURELOCKER()._creatures[MONSTERLABPOPUP._creatureID].name),
                             "v2": MONSTERLABPOPUP._unlockLevel + 1
                         });
                     }
@@ -350,11 +353,11 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
             }
         }
 
-        let _loc14_: string = "<b>" + KEYS.Get("acad_mon_name") + "</b> " + KEYS.Get(CREATURELOCKER._creatures[MONSTERLABPOPUP._creatureID].name) + "<br>";
-        _loc14_ += "<b>" + KEYS.Get("acad_mon_status") + "</b> " + _loc5_.status;
-        _loc14_ += "<br>" + KEYS.Get(CREATURELOCKER._creatures[MONSTERLABPOPUP._creatureID].description);
+        let _loc14_: string = "<b>" + getKEYS().Get("acad_mon_name") + "</b> " + getKEYS().Get(getCREATURELOCKER()._creatures[MONSTERLABPOPUP._creatureID].name) + "<br>";
+        _loc14_ += "<b>" + getKEYS().Get("acad_mon_status") + "</b> " + _loc5_.status;
+        _loc14_ += "<br>" + getKEYS().Get(getCREATURELOCKER()._creatures[MONSTERLABPOPUP._creatureID].description);
 
-        const _loc15_: number = CREATURES.GetProperty(MONSTERLABPOPUP._creatureID, "damage", 0, true);
+        const _loc15_: number = getCREATURES().GetProperty(MONSTERLABPOPUP._creatureID, "damage", 0, true);
         if (_loc15_ > 0) {
             _loc16_ = false;
         } else {
@@ -367,11 +370,11 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
         let _loc2_: number = 0;
         let _loc3_: number = 0;
         if (MONSTERLABPOPUP._bMonsterLab._upgrading) {
-            this.tf_statusTitle.htmlText = KEYS.Get("monsterlab_currentlyresearching", { "v1": KEYS.Get(MONSTERLAB._powerupProps[MONSTERLABPOPUP._bMonsterLab._upgrading].name) });
-            this.tf_statusDesc.htmlText = "<b>" + KEYS.Get("lab_level", { "v1": MONSTERLABPOPUP._bMonsterLab._upgradeLevel }) + "</b>";
-            _loc1_ = MONSTERLABPOPUP._bMonsterLab._upgradeFinishTime.Get() - GLOBAL.Timestamp();
-            this.tf_statusPBarLabel.htmlText = "<b>" + GLOBAL.ToTime(_loc1_, true) + "</b>";
-            _loc2_ = MONSTERLAB.GetTimeCost(MONSTERLABPOPUP._bMonsterLab._upgrading, MONSTERLABPOPUP._bMonsterLab._upgradeLevel);
+            this.tf_statusTitle.htmlText = getKEYS().Get("monsterlab_currentlyresearching", { "v1": getKEYS().Get(getMONSTERLAB()._powerupProps[MONSTERLABPOPUP._bMonsterLab._upgrading].name) });
+            this.tf_statusDesc.htmlText = "<b>" + getKEYS().Get("lab_level", { "v1": MONSTERLABPOPUP._bMonsterLab._upgradeLevel }) + "</b>";
+            _loc1_ = MONSTERLABPOPUP._bMonsterLab._upgradeFinishTime.Get() - getGLOBAL().Timestamp();
+            this.tf_statusPBarLabel.htmlText = "<b>" + getGLOBAL().ToTime(_loc1_, true) + "</b>";
+            _loc2_ = getMONSTERLAB().GetTimeCost(MONSTERLABPOPUP._bMonsterLab._upgrading, MONSTERLABPOPUP._bMonsterLab._upgradeLevel);
             _loc3_ = 100 - 100 / _loc2_ * _loc1_;
             this.mcPBarStatus.mcBar.width = _loc3_;
             this.mcPBarStatus.mcBar2.width = _loc3_;
@@ -400,8 +403,8 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
     }
 
     public SpeedUp(param1: MouseEvent): void {
-        GLOBAL._selectedBuilding = MONSTERLABPOPUP._bMonsterLab;
-        STORE.SpeedUp("SP4");
+        getGLOBAL()._selectedBuilding = MONSTERLABPOPUP._bMonsterLab;
+        getSTORE().SpeedUp("SP4");
     }
 
     public List(): void {
@@ -415,9 +418,9 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
         let itemIconImage: MovieClip = null;
 
         this._abilityUpgradesList = [];
-        for (cr in MONSTERLAB._powerupProps) {
-            abilityUpgrade = MONSTERLAB._powerupProps[cr];
-            if (!abilityUpgrade.blocked && !(Boolean(CREATURELOCKER._creatures[cr]) && Boolean(CREATURELOCKER._creatures[cr].blocked))) {
+        for (cr in getMONSTERLAB()._powerupProps) {
+            abilityUpgrade = getMONSTERLAB()._powerupProps[cr];
+            if (!abilityUpgrade.blocked && !(Boolean(getCREATURELOCKER()._creatures[cr]) && Boolean(getCREATURELOCKER()._creatures[cr].blocked))) {
                 abilityUpgrade.id = cr;
                 this._abilityUpgradesList.push(abilityUpgrade);
             }
@@ -451,20 +454,20 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
 
             abilityUpgrade = this._abilityUpgradesList[i];
             cr = String(abilityUpgrade.id);
-            data = MONSTERLAB._powerupProps[cr];
+            data = getMONSTERLAB()._powerupProps[cr];
             item = this._listContainer.addChild(new MONSTERLABITEM_CLIP()) as MONSTERLABITEM_CLIP;
             MONSTERLABPOPUP._labItems["popups/" + cr + "-LAB-50.jpg"] = item;
             item.y = offset;
             offset += 60;
-            str = "<b>" + KEYS.Get(CREATURELOCKER._creatures[cr].name) + "</b><br>" + KEYS.Get(abilityUpgrade.name);
+            str = "<b>" + getKEYS().Get(getCREATURELOCKER()._creatures[cr].name) + "</b><br>" + getKEYS().Get(abilityUpgrade.name);
             item.tLabel.htmlText = str;
             item.addEventListener(MouseEvent.MOUSE_DOWN, this.Show(cr) as (arg0: unknown) => void);
             item.buttonMode = true;
             item.mouseChildren = false;
             item.mouseEnabled = true;
 
-            if (Boolean(GLOBAL.player.m_upgrades[cr]) && Boolean(GLOBAL.player.m_upgrades[cr].powerup)) {
-                (item.mcLevel as any).tLevel.htmlText = "" + GLOBAL.player.m_upgrades[cr].powerup + "";
+            if (Boolean(getGLOBAL().player.m_upgrades[cr]) && Boolean(getGLOBAL().player.m_upgrades[cr].powerup)) {
+                (item.mcLevel as any).tLevel.htmlText = "" + getGLOBAL().player.m_upgrades[cr].powerup + "";
             } else {
                 item.mcLevel.visible = false;
             }
@@ -506,8 +509,8 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
         let _loc5_: string = null;
         let _loc6_: number = 0;
         let _loc7_: number = NaN;
-        const _loc2_: any = MONSTERLAB._powerupProps[MONSTERLABPOPUP._creatureID];
-        _loc3_ = MONSTERLAB._powerupProps[MONSTERLABPOPUP._creatureID].costs[MONSTERLABPOPUP._unlockLevel - 1];
+        const _loc2_: any = getMONSTERLAB()._powerupProps[MONSTERLABPOPUP._creatureID];
+        _loc3_ = getMONSTERLAB()._powerupProps[MONSTERLABPOPUP._creatureID].costs[MONSTERLABPOPUP._unlockLevel - 1];
 
         switch (param1) {
             case "IDLE":
@@ -527,8 +530,8 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
                 this.pBar_status.visible = true;
                 this.tf_statusPBarLabel.visible = true;
                 this.btn_action.visible = true;
-                _loc4_ = MONSTERLABPOPUP._bMonsterLab._upgradeFinishTime.Get() - GLOBAL.Timestamp();
-                _loc5_ = GLOBAL.ToTime(_loc4_, true);
+                _loc4_ = MONSTERLABPOPUP._bMonsterLab._upgradeFinishTime.Get() - getGLOBAL().Timestamp();
+                _loc5_ = getGLOBAL().ToTime(_loc4_, true);
                 this.tf_statusPBarLabel.htmlText = "<b>" + _loc5_ + "</b>";
                 _loc6_ = Number(_loc3_[1]);
                 _loc7_ = 100 / _loc6_ * (_loc6_ - _loc4_);
@@ -539,7 +542,7 @@ export class MONSTERLABPOPUP extends MONSTERLABPOPUP_CLIP {
     }
 
     public Hide(param1: MouseEvent = null): void {
-        MONSTERLAB.Hide(param1);
+        getMONSTERLAB().Hide(param1);
     }
 
     public Center(): void {

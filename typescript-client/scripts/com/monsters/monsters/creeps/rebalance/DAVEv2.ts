@@ -3,15 +3,18 @@ import Point from "openfl/geom/Point";
 import { SpriteData } from "../../../display/SpriteData";
 import { SpriteSheetAnimation } from "../../../display/SpriteSheetAnimation";
 import { ITargetable } from "../../../interfaces/ITargetable";
-import { MonsterBase } from "../../MonsterBase";
 import { CreepBase } from "../CreepBase";
 import { Projectilev2 } from "../../../projectiles/Projectilev2";
 import { FaceTargetProjectileComponent } from "../../../projectiles/projectileComponents/FaceTargetProjectileComponent";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
-import { SPRITES } from "../../../../../SPRITES";
-import { SOUNDS } from "../../../../../SOUNDS";
 import { LoanShark } from "../../../../../org/kissmyas/utils/loanshark/LoanShark";
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+function getBFOUNDATION(): any { return require("../../../../../BFOUNDATION").BFOUNDATION; }
+function getSPRITES(): any { return require("../../../../../SPRITES").SPRITES; }
+function getSOUNDS(): any { return require("../../../../../SOUNDS").SOUNDS; }
+
 
 /**
  * DAVE v2 - rebalanced DAVE creep with dual rocket attack.
@@ -40,7 +43,7 @@ export class DAVEv2 extends CreepBase {
         super(id, type, startPos, velocity, startFrame, endFrame, targetPos, ownedByAttacker, building, scale, flipped, parent);
         if (this.powerUpLevel()) {
             this.targetMode = 1;
-            SPRITES.SetupSprite(DAVEv2.k_rocketKey);
+            getSPRITES().SetupSprite(DAVEv2.k_rocketKey);
             this.range = 100 + 40 * this.powerUpLevel();
             this.m_projectilePool = new LoanShark(Projectilev2, true, DAVEv2.k_projectilePoolSize);
         }
@@ -48,7 +51,7 @@ export class DAVEv2 extends CreepBase {
 
     protected override rangedAttack(target: ITargetable): ITargetable {
         const halfDamage: number = this.damage * 0.5;
-        const animation: SpriteSheetAnimation = new SpriteSheetAnimation(SPRITES.GetSpriteDescriptor(DAVEv2.k_rocketKey) as SpriteData, 11);
+        const animation: SpriteSheetAnimation = new SpriteSheetAnimation(getSPRITES().GetSpriteDescriptor(DAVEv2.k_rocketKey) as SpriteData, 11);
 
         // First rocket
         let projectile: Projectilev2 = this.m_projectilePool!.borrowObject() as Projectilev2;
@@ -73,6 +76,6 @@ export class DAVEv2 extends CreepBase {
     }
 
     public override deathSplat(): void {
-        SOUNDS.Play("monsterlanddave");
+        getSOUNDS().Play("monsterlanddave");
     }
 }

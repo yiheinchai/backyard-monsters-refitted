@@ -27,7 +27,10 @@ import { IChatSystem } from "./IChatSystem";
 import { UserRecord } from "./UserRecord";
 import { IAuthenticationSystem } from "./IAuthenticationSystem";
 
-import { LOGGER } from "../../../LOGGER";
+// Lazy imports to break circular dependency chains
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+
+
 
 /**
  * CS_SmartFoxServer2X - SmartFoxServer2X chat system implementation.
@@ -151,7 +154,7 @@ export class CS_SmartFoxServer2X extends EventDispatcher implements IChatSystem 
                 this.dispatchEvent(new ChatEvent(ChatEvent.UPDATE_NAME, success, params));
                 return;
             default:
-                LOGGER.Log("err", "updateName() - unknown action: " + action);
+                getLOGGER().Log("err", "updateName() - unknown action: " + action);
                 return;
         }
     }
@@ -390,7 +393,7 @@ export class CS_SmartFoxServer2X extends EventDispatcher implements IChatSystem 
         try {
             this.sfs.send(request);
         } catch (e) {
-            LOGGER.Log("err", "Exception in updateDisplayName.sfs.send(extensionRequest): " + e);
+            getLOGGER().Log("err", "Exception in updateDisplayName.sfs.send(extensionRequest): " + e);
         }
     }
 
@@ -406,7 +409,7 @@ export class CS_SmartFoxServer2X extends EventDispatcher implements IChatSystem 
         try {
             this.sfs.send(request);
         } catch (e) {
-            LOGGER.Log("err", "Exception in updateDisplayName.sfs.send(extensionRequest): " + e);
+            getLOGGER().Log("err", "Exception in updateDisplayName.sfs.send(extensionRequest): " + e);
         }
     }
 

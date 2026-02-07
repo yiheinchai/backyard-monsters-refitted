@@ -1,21 +1,24 @@
 import { BYMDevConfig } from './com/monsters/configs/BYMDevConfig';
 import { ImageCache } from './com/monsters/display/ImageCache';
-import { InventoryManager } from './com/monsters/inventory/InventoryManager';
 import Bitmap from 'openfl/display/Bitmap';
 import BitmapData from 'openfl/display/BitmapData';
 import MovieClip from 'openfl/display/MovieClip';
 import MouseEvent from 'openfl/events/MouseEvent';
-import { BASE } from './BASE';
-import { BFOUNDATION } from './BFOUNDATION';
-import { BUILDINGOPTIONS } from './BUILDINGOPTIONS';
-import { GLOBAL } from './GLOBAL';
-import { LOGGER } from './LOGGER';
-import { LOGIN } from './LOGIN';
-import { POPUPS } from './POPUPS';
 import { SALESPECIALSPOPUP } from './SALESPECIALSPOPUP';
-import { STORE } from './STORE';
-import { TUTORIAL } from './TUTORIAL';
 import { TweenLite } from './gs/TweenLite';
+
+// Lazy imports to break circular dependency chains
+function getInventoryManager(): any { return require("./com/monsters/inventory/InventoryManager").InventoryManager; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBUILDINGOPTIONS(): any { return require("./BUILDINGOPTIONS").BUILDINGOPTIONS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getLOGIN(): any { return require("./LOGIN").LOGIN; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+
 
 /**
  * BUY - Purchase and Payment System
@@ -28,17 +31,17 @@ export class BUY {
     constructor() {}
 
     public static Show(event: MouseEvent | null = null): void {
-        LOGGER.Stat([22]);
-        GLOBAL.CallJS("cc.showTopup", [{ type: "fbc", callback: "fbcAdd" }]);
+        getLOGGER().Stat([22]);
+        getGLOBAL().CallJS("cc.showTopup", [{ type: "fbc", callback: "fbcAdd" }]);
     }
 
     public static Offers(offerType: string): void {
         switch (offerType) {
             case "daily":
-                GLOBAL.CallJS("cc.showTopup", [{ type: "daily", callback: "fbcOfferDaily" }]);
+                getGLOBAL().CallJS("cc.showTopup", [{ type: "daily", callback: "fbcOfferDaily" }]);
                 break;
             case "earn":
-                GLOBAL.CallJS("cc.showTopup", [{ type: "offers", callback: "fbcOfferEarn" }]);
+                getGLOBAL().CallJS("cc.showTopup", [{ type: "offers", callback: "fbcOfferEarn" }]);
                 break;
         }
     }
@@ -46,35 +49,35 @@ export class BUY {
     public static FBCAdd(response: string): void {
         const data: any = JSON.parse(response);
         if (!data.status) {
-            LOGGER.Log("err", "FBCAdd " + response);
+            getLOGGER().Log("err", "FBCAdd " + response);
         }
     }
 
     public static FBCOfferEarn(response: string): void {
         const data: any = JSON.parse(response);
         if (!data.status) {
-            LOGGER.Log("err", "FBCDailyEarn " + response);
+            getLOGGER().Log("err", "FBCDailyEarn " + response);
         }
     }
 
     public static FBCOfferDaily(response: string): void {
         const data: any = JSON.parse(response);
         if (!data.status) {
-            LOGGER.Log("err", "FBCDailyEarn " + response);
+            getLOGGER().Log("err", "FBCDailyEarn " + response);
         }
     }
 
     public static FBCNcpCheckEligibility(): boolean {
-        if (GLOBAL._fbcncp > 0 && GLOBAL._flags && GLOBAL._flags.fbcncpshow !== -1) {
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && BASE.isMainYard && TUTORIAL._stage > 200 && GLOBAL._sessionCount >= 5) {
-                if (!GLOBAL._flags.viximo && !GLOBAL._flags.kongregate) {
+        if (getGLOBAL()._fbcncp > 0 && getGLOBAL()._flags && getGLOBAL()._flags.fbcncpshow !== -1) {
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && getBASE().isMainYard && getTUTORIAL()._stage > 200 && getGLOBAL()._sessionCount >= 5) {
+                if (!getGLOBAL()._flags.viximo && !getGLOBAL()._flags.kongregate) {
                     if (BUY.cacheNCPAvailable) {
                         BUY.FBCNcp(BUY.cacheNCPAvailable);
                     } else {
                         if (BYMDevConfig.instance.USE_CLIENT_WITH_CALLBACK) {
-                            GLOBAL.CallJSWithClient("cc.ncp", "fbcNcp", ["checkEligibility"]);
+                            getGLOBAL().CallJSWithClient("cc.ncp", "fbcNcp", ["checkEligibility"]);
                         } else {
-                            GLOBAL.CallJS("cc.ncp", ["checkEligibility", "fbcNcp"]);
+                            getGLOBAL().CallJS("cc.ncp", ["checkEligibility", "fbcNcp"]);
                         }
                         BUY.FBCNcpUpgradeTimeout();
                     }
@@ -107,34 +110,34 @@ export class BUY {
             mc.bNo.alpha = 0;
             mc.bNo.addEventListener(MouseEvent.CLICK, BUY.FBCNcpCancelled);
             BUY.FBCNcpRender("upgrade", mc.imageHolder);
-            POPUPS.Push(mc, null, null, "", "", false);
+            getPOPUPS().Push(mc, null, null, "", "", false);
         } else {
             if (response === "0") {
                 BUY.cacheNCPAvailable = response;
             }
-            LOGGER.Log("log", "FBCNcp Not Elligible" + response);
+            getLOGGER().Log("log", "FBCNcp Not Elligible" + response);
             BUY.FBCNcpUpgradeCB();
         }
     }
 
     public static FBCNcp_Click(event: MouseEvent): void {
         if (BYMDevConfig.instance.USE_CLIENT_WITH_CALLBACK) {
-            GLOBAL.CallJSWithClient("cc.ncp", "fbcNcpConfirm", ["showPaymentDialog"]);
+            getGLOBAL().CallJSWithClient("cc.ncp", "fbcNcpConfirm", ["showPaymentDialog"]);
         } else {
-            GLOBAL.CallJS("cc.ncp", ["showPaymentDialog", "fbcNcpConfirm"]);
+            getGLOBAL().CallJS("cc.ncp", ["showPaymentDialog", "fbcNcpConfirm"]);
         }
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 
     public static FBCNcpConfirm(response: string): void {
-        const building: BFOUNDATION = GLOBAL.townHall;
+        const building: BFOUNDATION = getGLOBAL().townHall;
         if (response === "1") {
-            const canUpgrade: any = BASE.CanUpgrade(building);
+            const canUpgrade: any = getBASE().CanUpgrade(building);
             if (canUpgrade.error && !canUpgrade.needResource) {
-                GLOBAL.Message(canUpgrade.errorMessage);
+                getGLOBAL().Message(canUpgrade.errorMessage);
             } else {
                 building.Upgraded();
-                BASE.Purchase("NCP", 1, "upgrade");
+                getBASE().Purchase("NCP", 1, "upgrade");
                 BUY.cacheNCPAvailable = "";
             }
         }
@@ -143,25 +146,25 @@ export class BUY {
     public static FBCNcpCancelled(reason: string = "", sendToJS: boolean = true): void {
         if (sendToJS) {
             if (BYMDevConfig.instance.USE_CLIENT_WITH_CALLBACK) {
-                GLOBAL.CallJSWithClient("cc.ncp", "fbcNcpConfirm", ["showPaymentDialog"]);
+                getGLOBAL().CallJSWithClient("cc.ncp", "fbcNcpConfirm", ["showPaymentDialog"]);
             } else {
-                GLOBAL.CallJS("cc.ncp", ["userCancelled"]);
+                getGLOBAL().CallJS("cc.ncp", ["userCancelled"]);
             }
         }
-        POPUPS.Next();
+        getPOPUPS().Next();
         BUY.FBCNcpUpgradeCB();
     }
 
     public static FBCNcpUpgradeCB(): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && !GLOBAL.isMapOpen()) {
-            GLOBAL._selectedBuilding = GLOBAL.townHall;
-            BUILDINGOPTIONS.Show(GLOBAL.townHall, "upgrade");
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && !getGLOBAL().isMapOpen()) {
+            getGLOBAL()._selectedBuilding = getGLOBAL().townHall;
+            getBUILDINGOPTIONS().Show(getGLOBAL().townHall, "upgrade");
         }
     }
 
     private static FBCNcpRender(mode: string, imageContainer: MovieClip): string {
-        const building: BFOUNDATION = GLOBAL.townHall;
-        const buildingProps: any = GLOBAL._buildingProps[building._type - 1];
+        const building: BFOUNDATION = getGLOBAL().townHall;
+        const buildingProps: any = getGLOBAL()._buildingProps[building._type - 1];
         let img: string = "";
 
         if (mode === "fortify") {
@@ -195,31 +198,31 @@ export class BUY {
     public static MidGameOffers(offerType: string): void {
         switch (offerType) {
             case "text":
-                GLOBAL.CallJS("cc.showTopup", [{ type: "fbc", callback: "fbcAdd" }]);
+                getGLOBAL().CallJS("cc.showTopup", [{ type: "fbc", callback: "fbcAdd" }]);
                 break;
             case "gift":
-                GLOBAL.CallJS("cc.showTopup", [{ special: "gift", callback: "fbcAdd" }]);
+                getGLOBAL().CallJS("cc.showTopup", [{ special: "gift", callback: "fbcAdd" }]);
                 break;
             case "shinydiscount":
-                GLOBAL.CallJS("cc.showTopup", [{ special: "discount", callback: "fbcAdd" }]);
+                getGLOBAL().CallJS("cc.showTopup", [{ special: "discount", callback: "fbcAdd" }]);
                 break;
             case "shinybonus":
-                GLOBAL.CallJS("cc.showTopup", [{ special: "bonus", callback: "fbcAdd" }]);
+                getGLOBAL().CallJS("cc.showTopup", [{ special: "bonus", callback: "fbcAdd" }]);
                 break;
         }
     }
 
     public static purchaseReceive(response: string): void {
-        POPUPS.Next();
+        getPOPUPS().Next();
         const data: any = JSON.parse(response);
         if (data.error === 0) {
-            if (LOGIN.checkHash(response)) {
+            if (getLOGIN().checkHash(response)) {
                 BUY.purchaseProcess(data.items);
                 BUY.purchaseComplete(response);
-                BASE._pendingPromo = 1;
-                BASE.Save();
+                getBASE()._pendingPromo = 1;
+                getBASE().Save();
             } else {
-                LOGGER.Log("err", "BUY.purchaseReceive " + response);
+                getLOGGER().Log("err", "BUY.purchaseReceive " + response);
             }
         }
     }
@@ -231,7 +234,7 @@ export class BUY {
             SALESPECIALSPOPUP.EndSale();
             SALESPECIALSPOPUP.Show("giftconfirm");
         }
-        BASE.Save();
+        getBASE().Save();
     }
 
     public static startPromo(response: string): void {
@@ -239,7 +242,7 @@ export class BUY {
         if (data.endtime) {
             SALESPECIALSPOPUP.StartSale(data.endtime);
         } else {
-            LOGGER.Log("err", "startPromo " + data.endtime);
+            getLOGGER().Log("err", "startPromo " + data.endtime);
         }
     }
 
@@ -249,27 +252,27 @@ export class BUY {
             const quantity: number = Number(items[i][1]);
             for (let j = 0; j < quantity; j++) {
                 if (itemId === "BIGGULP") {
-                    InventoryManager.buildingStorageAdd(120);
+                    getInventoryManager().buildingStorageAdd(120);
                 } else {
-                    STORE.AddInventory(itemId);
+                    getSTORE().AddInventory(itemId);
                 }
             }
         }
     }
 
     public static logPromoShown(promo: string | null = null): void {
-        LOGGER.Log("pro", "POPUPS.CallbackShiny " + promo);
+        getLOGGER().Log("pro", "getPOPUPS().CallbackShiny " + promo);
     }
 
     public static logFB711PromoShown(data: string | null = null): void {
-        LOGGER.Stat([74, "popupshow"]);
+        getLOGGER().Stat([74, "popupshow"]);
     }
 
     public static logFB711RedeemShown(data: string | null = null): void {
-        if (TUTORIAL._stage < 200) {
-            LOGGER.Stat([77, TUTORIAL._stage]);
+        if (getTUTORIAL()._stage < 200) {
+            getLOGGER().Stat([77, getTUTORIAL()._stage]);
         } else {
-            LOGGER.Stat([78, "claimed"]);
+            getLOGGER().Stat([78, "claimed"]);
         }
     }
 }

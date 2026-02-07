@@ -14,7 +14,10 @@ import { Obstruction } from "./Obstruction";
 import { PlayerBase } from "./PlayerBase";
 import { WildMonsterBase } from "./WildMonsterBase";
 
-import { LOGGER } from "../../../LOGGER";
+// Lazy imports to break circular dependency chains
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+
+
 
 /**
  * PlayerLayer - manages all player bases on the map room.
@@ -118,7 +121,7 @@ export class PlayerLayer extends Sprite {
                             }
                         }
                     } catch (e: any) {
-                        LOGGER.Log("err", "PlayerLayer WM: " + e.message);
+                        getLOGGER().Log("err", "PlayerLayer WM: " + e.message);
                     }
                     try {
                         const start = getTimer();
@@ -127,7 +130,7 @@ export class PlayerLayer extends Sprite {
                         this._lastUpdated = MapRoom.BRIDGE.GLOBAL.Timestamp() + Math.floor(Math.random() * 5);
                         this.dispatchEvent(new Event(Event.COMPLETE));
                     } catch (e: any) {
-                        LOGGER.Log("err", "PlayerLayer Create: " + e.message);
+                        getLOGGER().Log("err", "PlayerLayer Create: " + e.message);
                     }
                 } else {
                     MapRoom.BRIDGE.Log("err", "MAPROOMPOPUP.Get: " + obj.error);
@@ -137,7 +140,7 @@ export class PlayerLayer extends Sprite {
                     MiniMap.getInstance().Update(this.basesForeign, this.basesWM);
                 }
             } catch (e: any) {
-                LOGGER.Log("err", "PlayerLayer: " + e.message);
+                getLOGGER().Log("err", "PlayerLayer: " + e.message);
             }
         };
         const handleLoadError = (event: IOErrorEvent): void => {

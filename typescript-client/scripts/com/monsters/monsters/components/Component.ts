@@ -1,8 +1,11 @@
 import { ITickable } from "../../interfaces/ITickable";
-import { MonsterBase } from "../MonsterBase";
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../MonsterBase").MonsterBase; }
+
 
 /**
- * Base component that can be attached to a MonsterBase.
+ * Base component that can be attached to a getMonsterBase().
  */
 export class Component implements ITickable {
     public owner: MonsterBase | null = null;

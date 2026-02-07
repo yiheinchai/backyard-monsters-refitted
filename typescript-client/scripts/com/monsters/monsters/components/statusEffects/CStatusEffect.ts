@@ -2,9 +2,12 @@ import Point from "openfl/geom/Point";
 
 import { BYMConfig } from "../../../configs/BYMConfig";
 import { SpriteSheetAnimation } from "../../../display/SpriteSheetAnimation";
-import { MonsterBase } from "../../MonsterBase";
 import { Component } from "../Component";
 import { RasterData } from "../../../rendering/RasterData";
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+
 
 /**
  * CStatusEffect - base class for creature status effects with visual icons.

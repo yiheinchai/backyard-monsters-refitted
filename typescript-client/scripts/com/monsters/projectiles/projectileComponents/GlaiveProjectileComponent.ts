@@ -4,7 +4,10 @@ import { IAttackable } from "../../interfaces/IAttackable";
 import { ITargetable } from "../../interfaces/ITargetable";
 import { Projectilev2 } from "../Projectilev2";
 import { ProjectileComponent } from "./ProjectileComponent";
-import { Targeting } from "../../../../Targeting";
+
+// Lazy imports to break circular dependency chains
+function getTargeting(): any { return require("../../../../Targeting").Targeting; }
+
 
 /**
  * Glaive projectile component - chains projectile to additional targets.
@@ -37,7 +40,7 @@ export class GlaiveProjectileComponent extends ProjectileComponent {
     }
 
     private getViableTarget(position: Point): IAttackable | null {
-        const targets: Array<any> = Targeting.getTargetsInRange(this.m_range, position, this.m_targetFlags);
+        const targets: Array<any> = getTargeting().getTargetsInRange(this.m_range, position, this.m_targetFlags);
         if (targets.length > 0) {
             targets.sort((a: any, b: any) => a.dist - b.dist);
             for (let i = 0; i < targets.length; i++) {

@@ -6,17 +6,20 @@ import MouseEvent from "openfl/events/MouseEvent";
 import { TweenLite } from "../../../gs/TweenLite";
 import { Expo, Quad } from "../../../gs/easing";
 import { ScrollSet } from "../display/ScrollSet";
-import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { UI_BOTTOM } from "../ui/UI_BOTTOM";
 import { MISSIONS_ITEM } from "./MISSIONS_ITEM";
 import { UI_MISSIONMENU_CLIP } from "../../../UI_MISSIONMENU_CLIP";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { QUESTS } from "../../../QUESTS";
-import { SOUNDS } from "../../../SOUNDS";
-import { TUTORIAL } from "../../../TUTORIAL";
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getQUESTS(): any { return require("../../../QUESTS").QUESTS; }
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+function getTUTORIAL(): any { return require("../../../TUTORIAL").TUTORIAL; }
+
+
 
 /**
  * UI_MISSIONMENU - Mission/quest menu UI.
@@ -109,13 +112,13 @@ export class UI_MISSIONMENU extends UI_MISSIONMENU_CLIP {
             "scrollerX": 347,
             "ignoreBtnX": 315
         };
-        this.frame.tTitle.htmlText = KEYS.Get("quests_title");
+        this.frame.tTitle.htmlText = getKEYS().Get("quests_title");
         this._CollectedMissions = {};
         this._CompletedMissions = {};
         this._PriorityMissions = {};
         this._ActiveMissions = [];
         this._skinnedElements = [this.frame.border, this.frame.header, this.frame.mcScreen.canvas, this.footer];
-        if (GLOBAL.StatGet("missionmin") === 1) {
+        if (getGLOBAL().StatGet("missionmin") === 1) {
             this._open = false;
             this._maximized = false;
             this._enabled = true;
@@ -170,13 +173,13 @@ export class UI_MISSIONMENU extends UI_MISSIONMENU_CLIP {
         this.frame.mcToggle.buttonMode = true;
         this.frame.mcToggle.useHandCursor = true;
         this.frame.mcToggle.gotoAndStop(this._enabled ? "on" + this._skinTag : "close" + this._skinTag);
-        this.frame.mcToggle.visible = TUTORIAL.hasFinished;
+        this.frame.mcToggle.visible = getTUTORIAL().hasFinished;
         this.toggleHide();
     }
 
     public Skin(): void {
         let skinIndex = 1;
-        if (GLOBAL.InfernoMode()) {
+        if (getGLOBAL().InfernoMode()) {
             skinIndex = 2;
         }
         this._skinTag = skinIndex;
@@ -190,10 +193,10 @@ export class UI_MISSIONMENU extends UI_MISSIONMENU_CLIP {
 
     public Update(): void {
         this.Skin();
-        if (!this.frame.mcToggle.visible && GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-            this.frame.mcToggle.visible = TUTORIAL.hasFinished;
+        if (!this.frame.mcToggle.visible && getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+            this.frame.mcToggle.visible = getTUTORIAL().hasFinished;
         }
-        if (GLOBAL._catchup) {
+        if (getGLOBAL()._catchup) {
             return;
         }
         if (!this._open) {
@@ -203,7 +206,7 @@ export class UI_MISSIONMENU extends UI_MISSIONMENU_CLIP {
     }
 
     public AddItem(missionID: string, isPriority: boolean = false): number {
-        const quest = QUESTS._quests[missionID];
+        const quest = getQUESTS()._quests[missionID];
         if (!quest.block) {
             const item = new MISSIONS_ITEM(missionID);
             if (isPriority) {
@@ -230,9 +233,9 @@ export class UI_MISSIONMENU extends UI_MISSIONMENU_CLIP {
     }
 
     public CheckMissionsStatus(): void {
-        if (!GLOBAL.isAtHome()) {
+        if (!getGLOBAL().isAtHome()) {
             this._disableMissions = true;
-        } else if (MapRoomManager.instance.isInMapRoom2or3 && MapRoomManager.instance.isOpen) {
+        } else if (getMapRoomManager().instance.isInMapRoom2or3 && getMapRoomManager().instance.isOpen) {
             this._disableMissions = true;
         } else {
             this._disableMissions = false;
@@ -245,16 +248,16 @@ export class UI_MISSIONMENU extends UI_MISSIONMENU_CLIP {
             return;
         }
         let needsRebuild = false;
-        if (QUESTS._completed) {
-            for (const missionKey in QUESTS._quests) {
-                const missionId = String(QUESTS._quests[missionKey].id);
-                if (QUESTS._completed[missionId]) {
-                    if (QUESTS._completed[missionId] === 1) {
+        if (getQUESTS()._completed) {
+            for (const missionKey in getQUESTS()._quests) {
+                const missionId = String(getQUESTS()._quests[missionKey].id);
+                if (getQUESTS()._completed[missionId]) {
+                    if (getQUESTS()._completed[missionId] === 1) {
                         if (!(missionKey in this._CompletedMissions) && !this._CompletedMissions[missionId]) {
                             this._CompletedMissions[missionId] = true;
                             needsRebuild = true;
                         }
-                    } else if (QUESTS._completed[missionId] === 2) {
+                    } else if (getQUESTS()._completed[missionId] === 2) {
                         if (!(missionKey in this._CollectedMissions) && !this._CollectedMissions[missionId]) {
                             this._CollectedMissions[missionId] = true;
                             needsRebuild = true;
@@ -289,29 +292,29 @@ export class UI_MISSIONMENU extends UI_MISSIONMENU_CLIP {
         const availableMissions: Array<any> = [];
         const priorityMissions: Array<any> = [];
         this.Clear();
-        if (QUESTS._completed) {
-            for (const missionKey in QUESTS._quests) {
-                const missionId = String(QUESTS._quests[missionKey].id);
-                if (QUESTS._completed[missionId] && QUESTS._completed[missionId] === 1 && (!QUESTS._quests[missionKey].prereq || QUESTS._completed[QUESTS._quests[missionKey].prereq] === 2)) {
+        if (getQUESTS()._completed) {
+            for (const missionKey in getQUESTS()._quests) {
+                const missionId = String(getQUESTS()._quests[missionKey].id);
+                if (getQUESTS()._completed[missionId] && getQUESTS()._completed[missionId] === 1 && (!getQUESTS()._quests[missionKey].prereq || getQUESTS()._completed[getQUESTS()._quests[missionKey].prereq] === 2)) {
                     completedMissions.push({
                         "missionID": missionKey,
-                        "order": QUESTS._quests[missionKey].order
+                        "order": getQUESTS()._quests[missionKey].order
                     });
                 }
             }
             completedMissions.sort((a, b) => a.order - b.order);
         }
-        for (const missionKey in QUESTS._quests) {
-            const missionId = String(QUESTS._quests[missionKey].id);
-            if (!QUESTS._completed[missionId] && (!QUESTS._quests[missionKey].prereq || QUESTS._completed[QUESTS._quests[missionKey].prereq] === 2)) {
+        for (const missionKey in getQUESTS()._quests) {
+            const missionId = String(getQUESTS()._quests[missionKey].id);
+            if (!getQUESTS()._completed[missionId] && (!getQUESTS()._quests[missionKey].prereq || getQUESTS()._completed[getQUESTS()._quests[missionKey].prereq] === 2)) {
                 availableMissions.push({
                     "missionID": missionKey,
-                    "order": QUESTS._quests[missionKey].order
+                    "order": getQUESTS()._quests[missionKey].order
                 });
-                if (QUESTS._quests[missionKey].priority === 1) {
+                if (getQUESTS()._quests[missionKey].priority === 1) {
                     priorityMissions.push({
                         "missionID": missionKey,
-                        "order": QUESTS._quests[missionKey].order
+                        "order": getQUESTS()._quests[missionKey].order
                     });
                 }
             }
@@ -320,7 +323,7 @@ export class UI_MISSIONMENU extends UI_MISSIONMENU_CLIP {
                 priorityMissions.sort((a, b) => a.order - b.order);
             }
         }
-        if (priorityMissions.length < 1 && GLOBAL.mode === GLOBAL._loadmode) {
+        if (priorityMissions.length < 1 && getGLOBAL().mode === getGLOBAL()._loadmode) {
             this.frame.mcMask.height = (this._numDisplaySlots + 1) * (32 + this._ItemPaddingY);
         } else {
             this.frame.mcMask.height = this._numDisplaySlots * (32 + this._ItemPaddingY);
@@ -392,15 +395,15 @@ export class UI_MISSIONMENU extends UI_MISSIONMENU_CLIP {
             return;
         }
         if (!this._open) {
-            if (BASE.isInfernoMainYardOrOutpost) {
-                SOUNDS.Play("iquestshow");
+            if (getBASE().isInfernoMainYardOrOutpost) {
+                getSOUNDS().Play("iquestshow");
             } else {
-                SOUNDS.Play("click1");
+                getSOUNDS().Play("click1");
             }
-        } else if (BASE.isInfernoMainYardOrOutpost) {
-            SOUNDS.Play("iquesthide");
+        } else if (getBASE().isInfernoMainYardOrOutpost) {
+            getSOUNDS().Play("iquesthide");
         } else {
-            SOUNDS.Play("close");
+            getSOUNDS().Play("close");
         }
         const duration = 0.5;
         if (event === null) {
@@ -424,7 +427,7 @@ export class UI_MISSIONMENU extends UI_MISSIONMENU_CLIP {
             this.frame.arrowDown.gotoAndStop("on" + this._skinTag);
             this.frame.arrowUp.buttonMode = true;
             this.frame.arrowDown.buttonMode = true;
-            GLOBAL.StatSet("missionmin", 0);
+            getGLOBAL().StatSet("missionmin", 0);
         } else if (this._open) {
             if (!maximize) {
                 targetProps = this._closeProps;
@@ -433,7 +436,7 @@ export class UI_MISSIONMENU extends UI_MISSIONMENU_CLIP {
                 this.frame.arrowDown.gotoAndStop("off" + this._skinTag);
                 this.frame.arrowUp.buttonMode = true;
                 this.frame.arrowDown.buttonMode = false;
-                GLOBAL.StatSet("missionmin", 1);
+                getGLOBAL().StatSet("missionmin", 1);
             } else if (maximize) {
                 targetProps = this._maxProps;
                 this._maximized = true;
@@ -441,7 +444,7 @@ export class UI_MISSIONMENU extends UI_MISSIONMENU_CLIP {
                 this.frame.arrowDown.gotoAndStop("on" + this._skinTag);
                 this.frame.arrowUp.buttonMode = true;
                 this.frame.arrowDown.buttonMode = false;
-                GLOBAL.StatSet("missionmin", 0);
+                getGLOBAL().StatSet("missionmin", 0);
             } else if (minimize) {
                 return;
             }
@@ -455,7 +458,7 @@ export class UI_MISSIONMENU extends UI_MISSIONMENU_CLIP {
             this.frame.arrowDown.gotoAndStop("on" + this._skinTag);
             this.frame.arrowUp.buttonMode = true;
             this.frame.arrowDown.buttonMode = true;
-            GLOBAL.StatSet("missionmin", 0);
+            getGLOBAL().StatSet("missionmin", 0);
         }
         if (targetProps === null) {
             return;
@@ -530,10 +533,10 @@ export class UI_MISSIONMENU extends UI_MISSIONMENU_CLIP {
     }
 
     private OnDisableClick(event: MouseEvent | null = null): void {
-        if (event && event.currentTarget === this.frame.mcToggle && TUTORIAL.hasFinished) {
+        if (event && event.currentTarget === this.frame.mcToggle && getTUTORIAL().hasFinished) {
             this._enabled = !this._enabled;
         }
-        if (TUTORIAL.hasFinished) {
+        if (getTUTORIAL().hasFinished) {
             if (!this._enabled) {
                 this._open = false;
             } else {
@@ -545,8 +548,8 @@ export class UI_MISSIONMENU extends UI_MISSIONMENU_CLIP {
     }
 
     public Resize(): void {
-        this.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - this._Width;
-        this.y = GLOBAL._SCREEN.y + GLOBAL._SCREEN.height - 30;
+        this.x = getGLOBAL()._SCREEN.x + getGLOBAL()._SCREEN.width - this._Width;
+        this.y = getGLOBAL()._SCREEN.y + getGLOBAL()._SCREEN.height - 30;
         if (this._open) {
             this.CheckMissionsStatus();
             this.RefreshMissions(this._disableMissions);

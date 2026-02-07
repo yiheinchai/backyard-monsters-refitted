@@ -1,11 +1,14 @@
 import Point from "openfl/geom/Point";
 
-import { MonsterBase } from "../MonsterBase";
 import { BanditoAOEDamageSpin } from "../components/abilities/BanditoAOEDamageSpin";
-import { Targeting } from "../../../../Targeting";
 import { CreepBase } from "./CreepBase";
 
-import { BFOUNDATION } from "../../../../BFOUNDATION";
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../MonsterBase").MonsterBase; }
+function getTargeting(): any { return require("../../../../Targeting").Targeting; }
+function getBFOUNDATION(): any { return require("../../../../BFOUNDATION").BFOUNDATION; }
+
+
 
 /**
  * Bandito - creep with AOE damage spin ability when powered up.
@@ -28,8 +31,8 @@ export class Bandito extends CreepBase {
         super(creatureID, behaviour, spawnPoint, rotation, level, health, center, friendly, house, damageMult, goEasy, monster);
         
         if (this._creatureID === "C7" && this.poweredUp()) {
-            let flags = Targeting.k_TARGETS_GROUND;
-            flags |= friendly ? Targeting.k_TARGETS_ATTACKERS : Targeting.k_TARGETS_DEFENDERS;
+            let flags = getTargeting().k_TARGETS_GROUND;
+            flags |= friendly ? getTargeting().k_TARGETS_ATTACKERS : getTargeting().k_TARGETS_DEFENDERS;
             this.addComponent(new BanditoAOEDamageSpin(60, flags, 60, false));
         }
     }

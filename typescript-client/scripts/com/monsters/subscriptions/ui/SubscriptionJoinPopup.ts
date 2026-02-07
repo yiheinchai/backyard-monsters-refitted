@@ -8,10 +8,13 @@ import { ImageCache } from "../../display/ImageCache";
 import { SubscriptionHandler } from "../SubscriptionHandler";
 import { subscriptions_promo_popup } from "../../../../subscriptions_promo_popup";
 
-import { KEYS } from "../../../../KEYS";
-import { GLOBAL } from "../../../../GLOBAL";
-import { SOUNDS } from "../../../../SOUNDS";
 import { POPUPSETTINGS } from "../../../../POPUPSETTINGS";
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getSOUNDS(): any { return require("../../../../SOUNDS").SOUNDS; }
+
 
 /**
  * Subscription join popup - Dave's Club promo popup.
@@ -43,8 +46,8 @@ export class SubscriptionJoinPopup extends subscriptions_promo_popup {
         for (let i = 0; i < this.circleNavigation.length; i++) {
             this.circleNavigation[i].gotoAndStop("off");
         }
-        this.tDescription1.htmlText = KEYS.Get("daveClub_promo_desc1");
-        this.tDescription2.htmlText = KEYS.Get("daveClub_promo_desc2");
+        this.tDescription1.htmlText = getKEYS().Get("daveClub_promo_desc1");
+        this.tDescription2.htmlText = getKEYS().Get("daveClub_promo_desc2");
         this.mcArrowLeft.buttonMode = true;
         this.mcArrowLeft.mouseChildren = false;
         this.mcArrowLeft.addEventListener(MouseEvent.CLICK, this.onArrowClickPrev.bind(this));
@@ -120,11 +123,11 @@ export class SubscriptionJoinPopup extends subscriptions_promo_popup {
         this.mcArrowRight.removeEventListener(MouseEvent.CLICK, this.onArrowClickNext.bind(this));
         this.bCancel.removeEventListener(MouseEvent.CLICK, this.onCancelClick.bind(this));
         this.bJoin.removeEventListener(MouseEvent.CLICK, this.onJoinClick.bind(this));
-        SOUNDS.Play("close");
+        getSOUNDS().Play("close");
     }
 
     public Resize(): void {
-        this.x = GLOBAL._SCREENCENTER.x;
-        this.y = GLOBAL._SCREENCENTER.y;
+        this.x = getGLOBAL()._SCREENCENTER.x;
+        this.y = getGLOBAL()._SCREENCENTER.y;
     }
 }

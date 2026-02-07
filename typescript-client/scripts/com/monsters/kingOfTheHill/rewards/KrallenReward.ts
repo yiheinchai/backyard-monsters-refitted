@@ -1,12 +1,15 @@
 import { SecNum } from "../../../cc/utils/SecNum";
-import { Console } from "../../debug/Console";
 import { ChampionBase } from "../../monsters/champions/ChampionBase";
 import { Krallen } from "../../monsters/champions/Krallen";
 import { Reward } from "../../rewarding/Reward";
 
-import { GLOBAL } from "../../../../GLOBAL";
-import { CREATURES } from "../../../../CREATURES";
-import { CHAMPIONCAGE } from "../../../../CHAMPIONCAGE";
+// Lazy imports to break circular dependency chains
+function getConsole(): any { return require("../../debug/Console").Console; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getCREATURES(): any { return require("../../../../CREATURES").CREATURES; }
+function getCHAMPIONCAGE(): any { return require("../../../../CHAMPIONCAGE").CHAMPIONCAGE; }
+
+
 
 /**
  * Krallen reward - King of the Hill reward that grants Krallen champion.
@@ -23,8 +26,8 @@ export class KrallenReward extends Reward {
     }
 
     public override removed(): void {
-        const cage: CHAMPIONCAGE = GLOBAL._bCage;
-        if (Boolean(CHAMPIONCAGE.GetGuardianData(Krallen.TYPE)) && Boolean(cage)) {
+        const cage: CHAMPIONCAGE = getGLOBAL()._bCage;
+        if (Boolean(getCHAMPIONCAGE().GetGuardianData(Krallen.TYPE)) && Boolean(cage)) {
             cage.RemoveGuardian(Krallen.TYPE);
         }
     }
@@ -34,20 +37,20 @@ export class KrallenReward extends Reward {
     }
 
     public override canBeApplied(): boolean {
-        return GLOBAL.isAtHome();
+        return getGLOBAL().isAtHome();
     }
 
     private updateKrallenStatus(powerLevel: number): void {
-        const champion: ChampionBase = CREATURES.getGuardian(Krallen.TYPE);
+        const champion: ChampionBase = getCREATURES().getGuardian(Krallen.TYPE);
         powerLevel = Math.min(powerLevel, Krallen.MAX_POWERLEVEL);
         if (champion) {
             champion._powerLevel = new SecNum(powerLevel);
         } else {
-            const cage: CHAMPIONCAGE = GLOBAL._bCage;
+            const cage: CHAMPIONCAGE = getGLOBAL()._bCage;
             if (cage) {
-                cage.SpawnGuardian(1, 0, 0, Krallen.TYPE, CHAMPIONCAGE.GetGuardianProperty("G" + Krallen.TYPE, 1, "health"), "", 0, powerLevel);
+                cage.SpawnGuardian(1, 0, 0, Krallen.TYPE, getCHAMPIONCAGE().GetGuardianProperty("G" + Krallen.TYPE, 1, "health"), "", 0, powerLevel);
             } else {
-                Console.warning("tried to create krallen but you dont have a champion cage");
+                getConsole().warning("tried to create krallen but you dont have a champion cage");
             }
         }
     }

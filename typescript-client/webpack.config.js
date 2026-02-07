@@ -22,22 +22,19 @@ module.exports = {
       {
         test: /\.ts$/,
         use: {
-          loader: 'babel-loader',
+          loader: 'ts-loader',
           options: {
-            presets: [
-              ['@babel/preset-env', {
-                targets: { chrome: '90' },
-                modules: 'commonjs',
-              }],
-            ],
-            plugins: [
-              ['@babel/plugin-proposal-decorators', { legacy: true }],
-              ['@babel/plugin-transform-typescript', {
-                allowDeclareFields: true,
-                onlyRemoveTypeImports: false,
-              }],
-              ['@babel/plugin-transform-class-properties', { loose: true }],
-            ],
+            transpileOnly: true,
+            compilerOptions: {
+              module: 'CommonJS',
+              target: 'ES2020',
+              moduleResolution: 'node',
+              noEmit: false,
+              esModuleInterop: true,
+              allowSyntheticDefaultImports: true,
+              experimentalDecorators: true,
+              emitDecoratorMetadata: false,
+            },
           },
         },
         exclude: /node_modules/,
@@ -50,9 +47,10 @@ module.exports = {
     }),
   ],
   devServer: {
-    static: {
-      directory: path.resolve(__dirname),
-    },
+    static: [
+      { directory: path.resolve(__dirname) },
+      { directory: path.resolve(__dirname, 'images'), publicPath: '/images' },
+    ],
     port: 3000,
     hot: true,
     open: false,

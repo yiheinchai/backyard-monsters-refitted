@@ -1,8 +1,11 @@
 import MouseEvent from 'openfl/events/MouseEvent';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
 import { HATCHERYCCPOPUP } from './HATCHERYCCPOPUP';
-import { SOUNDS } from './SOUNDS';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+
 
 /**
  * HATCHERYCC - Hatchery Control Center Controller
@@ -21,8 +24,8 @@ export class HATCHERYCC {
     public static Show(): void {
         if (!HATCHERYCC._open) {
             HATCHERYCC._open = true;
-            GLOBAL.BlockerAdd();
-            HATCHERYCC._mc = GLOBAL._layerWindows.addChild(new HATCHERYCCPOPUP()) as HATCHERYCCPOPUP;
+            getGLOBAL().BlockerAdd();
+            HATCHERYCC._mc = getGLOBAL()._layerWindows.addChild(new HATCHERYCCPOPUP()) as HATCHERYCCPOPUP;
             HATCHERYCC._mc.Setup();
             HATCHERYCC._mc.Center();
             HATCHERYCC._mc.ScaleUp();
@@ -31,11 +34,11 @@ export class HATCHERYCC {
 
     public static Hide(event: MouseEvent | null = null): void {
         if (HATCHERYCC._open) {
-            GLOBAL.BlockerRemove();
-            SOUNDS.Play("close");
-            BASE.BuildingDeselect();
+            getGLOBAL().BlockerRemove();
+            getSOUNDS().Play("close");
+            getBASE().BuildingDeselect();
             HATCHERYCC._open = false;
-            GLOBAL._layerWindows.removeChild(HATCHERYCC._mc!);
+            getGLOBAL()._layerWindows.removeChild(HATCHERYCC._mc!);
             HATCHERYCC._mc = null;
         }
     }

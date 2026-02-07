@@ -4,43 +4,46 @@ import MouseEvent from "openfl/events/MouseEvent";
 import Point from "openfl/geom/Point";
 
 import { SecNum } from "./com/cc/utils/SecNum";
-import { Console } from "./com/monsters/debug/Console";
 import { ImageCache } from "./com/monsters/display/ImageCache";
-import { InstanceManager } from "./com/monsters/managers/InstanceManager";
 import { MapRoom3Tutorial } from "./com/monsters/maproom3/MapRoom3Tutorial";
-import { MapRoomManager } from "./com/monsters/maproom_manager/MapRoomManager";
 import { UI_BOTTOM } from "./com/monsters/ui/UI_BOTTOM";
 import { TweenLite, Elastic } from "./gs";
 import { TUTORIALPOPUPMC } from "./TUTORIALPOPUPMC";
 import { TUTORIALARROWMC } from "./TUTORIALARROWMC";
-import { BFOUNDATION } from "./BFOUNDATION";
-import { BUILDING4 } from "./BUILDING4";
-import { BUILDING13 } from "./BUILDING13";
 import { BUILDINGOPTIONSPOPUP } from "./BUILDINGOPTIONSPOPUP";
 import { BUILDINGSPOPUP } from "./BUILDINGSPOPUP";
 import { STOREPOPUP } from "./STOREPOPUP";
-import { GLOBAL } from "./GLOBAL";
-import { KEYS } from "./KEYS";
-import { BASE } from "./BASE";
 import { GAME } from "./GAME";
-import { MAP } from "./MAP";
-import { UI2 } from "./UI2";
 import { UI_WORKERS } from "./UI_WORKERS";
-import { QUEUE } from "./QUEUE";
-import { QUESTS } from "./QUESTS";
-import { STORE } from "./STORE";
-import { BUILDINGS } from "./BUILDINGS";
-import { BUILDINGOPTIONS } from "./BUILDINGOPTIONS";
 import { MAPROOM } from "./MAPROOM";
 import { HATCHERY } from "./HATCHERY";
-import { HOUSING } from "./HOUSING";
-import { POPUPS } from "./POPUPS";
-import { SPRITES } from "./SPRITES";
-import { CREEPS } from "./CREEPS";
-import { ATTACK } from "./ATTACK";
 import { CUSTOMATTACKS } from "./CUSTOMATTACKS";
-import { WMATTACK } from "./WMATTACK";
-import { LOGIN } from "./LOGIN";
+
+// Lazy imports to break circular dependency chains
+function getConsole(): any { return require("./com/monsters/debug/Console").Console; }
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBUILDING4(): any { return require("./BUILDING4").BUILDING4; }
+function getBUILDING13(): any { return require("./BUILDING13").BUILDING13; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getUI2(): any { return require("./UI2").UI2; }
+function getQUEUE(): any { return require("./QUEUE").QUEUE; }
+function getQUESTS(): any { return require("./QUESTS").QUESTS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getBUILDINGS(): any { return require("./BUILDINGS").BUILDINGS; }
+function getBUILDINGOPTIONS(): any { return require("./BUILDINGOPTIONS").BUILDINGOPTIONS; }
+function getHOUSING(): any { return require("./HOUSING").HOUSING; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSPRITES(): any { return require("./SPRITES").SPRITES; }
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getWMATTACK(): any { return require("./WMATTACK").WMATTACK; }
+function getLOGIN(): any { return require("./LOGIN").LOGIN; }
+
 
 export class TUTORIAL {
     public static _stage: number = 0;
@@ -87,7 +90,7 @@ export class TUTORIAL {
     }
 
     public static Setup(): void {
-        TUTORIAL._container = GLOBAL._layerMessages;
+        TUTORIAL._container = getGLOBAL()._layerMessages;
         TUTORIAL._doBob = null;
         TUTORIAL._doArrow = null;
         TUTORIAL._mcBob = new TUTORIALPOPUPMC();
@@ -103,26 +106,26 @@ export class TUTORIAL {
 
     public static Process(): void {
         if (TUTORIAL._stage < 200) {
-            if (BASE.isInfernoMainYardOrOutpost) {
+            if (getBASE().isInfernoMainYardOrOutpost) {
                 TUTORIAL._stage = TUTORIAL._endstage;
             }
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
                 if (TUTORIAL._stage > 1 && TUTORIAL._stage < 31) {
                     TUTORIAL._stage = 31;
                 }
-                if (GLOBAL._bHousing && TUTORIAL._stage < 57) {
+                if (getGLOBAL()._bHousing && TUTORIAL._stage < 57) {
                     TUTORIAL._stage = 57;
                 }
                 if (TUTORIAL._stage === 102) {
                     TUTORIAL._stage = 101;
                 }
-                if (QUESTS._completed.WM1 === 1) {
+                if (getQUESTS()._completed.WM1 === 1) {
                     TUTORIAL._stage = 130;
                 }
-                if (QUESTS._completed.WM1 === 2) {
+                if (getQUESTS()._completed.WM1 === 2) {
                     TUTORIAL._stage = 140;
                 }
-                if (QUESTS._global.b4lvl > 0) {
+                if (getQUESTS()._global.b4lvl > 0) {
                     TUTORIAL._stage = 180;
                 }
                 if (TUTORIAL._stage > 58 && TUTORIAL._stage < 65) {
@@ -133,21 +136,21 @@ export class TUTORIAL {
                 } else if (TUTORIAL._stage >= 110 && TUTORIAL._stage < 130) {
                     TUTORIAL._stage = 99;
                 }
-                if (TUTORIAL._stage < 150 && GLOBAL._bHatchery) {
-                    if (GLOBAL._bHatchery._countdownBuild.Get() > 0) {
+                if (TUTORIAL._stage < 150 && getGLOBAL()._bHatchery) {
+                    if (getGLOBAL()._bHatchery._countdownBuild.Get() > 0) {
                         TUTORIAL._stage = 145;
                     } else {
                         TUTORIAL._stage = 150;
                     }
                 }
-            } else if (GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
+            } else if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
                 TUTORIAL._stage = 110;
             }
         }
     }
 
     public static Advance(e: MouseEvent = null): void {
-        if (MapRoomManager.instance.isInMapRoom3 && MapRoom3Tutorial.instance.isStarted && 
+        if (getMapRoomManager().instance.isInMapRoom3 && MapRoom3Tutorial.instance.isStarted && 
             !MapRoom3Tutorial.instance.isHolding && e && TUTORIAL._stage < 150) {
             MapRoom3Tutorial.instance.advance();
             return;
@@ -157,7 +160,7 @@ export class TUTORIAL {
         if (TUTORIAL._stage > 1 && TUTORIAL._stage < 31) {
             TUTORIAL._stage = 31;
         }
-        QUESTS.Check();
+        getQUESTS().Check();
         TUTORIAL.Tick();
     }
 
@@ -205,16 +208,16 @@ export class TUTORIAL {
     }
 
     public static Tick(): void {
-        if (!BASE.isInfernoMainYardOrOutpost && 
-            (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK || 
-             GLOBAL.mode === GLOBAL.e_BASE_MODE.WMVIEW)) {
+        if (!getBASE().isInfernoMainYardOrOutpost && 
+            (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK || 
+             getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMVIEW)) {
             if (TUTORIAL._stage < 1) {
                 TUTORIAL._stage = 1;
             }
             if (TUTORIAL._stage > TUTORIAL._endstage) {
                 TUTORIAL._stage = TUTORIAL._endstage;
             }
-            if (!GLOBAL._catchup) {
+            if (!getGLOBAL()._catchup) {
                 if (TUTORIAL._currentStage !== TUTORIAL._stage) {
                     TUTORIAL._currentStage = TUTORIAL._stage;
                     TUTORIAL.Show();
@@ -234,26 +237,26 @@ export class TUTORIAL {
         let building: BFOUNDATION;
         let mc: MovieClip;
         
-        if (BASE.isInfernoMainYardOrOutpost) {
+        if (getBASE().isInfernoMainYardOrOutpost) {
             return;
         }
         
-        Console.print("TUTORIAL STAGE:" + TUTORIAL._stage + " " + TUTORIAL._currentStage);
+        getConsole().print("TUTORIAL STAGE:" + TUTORIAL._stage + " " + TUTORIAL._currentStage);
         pos = new Point();
         mc = new MovieClip();
         
         switch (TUTORIAL._stage) {
             case 1:
-                MAP._canScroll = false;
-                for (const b of BASE._buildingsAll) {
+                getMAP()._canScroll = false;
+                for (const b of getBASE()._buildingsAll) {
                     if (b._type === 1) {
-                        MAP.Focus(b.x, b.y);
+                        getMAP().Focus(b.x, b.y);
                         break;
                     }
                 }
-                TUTORIAL.Add(2, TUTORIAL.BOBBOTTOMLEFTLOW, KEYS.Get("tut_1b", { "v1": LOGIN._playerName }), 
-                    new Point(GLOBAL._SCREEN.right - 100, TUTORIAL.POINT_FULLSCREEN.y), 
-                    ["mc", UI2._top.mcFullscreen, new Point(0, 12)], true, true);
+                TUTORIAL.Add(2, TUTORIAL.BOBBOTTOMLEFTLOW, getKEYS().Get("tut_1b", { "v1": getLOGIN()._playerName }), 
+                    new Point(getGLOBAL()._SCREEN.right - 100, TUTORIAL.POINT_FULLSCREEN.y), 
+                    ["mc", getUI2()._top.mcFullscreen, new Point(0, 12)], true, true);
                 TUTORIAL._mcBob.showTwoButtons("btn_nothanks", "btn_fullscreen", TUTORIAL.clickedFullScreen);
                 TUTORIAL._mcBob.addFullScreenButton(TUTORIAL.clickedFullScreen);
                 break;
@@ -263,70 +266,70 @@ export class TUTORIAL {
                 break;
                 
             case 4:
-                MAP._canScroll = false;
-                BASE._bankedValue = 0;
-                TUTORIAL.Add(2, TUTORIAL.BOBBOTTOMLEFTLOW, KEYS.Get("tut_4"), null, null, false, false, 
+                getMAP()._canScroll = false;
+                getBASE()._bankedValue = 0;
+                TUTORIAL.Add(2, TUTORIAL.BOBBOTTOMLEFTLOW, getKEYS().Get("tut_4"), null, null, false, false, 
                     TUTORIAL.ConditionBank, TUTORIAL.ConditionDeselectTwig);
                 break;
                 
             case 5:
-                MAP._canScroll = false;
-                TUTORIAL.Add(1, TUTORIAL.BOBBOTTOMLEFTLOW, KEYS.Get("tut_5", { "v1": BASE._bankedValue }), 
+                getMAP()._canScroll = false;
+                TUTORIAL.Add(1, TUTORIAL.BOBBOTTOMLEFTLOW, getKEYS().Get("tut_5", { "v1": getBASE()._bankedValue }), 
                     null, null, true, true);
                 break;
                 
             case 20:
-                if (QUESTS._global.b1lvl === 2) {
+                if (getQUESTS()._global.b1lvl === 2) {
                     TUTORIAL.Advance();
                 } else {
-                    BASE.BuildingDeselect();
-                    MAP._canScroll = false;
-                    for (const b of BASE._buildingsAll) {
+                    getBASE().BuildingDeselect();
+                    getMAP()._canScroll = false;
+                    for (const b of getBASE()._buildingsAll) {
                         if (b._type === 1) {
-                            MAP.Focus(b.x, b.y);
-                            pos.x = b.x + MAP._GROUND.x;
-                            pos.y = b.y + MAP._GROUND.y + 20;
+                            getMAP().Focus(b.x, b.y);
+                            pos.x = b.x + getMAP()._GROUND.x;
+                            pos.y = b.y + getMAP()._GROUND.y + 20;
                             building = b;
                             break;
                         }
                     }
-                    TUTORIAL.Add(2, TUTORIAL.BOBBOTTOMLEFTLOW, KEYS.Get("tut_20"), pos, 
+                    TUTORIAL.Add(2, TUTORIAL.BOBBOTTOMLEFTLOW, getKEYS().Get("tut_20"), pos, 
                         ["mc", building._mcHit, new Point(0, 20), -25], false, false, TUTORIAL.ConditionSelectTwig);
                 }
                 break;
                 
             // Additional cases simplified for brevity - full implementation would include all 200+ stages
             case 31:
-                SPRITES.SetupSprite("C2");
-                TUTORIAL.Add(2, TUTORIAL.BOBBOTTOMLEFTLOW, KEYS.Get("tut_NWM_Step2"), TUTORIAL.POINT_BUILDINGS, 
+                getSPRITES().SetupSprite("C2");
+                TUTORIAL.Add(2, TUTORIAL.BOBBOTTOMLEFTLOW, getKEYS().Get("tut_NWM_Step2"), TUTORIAL.POINT_BUILDINGS, 
                     ["mc", UI_BOTTOM._mc.bBuild, new Point(15, 15), -30], false, false, TUTORIAL.ConditionBuildingsOpen);
                 break;
                 
             case 40:
                 CUSTOMATTACKS.TutorialAttack();
-                TUTORIAL.Add(4, TUTORIAL.BOBBOTTOMLEFTLOW, KEYS.Get("tut_NWM_Step10"), null, null, false, false, 
+                TUTORIAL.Add(4, TUTORIAL.BOBBOTTOMLEFTLOW, getKEYS().Get("tut_NWM_Step10"), null, null, false, false, 
                     TUTORIAL.ConditionAttackOver);
                 break;
                 
             case 101:
-                if (MapRoomManager.instance.isInMapRoom3) {
+                if (getMapRoomManager().instance.isInMapRoom3) {
                     MapRoom3Tutorial.instance.start();
                 } else {
-                    BASE.BuildingDeselect();
+                    getBASE().BuildingDeselect();
                     TUTORIAL._stage = 140;
                 }
                 break;
                 
             case 180:
-                TUTORIAL.Add(1, TUTORIAL.BOBBOTTOMLEFTHIGH, KEYS.Get("tut_NWM_Step60"), 
+                TUTORIAL.Add(1, TUTORIAL.BOBBOTTOMLEFTHIGH, getKEYS().Get("tut_NWM_Step60"), 
                     new Point(205, -5), ["mc", TUTORIAL._mcBob.mcButton, new Point(200, 30), 150], true, true);
                 break;
                 
             case TUTORIAL.k_STAGE_DAMAGE_PROTECT:
-                BASE._isProtected = GLOBAL.Timestamp() + 604800;
-                UI2.Update();
-                TUTORIAL.Add(1, TUTORIAL.BOBBOTTOMLEFTHIGH, KEYS.Get("tut_NWM_Step62"), 
-                    new Point(740, 70), ["mc", UI2._top.mcProtected, new Point(5, 20), -160], true, true);
+                getBASE()._isProtected = getGLOBAL().Timestamp() + 604800;
+                getUI2().Update();
+                TUTORIAL.Add(1, TUTORIAL.BOBBOTTOMLEFTHIGH, getKEYS().Get("tut_NWM_Step62"), 
+                    new Point(740, 70), ["mc", getUI2()._top.mcProtected, new Point(5, 20), -160], true, true);
                 break;
                 
             default:
@@ -337,7 +340,7 @@ export class TUTORIAL {
                 }
         }
         
-        if (STORE._open || BUILDINGS._open) {
+        if (getSTORE()._open || getBUILDINGS()._open) {
             TUTORIAL.ShowStoreCB();
         }
     }
@@ -420,108 +423,108 @@ export class TUTORIAL {
 
     private static clickedFullScreen(e: MouseEvent): void {
         TUTORIAL._mcBob.removeFullScreenButton();
-        if (!GLOBAL.isFullScreen) {
-            GLOBAL.goFullScreen(e);
+        if (!getGLOBAL().isFullScreen) {
+            getGLOBAL().goFullScreen(e);
         }
         TUTORIAL.Advance(e);
     }
 
     // Condition functions
     private static ConditionScroll(): void {
-        if (MAP._dragDistance > 100) {
+        if (getMAP()._dragDistance > 100) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionSelectTwig(): void {
-        if (GLOBAL._selectedBuilding && GLOBAL._selectedBuilding._type !== 1) {
-            BASE.BuildingDeselect();
+        if (getGLOBAL()._selectedBuilding && getGLOBAL()._selectedBuilding._type !== 1) {
+            getBASE().BuildingDeselect();
         }
-        if (GLOBAL._selectedBuilding && GLOBAL._selectedBuilding._type === 1) {
+        if (getGLOBAL()._selectedBuilding && getGLOBAL()._selectedBuilding._type === 1) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionBank(): void {
-        if (BASE._bankedValue > 0) {
+        if (getBASE()._bankedValue > 0) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionDeselectTwig(): void {
-        if (!GLOBAL._selectedBuilding || GLOBAL._selectedBuilding._type !== 1) {
+        if (!getGLOBAL()._selectedBuilding || getGLOBAL()._selectedBuilding._type !== 1) {
             TUTORIAL.Rewind();
         }
     }
 
     private static ConditionQuestCollectU1(): void {
-        if (QUESTS._completed.U1 === 2) {
+        if (getQUESTS()._completed.U1 === 2) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionQuestCollectT1(): void {
-        if (QUESTS._completed.T1 === 2) {
+        if (getQUESTS()._completed.T1 === 2) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionQuestCollectD1(): void {
-        if (QUESTS._completed.D1 === 2) {
+        if (getQUESTS()._completed.D1 === 2) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionQuestCollectWM1(): void {
-        if (QUESTS._completed.WM1 === 2) {
+        if (getQUESTS()._completed.WM1 === 2) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionQuestCollectCR3(): void {
-        if (QUESTS._completed.CR3 === 2) {
+        if (getQUESTS()._completed.CR3 === 2) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionQuestCollectBunch(): void {
-        if (QUESTS._completed.C17 === 2 && QUESTS._completed.C18 === 2) {
+        if (getQUESTS()._completed.C17 === 2 && getQUESTS()._completed.C18 === 2) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionPopupClose(): void {
-        if (!POPUPS._open) {
+        if (!getPOPUPS()._open) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionBuildingOptionsOpen(): void {
-        if (BUILDINGOPTIONS._open) {
+        if (getBUILDINGOPTIONS()._open) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionBuildingOptionsClose(): void {
-        if (!BUILDINGOPTIONS._open) {
+        if (!getBUILDINGOPTIONS()._open) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionStoreOpen(): void {
-        if (STORE._open) {
+        if (getSTORE()._open) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionStoreClose(): void {
-        if (!STORE._open) {
+        if (!getSTORE()._open) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionBuildingsOpen(): void {
-        if (BUILDINGS._open) {
+        if (getBUILDINGS()._open) {
             TUTORIAL.Advance();
         }
     }
@@ -533,86 +536,86 @@ export class TUTORIAL {
     }
 
     private static ConditionBuildingsDefense(): void {
-        if (BUILDINGS._open && BUILDINGS._menuA === 3) {
+        if (getBUILDINGS()._open && getBUILDINGS()._menuA === 3) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionBuildingsBuildings(): void {
-        if (BUILDINGS._open && BUILDINGS._menuA === 2) {
+        if (getBUILDINGS()._open && getBUILDINGS()._menuA === 2) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionBuildingsResources(): void {
-        if (BUILDINGS._open && BUILDINGS._menuA === 1) {
+        if (getBUILDINGS()._open && getBUILDINGS()._menuA === 1) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionBuildingsSniper(): void {
-        if (BUILDINGS._open && BUILDINGS._buildingID === 21) {
+        if (getBUILDINGS()._open && getBUILDINGS()._buildingID === 21) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionBuildingsHatchery(): void {
-        if (BUILDINGS._open && BUILDINGS._buildingID === 13) {
+        if (getBUILDINGS()._open && getBUILDINGS()._buildingID === 13) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionBuildingsHousing(): void {
-        if (BUILDINGS._open && HOUSING.isHousingBuilding(BUILDINGS._buildingID)) {
+        if (getBUILDINGS()._open && getHOUSING().isHousingBuilding(getBUILDINGS()._buildingID)) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionBuildingsPutty(): void {
-        if (BUILDINGS._open && BUILDINGS._buildingID === 3) {
+        if (getBUILDINGS()._open && getBUILDINGS()._buildingID === 3) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionBuildingsGoo(): void {
-        if (BUILDINGS._open && BUILDINGS._buildingID === 4) {
+        if (getBUILDINGS()._open && getBUILDINGS()._buildingID === 4) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionBuildingsFlinger(): void {
-        if (BUILDINGS._open && BUILDINGS._buildingID === 5) {
+        if (getBUILDINGS()._open && getBUILDINGS()._buildingID === 5) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionBuildingsMapRoom(): void {
-        if (BUILDINGS._open && BUILDINGS._buildingID === 11) {
+        if (getBUILDINGS()._open && getBUILDINGS()._buildingID === 11) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionHatcheryProducing(): void {
         ++TUTORIAL._timer;
-        if ((GLOBAL._bHatchery as BUILDING13)._inProduction && TUTORIAL._timer > 40 * 2) {
+        if ((getGLOBAL()._bHatchery as BUILDING13)._inProduction && TUTORIAL._timer > 40 * 2) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionNewBuilding(): void {
-        if (GLOBAL._newBuilding) {
+        if (getGLOBAL()._newBuilding) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionPlacedBuilding(): void {
-        if (QUEUE._placed > 0) {
+        if (getQUEUE()._placed > 0) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionPlacedGooFactory(): void {
-        const instances: BUILDING4[] = InstanceManager.getInstancesByClass(BUILDING4);
+        const instances: BUILDING4[] = getInstanceManager().getInstancesByClass(BUILDING4);
         if (!instances || instances.length <= 0) {
             return;
         }
@@ -623,46 +626,46 @@ export class TUTORIAL {
     }
 
     private static ConditionConstructed21(): void {
-        if (QUESTS._global.b21lvl > 0) {
+        if (getQUESTS()._global.b21lvl > 0) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionConstructed15(): void {
-        if (QUESTS._global.b15lvl > 0) {
+        if (getQUESTS()._global.b15lvl > 0) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionConstructed5(): void {
-        if (QUESTS._global.b5lvl > 0) {
+        if (getQUESTS()._global.b5lvl > 0) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionConstructed11(): void {
-        if (QUESTS._global.b11lvl > 0) {
+        if (getQUESTS()._global.b11lvl > 0) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionConstructed13(): void {
-        if (QUESTS._global.b13lvl > 0) {
+        if (getQUESTS()._global.b13lvl > 0) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionAttackOver(): void {
-        if (CREEPS._creepCount === 2) {
-            CREEPS.Retreat();
+        if (getCREEPS()._creepCount === 2) {
+            getCREEPS().Retreat();
         }
-        if (!WMATTACK._inProgress) {
+        if (!getWMATTACK()._inProgress) {
             TUTORIAL.Advance();
         }
     }
 
     private static Condition2Workers(): void {
-        if (QUEUE._workerCount > 1) {
+        if (getQUEUE()._workerCount > 1) {
             TUTORIAL.Advance();
         }
     }
@@ -682,20 +685,20 @@ export class TUTORIAL {
     }
 
     private static ConditionFightBack(): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionReturnToYard(): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionFlingerAdd15(): void {
         let total = 0;
-        for (const count of Object.values(ATTACK._flingerBucket)) {
+        for (const count of Object.values(getATTACK()._flingerBucket)) {
             total += count.Get();
         }
         if (total >= 15) {
@@ -704,14 +707,14 @@ export class TUTORIAL {
     }
 
     private static ConditionFlung(): void {
-        if (CREEPS._creepCount > 0) {
+        if (getCREEPS()._creepCount > 0) {
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionCrushedEnemy(): void {
         let totalHealth = 0;
-        for (const building of BASE._buildingsAll) {
+        for (const building of getBASE()._buildingsAll) {
             if (building._class !== "wall") {
                 totalHealth += building.health;
             }
@@ -722,7 +725,7 @@ export class TUTORIAL {
     }
 
     private static ConditionQuestsOpen(): void {
-        if (QUESTS._open) {
+        if (getQUESTS()._open) {
             TUTORIAL.Advance();
         }
     }
@@ -740,20 +743,20 @@ export class TUTORIAL {
     }
 
     private static ConditionRewindDeselect(): void {
-        if (!GLOBAL._selectedBuilding) {
+        if (!getGLOBAL()._selectedBuilding) {
             TUTORIAL.Rewind();
         }
     }
 
     private static ConditionRewindBuildingsClosed(): void {
-        if (!BUILDINGS._open) {
+        if (!getBUILDINGS()._open) {
             TUTORIAL._stage = 30;
             TUTORIAL.Advance();
         }
     }
 
     private static ConditionRewindStoreClosed(): void {
-        if (!STORE._open) {
+        if (!getSTORE()._open) {
             TUTORIAL.Rewind();
         }
     }
@@ -765,7 +768,7 @@ export class TUTORIAL {
     }
 
     private static ConditionRewindQuestsClose(): void {
-        if (!QUESTS._open) {
+        if (!getQUESTS()._open) {
             TUTORIAL.Rewind();
         }
     }
@@ -779,12 +782,12 @@ export class TUTORIAL {
 
     private static AdjustPoint(point: Point = null, mode: string = "", displayObj: DisplayObject = null, 
         offset: Point = null): Point {
-        const stageWidth = GLOBAL._ROOT.stage.stageWidth;
+        const stageWidth = getGLOBAL()._ROOT.stage.stageWidth;
         let result = point;
         
         if (mode === "percent") {
             if (point) {
-                result.x = Math.floor(point.x * (GLOBAL._SCREEN.width / GLOBAL._SCREENINIT.width));
+                result.x = Math.floor(point.x * (getGLOBAL()._SCREEN.width / getGLOBAL()._SCREENINIT.width));
             }
         } else if (mode === "mc" && displayObj) {
             let xPos = displayObj.x;
@@ -795,7 +798,7 @@ export class TUTORIAL {
                 while (parent.parent) {
                     xPos += parent.x;
                     yPos += parent.y;
-                    if (parent.parent === GLOBAL._ROOT.stage) {
+                    if (parent.parent === getGLOBAL()._ROOT.stage) {
                         break;
                     }
                     parent = parent.parent;
@@ -810,12 +813,12 @@ export class TUTORIAL {
             result = new Point(xPos, yPos);
         } else if (point) {
             if (point.x > 470 && point.y > 385) {
-                const gap = GLOBAL._SCREEN.width - point.x;
-                point.x = GLOBAL._SCREEN.width + (stageWidth - GLOBAL._SCREEN.width) * 0.5 - gap;
+                const gap = getGLOBAL()._SCREEN.width - point.x;
+                point.x = getGLOBAL()._SCREEN.width + (stageWidth - getGLOBAL()._SCREEN.width) * 0.5 - gap;
             } else if (point.x < 465 && point.y > 358) {
-                point.x -= (stageWidth - GLOBAL._SCREEN.width) * 0.5;
+                point.x -= (stageWidth - getGLOBAL()._SCREEN.width) * 0.5;
             } else if (point.x < 150 && point.y < 230) {
-                point.x -= (stageWidth - GLOBAL._SCREEN.width) * 0.5;
+                point.x -= (stageWidth - getGLOBAL()._SCREEN.width) * 0.5;
             }
             result = point;
         }

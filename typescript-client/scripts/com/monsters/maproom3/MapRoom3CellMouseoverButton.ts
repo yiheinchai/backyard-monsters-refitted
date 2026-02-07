@@ -7,10 +7,13 @@ import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
 
 import { MapRoom3AssetCache } from "./MapRoom3AssetCache";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { SOUNDS } from "../../../SOUNDS";
 import { bubblepopup5 } from "../../../bubblepopup5";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+
 
 /**
  * Map room 3 cell mouseover button - interactive button with tooltip.
@@ -36,7 +39,7 @@ export class MapRoom3CellMouseoverButton extends Sprite {
         this.addChild(this.m_ButtonRolloverImage);
         this.addEventListener(MouseEvent.MOUSE_OVER, this.OnMouseOver.bind(this));
         this.addEventListener(MouseEvent.MOUSE_OUT, this.OnMouseOut.bind(this));
-        SOUNDS.Play("ui_over");
+        getSOUNDS().Play("ui_over");
         if (MapRoom3CellMouseoverButton.s_ButtonToolTip === null) {
             MapRoom3CellMouseoverButton.s_ButtonToolTip = new bubblepopup5();
             MapRoom3CellMouseoverButton.s_ButtonToolTip.mouseEnabled = false;
@@ -50,21 +53,21 @@ export class MapRoom3CellMouseoverButton extends Sprite {
     public OnMouseOver(event: MouseEvent): void {
         this.m_ButtonImage.visible = false;
         this.m_ButtonRolloverImage.visible = true;
-        MapRoom3CellMouseoverButton.s_ButtonToolTip!.mcText.htmlText = "<b>" + KEYS.Get(this.m_ToolTip) + "</b>";
+        MapRoom3CellMouseoverButton.s_ButtonToolTip!.mcText.htmlText = "<b>" + getKEYS().Get(this.m_ToolTip) + "</b>";
         let tooltipPos: Point = new Point(this.width * 0.5, this.height);
-        tooltipPos = GLOBAL._layerUI.globalToLocal(this.localToGlobal(tooltipPos));
+        tooltipPos = getGLOBAL()._layerUI.globalToLocal(this.localToGlobal(tooltipPos));
         MapRoom3CellMouseoverButton.s_ButtonToolTip!.x = tooltipPos.x;
         MapRoom3CellMouseoverButton.s_ButtonToolTip!.y = tooltipPos.y;
         MapRoom3CellMouseoverButton.s_ButtonToolTip!.mcBG.width = MapRoom3CellMouseoverButton.s_ButtonToolTip!.mcText.width + 10;
-        GLOBAL._layerUI.addChild(MapRoom3CellMouseoverButton.s_ButtonToolTip!);
+        getGLOBAL()._layerUI.addChild(MapRoom3CellMouseoverButton.s_ButtonToolTip!);
     }
 
     public OnMouseOut(event: MouseEvent): void {
         this.m_ButtonImage.visible = true;
         this.m_ButtonRolloverImage.visible = false;
         MapRoom3CellMouseoverButton.s_ButtonToolTip!.mcText.htmlText = "";
-        if (MapRoom3CellMouseoverButton.s_ButtonToolTip!.parent === GLOBAL._layerUI) {
-            GLOBAL._layerUI.removeChild(MapRoom3CellMouseoverButton.s_ButtonToolTip!);
+        if (MapRoom3CellMouseoverButton.s_ButtonToolTip!.parent === getGLOBAL()._layerUI) {
+            getGLOBAL()._layerUI.removeChild(MapRoom3CellMouseoverButton.s_ButtonToolTip!);
         }
     }
 }

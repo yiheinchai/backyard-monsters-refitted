@@ -1,10 +1,13 @@
 import Point from 'openfl/geom/Point';
 import { TweenLite, Sine } from './gs/TweenLite';
-import { BASE } from './BASE';
-import { BFOUNDATION } from './BFOUNDATION';
 import { ResourcePackage_CLIP } from './ResourcePackage_CLIP';
-import { ResourcePackages } from './ResourcePackages';
-import { SOUNDS } from './SOUNDS';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getResourcePackages(): any { return require("./ResourcePackages").ResourcePackages; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+
 
 /**
  * ResourcePackage - Individual resource package with tween animation
@@ -34,10 +37,10 @@ export class ResourcePackage extends ResourcePackage_CLIP {
         const self = this;
         
         const Sound = (): void => {
-            if (BASE.isInfernoMainYardOrOutpost) {
-                SOUNDS.Play("ibankfire");
+            if (getBASE().isInfernoMainYardOrOutpost) {
+                getSOUNDS().Play("ibankfire");
             } else {
-                SOUNDS.Play("bankfire");
+                getSOUNDS().Play("bankfire");
             }
         };
         
@@ -97,14 +100,14 @@ export class ResourcePackage extends ResourcePackage_CLIP {
     }
 
     private Arrived(): void {
-        if (BASE.isInfernoMainYardOrOutpost) {
-            SOUNDS.Play("ibankland");
+        if (getBASE().isInfernoMainYardOrOutpost) {
+            getSOUNDS().Play("ibankland");
         } else {
-            SOUNDS.Play("bankland");
+            getSOUNDS().Play("bankland");
         }
         if (this._target) {
             this._target._hasResources = true;
         }
-        ResourcePackages.Remove(this._id);
+        getResourcePackages().Remove(this._id);
     }
 }

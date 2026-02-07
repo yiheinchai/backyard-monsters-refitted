@@ -4,14 +4,17 @@ import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { ICoreBuilding } from './com/monsters/interfaces/ICoreBuilding';
 import { ITickable } from './com/monsters/interfaces/ITickable';
-import { MonsterBase } from './com/monsters/monsters/MonsterBase';
 import { MathUtils } from './com/monsters/utils/MathUtils';
 import { BTOWER } from './BTOWER';
-import { GLOBAL } from './GLOBAL';
-import { MAP } from './MAP';
-import { EFFECTS } from './EFFECTS';
-import { SOUNDS } from './SOUNDS';
-import { Targeting } from './Targeting';
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getEFFECTS(): any { return require("./EFFECTS").EFFECTS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getTargeting(): any { return require("./Targeting").Targeting; }
+
 
 export class GuardTower extends BTOWER implements ICoreBuilding {
     public static readonly k_SPECIAL_ANGLE: Point = new Point(90, 180);
@@ -66,24 +69,24 @@ export class GuardTower extends BTOWER implements ICoreBuilding {
     public override Setup(param1: any): void {
         super.Setup(param1);
         this.setupTeslas();
-        GLOBAL.setTownHall(this);
+        getGLOBAL().setTownHall(this);
     }
 
     public override Cancel(): void {
-        GLOBAL.setTownHall(null);
+        getGLOBAL().setTownHall(null);
         super.Cancel();
     }
 
     public override Constructed(): void {
         super.Constructed();
-        GLOBAL.setTownHall(this);
+        getGLOBAL().setTownHall(this);
     }
 
     private setupTeslas(): void {
         for (let _loc1_ = 0; _loc1_ < GuardTower.m_teslaPositions.length; _loc1_++) {
             const _loc2_ = new GuardTowerTesla(this.damage, this._range, GuardTower.m_teslaPositions[_loc1_].angleRange, this._rate);
             if (_loc1_ == 0) {
-                _loc2_.parent = MAP._CREEPSMC;
+                _loc2_.parent = getMAP()._CREEPSMC;
             }
             this.m_teslas.push(_loc2_);
         }
@@ -159,19 +162,19 @@ class GuardTowerTesla implements ITickable {
         }
         if (this.m_target) {
             if (Math.random() > 0.5) {
-                EFFECTS.Lightning(this.m_x, this.m_y, this.m_target.x, this.m_target.getDisplayY(), this.parent);
+                getEFFECTS().Lightning(this.m_x, this.m_y, this.m_target.x, this.m_target.getDisplayY(), this.parent);
             }
-            if (Number(GLOBAL.Timestamp()) >= this.m_timeAbleToFire) {
+            if (Number(getGLOBAL().Timestamp()) >= this.m_timeAbleToFire) {
                 this.fire();
             }
         }
     }
 
     private fire(): void {
-        SOUNDS.Play("lightningfire", 0.8);
-        EFFECTS.Lightning(this.m_x, this.m_y, this.m_target.x, this.m_target.getDisplayY(), this.parent);
+        getSOUNDS().Play("lightningfire", 0.8);
+        getEFFECTS().Lightning(this.m_x, this.m_y, this.m_target.x, this.m_target.getDisplayY(), this.parent);
         this.m_target.modifyHealth(-this.m_damage, this.m_target);
-        this.m_timeAbleToFire = Number(GLOBAL.Timestamp()) + this.m_attackSpeed;
+        this.m_timeAbleToFire = Number(getGLOBAL().Timestamp()) + this.m_attackSpeed;
     }
 
     public moveTo(param1: Point): void {
@@ -180,7 +183,7 @@ class GuardTowerTesla implements ITickable {
     }
 
     private getTarget(): MonsterBase {
-        const _loc1_ = Targeting.getCreepsInRange(this.m_range, new Point(this.m_x, this.m_y), Targeting.k_TARGETS_FLYING | Targeting.k_TARGETS_GROUND | Targeting.k_TARGETS_ATTACKERS);
+        const _loc1_ = getTargeting().getCreepsInRange(this.m_range, new Point(this.m_x, this.m_y), getTargeting().k_TARGETS_FLYING | getTargeting().k_TARGETS_GROUND | getTargeting().k_TARGETS_ATTACKERS);
         if (_loc1_.length <= 0) {
             return null;
         }

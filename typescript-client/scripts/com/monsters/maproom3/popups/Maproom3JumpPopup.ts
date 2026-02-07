@@ -5,12 +5,15 @@ import Keyboard from "openfl/ui/Keyboard";
 
 import { EnumYardType } from "../../enums/EnumYardType";
 import { IMapRoomCell } from "../../maproom_manager/IMapRoomCell";
-import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
 import { MapRoomPopupJump } from "../../../../MapRoomPopupJump";
 
-import { GLOBAL } from "../../../../GLOBAL";
-import { KEYS } from "../../../../KEYS";
-import { POPUPS } from "../../../../POPUPS";
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../../maproom_manager/MapRoomManager").MapRoomManager; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getPOPUPS(): any { return require("../../../../POPUPS").POPUPS; }
+
+
 
 /**
  * Maproom 3 jump popup - allows jumping to specific map coordinates.
@@ -27,7 +30,7 @@ export class Maproom3JumpPopup extends MapRoomPopupJump {
 
     protected addedToStage(event: Event): void {
         this.removeEventListener(Event.ADDED_TO_STAGE, this.addedToStage.bind(this));
-        this.tMessage.htmlText = KEYS.Get("label_jumptolocation");
+        this.tMessage.htmlText = getKEYS().Get("label_jumptolocation");
         this.tX.htmlText = "";
         this.tX.addEventListener(KeyboardEvent.KEY_UP, this.keyUpOnX.bind(this));
         this.tY.htmlText = "";
@@ -51,9 +54,9 @@ export class Maproom3JumpPopup extends MapRoomPopupJump {
     }
 
     protected clickedJump(event: MouseEvent | null = null): void {
-        this.targetCell = MapRoomManager.instance.FindCell(parseInt(this.tX.text), parseInt(this.tY.text));
+        this.targetCell = getMapRoomManager().instance.FindCell(parseInt(this.tX.text), parseInt(this.tY.text));
         if (!this.targetCell || this.targetCell.baseType === EnumYardType.BORDER) {
-            GLOBAL.Message(KEYS.Get("map_coordinateoffmap"));
+            getGLOBAL().Message(getKEYS().Get("map_coordinateoffmap"));
             return;
         }
         this.dispatchEvent(new Event(Maproom3JumpPopup.k_clickedJump));
@@ -63,6 +66,6 @@ export class Maproom3JumpPopup extends MapRoomPopupJump {
         this.tX.removeEventListener(KeyboardEvent.KEY_UP, this.keyUpOnX.bind(this));
         this.tY.removeEventListener(KeyboardEvent.KEY_UP, this.keyUpOnY.bind(this));
         this.bJump.removeEventListener(MouseEvent.CLICK, this.clickedJump.bind(this));
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 }

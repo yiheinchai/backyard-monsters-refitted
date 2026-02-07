@@ -6,12 +6,15 @@ import MouseEvent from 'openfl/events/MouseEvent';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BFOUNDATION } from './BFOUNDATION';
 import { ACADEMY } from './ACADEMY';
-import { BASE } from './BASE';
-import { CREATURELOCKER } from './CREATURELOCKER';
-import { CREEPS } from './CREEPS';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { POPUPS } from './POPUPS';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+
 
 /**
  * BUILDING26 - Monster Academy
@@ -26,13 +29,13 @@ export class BUILDING26 extends BFOUNDATION {
     constructor() {
         super();
         this._type = 26;
-        this._footprint = BASE.isInfernoMainYardOrOutpost ? [new Rectangle(0, 0, 80, 80)] : [new Rectangle(0, 0, 100, 100)];
+        this._footprint = getBASE().isInfernoMainYardOrOutpost ? [new Rectangle(0, 0, 80, 80)] : [new Rectangle(0, 0, 100, 100)];
         this._gridCost = [[new Rectangle(0, 0, 100, 100), 10], [new Rectangle(10, 10, 80, 80), 200]];
         this.SetProps();
     }
 
     public override Click(event: MouseEvent | null = null): void {
-        if (this._upgrading && GLOBAL.player.m_upgrades[this._upgrading] && GLOBAL.player.m_upgrades[this._upgrading].time === null) {
+        if (this._upgrading && getGLOBAL().player.m_upgrades[this._upgrading] && getGLOBAL().player.m_upgrades[this._upgrading].time === null) {
             this._upgrading = null;
         }
         ACADEMY._monsterID = this._upgrading;
@@ -41,11 +44,11 @@ export class BUILDING26 extends BFOUNDATION {
 
     public override TickFast(event: Event | null = null): void {
         super.TickFast(event);
-        if (this._upgrading && GLOBAL._render && this._countdownBuild.Get() + this._countdownUpgrade.Get() === 0) {
-            if (GLOBAL._render && this._animLoaded && this._countdownBuild.Get() + this._countdownUpgrade.Get() === 0) {
-                if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && (this._frameNumber % 3 === 0 || GLOBAL._lockerOverdrive > 0) && CREEPS._creepCount === 0) {
+        if (this._upgrading && getGLOBAL()._render && this._countdownBuild.Get() + this._countdownUpgrade.Get() === 0) {
+            if (getGLOBAL()._render && this._animLoaded && this._countdownBuild.Get() + this._countdownUpgrade.Get() === 0) {
+                if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && (this._frameNumber % 3 === 0 || getGLOBAL()._lockerOverdrive > 0) && getCREEPS()._creepCount === 0) {
                     this.AnimFrame();
-                } else if (this._frameNumber % 10 === 0 || (GLOBAL._lockerOverdrive > 0 && this._frameNumber % 4 === 0)) {
+                } else if (this._frameNumber % 10 === 0 || (getGLOBAL()._lockerOverdrive > 0 && this._frameNumber % 4 === 0)) {
                     this.AnimFrame();
                 }
             }
@@ -55,22 +58,22 @@ export class BUILDING26 extends BFOUNDATION {
 
     public override Constructed(): void {
         super.Constructed();
-        GLOBAL._bAcademy = this;
+        getGLOBAL()._bAcademy = this;
     }
 
     public override Description(): void {
         super.Description();
-        if (this._upgrading !== null && GLOBAL.player.m_upgrades[this._upgrading].time) {
-            this._specialDescription = KEYS.Get("building_academy_training", {
-                v1: CREATURELOCKER._creatures[this._upgrading].name,
-                v2: GLOBAL.ToTime(GLOBAL.player.m_upgrades[this._upgrading].time.Get() - GLOBAL.Timestamp())
+        if (this._upgrading !== null && getGLOBAL().player.m_upgrades[this._upgrading].time) {
+            this._specialDescription = getKEYS().Get("building_academy_training", {
+                v1: getCREATURELOCKER()._creatures[this._upgrading].name,
+                v2: getGLOBAL().ToTime(getGLOBAL().player.m_upgrades[this._upgrading].time.Get() - getGLOBAL().Timestamp())
             });
         }
     }
 
     public override Upgrade(): boolean {
         if (this._upgrading) {
-            GLOBAL.Message(KEYS.Get("acad_err_cantupgrade"));
+            getGLOBAL().Message(getKEYS().Get("acad_err_cantupgrade"));
             return false;
         }
         return super.Upgrade();
@@ -78,9 +81,9 @@ export class BUILDING26 extends BFOUNDATION {
 
     public override Recycle(): void {
         if (this._upgrading) {
-            GLOBAL.Message(KEYS.Get("acad_err_cantrecycle"));
+            getGLOBAL().Message(getKEYS().Get("acad_err_cantrecycle"));
         } else {
-            GLOBAL._bAcademy = null;
+            getGLOBAL()._bAcademy = null;
             super.Recycle();
         }
     }
@@ -94,7 +97,7 @@ export class BUILDING26 extends BFOUNDATION {
             this._upgrading = "C12";
         }
         if (this._countdownBuild.Get() <= 0) {
-            GLOBAL._bAcademy = this;
+            getGLOBAL()._bAcademy = this;
         }
     }
 

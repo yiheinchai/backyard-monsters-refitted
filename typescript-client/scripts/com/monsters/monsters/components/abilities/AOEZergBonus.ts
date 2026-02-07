@@ -1,10 +1,13 @@
 import Point from "openfl/geom/Point";
 
-import { MonsterBase } from "../../MonsterBase";
 import { Component } from "../Component";
-import { Targeting } from "../../../../../Targeting";
 import { MultiplicationPropertyModifier } from "../modifiers/MultiplicationPropertyModifier";
 import { ArmorPropertyModifier } from "../modifiers/ArmorPropertyModifier";
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+function getTargeting(): any { return require("../../../../../Targeting").Targeting; }
+
 
 /**
  * Zerg damage modifier - internal class for AOEZergBonus.
@@ -43,7 +46,7 @@ export class AOEZergBonus extends Component {
 
     public override tick(delta: number = 1): void {
         let allyCount: number = 0;
-        const targets: Array<any> = Targeting.getAllBUTTargetsInRange(this.m_radius, new Point(this.owner.x, this.owner.y), this.owner.targetMode);
+        const targets: Array<any> = getTargeting().getAllBUTTargetsInRange(this.m_radius, new Point(this.owner.x, this.owner.y), this.owner.targetMode);
         for (let i = 0; i < targets.length; i++) {
             const monster = targets[i] as MonsterBase;
             if (targets[i] === this.owner || !monster) {

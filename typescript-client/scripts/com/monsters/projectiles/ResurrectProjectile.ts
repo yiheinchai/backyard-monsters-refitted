@@ -9,12 +9,15 @@ import { ITargetable } from "../interfaces/ITargetable";
 import { Projectilev2 } from "./Projectilev2";
 import { ProjectileUtils } from "./ProjectileUtils";
 
-import { EFFECTS } from "../../../EFFECTS";
-import { GLOBAL } from "../../../GLOBAL";
-import { MAP } from "../../../MAP";
-import { SPRITES } from "../../../SPRITES";
-import { Targeting } from "../../../Targeting";
 import { GameObject } from "../GameObject";
+
+// Lazy imports to break circular dependency chains
+function getEFFECTS(): any { return require("../../../EFFECTS").EFFECTS; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getMAP(): any { return require("../../../MAP").MAP; }
+function getSPRITES(): any { return require("../../../SPRITES").SPRITES; }
+function getTargeting(): any { return require("../../../Targeting").Targeting; }
+
 
 // TweenMax declaration
 declare const TweenMax: any;
@@ -78,22 +81,22 @@ export class ResurrectProjectile extends Projectilev2 {
             this.randerElectricityAroundProjectile(new Point(orbitX, orbitY), newData);
         }
         
-        const offset = MAP.instance.offset;
+        const offset = getMAP().instance.offset;
         this.m_rasterData.pt = new Point(orbitX - offset.x, orbitY - offset.y);
     }
 
     private randerElectricityAroundProjectile(position: Point, bitmapData: BitmapData): void {
         let targetPoint: Point | null = null;
         
-        const closestEnemy = Targeting.getClosestEnemy(
+        const closestEnemy = getTargeting().getClosestEnemy(
             ResurrectProjectile.k_MAX_DISTANCE_TO_LIGHTNING_TARGET,
             position,
-            Targeting.k_TARGETS_ALL
+            getTargeting().k_TARGETS_ALL
         );
         
         if (closestEnemy) {
             targetPoint = new Point(closestEnemy.x, closestEnemy.y);
-            const distance = GLOBAL.QuickDistance(targetPoint, position);
+            const distance = getGLOBAL().QuickDistance(targetPoint, position);
             
             if (Math.random() > distance / ResurrectProjectile.k_MAX_DISTANCE_TO_LIGHTNING_TARGET) {
                 if ((closestEnemy as any) instanceof (globalThis as any).GameObject) {
@@ -111,7 +114,7 @@ export class ResurrectProjectile extends Projectilev2 {
             );
         }
         
-        EFFECTS.Lightning(
+        getEFFECTS().Lightning(
             position.x + Math.random() * bitmapData.width,
             position.y + Math.random() * bitmapData.height,
             targetPoint.x,
@@ -122,7 +125,7 @@ export class ResurrectProjectile extends Projectilev2 {
     }
 
     private getBitmapData(): BitmapData {
-        let bmd = (SPRITES.GetSpriteDescriptor(ResurrectProjectile.k_resurecctProjectile) as SpriteData)?.sprite;
+        let bmd = (getSPRITES().GetSpriteDescriptor(ResurrectProjectile.k_resurecctProjectile) as SpriteData)?.sprite;
         if (!bmd) {
             bmd = ProjectileUtils.getFireballBitmapData();
         }

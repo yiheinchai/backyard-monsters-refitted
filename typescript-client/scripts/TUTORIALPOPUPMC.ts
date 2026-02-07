@@ -4,13 +4,16 @@ import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import TextFieldAutoSize from 'openfl/text/TextFieldAutoSize';
 import { TUTORIALPOPUPMC_CLIP } from './TUTORIALPOPUPMC_CLIP';
-import { TUTORIAL } from './TUTORIAL';
-import { GLOBAL } from './GLOBAL';
 import { GAME } from './GAME';
-import { UI2 } from './UI2';
 import { Button } from './Button';
 import { Button_CLIP } from './Button_CLIP';
 import { buttonFullscreen_CLIP } from './buttonFullscreen_CLIP';
+
+// Lazy imports to break circular dependency chains
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getUI2(): any { return require("./UI2").UI2; }
+
 
 export class TUTORIALPOPUPMC extends TUTORIALPOPUPMC_CLIP {
     public posX: number;
@@ -23,14 +26,14 @@ export class TUTORIALPOPUPMC extends TUTORIALPOPUPMC_CLIP {
 
     constructor(param1: number = 0, param2: number = 0) {
         super();
-        this.mcButton.addEventListener(MouseEvent.CLICK, TUTORIAL.Advance);
+        this.mcButton.addEventListener(MouseEvent.CLICK, getTUTORIAL().Advance);
         this.mcButton.Highlight = true;
         this.mcBlocker.mouseEnabled = true;
         this.mcText.autoSize = TextFieldAutoSize.LEFT;
         this.posX = param1;
         this.posY = param2;
         this.m_origButtonWidth = this.mcButton.width;
-        if (GLOBAL._local && GLOBAL._aiDesignMode) {
+        if (getGLOBAL()._local && getGLOBAL()._aiDesignMode) {
             this.addEventListener(MouseEvent.MOUSE_DOWN, this.DragStart.bind(this));
             this.addEventListener(MouseEvent.MOUSE_UP, this.DragStop.bind(this));
         }
@@ -53,7 +56,7 @@ export class TUTORIALPOPUPMC extends TUTORIALPOPUPMC_CLIP {
     public Say(param1: string, param2: boolean, param3: boolean): void {
         this.mcArrow.visible = true;
         this.mcText.htmlText = param1;
-        if (TUTORIAL._stage < 200) {
+        if (getTUTORIAL()._stage < 200) {
             this.mcButton.SetupKey("tut_next_btn");
         } else {
             this.mcButton.SetupKey("tut_finish_btn");
@@ -65,7 +68,7 @@ export class TUTORIALPOPUPMC extends TUTORIALPOPUPMC_CLIP {
         }
         this.mcArrow.visible = false;
         if (param3) {
-            if (TUTORIAL._stage <= 5) {
+            if (getTUTORIAL()._stage <= 5) {
                 this.mcArrow.visible = true;
             }
             this.mcButton.width = this.m_origButtonWidth;
@@ -83,8 +86,8 @@ export class TUTORIALPOPUPMC extends TUTORIALPOPUPMC_CLIP {
     }
 
     public DragStart(param1: MouseEvent): void {
-        this.offsetX = GLOBAL._ROOT.mouseX - this.x;
-        this.offsetY = GLOBAL._ROOT.mouseY - this.y;
+        this.offsetX = getGLOBAL()._ROOT.mouseX - this.x;
+        this.offsetY = getGLOBAL()._ROOT.mouseY - this.y;
         this.addEventListener(Event.ENTER_FRAME, this.Move.bind(this));
     }
 
@@ -93,8 +96,8 @@ export class TUTORIALPOPUPMC extends TUTORIALPOPUPMC_CLIP {
     }
 
     public Move(param1: Event = null): void {
-        this.x = GLOBAL._ROOT.mouseX - this.offsetX;
-        this.y = GLOBAL._ROOT.mouseY - this.offsetY;
+        this.x = getGLOBAL()._ROOT.mouseX - this.offsetX;
+        this.y = getGLOBAL()._ROOT.mouseY - this.offsetY;
     }
 
     public SetPos(param1: number, param2: number): void {
@@ -104,8 +107,8 @@ export class TUTORIALPOPUPMC extends TUTORIALPOPUPMC_CLIP {
 
     public addFullScreenButton(param1: Function): void {
         this.m_fullScreenButton = GAME._instance.stage.addChild(new buttonFullscreen_CLIP()) as MovieClip;
-        this.m_fullScreenButton.x = UI2._top.localToGlobal(new Point(UI2._top.mcSound.x, UI2._top.mcSound.y)).x - 31;
-        this.m_fullScreenButton.y = UI2._top.y;
+        this.m_fullScreenButton.x = getUI2()._top.localToGlobal(new Point(getUI2()._top.mcSound.x, getUI2()._top.mcSound.y)).x - 31;
+        this.m_fullScreenButton.y = getUI2()._top.y;
         this.m_fullScreenButton.addEventListener(MouseEvent.CLICK, param1 as any);
     }
 
@@ -117,15 +120,15 @@ export class TUTORIALPOPUPMC extends TUTORIALPOPUPMC_CLIP {
     }
 
     public Resize(): void {
-        this.x = GLOBAL.isFullScreen ? (GLOBAL._SCREENINIT.right - this.mcBubble.width) / 2 + this.posX : GLOBAL._SCREEN.x + this.posX;
-        this.y = GLOBAL._SCREENINIT.y - GLOBAL._SCREEN.y + this.posY;
-        this.mcBlocker.width = GLOBAL._SCREEN.width;
-        this.mcBlocker.height = GLOBAL._SCREEN.height;
-        this.mcBlocker.x = GLOBAL.isFullScreen ? -((this.mcBlocker.width - this.mcBubble.width) * 0.5 + this.posX) : -this.posX;
-        this.mcBlocker.y = GLOBAL.isFullScreen ? -(this.mcBlocker.height * 0.5 - this.mcBubble.height * 1.5 + this.posY) : -this.posY;
+        this.x = getGLOBAL().isFullScreen ? (getGLOBAL()._SCREENINIT.right - this.mcBubble.width) / 2 + this.posX : getGLOBAL()._SCREEN.x + this.posX;
+        this.y = getGLOBAL()._SCREENINIT.y - getGLOBAL()._SCREEN.y + this.posY;
+        this.mcBlocker.width = getGLOBAL()._SCREEN.width;
+        this.mcBlocker.height = getGLOBAL()._SCREEN.height;
+        this.mcBlocker.x = getGLOBAL().isFullScreen ? -((this.mcBlocker.width - this.mcBubble.width) * 0.5 + this.posX) : -this.posX;
+        this.mcBlocker.y = getGLOBAL().isFullScreen ? -(this.mcBlocker.height * 0.5 - this.mcBubble.height * 1.5 + this.posY) : -this.posY;
         if (this.m_fullScreenButton) {
-            this.m_fullScreenButton.x = UI2._top.localToGlobal(new Point(UI2._top.mcSound.x, UI2._top.mcSound.y)).x - 31;
-            this.m_fullScreenButton.y = UI2._top.y;
+            this.m_fullScreenButton.x = getUI2()._top.localToGlobal(new Point(getUI2()._top.mcSound.x, getUI2()._top.mcSound.y)).x - 31;
+            this.m_fullScreenButton.y = getUI2()._top.y;
         }
     }
 }

@@ -5,9 +5,6 @@ import { TweenLite, Quad } from './gs';
 import { SecNum } from './com/cc/utils/SecNum';
 import { BYMConfig } from './com/monsters/configs/BYMConfig';
 import { ITargetable } from './com/monsters/interfaces/ITargetable';
-import { InstanceManager } from './com/monsters/managers/InstanceManager';
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
-import { MonsterBase } from './com/monsters/monsters/MonsterBase';
 import { ChampionBase } from './com/monsters/monsters/champions/ChampionBase';
 import { Fomor } from './com/monsters/monsters/champions/Fomor';
 import { Korath } from './com/monsters/monsters/champions/Korath';
@@ -17,26 +14,32 @@ import { BFOUNDATION } from './BFOUNDATION';
 import { CHAMPIONCAGEPOPUP } from './CHAMPIONCAGEPOPUP';
 import { CHAMPIONSELECTPOPUP } from './CHAMPIONSELECTPOPUP';
 import { CHAMPIONNAMEPOPUP } from './CHAMPIONNAMEPOPUP';
-import { CHAMPIONCHAMBER } from './CHAMPIONCHAMBER';
-import { CREATURES } from './CREATURES';
-import { CREEPS } from './CREEPS';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { BASE } from './BASE';
-import { MAP } from './MAP';
-import { GRID } from './GRID';
-import { SOUNDS } from './SOUNDS';
-import { POPUPS } from './POPUPS';
-import { HOUSING } from './HOUSING';
-import { HOUSINGBUNKER } from './HOUSINGBUNKER';
-import { BUILDING15 } from './BUILDING15';
-import { WMATTACK } from './WMATTACK';
 import { MONSTERBAITER } from './MONSTERBAITER';
-import { QUESTS } from './QUESTS';
 import { ACHIEVEMENTS } from './ACHIEVEMENTS';
-import { LOGGER } from './LOGGER';
 import { md5 } from './md5';
 import { JSON as JSONUtil } from './JSON';
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getCHAMPIONCHAMBER(): any { return require("./CHAMPIONCHAMBER").CHAMPIONCHAMBER; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getGRID(): any { return require("./GRID").GRID; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getHOUSING(): any { return require("./HOUSING").HOUSING; }
+function getHOUSINGBUNKER(): any { return require("./HOUSINGBUNKER").HOUSINGBUNKER; }
+function getBUILDING15(): any { return require("./BUILDING15").BUILDING15; }
+function getWMATTACK(): any { return require("./WMATTACK").WMATTACK; }
+function getQUESTS(): any { return require("./QUESTS").QUESTS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+
 
 /**
  * CHAMPIONCAGE - Champion cage building for managing guardians
@@ -261,39 +264,39 @@ export class CHAMPIONCAGE extends BFOUNDATION {
 
     public static PointInCage(param1: Point): Point {
         const _loc2_: Rectangle = new Rectangle(40, 40, 40, 40);
-        return GRID.ToISO(param1.x + (_loc2_.x + Math.random() * _loc2_.width), param1.y + (_loc2_.y + Math.random() * _loc2_.height), 0);
+        return getGRID().ToISO(param1.x + (_loc2_.x + Math.random() * _loc2_.width), param1.y + (_loc2_.y + Math.random() * _loc2_.height), 0);
     }
 
     public static GetFeedTime(): number {
-        if (CREATURES._guardian) {
-            return CREATURES._guardian._feedTime.Get();
+        if (getCREATURES()._guardian) {
+            return getCREATURES()._guardian._feedTime.Get();
         }
         return 0;
     }
 
     public static GetNumFeeds(): number {
-        if (CREATURES._guardian) {
-            return CREATURES._guardian._feeds.Get();
+        if (getCREATURES()._guardian) {
+            return getCREATURES()._guardian._feeds.Get();
         }
         return 0;
     }
 
     public static ShowJuice(): void {
-        GLOBAL.Message(KEYS.Get("msg_juicechampion_confirm"), KEYS.Get("msg_juicechampion_yes"), CHAMPIONCAGE.JuiceChampion);
+        getGLOBAL().Message(getKEYS().Get("msg_juicechampion_confirm"), getKEYS().Get("msg_juicechampion_yes"), CHAMPIONCAGE.JuiceChampion);
     }
 
     public static JuiceChampion(): void {
-        if (CREATURES._guardian) {
-            CREATURES._guardian.changeModeJuice();
+        if (getCREATURES()._guardian) {
+            getCREATURES()._guardian.changeModeJuice();
         }
     }
 
     private static hasBasicChampion(): boolean {
         let _loc1_: number = 0;
         let _loc2_: number = 0;
-        while (_loc2_ < BASE._guardianData.length) {
-            _loc1_ = BASE._guardianData[_loc2_].status ? Number(BASE._guardianData[_loc2_].status) : ChampionBase.k_CHAMPION_STATUS_NORMAL;
-            if (_loc1_ == ChampionBase.k_CHAMPION_STATUS_NORMAL && CHAMPIONCAGE._guardians["G" + BASE._guardianData[_loc2_].t].classType == CHAMPIONCAGE.CLASS_TYPE_BASIC) {
+        while (_loc2_ < getBASE()._guardianData.length) {
+            _loc1_ = getBASE()._guardianData[_loc2_].status ? Number(getBASE()._guardianData[_loc2_].status) : ChampionBase.k_CHAMPION_STATUS_NORMAL;
+            if (_loc1_ == ChampionBase.k_CHAMPION_STATUS_NORMAL && CHAMPIONCAGE._guardians["G" + getBASE()._guardianData[_loc2_].t].classType == CHAMPIONCAGE.CLASS_TYPE_BASIC) {
                 return true;
             }
             _loc2_++;
@@ -306,22 +309,22 @@ export class CHAMPIONCAGE extends BFOUNDATION {
         let _loc2_: any;
         if (!CHAMPIONCAGE._open) {
             CHAMPIONCAGE._open = true;
-            GLOBAL.BlockerAdd();
+            getGLOBAL().BlockerAdd();
             if (!CHAMPIONCAGE.hasBasicChampion()) {
-                CHAMPIONCAGE._select = GLOBAL._layerWindows.addChild(new CHAMPIONSELECTPOPUP()) as CHAMPIONSELECTPOPUP;
+                CHAMPIONCAGE._select = getGLOBAL()._layerWindows.addChild(new CHAMPIONSELECTPOPUP()) as CHAMPIONSELECTPOPUP;
                 CHAMPIONCAGE._select.Center();
                 CHAMPIONCAGE._select.ScaleUp();
             } else {
                 _loc1_ = 0;
-                for (_loc2_ of BASE._guardianData) {
+                for (_loc2_ of getBASE()._guardianData) {
                     if (_loc2_.status == ChampionBase.k_CHAMPION_STATUS_NORMAL) {
                         _loc1_++;
                     }
                 }
-                if (CREATURES._guardianList.length < BASE._guardianDataNumNormal()) {
+                if (getCREATURES()._guardianList.length < getBASE()._guardianDataNumNormal()) {
                     CHAMPIONCAGE.spawnAllGuardians();
                 }
-                CHAMPIONCAGE._popup = GLOBAL._layerWindows.addChild(new CHAMPIONCAGEPOPUP()) as CHAMPIONCAGEPOPUP;
+                CHAMPIONCAGE._popup = getGLOBAL()._layerWindows.addChild(new CHAMPIONCAGEPOPUP()) as CHAMPIONCAGEPOPUP;
                 CHAMPIONCAGE._popup.Center();
                 CHAMPIONCAGE._popup.ScaleUp();
             }
@@ -330,35 +333,35 @@ export class CHAMPIONCAGE extends BFOUNDATION {
 
     private static spawnAllGuardians(): void {
         let _loc1_: number = 0;
-        while (_loc1_ < BASE._guardianData.length) {
-            if (BASE._guardianData[_loc1_] && BASE._guardianData[_loc1_].t && BASE._guardianData[_loc1_].status === ChampionBase.k_CHAMPION_STATUS_NORMAL) {
-                GLOBAL._bCage.SpawnGuardian(BASE._guardianData[_loc1_].l.Get(), BASE._guardianData[_loc1_].fd, BASE._guardianData[_loc1_].ft, BASE._guardianData[_loc1_].t, BASE._guardianData[_loc1_].hp.Get(), BASE._guardianData[_loc1_].nm, BASE._guardianData[_loc1_].fb.Get(), BASE._guardianData[_loc1_].pl.Get());
+        while (_loc1_ < getBASE()._guardianData.length) {
+            if (getBASE()._guardianData[_loc1_] && getBASE()._guardianData[_loc1_].t && getBASE()._guardianData[_loc1_].status === ChampionBase.k_CHAMPION_STATUS_NORMAL) {
+                getGLOBAL()._bCage.SpawnGuardian(getBASE()._guardianData[_loc1_].l.Get(), getBASE()._guardianData[_loc1_].fd, getBASE()._guardianData[_loc1_].ft, getBASE()._guardianData[_loc1_].t, getBASE()._guardianData[_loc1_].hp.Get(), getBASE()._guardianData[_loc1_].nm, getBASE()._guardianData[_loc1_].fb.Get(), getBASE()._guardianData[_loc1_].pl.Get());
             }
             _loc1_++;
         }
     }
 
     public static ShowName(): void {
-        if (!CHAMPIONCAGE._namepopup && CREATURES._guardian) {
+        if (!CHAMPIONCAGE._namepopup && getCREATURES()._guardian) {
             CHAMPIONCAGE._namepopup = new CHAMPIONNAMEPOPUP();
-            POPUPS.Push(CHAMPIONCAGE._namepopup, null, null, null);
+            getPOPUPS().Push(CHAMPIONCAGE._namepopup, null, null, null);
         }
     }
 
     public static Hide(param1: MouseEvent | null = null): void {
         if (CHAMPIONCAGE._open) {
-            GLOBAL.BlockerRemove();
-            SOUNDS.Play("close");
-            BASE.BuildingDeselect();
+            getGLOBAL().BlockerRemove();
+            getSOUNDS().Play("close");
+            getBASE().BuildingDeselect();
             CHAMPIONCAGE._open = false;
             if (CHAMPIONCAGE._select) {
-                GLOBAL._layerWindows.removeChild(CHAMPIONCAGE._select);
+                getGLOBAL()._layerWindows.removeChild(CHAMPIONCAGE._select);
                 CHAMPIONCAGE._select = null;
-                if (CREATURES._guardian) {
-                    CHAMPIONCAGE._popup = GLOBAL._layerWindows.addChild(new CHAMPIONCAGEPOPUP()) as CHAMPIONCAGEPOPUP;
+                if (getCREATURES()._guardian) {
+                    CHAMPIONCAGE._popup = getGLOBAL()._layerWindows.addChild(new CHAMPIONCAGEPOPUP()) as CHAMPIONCAGEPOPUP;
                     CHAMPIONCAGE._popup.scaleX = CHAMPIONCAGE._popup.scaleY = 0.8;
-                    CHAMPIONCAGE._popup.x = GLOBAL._SCREENCENTER.x;
-                    CHAMPIONCAGE._popup.y = GLOBAL._SCREENCENTER.y;
+                    CHAMPIONCAGE._popup.x = getGLOBAL()._SCREENCENTER.x;
+                    CHAMPIONCAGE._popup.y = getGLOBAL()._SCREENCENTER.y;
                     TweenLite.to(CHAMPIONCAGE._popup, 0.2, {
                         "scaleX": 1,
                         "scaleY": 1,
@@ -369,11 +372,11 @@ export class CHAMPIONCAGE extends BFOUNDATION {
                 }
             }
             if (CHAMPIONCAGE._popup) {
-                GLOBAL._layerWindows.removeChild(CHAMPIONCAGE._popup);
+                getGLOBAL()._layerWindows.removeChild(CHAMPIONCAGE._popup);
                 CHAMPIONCAGE._popup = null;
             }
             if (CHAMPIONCAGE._namepopup) {
-                POPUPS.Next();
+                getPOPUPS().Next();
                 CHAMPIONCAGE._namepopup = null;
             }
         }
@@ -405,10 +408,10 @@ export class CHAMPIONCAGE extends BFOUNDATION {
     }
 
     public static HealGuardian(param1: number = 0): void {
-        if (param1 != 0 && CREATURES.getGuardian(param1)) {
-            CREATURES.getGuardian(param1).heal();
-        } else if (CREATURES._guardian) {
-            CREATURES._guardian.heal();
+        if (param1 != 0 && getCREATURES().getGuardian(param1)) {
+            getCREATURES().getGuardian(param1).heal();
+        } else if (getCREATURES()._guardian) {
+            getCREATURES()._guardian.heal();
         }
     }
 
@@ -445,18 +448,18 @@ export class CHAMPIONCAGE extends BFOUNDATION {
         let _loc4_: any[];
         let _loc5_: number = 0;
         const _loc1_: any = {};
-        if (BASE._guardianData.length) {
+        if (getBASE()._guardianData.length) {
             _loc3_ = 0;
-            while (_loc3_ < BASE._guardianData.length) {
-                _loc2_ = BASE._guardianData[_loc3_].status ? Number(BASE._guardianData[_loc3_].status) : ChampionBase.k_CHAMPION_STATUS_NORMAL;
-                if (_loc2_ == ChampionBase.k_CHAMPION_STATUS_NORMAL && CHAMPIONCAGE.isBasicGuardian("G" + BASE._guardianData[_loc3_].t)) {
-                    _loc1_[BASE._guardianData[_loc3_].t] = BASE._guardianData[_loc3_];
+            while (_loc3_ < getBASE()._guardianData.length) {
+                _loc2_ = getBASE()._guardianData[_loc3_].status ? Number(getBASE()._guardianData[_loc3_].status) : ChampionBase.k_CHAMPION_STATUS_NORMAL;
+                if (_loc2_ == ChampionBase.k_CHAMPION_STATUS_NORMAL && CHAMPIONCAGE.isBasicGuardian("G" + getBASE()._guardianData[_loc3_].t)) {
+                    _loc1_[getBASE()._guardianData[_loc3_].t] = getBASE()._guardianData[_loc3_];
                 }
                 _loc3_++;
             }
         }
-        if (GLOBAL._bChamber && (GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen) {
-            _loc4_ = (GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen;
+        if (getGLOBAL()._bChamber && (getGLOBAL()._bChamber as CHAMPIONCHAMBER)._frozen) {
+            _loc4_ = (getGLOBAL()._bChamber as CHAMPIONCHAMBER)._frozen;
             _loc5_ = 0;
             while (_loc5_ < _loc4_.length) {
                 _loc1_[_loc4_[_loc5_].t] = _loc4_[_loc5_];
@@ -469,14 +472,14 @@ export class CHAMPIONCAGE extends BFOUNDATION {
     public static GetGuardianData(param1: number): any {
         let _loc3_: any[];
         let _loc2_: number = 0;
-        while (_loc2_ < BASE._guardianData.length) {
-            if (BASE._guardianData[_loc2_] && BASE._guardianData[_loc2_].t == param1) {
-                return BASE._guardianData[_loc2_];
+        while (_loc2_ < getBASE()._guardianData.length) {
+            if (getBASE()._guardianData[_loc2_] && getBASE()._guardianData[_loc2_].t == param1) {
+                return getBASE()._guardianData[_loc2_];
             }
             _loc2_++;
         }
-        if (GLOBAL._bChamber && (GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen) {
-            _loc3_ = (GLOBAL._bChamber as CHAMPIONCHAMBER)._frozen;
+        if (getGLOBAL()._bChamber && (getGLOBAL()._bChamber as CHAMPIONCHAMBER)._frozen) {
+            _loc3_ = (getGLOBAL()._bChamber as CHAMPIONCHAMBER)._frozen;
             _loc2_ = 0;
             while (_loc2_ < _loc3_.length) {
                 if (_loc3_[_loc2_].t == param1) {
@@ -493,18 +496,18 @@ export class CHAMPIONCAGE extends BFOUNDATION {
     }
 
     public static ShowKrallenTab(): void {
-        if (!GLOBAL._bCage) {
-            GLOBAL.Message(KEYS.Get("krallen_nogcage"));
+        if (!getGLOBAL()._bCage) {
+            getGLOBAL().Message(getKEYS().Get("krallen_nogcage"));
             return;
         }
         if (!CHAMPIONCAGE._open) {
             CHAMPIONCAGE._open = true;
-            GLOBAL.BlockerAdd();
-            CHAMPIONCAGE._popup = GLOBAL._layerWindows.addChild(new CHAMPIONCAGEPOPUP()) as CHAMPIONCAGEPOPUP;
+            getGLOBAL().BlockerAdd();
+            CHAMPIONCAGE._popup = getGLOBAL()._layerWindows.addChild(new CHAMPIONCAGEPOPUP()) as CHAMPIONCAGEPOPUP;
             CHAMPIONCAGE._popup.Center();
             CHAMPIONCAGE._popup.ScaleUp();
             CHAMPIONCAGE._popup.Setup(2);
-            if (CREATURES._guardian == null) {
+            if (getCREATURES()._guardian == null) {
                 CHAMPIONCAGE._popup.b1.visible = false;
                 CHAMPIONCAGE._popup.b1.mouseEnabled = false;
                 CHAMPIONCAGE._popup.b2.visible = false;
@@ -514,7 +517,7 @@ export class CHAMPIONCAGE extends BFOUNDATION {
     }
 
     private setFeedProps(): void {
-        if (!MapRoomManager.instance.isInMapRoom3) {
+        if (!getMapRoomManager().instance.isInMapRoom3) {
             CHAMPIONCAGE._guardians.G1.props.feeds = [{"C2": 15}, {"C2": 10, "C6": 5}, {"C6": 20}, {"C6": 10, "C10": 10}, {"C10": 20}];
             CHAMPIONCAGE._guardians.G1.props.bonusFeeds = [{"C10": 20}, {"C10": 20}, {"C10": 20}];
             CHAMPIONCAGE._guardians.G2.props.feeds = [{"C1": 30}, {"C1": 20, "C4": 15}, {"C7": 50}, {"C7": 10, "C8": 15}, {"C8": 30}];
@@ -529,10 +532,10 @@ export class CHAMPIONCAGE extends BFOUNDATION {
     public override StopMoveB(): void {
         super.StopMoveB();
         let _loc1_: number = 0;
-        while (_loc1_ < CREATURES._guardianList.length) {
-            if (CREATURES._guardianList[_loc1_]) {
-                CREATURES._guardianList[_loc1_]._targetCenter = GRID.FromISO(this._mc.x, this._mc.y);
-                CREATURES._guardianList[_loc1_].changeModeCage();
+        while (_loc1_ < getCREATURES()._guardianList.length) {
+            if (getCREATURES()._guardianList[_loc1_]) {
+                getCREATURES()._guardianList[_loc1_]._targetCenter = getGRID().FromISO(this._mc.x, this._mc.y);
+                getCREATURES()._guardianList[_loc1_].changeModeCage();
             }
             _loc1_++;
         }
@@ -540,13 +543,13 @@ export class CHAMPIONCAGE extends BFOUNDATION {
 
     public override Setup(param1: any): void {
         super.Setup(param1);
-        const _loc2_: any[] = BASE._guardianData;
+        const _loc2_: any[] = getBASE()._guardianData;
         let _loc3_: number = 0;
-        while (_loc3_ < BASE._guardianData.length) {
+        while (_loc3_ < getBASE()._guardianData.length) {
             if (_loc2_[_loc3_] && _loc2_[_loc3_].t && _loc2_[_loc3_].status == ChampionBase.k_CHAMPION_STATUS_NORMAL) {
-                this.SpawnGuardian(BASE._guardianData[_loc3_].l.Get(), BASE._guardianData[_loc3_].fd, BASE._guardianData[_loc3_].ft, BASE._guardianData[_loc3_].t, BASE._guardianData[_loc3_].hp.Get(), BASE._guardianData[_loc3_].nm, BASE._guardianData[_loc3_].fb.Get(), BASE._guardianData[_loc3_].pl.Get());
-                if (CREATURES._guardian && CHAMPIONCAGE.isBasicGuardian("G" + CREATURES._guardian._type) && BASE._guardianData[_loc3_].l.Get() == 6) {
-                    ACHIEVEMENTS.Check("upgrade_champ" + CREATURES._guardian._type, 1);
+                this.SpawnGuardian(getBASE()._guardianData[_loc3_].l.Get(), getBASE()._guardianData[_loc3_].fd, getBASE()._guardianData[_loc3_].ft, getBASE()._guardianData[_loc3_].t, getBASE()._guardianData[_loc3_].hp.Get(), getBASE()._guardianData[_loc3_].nm, getBASE()._guardianData[_loc3_].fb.Get(), getBASE()._guardianData[_loc3_].pl.Get());
+                if (getCREATURES()._guardian && CHAMPIONCAGE.isBasicGuardian("G" + getCREATURES()._guardian._type) && getBASE()._guardianData[_loc3_].l.Get() == 6) {
+                    ACHIEVEMENTS.Check("upgrade_champ" + getCREATURES()._guardian._type, 1);
                 }
             }
             _loc3_++;
@@ -555,8 +558,8 @@ export class CHAMPIONCAGE extends BFOUNDATION {
 
     public override Tick(param1: number): void {
         super.Tick(param1);
-        if (!GLOBAL._catchup) {
-            if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && (WMATTACK._inProgress || MONSTERBAITER._attacking) || GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD) {
+        if (!getGLOBAL()._catchup) {
+            if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD && (getWMATTACK()._inProgress || MONSTERBAITER._attacking) || getGLOBAL().mode != getGLOBAL().e_BASE_MODE.BUILD) {
                 this.Render("open");
             } else {
                 this.Render("");
@@ -571,23 +574,23 @@ export class CHAMPIONCAGE extends BFOUNDATION {
         let _loc11_: any;
         let _loc12_: ChampionBase;
         let _loc13_: boolean = false;
-        const _loc9_: Point = GRID.FromISO(this.x - 20 + Math.random() * 40, this.y - 20 + Math.random() * 40);
+        const _loc9_: Point = getGRID().FromISO(this.x - 20 + Math.random() * 40, this.y - 20 + Math.random() * 40);
         const _loc10_: any = CHAMPIONCAGE.getGuardianSpawnClass(param4);
         if (param3 == 0) {
-            param3 = GLOBAL.Timestamp() + CHAMPIONCAGE.GetGuardianProperty("G" + param4, param1, "feedTime");
+            param3 = getGLOBAL().Timestamp() + CHAMPIONCAGE.GetGuardianProperty("G" + param4, param1, "feedTime");
         }
-        if (!CREATURES.getGuardian(param4) && this.canSpawnGuardian(param4)) {
+        if (!getCREATURES().getGuardian(param4) && this.canSpawnGuardian(param4)) {
             if (CHAMPIONCAGE._guardians["G" + param4].classType == CHAMPIONCAGE.CLASS_TYPE_BASIC) {
-                CREATURES._guardian = new _loc10_("pen", CHAMPIONCAGE.PointInCage(_loc9_), 0, _loc9_, true, this, param1, param2, param3, param4, param5, param7, param8);
-                for (_loc11_ of BASE._guardianData) {
+                getCREATURES()._guardian = new _loc10_("pen", CHAMPIONCAGE.PointInCage(_loc9_), 0, _loc9_, true, this, param1, param2, param3, param4, param5, param7, param8);
+                for (_loc11_ of getBASE()._guardianData) {
                     if (_loc11_.t == param4 && _loc11_.status != ChampionBase.k_CHAMPION_STATUS_NORMAL) {
                         _loc11_.status = ChampionBase.k_CHAMPION_STATUS_NORMAL;
                         _loc11_.log = _loc11_.log != undefined ? _loc11_.log + "," + ChampionBase.k_CHAMPION_STATUS_NORMAL.toString() : ChampionBase.k_CHAMPION_STATUS_NORMAL.toString();
                         break;
                     }
                 }
-                if (GLOBAL.mode == "build") {
-                    for (_loc11_ of GLOBAL._playerGuardianData) {
+                if (getGLOBAL().mode == "build") {
+                    for (_loc11_ of getGLOBAL()._playerGuardianData) {
                         if (_loc11_.t == param4 && _loc11_.status != ChampionBase.k_CHAMPION_STATUS_NORMAL) {
                             _loc11_.status = ChampionBase.k_CHAMPION_STATUS_NORMAL;
                             _loc11_.log = _loc11_.log != undefined ? _loc11_.log + "," + ChampionBase.k_CHAMPION_STATUS_NORMAL.toString() : ChampionBase.k_CHAMPION_STATUS_NORMAL.toString();
@@ -595,36 +598,36 @@ export class CHAMPIONCAGE extends BFOUNDATION {
                         }
                     }
                 }
-                CREATURES._guardian.export();
+                getCREATURES()._guardian.export();
                 if (param6 != "") {
-                    CREATURES._guardian._name = param6;
+                    getCREATURES()._guardian._name = param6;
                 }
                 if (!BYMConfig.instance.RENDERER_ON) {
-                    MAP._BUILDINGTOPS.addChild(CREATURES._guardian.graphic);
+                    getMAP()._BUILDINGTOPS.addChild(getCREATURES()._guardian.graphic);
                 }
             } else {
                 _loc12_ = new _loc10_("pen", CHAMPIONCAGE.PointInCage(_loc9_), 0, _loc9_, true, this, param1, param2, param3, param4, param5, param7, param8);
-                _loc13_ = CREATURES.addGuardian(_loc12_);
+                _loc13_ = getCREATURES().addGuardian(_loc12_);
                 if (_loc13_) {
                     _loc12_.export();
                     if (param6 != "") {
                         _loc12_._name = param6;
                     }
                     if (!BYMConfig.instance.RENDERER_ON) {
-                        MAP._BUILDINGTOPS.addChild(_loc12_.graphic);
+                        getMAP()._BUILDINGTOPS.addChild(_loc12_.graphic);
                     }
                 }
             }
         }
-        QUESTS.Check("hatch_champ" + param4, 1);
+        getQUESTS().Check("hatch_champ" + param4, 1);
     }
 
     public canSpawnGuardian(param1: number): boolean {
-        const _loc2_: number = Number(BASE._guardianData.length);
+        const _loc2_: number = Number(getBASE()._guardianData.length);
         let _loc3_: number = 0;
         while (_loc3_ < _loc2_) {
-            if (BASE._guardianData[_loc3_].t == param1) {
-                return BASE._guardianData[_loc3_].status == ChampionBase.k_CHAMPION_STATUS_NORMAL;
+            if (getBASE()._guardianData[_loc3_].t == param1) {
+                return getBASE()._guardianData[_loc3_].status == ChampionBase.k_CHAMPION_STATUS_NORMAL;
             }
             _loc3_++;
         }
@@ -647,55 +650,55 @@ export class CHAMPIONCAGE extends BFOUNDATION {
         let _loc5_: any = CHAMPIONCAGE.GetGuardianProperty(param1, param2, "feeds");
         const _loc6_: any = {};
         if (param2 == 6) {
-            _loc5_ = CHAMPIONCAGE._guardians[param1].props.bonusFeeds[CREATURES._guardian._foodBonus.Get()];
-            if (CREATURES._guardian._foodBonus.Get() == 3) {
-                _loc5_ = CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID, 3, "bonusFeeds");
+            _loc5_ = CHAMPIONCAGE._guardians[param1].props.bonusFeeds[getCREATURES()._guardian._foodBonus.Get()];
+            if (getCREATURES()._guardian._foodBonus.Get() == 3) {
+                _loc5_ = CHAMPIONCAGE.GetGuardianProperty(getCREATURES()._guardian._creatureID, 3, "bonusFeeds");
             }
         }
         let _loc9_: boolean = true;
         if (param2 == 6) {
             if (param3) {
-                _loc16_ = CHAMPIONCAGE.GetGuardianProperty(param1, CREATURES._guardian._foodBonus.Get() + 1, "bonusFeedShiny");
+                _loc16_ = CHAMPIONCAGE.GetGuardianProperty(param1, getCREATURES()._guardian._foodBonus.Get() + 1, "bonusFeedShiny");
                 if (param4) {
                     _loc16_ *= 2;
                 }
-                if (BASE._credits.Get() < _loc16_) {
-                    POPUPS.DisplayGetShiny();
+                if (getBASE()._credits.Get() < _loc16_) {
+                    getPOPUPS().DisplayGetShiny();
                     return;
                 }
-                BASE.Purchase("IFD", _loc16_, "cage");
-                CREATURES._guardian._foodBonus.Add(1);
-                if (CREATURES._guardian._foodBonus.Get() > 3) {
-                    CREATURES._guardian._foodBonus.Set(3);
+                getBASE().Purchase("IFD", _loc16_, "cage");
+                getCREATURES()._guardian._foodBonus.Add(1);
+                if (getCREATURES()._guardian._foodBonus.Get() > 3) {
+                    getCREATURES()._guardian._foodBonus.Set(3);
                 }
-                _loc7_ = CREATURES._guardian.health;
-                if (CREATURES._guardian._foodBonus.Get() > 0 && CREATURES._guardian._foodBonus.Get() <= 3) {
-                    _loc7_ += CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID, CREATURES._guardian._foodBonus.Get(), "bonusHealth");
+                _loc7_ = getCREATURES()._guardian.health;
+                if (getCREATURES()._guardian._foodBonus.Get() > 0 && getCREATURES()._guardian._foodBonus.Get() <= 3) {
+                    _loc7_ += CHAMPIONCAGE.GetGuardianProperty(getCREATURES()._guardian._creatureID, getCREATURES()._guardian._foodBonus.Get(), "bonusHealth");
                 }
-                _loc8_ = CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID, CREATURES._guardian._level.Get(), "health") + CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID, CREATURES._guardian._foodBonus.Get(), "bonusHealth");
+                _loc8_ = CHAMPIONCAGE.GetGuardianProperty(getCREATURES()._guardian._creatureID, getCREATURES()._guardian._level.Get(), "health") + CHAMPIONCAGE.GetGuardianProperty(getCREATURES()._guardian._creatureID, getCREATURES()._guardian._foodBonus.Get(), "bonusHealth");
                 if (_loc7_ >= _loc8_) {
                     _loc7_ = _loc8_;
                 }
-                CREATURES._guardian.setHealth(_loc7_);
-                GLOBAL.Message(KEYS.Get("msg_champion_fed", {"v1": GLOBAL.ToTime(CHAMPIONCAGE.GetGuardianProperty(param1, CREATURES._guardian._level.Get(), "feedTime"))}));
-                CREATURES._guardian._feedTime = new SecNum(GLOBAL.Timestamp() + CHAMPIONCAGE.GetGuardianProperty(param1, CREATURES._guardian._level.Get(), "feedTime"));
-                CREATURES._guardian.export();
-                LOGGER.Log("fed", "Buff Fed shiny " + CREATURES._guardian._foodBonus.Get());
-                LOGGER.Stat([60, CREATURES._guardian._creatureID, CHAMPIONCAGE.GetGuardianProperty(param1, CREATURES._guardian._foodBonus.Get(), "bonusFeedShiny"), CREATURES._guardian._foodBonus.Get()]);
-                BASE.Save();
+                getCREATURES()._guardian.setHealth(_loc7_);
+                getGLOBAL().Message(getKEYS().Get("msg_champion_fed", {"v1": getGLOBAL().ToTime(CHAMPIONCAGE.GetGuardianProperty(param1, getCREATURES()._guardian._level.Get(), "feedTime"))}));
+                getCREATURES()._guardian._feedTime = new SecNum(getGLOBAL().Timestamp() + CHAMPIONCAGE.GetGuardianProperty(param1, getCREATURES()._guardian._level.Get(), "feedTime"));
+                getCREATURES()._guardian.export();
+                getLOGGER().Log("fed", "Buff Fed shiny " + getCREATURES()._guardian._foodBonus.Get());
+                getLOGGER().Stat([60, getCREATURES()._guardian._creatureID, CHAMPIONCAGE.GetGuardianProperty(param1, getCREATURES()._guardian._foodBonus.Get(), "bonusFeedShiny"), getCREATURES()._guardian._foodBonus.Get()]);
+                getBASE().Save();
             } else if (_loc5_) {
                 for (_loc10_ in _loc5_) {
-                    if (GLOBAL.player.monsterListByID(_loc10_) == null || GLOBAL.player.monsterListByID(_loc10_) && GLOBAL.player.monsterListByID(_loc10_).numHealthyHousedCreeps < _loc5_[_loc10_]) {
+                    if (getGLOBAL().player.monsterListByID(_loc10_) == null || getGLOBAL().player.monsterListByID(_loc10_) && getGLOBAL().player.monsterListByID(_loc10_).numHealthyHousedCreeps < _loc5_[_loc10_]) {
                         _loc9_ = false;
                         break;
                     }
                     _loc6_[_loc10_] = _loc5_[_loc10_];
                 }
                 if (_loc9_) {
-                    _loc12_ = InstanceManager.getInstancesByClass(BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15);
+                    _loc12_ = getInstanceManager().getInstancesByClass(getBASE().isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15);
                     for (_loc14_ in _loc6_) {
-                        GLOBAL.player.monsterListByID(_loc14_).add(-_loc6_[_loc14_]);
-                        for (_loc11_ of Object.values(CREATURES._creatures)) {
+                        getGLOBAL().player.monsterListByID(_loc14_).add(-_loc6_[_loc14_]);
+                        for (_loc11_ of Object.values(getCREATURES()._creatures)) {
                             if (_loc6_[_loc14_] > 0) {
                                 if (_loc11_._creatureID == _loc14_ && _loc11_._behaviour != "feed" && _loc11_._behaviour != "juice") {
                                     _loc11_.changeModeFeed();
@@ -706,76 +709,76 @@ export class CHAMPIONCAGE extends BFOUNDATION {
                         _loc15_ = 0;
                         while (_loc15_ < _loc6_[_loc14_]) {
                             _loc13_ = _loc12_[Math.floor(Math.random() * _loc12_.length)] as BFOUNDATION;
-                            CREATURES.Spawn(_loc14_, MAP._BUILDINGTOPS, "feed", new Point(_loc13_.x, _loc13_.y).add(new Point(-60 + Math.random() * 135, 65 + Math.random() * 50)), Math.random() * 360);
+                            getCREATURES().Spawn(_loc14_, getMAP()._BUILDINGTOPS, "feed", new Point(_loc13_.x, _loc13_.y).add(new Point(-60 + Math.random() * 135, 65 + Math.random() * 50)), Math.random() * 360);
                             _loc15_++;
                         }
                     }
-                    HOUSING.HousingSpace();
-                    CREATURES._guardian._foodBonus.Add(1);
-                    if (CREATURES._guardian._foodBonus.Get() > 3) {
-                        CREATURES._guardian._foodBonus.Set(3);
+                    getHOUSING().HousingSpace();
+                    getCREATURES()._guardian._foodBonus.Add(1);
+                    if (getCREATURES()._guardian._foodBonus.Get() > 3) {
+                        getCREATURES()._guardian._foodBonus.Set(3);
                     }
-                    _loc7_ = CREATURES._guardian.health;
-                    if (CREATURES._guardian._foodBonus.Get() > 0 && CREATURES._guardian._foodBonus.Get() <= 3) {
-                        _loc7_ += CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID, CREATURES._guardian._foodBonus.Get(), "bonusHealth");
+                    _loc7_ = getCREATURES()._guardian.health;
+                    if (getCREATURES()._guardian._foodBonus.Get() > 0 && getCREATURES()._guardian._foodBonus.Get() <= 3) {
+                        _loc7_ += CHAMPIONCAGE.GetGuardianProperty(getCREATURES()._guardian._creatureID, getCREATURES()._guardian._foodBonus.Get(), "bonusHealth");
                     }
-                    _loc8_ = CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID, CREATURES._guardian._level.Get(), "health") + CHAMPIONCAGE.GetGuardianProperty(CREATURES._guardian._creatureID, CREATURES._guardian._foodBonus.Get(), "bonusHealth");
+                    _loc8_ = CHAMPIONCAGE.GetGuardianProperty(getCREATURES()._guardian._creatureID, getCREATURES()._guardian._level.Get(), "health") + CHAMPIONCAGE.GetGuardianProperty(getCREATURES()._guardian._creatureID, getCREATURES()._guardian._foodBonus.Get(), "bonusHealth");
                     if (_loc7_ >= _loc8_) {
                         _loc7_ = _loc8_;
                     }
-                    CREATURES._guardian.setHealth(_loc7_);
-                    GLOBAL.Message(KEYS.Get("msg_champion_feeding", {"v1": GLOBAL.ToTime(CHAMPIONCAGE.GetGuardianProperty(param1, CREATURES._guardian._level.Get(), "feedTime"))}));
-                    CREATURES._guardian._feedTime = new SecNum(GLOBAL.Timestamp() + CHAMPIONCAGE.GetGuardianProperty(param1, CREATURES._guardian._level.Get(), "feedTime"));
-                    CREATURES._guardian.export();
-                    LOGGER.Log("fed", "Buff Fed creeps " + CREATURES._guardian._foodBonus.Get());
-                    LOGGER.Stat([60, CREATURES._guardian._creatureID, 0, CREATURES._guardian._foodBonus.Get()]);
-                    BASE.Save();
+                    getCREATURES()._guardian.setHealth(_loc7_);
+                    getGLOBAL().Message(getKEYS().Get("msg_champion_feeding", {"v1": getGLOBAL().ToTime(CHAMPIONCAGE.GetGuardianProperty(param1, getCREATURES()._guardian._level.Get(), "feedTime"))}));
+                    getCREATURES()._guardian._feedTime = new SecNum(getGLOBAL().Timestamp() + CHAMPIONCAGE.GetGuardianProperty(param1, getCREATURES()._guardian._level.Get(), "feedTime"));
+                    getCREATURES()._guardian.export();
+                    getLOGGER().Log("fed", "Buff Fed creeps " + getCREATURES()._guardian._foodBonus.Get());
+                    getLOGGER().Stat([60, getCREATURES()._guardian._creatureID, 0, getCREATURES()._guardian._foodBonus.Get()]);
+                    getBASE().Save();
                 } else {
-                    GLOBAL.Message(KEYS.Get("msg_champion_morecreatures"));
+                    getGLOBAL().Message(getKEYS().Get("msg_champion_morecreatures"));
                 }
             }
         } else if (param3) {
-            if (BASE._credits.Get() < CHAMPIONCAGE.GetGuardianProperty(param1, param2, "feedShiny")) {
-                POPUPS.DisplayGetShiny();
+            if (getBASE()._credits.Get() < CHAMPIONCAGE.GetGuardianProperty(param1, param2, "feedShiny")) {
+                getPOPUPS().DisplayGetShiny();
                 return;
             }
-            BASE.Purchase("IFD", CHAMPIONCAGE.GetGuardianProperty(param1, param2, "feedShiny"), "cage");
-            CREATURES._guardian._feeds.Add(1);
-            if (CREATURES._guardian._feeds.Get() >= CHAMPIONCAGE.GetGuardianProperty(param1, param2, "feedCount")) {
+            getBASE().Purchase("IFD", CHAMPIONCAGE.GetGuardianProperty(param1, param2, "feedShiny"), "cage");
+            getCREATURES()._guardian._feeds.Add(1);
+            if (getCREATURES()._guardian._feeds.Get() >= CHAMPIONCAGE.GetGuardianProperty(param1, param2, "feedCount")) {
                 if (param2 < 5) {
-                    GLOBAL.Message(KEYS.Get("msg_champion_evolved", {
+                    getGLOBAL().Message(getKEYS().Get("msg_champion_evolved", {
                         "v1": param2 + 1,
-                        "v2": GLOBAL.ToTime(CHAMPIONCAGE.GetGuardianProperty(param1, CREATURES._guardian._level.Get(), "feedTime"))
+                        "v2": getGLOBAL().ToTime(CHAMPIONCAGE.GetGuardianProperty(param1, getCREATURES()._guardian._level.Get(), "feedTime"))
                     }));
                 } else {
-                    GLOBAL.Message(KEYS.Get("msg_champion_fullyevolved", {"v1": param2 + 1}));
+                    getGLOBAL().Message(getKEYS().Get("msg_champion_fullyevolved", {"v1": param2 + 1}));
                 }
-                CREATURES._guardian.levelSet(param2 + 1);
-                if (CREATURES._guardian._level.Get() == 6) {
-                    ACHIEVEMENTS.Check("upgrade_champ" + CREATURES._guardian._type, 1);
+                getCREATURES()._guardian.levelSet(param2 + 1);
+                if (getCREATURES()._guardian._level.Get() == 6) {
+                    ACHIEVEMENTS.Check("upgrade_champ" + getCREATURES()._guardian._type, 1);
                 }
             } else {
-                GLOBAL.Message(KEYS.Get("msg_champion_fed", {"v1": GLOBAL.ToTime(CHAMPIONCAGE.GetGuardianProperty(param1, CREATURES._guardian._level.Get(), "feedTime"))}));
+                getGLOBAL().Message(getKEYS().Get("msg_champion_fed", {"v1": getGLOBAL().ToTime(CHAMPIONCAGE.GetGuardianProperty(param1, getCREATURES()._guardian._level.Get(), "feedTime"))}));
             }
-            CREATURES._guardian._feedTime = new SecNum(GLOBAL.Timestamp() + CHAMPIONCAGE.GetGuardianProperty(param1, CREATURES._guardian._level.Get(), "feedTime"));
-            CREATURES._guardian.export();
-            LOGGER.Log("fed", "Fed shiny " + CREATURES._guardian._feeds.Get());
-            LOGGER.Stat([58, CREATURES._guardian._creatureID, CHAMPIONCAGE.GetGuardianProperty(param1, param2, "feedShiny"), CREATURES._guardian._level.Get()]);
-            BASE.Save();
+            getCREATURES()._guardian._feedTime = new SecNum(getGLOBAL().Timestamp() + CHAMPIONCAGE.GetGuardianProperty(param1, getCREATURES()._guardian._level.Get(), "feedTime"));
+            getCREATURES()._guardian.export();
+            getLOGGER().Log("fed", "Fed shiny " + getCREATURES()._guardian._feeds.Get());
+            getLOGGER().Stat([58, getCREATURES()._guardian._creatureID, CHAMPIONCAGE.GetGuardianProperty(param1, param2, "feedShiny"), getCREATURES()._guardian._level.Get()]);
+            getBASE().Save();
         } else if (_loc5_) {
             _loc9_ = true;
             for (_loc10_ in _loc5_) {
-                if (GLOBAL.player.monsterListByID(_loc10_) == null || GLOBAL.player.monsterListByID(_loc10_) && GLOBAL.player.monsterListByID(_loc10_).numHealthyHousedCreeps < _loc5_[_loc10_]) {
+                if (getGLOBAL().player.monsterListByID(_loc10_) == null || getGLOBAL().player.monsterListByID(_loc10_) && getGLOBAL().player.monsterListByID(_loc10_).numHealthyHousedCreeps < _loc5_[_loc10_]) {
                     _loc9_ = false;
                     break;
                 }
                 _loc6_[_loc10_] = _loc5_[_loc10_];
             }
             if (_loc9_) {
-                _loc12_ = InstanceManager.getInstancesByClass(BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15);
+                _loc12_ = getInstanceManager().getInstancesByClass(getBASE().isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15);
                 for (_loc14_ in _loc6_) {
-                    GLOBAL.player.monsterListByID(_loc14_).add(-_loc6_[_loc14_]);
-                    for (_loc11_ of Object.values(CREATURES._creatures)) {
+                    getGLOBAL().player.monsterListByID(_loc14_).add(-_loc6_[_loc14_]);
+                    for (_loc11_ of Object.values(getCREATURES()._creatures)) {
                         if (_loc6_[_loc14_] > 0) {
                             if (_loc11_._creatureID == _loc14_ && _loc11_._behaviour != "feed" && _loc11_._behaviour != "juice") {
                                 _loc11_.changeModeFeed();
@@ -786,42 +789,42 @@ export class CHAMPIONCAGE extends BFOUNDATION {
                     _loc15_ = 0;
                     while (_loc15_ < _loc6_[_loc14_]) {
                         _loc13_ = _loc12_[Math.floor(Math.random() * _loc12_.length)] as BFOUNDATION;
-                        CREATURES.Spawn(_loc14_, MAP._BUILDINGTOPS, "feed", new Point(_loc13_.x, _loc13_.y).add(new Point(-60 + Math.random() * 135, 65 + Math.random() * 50)), Math.random() * 360);
+                        getCREATURES().Spawn(_loc14_, getMAP()._BUILDINGTOPS, "feed", new Point(_loc13_.x, _loc13_.y).add(new Point(-60 + Math.random() * 135, 65 + Math.random() * 50)), Math.random() * 360);
                         _loc15_++;
                     }
                 }
-                HOUSING.HousingSpace();
-                CREATURES._guardian._feeds.Add(1);
-                if (CREATURES._guardian._feeds.Get() >= CHAMPIONCAGE.GetGuardianProperty(param1, param2, "feedCount")) {
-                    CREATURES._guardian.levelSet(param2 + 1);
-                    if (CREATURES._guardian._level.Get() == 6) {
-                        ACHIEVEMENTS.Check("upgrade_champ" + CREATURES._guardian._type, 1);
+                getHOUSING().HousingSpace();
+                getCREATURES()._guardian._feeds.Add(1);
+                if (getCREATURES()._guardian._feeds.Get() >= CHAMPIONCAGE.GetGuardianProperty(param1, param2, "feedCount")) {
+                    getCREATURES()._guardian.levelSet(param2 + 1);
+                    if (getCREATURES()._guardian._level.Get() == 6) {
+                        ACHIEVEMENTS.Check("upgrade_champ" + getCREATURES()._guardian._type, 1);
                     }
                     if (param2 < 5) {
-                        GLOBAL.Message(KEYS.Get("msg_champion_evolved", {
+                        getGLOBAL().Message(getKEYS().Get("msg_champion_evolved", {
                             "v1": param2 + 1,
-                            "v2": GLOBAL.ToTime(CHAMPIONCAGE.GetGuardianProperty(param1, CREATURES._guardian._level.Get(), "feedTime"))
+                            "v2": getGLOBAL().ToTime(CHAMPIONCAGE.GetGuardianProperty(param1, getCREATURES()._guardian._level.Get(), "feedTime"))
                         }));
                     } else {
-                        GLOBAL.Message(KEYS.Get("msg_champion_fullyevolved", {"v1": param2 + 1}));
+                        getGLOBAL().Message(getKEYS().Get("msg_champion_fullyevolved", {"v1": param2 + 1}));
                     }
                 } else {
-                    GLOBAL.Message(KEYS.Get("msg_champion_feeding", {"v1": GLOBAL.ToTime(CHAMPIONCAGE.GetGuardianProperty(param1, CREATURES._guardian._level.Get(), "feedTime"))}));
+                    getGLOBAL().Message(getKEYS().Get("msg_champion_feeding", {"v1": getGLOBAL().ToTime(CHAMPIONCAGE.GetGuardianProperty(param1, getCREATURES()._guardian._level.Get(), "feedTime"))}));
                 }
-                CREATURES._guardian._feedTime = new SecNum(GLOBAL.Timestamp() + CHAMPIONCAGE.GetGuardianProperty(param1, CREATURES._guardian._level.Get(), "feedTime"));
-                CREATURES._guardian.export();
-                LOGGER.Log("fed", "Fed creeps " + CREATURES._guardian._feeds.Get());
-                LOGGER.Stat([58, CREATURES._guardian._creatureID, 0, CREATURES._guardian._level.Get()]);
-                BASE.Save();
+                getCREATURES()._guardian._feedTime = new SecNum(getGLOBAL().Timestamp() + CHAMPIONCAGE.GetGuardianProperty(param1, getCREATURES()._guardian._level.Get(), "feedTime"));
+                getCREATURES()._guardian.export();
+                getLOGGER().Log("fed", "Fed creeps " + getCREATURES()._guardian._feeds.Get());
+                getLOGGER().Stat([58, getCREATURES()._guardian._creatureID, 0, getCREATURES()._guardian._level.Get()]);
+                getBASE().Save();
             } else {
-                GLOBAL.Message(KEYS.Get("msg_champion_morecreatures"));
+                getGLOBAL().Message(getKEYS().Get("msg_champion_morecreatures"));
             }
         }
     }
 
     public override PlaceB(): void {
         super.PlaceB();
-        GLOBAL._bCage = this;
+        getGLOBAL()._bCage = this;
     }
 
     public override Description(): void {
@@ -830,7 +833,7 @@ export class CHAMPIONCAGE extends BFOUNDATION {
 
     public override Constructed(): void {
         super.Constructed();
-        GLOBAL._bCage = this;
+        getGLOBAL()._bCage = this;
     }
 
     public override Upgraded(): void {
@@ -838,10 +841,10 @@ export class CHAMPIONCAGE extends BFOUNDATION {
     }
 
     public override Recycle(): void {
-        if (CREATURES._guardianList.length) {
-            GLOBAL.Message(KEYS.Get("msg_cage_recycle"));
+        if (getCREATURES()._guardianList.length) {
+            getGLOBAL().Message(getKEYS().Get("msg_cage_recycle"));
         } else {
-            GLOBAL._bCage = null;
+            getGLOBAL()._bCage = null;
             super.Recycle();
         }
     }
@@ -855,17 +858,17 @@ export class CHAMPIONCAGE extends BFOUNDATION {
     }
 
     public RemoveGuardian(param1: number, param2: number = 3): void {
-        CREATURES.removeGuardianType(param1);
+        getCREATURES().removeGuardianType(param1);
         let _loc3_: number = 0;
-        _loc3_ = GLOBAL.getPlayerGuardianIndex(param1);
+        _loc3_ = getGLOBAL().getPlayerGuardianIndex(param1);
         if (_loc3_ >= 0) {
-            GLOBAL._playerGuardianData[_loc3_].status = param2;
-            GLOBAL._playerGuardianData[_loc3_].log += "," + param2.toString();
+            getGLOBAL()._playerGuardianData[_loc3_].status = param2;
+            getGLOBAL()._playerGuardianData[_loc3_].log += "," + param2.toString();
         }
-        _loc3_ = BASE.getGuardianIndex(param1);
+        _loc3_ = getBASE().getGuardianIndex(param1);
         if (_loc3_ >= 0) {
-            BASE._guardianData[_loc3_].status = param2;
-            BASE._guardianData[_loc3_].log += "," + param2.toString();
+            getBASE()._guardianData[_loc3_].status = param2;
+            getBASE()._guardianData[_loc3_].log += "," + param2.toString();
         }
     }
 }

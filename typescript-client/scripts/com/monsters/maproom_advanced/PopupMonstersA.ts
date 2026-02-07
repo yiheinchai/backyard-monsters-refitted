@@ -9,10 +9,13 @@ import { MapRoom } from "./MapRoom";
 import { MapRoomCell } from "./MapRoomCell";
 import { PopupInfoMonster } from "./PopupInfoMonster";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
 import { PopupMonstersA_CLIP } from "../../../PopupMonstersA_CLIP";
 import { MonsterTransferBar } from "../../../MonsterTransferBar";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+
 
 /**
  * Monster transfer selection popup (step A in transfer flow).
@@ -65,7 +68,7 @@ export class PopupMonstersA extends PopupMonstersA_CLIP {
         this._monstersLeft = {};
         this._transferBars = [];
         
-        this.tDesc.htmlText = KEYS.Get("popup_desc_monstertransfera");
+        this.tDesc.htmlText = getKEYS().Get("popup_desc_monstertransfera");
         
         if (useExisting) {
             for (const monsterID in MapRoom._monsterTransfer) {
@@ -155,8 +158,8 @@ export class PopupMonstersA extends PopupMonstersA_CLIP {
             const bar = this._transferBars[i].bar;
             if (bar && bar.r1 && bar.t1) {
                 const monsterID = this._transferBars[i].monster;
-                bar.r1.htmlText = "<b>" + GLOBAL.FormatNumber(this._monstersLeft[monsterID].Get()) + "</b>";
-                bar.t1.htmlText = "<b>" + GLOBAL.FormatNumber(this._transferMonsters[monsterID].Get()) + "</b>";
+                bar.r1.htmlText = "<b>" + getGLOBAL().FormatNumber(this._monstersLeft[monsterID].Get()) + "</b>";
+                bar.t1.htmlText = "<b>" + getGLOBAL().FormatNumber(this._transferMonsters[monsterID].Get()) + "</b>";
             }
         }
         

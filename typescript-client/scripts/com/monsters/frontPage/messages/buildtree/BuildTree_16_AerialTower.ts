@@ -1,8 +1,11 @@
-import { BuildingEvent } from "../../../events/BuildingEvent";
 import { BuildTreeMessage } from "../BuildTreeMessage";
 
-import { GLOBAL } from "../../../../../GLOBAL";
-import { BASE } from "../../../../../BASE";
+// Lazy imports to break circular dependency chains
+function getBuildingEvent(): any { return require("../../../events/BuildingEvent").BuildingEvent; }
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+function getBASE(): any { return require("../../../../../BASE").BASE; }
+
+
 
 /**
  * Build tree 16 - Aerial Tower suggestion message.
@@ -13,16 +16,16 @@ export class BuildTree_16_AerialTower extends BuildTreeMessage {
     }
 
     public override get areRequirementsMet(): boolean {
-        if (BASE.hasNumBuildings(115) !== 0) {
+        if (getBASE().hasNumBuildings(115) !== 0) {
             return false;
         }
-        return GLOBAL.townHall._lvl.Get() >= 4;
+        return getGLOBAL().townHall._lvl.Get() >= 4;
     }
 
     protected override onButtonClick(): void {
         this.buyBuilding(115);
-        GLOBAL.eventDispatcher.addEventListener(
-            BuildingEvent.PLACED_FOR_CONSTRUCTION,
+        getGLOBAL().eventDispatcher.addEventListener(
+            getBuildingEvent().PLACED_FOR_CONSTRUCTION,
             this.placedForConstruction.bind(this),
             false,
             0,

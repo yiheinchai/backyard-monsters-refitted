@@ -3,18 +3,21 @@ import MouseEvent from 'openfl/events/MouseEvent';
 import { SecNum } from './com/cc/utils/SecNum';
 import { ILootable } from './com/monsters/interfaces/ILootable';
 import { IMapRoomCell } from './com/monsters/maproom_manager/IMapRoomCell';
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
 import { CModifiableProperty } from './com/monsters/monsters/components/CModifiableProperty';
 import { BFOUNDATION } from './BFOUNDATION';
-import { ATTACK } from './ATTACK';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { LOGGER } from './LOGGER';
-import { POPUPS } from './POPUPS';
-import { QUESTS } from './QUESTS';
-import { ResourcePackages } from './ResourcePackages';
-import { TUTORIAL } from './TUTORIAL';
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getQUESTS(): any { return require("./QUESTS").QUESTS; }
+function getResourcePackages(): any { return require("./ResourcePackages").ResourcePackages; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+
 
 /**
  * BRESOURCE - Resource harvester building class
@@ -40,15 +43,15 @@ export class BRESOURCE extends BFOUNDATION implements ILootable {
     }
 
     public static AdjustProduction(cell: IMapRoomCell | null, value: number): number {
-        if (MapRoomManager.instance.isInMapRoom2 && BASE.isOutpostMapRoom2Only && 
+        if (getMapRoomManager().instance.isInMapRoom2 && getBASE().isOutpostMapRoom2Only && 
             cell && cell.cellHeight && cell.cellHeight >= 100) {
-            return Math.max(Math.floor(value * GLOBAL._averageAltitude.Get() / cell.cellHeight), 1);
+            return Math.max(Math.floor(value * getGLOBAL()._averageAltitude.Get() / cell.cellHeight), 1);
         }
         return value;
     }
 
     public static GetResourceNameKey(resourceType: number): string | null {
-        if (resourceType <= 3 && BASE.isInfernoMainYardOrOutpost) {
+        if (resourceType <= 3 && getBASE().isInfernoMainYardOrOutpost) {
             resourceType += 4;
         }
         switch (resourceType) {
@@ -88,19 +91,19 @@ export class BRESOURCE extends BFOUNDATION implements ILootable {
         }
         if (looted > 0) {
             this._stored.Add(-looted);
-            ATTACK.Loot(this._type, looted, this._mc!.x, this._mc!.y, 0, this);
-            if (BASE.isOutpost && looted > 0) {
-                BASE._resources["r" + this._type].Add(-looted);
-                BASE._hpResources["r" + this._type] -= looted;
-                if (BASE._deltaResources["r" + this._type]) {
-                    BASE._deltaResources["r" + this._type].Add(-looted);
-                    BASE._hpDeltaResources["r" + this._type] -= looted;
+            getATTACK().Loot(this._type, looted, this._mc!.x, this._mc!.y, 0, this);
+            if (getBASE().isOutpost && looted > 0) {
+                getBASE()._resources["r" + this._type].Add(-looted);
+                getBASE()._hpResources["r" + this._type] -= looted;
+                if (getBASE()._deltaResources["r" + this._type]) {
+                    getBASE()._deltaResources["r" + this._type].Add(-looted);
+                    getBASE()._hpDeltaResources["r" + this._type] -= looted;
                 } else {
-                    BASE._deltaResources["r" + this._type] = new SecNum(-looted);
-                    BASE._hpDeltaResources["r" + this._type] = -looted;
+                    getBASE()._deltaResources["r" + this._type] = new SecNum(-looted);
+                    getBASE()._hpDeltaResources["r" + this._type] = -looted;
                 }
-                BASE._deltaResources.dirty = true;
-                BASE._hpDeltaResources.dirty = true;
+                getBASE()._deltaResources.dirty = true;
+                getBASE()._hpDeltaResources.dirty = true;
             }
         }
         if (this._stored.Get() <= 0) {
@@ -137,14 +140,14 @@ export class BRESOURCE extends BFOUNDATION implements ILootable {
         // Production rate calculation per hour
         let ratePerHour: number = this._buildingProps.produce[this._lvl.Get() - 1] / 
             this._buildingProps.cycleTime[this._lvl.Get() - 1] * 60 * 60;
-        if (BASE.isOutpost) {
-            ratePerHour = BRESOURCE.AdjustProduction(GLOBAL._currentCell, ratePerHour);
+        if (getBASE().isOutpost) {
+            ratePerHour = BRESOURCE.AdjustProduction(getGLOBAL()._currentCell, ratePerHour);
         }
         // Additional description logic would go here
     }
 
     public override get tickLimit(): number {
-        if (BASE.isOutpost || !this._canFunction) {
+        if (getBASE().isOutpost || !this._canFunction) {
             return super.tickLimit;
         }
         const remaining: number = this.productionCapacity - this._stored.Get();
@@ -160,12 +163,12 @@ export class BRESOURCE extends BFOUNDATION implements ILootable {
     public override Tick(seconds: number): void {
         let secondsRemaining: number = seconds;
         super.Tick(seconds);
-        if (BASE.isOutpost) {
+        if (getBASE().isOutpost) {
             this._canFunction = this.health >= 0;
-            if (!GLOBAL._catchup) {
+            if (!getGLOBAL()._catchup) {
                 if (this._countdownProduce.Add(-1) <= 0 && this._canFunction) {
                     if (this.health > 0) {
-                        ResourcePackages.Create(BASE.isInfernoMainYardOrOutpost ? this._type + 4 : this._type, this, 1);
+                        getResourcePackages().Create(getBASE().isInfernoMainYardOrOutpost ? this._type + 4 : this._type, this, 1);
                     }
                     this._countdownProduce.Set(10 + Math.random() * 10);
                 }
@@ -209,7 +212,7 @@ export class BRESOURCE extends BFOUNDATION implements ILootable {
 
     private ApplyTerrainBonus(value: number): number {
         const bonusKey: string = "r" + this._type + "bonus";
-        if (BASE.isMainYardInfernoOnly && BASE._resources[bonusKey] === 1) {
+        if (getBASE().isMainYardInfernoOnly && getBASE()._resources[bonusKey] === 1) {
             value *= BRESOURCE._RESOURCE_BONUS;
         }
         return value;
@@ -221,7 +224,7 @@ export class BRESOURCE extends BFOUNDATION implements ILootable {
             return;
         }
         if (Math.max(this._countdownProduce.Get(), 0)) {
-            LOGGER.Log("hak", "BRESOURCE.Produce hack");
+            getLOGGER().Log("hak", "BRESOURCE.Produce hack");
             return;
         }
         if (this._producing) {
@@ -237,11 +240,11 @@ export class BRESOURCE extends BFOUNDATION implements ILootable {
 
     public get productionValue(): number {
         let value: number = this._buildingProps.produce[this._lvl.Get() - 1];
-        if (BASE.isOutpost) {
-            value = BRESOURCE.AdjustProduction(GLOBAL._currentCell, value);
+        if (getBASE().isOutpost) {
+            value = BRESOURCE.AdjustProduction(getGLOBAL()._currentCell, value);
         }
-        if (GLOBAL._harvesterOverdrive >= GLOBAL.Timestamp() && GLOBAL._harvesterOverdrivePower.Get() > 0) {
-            value *= GLOBAL._harvesterOverdrivePower.Get();
+        if (getGLOBAL()._harvesterOverdrive >= getGLOBAL().Timestamp() && getGLOBAL()._harvesterOverdrivePower.Get() > 0) {
+            value *= getGLOBAL()._harvesterOverdrivePower.Get();
         }
         value = this.ApplyTerrainBonus(value);
         this.productionRateProperty.value = value;
@@ -259,23 +262,23 @@ export class BRESOURCE extends BFOUNDATION implements ILootable {
             stored.Set(capacity.Get());
         }
         if (stored.Get() > 0) {
-            const funded: SecNum = new SecNum(BASE.Fund(this._type, stored.Get(), false, this));
+            const funded: SecNum = new SecNum(getBASE().Fund(this._type, stored.Get(), false, this));
             if (funded.Get() > 0) {
-                ResourcePackages.Create(BASE.isInfernoMainYardOrOutpost ? this._type + 4 : this._type, this, stored.Get());
-                if (TUTORIAL._stage < 200) {
-                    BASE.PointsAdd(funded.Get());
+                getResourcePackages().Create(getBASE().isInfernoMainYardOrOutpost ? this._type + 4 : this._type, this, stored.Get());
+                if (getTUTORIAL()._stage < 200) {
+                    getBASE().PointsAdd(funded.Get());
                 } else {
-                    BASE.PointsAdd(Math.ceil(funded.Get() * 0.5));
+                    getBASE().PointsAdd(Math.ceil(funded.Get() * 0.5));
                 }
             }
-            BASE.CalcResources();
-            if (stored.Get() > QUESTS._global.singleclickbank) {
-                QUESTS._global.singleclickbank = stored.Get();
+            getBASE().CalcResources();
+            if (stored.Get() > getQUESTS()._global.singleclickbank) {
+                getQUESTS()._global.singleclickbank = stored.Get();
             }
-            if (!GLOBAL._catchup) {
-                QUESTS.Check();
+            if (!getGLOBAL()._catchup) {
+                getQUESTS().Check();
             }
-            LOGGER.Stat([32, this._type, stored.Get()]);
+            getLOGGER().Stat([32, this._type, stored.Get()]);
         }
     }
 
@@ -291,7 +294,7 @@ export class BRESOURCE extends BFOUNDATION implements ILootable {
     }
 
     public override Export(): any {
-        if (BASE.isOutpost) {
+        if (getBASE().isOutpost) {
             return super.Export();
         }
         const data: any = super.Export();
@@ -313,7 +316,7 @@ export class BRESOURCE extends BFOUNDATION implements ILootable {
         super.Setup(building);
         
         let storedValue: number;
-        if (BASE.isOutpost) {
+        if (getBASE().isOutpost) {
             const healthRatio: number = this.health / this.maxHealth;
             if (healthRatio <= 0) {
                 storedValue = 0;
@@ -334,7 +337,7 @@ export class BRESOURCE extends BFOUNDATION implements ILootable {
             this._stored.Set(storedValue);
         } else {
             this._stored.Set(0);
-            LOGGER.Log("err", "Harvester storage < 0 mode: " + GLOBAL.mode);
+            getLOGGER().Log("err", "Harvester storage < 0 mode: " + getGLOBAL().mode);
         }
     }
 }

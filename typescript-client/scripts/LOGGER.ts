@@ -1,6 +1,9 @@
 import { EnumYardType } from './com/monsters/enums/EnumYardType';
 import IOErrorEvent from 'openfl/events/IOErrorEvent';
-import { KEYS } from './KEYS';
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("./KEYS").KEYS; }
+
 
 // Lazy imports to break circular dependencies (LOGGER is used by SecNum which is used everywhere)
 function getBASE(): any { return require('./BASE').BASE; }
@@ -72,48 +75,48 @@ export class LOGGER {
                 if (data[0] === 4) st2 = "training";
                 if (data[0] === 51) st2 = "powerup";
                 if (data[0] === 1 || data[0] === 2 || data[0] === 26 || data[0] === 67) {
-                    st3 = KEYS.Get(getGLOBAL()._buildingProps[data[1] - 1].name);
+                    st3 = getKEYS().Get(getGLOBAL()._buildingProps[data[1] - 1].name);
                 } else {
                     monsterID = getBASE().isInfernoMainYardOrOutpost ? "IC" : "C";
-                    st3 = KEYS.Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
+                    st3 = getKEYS().Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
                 }
                 name = "speedup";
                 val = data[4] as number;
             } else if (data[0] === 5) {
                 st1 = "buildings"; st2 = getGLOBAL().e_BASE_MODE.BUILD;
-                st3 = KEYS.Get(getGLOBAL()._buildingProps[data[1] - 1].name);
+                st3 = getKEYS().Get(getGLOBAL()._buildingProps[data[1] - 1].name);
                 name = "build_start";
             } else if (data[0] === 6) {
                 st1 = "buildings"; st2 = getGLOBAL().e_BASE_MODE.BUILD;
-                st3 = KEYS.Get(getGLOBAL()._buildingProps[data[1] - 1].name);
+                st3 = getKEYS().Get(getGLOBAL()._buildingProps[data[1] - 1].name);
                 name = "build_finish";
             } else if (data[0] === 7) {
                 st1 = "buildings"; st2 = "upgrade";
-                st3 = KEYS.Get(getGLOBAL()._buildingProps[data[1] - 1].name);
+                st3 = getKEYS().Get(getGLOBAL()._buildingProps[data[1] - 1].name);
                 name = "upgrade_start"; val = data[2] as number;
             } else if (data[0] === 8) {
                 st1 = "buildings"; st2 = "upgrade";
-                st3 = KEYS.Get(getGLOBAL()._buildingProps[data[1] - 1].name);
+                st3 = getKEYS().Get(getGLOBAL()._buildingProps[data[1] - 1].name);
                 name = "upgrade_finish"; val = data[2] as number;
             } else if (data[0] === 9) {
                 st1 = "monsters"; st2 = "unlock";
                 monsterID = getBASE().isInfernoMainYardOrOutpost ? "IC" : "C";
-                st3 = KEYS.Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
+                st3 = getKEYS().Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
                 name = "start";
             } else if (data[0] === 10) {
                 st1 = "monsters"; st2 = "unlock";
                 monsterID = getBASE().isInfernoMainYardOrOutpost ? "IC" : "C";
-                st3 = KEYS.Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
+                st3 = getKEYS().Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
                 name = "finish";
             } else if (data[0] === 11) {
                 st1 = "monsters"; st2 = "train";
                 monsterID = getBASE().isInfernoMainYardOrOutpost ? "IC" : "C";
-                st3 = KEYS.Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
+                st3 = getKEYS().Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
                 name = "start"; val = data[2] as number;
             } else if (data[0] === 12) {
                 st1 = "monsters"; st2 = "train";
                 monsterID = getBASE().isInfernoMainYardOrOutpost ? "IC" : "C";
-                st3 = KEYS.Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
+                st3 = getKEYS().Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
                 name = "finish"; val = data[2] as number;
             } else if (data[0] === 13) {
                 st1 = "store"; st2 = String(data[1]);
@@ -122,10 +125,10 @@ export class LOGGER {
                 st1 = "helping"; st2 = "buildings";
                 name = String(data[1]); val = data[4] as number;
             } else if (data[0] === 17) {
-                st1 = "looting"; st2 = KEYS.Get(getGLOBAL()._resourceNames[data[1] - 1]);
+                st1 = "looting"; st2 = getKEYS().Get(getGLOBAL()._resourceNames[data[1] - 1]);
                 name = "quantity"; val = data[2] as number;
             } else if (data[0] === 18) {
-                st1 = "looting"; st2 = KEYS.Get(getGLOBAL()._resourceNames[data[1] - 1]);
+                st1 = "looting"; st2 = getKEYS().Get(getGLOBAL()._resourceNames[data[1] - 1]);
                 name = "percent"; val = data[2] as number;
             } else if (data[0] === 27) {
                 st1 = "catapult";
@@ -148,7 +151,7 @@ export class LOGGER {
             } else if (data[0] === 31) {
                 st1 = "tutorial"; name = "finish";
             } else if (data[0] === 32) {
-                st1 = "banking"; name = KEYS.Get(getGLOBAL()._resourceNames[data[1] - 1]); val = data[2] as number;
+                st1 = "banking"; name = getKEYS().Get(getGLOBAL()._resourceNames[data[1] - 1]); val = data[2] as number;
             } else if (data[0] === 33) {
                 st1 = "levelup"; name = "level" + data[1];
             } else if (data[0] === 34) {
@@ -165,7 +168,7 @@ export class LOGGER {
                 st1 = "mushrooms"; name = "prompt";
             } else if (data[0] === 40) {
                 st1 = "buildings"; st2 = "recycle";
-                st3 = KEYS.Get(getGLOBAL()._buildingProps[data[1] - 1].name);
+                st3 = getKEYS().Get(getGLOBAL()._buildingProps[data[1] - 1].name);
                 name = "level"; val = data[2] as number;
             } else if (data[0] === 41) {
                 st1 = "starterkit"; name = String(data[1]); val = data[2] as number;
@@ -183,26 +186,26 @@ export class LOGGER {
             } else if (data[0] === 46) {
                 st1 = "monsters"; st2 = "unlock";
                 monsterID = getBASE().isInfernoMainYardOrOutpost ? "IC" : "C";
-                st3 = KEYS.Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
+                st3 = getKEYS().Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
                 name = "instant";
             } else if (data[0] === 47) {
                 st1 = "monsters"; st2 = "train";
-                st3 = KEYS.Get(getCREATURELOCKER()._creatures[data[1]].name);
+                st3 = getKEYS().Get(getCREATURELOCKER()._creatures[data[1]].name);
                 name = "instant"; val = data[2] as number;
             } else if (data[0] === 48) {
                 st1 = "monsters"; st2 = "powerup";
                 monsterID = getBASE().isInfernoMainYardOrOutpost ? "IC" : "C";
-                st3 = KEYS.Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
+                st3 = getKEYS().Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
                 name = "shiny"; val = data[2] as number;
             } else if (data[0] === 49) {
                 st1 = "monsters"; st2 = "powerup";
                 monsterID = getBASE().isInfernoMainYardOrOutpost ? "IC" : "C";
-                st3 = KEYS.Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
+                st3 = getKEYS().Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
                 name = "start"; val = data[2] as number;
             } else if (data[0] === 50) {
                 st1 = "monsters"; st2 = "powerup";
                 monsterID = getBASE().isInfernoMainYardOrOutpost ? "IC" : "C";
-                st3 = KEYS.Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
+                st3 = getKEYS().Get(getCREATURELOCKER()._creatures[monsterID + data[1]].name);
                 name = "finish"; val = data[2] as number;
             } else if (data[0] === 59) {
                 st1 = "champion"; st2 = "heal";
@@ -259,11 +262,11 @@ export class LOGGER {
                 st1 = "zazzle"; name = "click"; val = data[1] as number;
             } else if (data[0] === 64) {
                 st1 = "buildings"; st2 = "fortify" + data[2];
-                st3 = KEYS.Get(getGLOBAL()._buildingProps[data[1] - 1].name);
+                st3 = getKEYS().Get(getGLOBAL()._buildingProps[data[1] - 1].name);
                 name = "fortify_start"; val = 1;
             } else if (data[0] === 65) {
                 st1 = "buildings"; st2 = "fortify" + data[2];
-                st3 = KEYS.Get(getGLOBAL()._buildingProps[data[1] - 1].name);
+                st3 = getKEYS().Get(getGLOBAL()._buildingProps[data[1] - 1].name);
                 name = "fortify_finish"; val = 1;
             } else if (data[0] === 68) {
                 st1 = "chat"; name = String(data[1]); val = 1;
@@ -277,11 +280,11 @@ export class LOGGER {
                 name = "Level" + data[2]; val = 1;
             } else if (data[0] === 71) {
                 st1 = "buildings"; st2 = getGLOBAL().e_BASE_MODE.BUILD;
-                st3 = KEYS.Get(getGLOBAL()._buildingProps[data[2] - 1].name);
+                st3 = getKEYS().Get(getGLOBAL()._buildingProps[data[2] - 1].name);
                 name = "build_instant"; val = data[1] as number;
             } else if (data[0] === 72) {
                 st1 = "buildings"; st2 = "upgrade";
-                st3 = KEYS.Get(getGLOBAL()._buildingProps[data[2] - 1].name) + "_level" + data[3];
+                st3 = getKEYS().Get(getGLOBAL()._buildingProps[data[2] - 1].name) + "_level" + data[3];
                 name = "upgrade_instant"; val = data[1] as number;
             } else if (data[0] >= 74 && data[0] <= 78) {
                 st1 = "711promo";

@@ -7,12 +7,15 @@ import { Contact } from "./model/Contact";
 import { Inbox } from "./Inbox";
 import { Thread } from "./Thread";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { LOGIN } from "../../../LOGIN";
 import { MAILBOX } from "../../../MAILBOX";
-import { SOUNDS } from "../../../SOUNDS";
-import { URLLoaderApi } from "../../../URLLoaderApi";
 import { system_message } from "../../../system_message";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getLOGIN(): any { return require("../../../LOGIN").LOGIN; }
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+function getURLLoaderApi(): any { return require("../../../URLLoaderApi").URLLoaderApi; }
+
 
 /**
  * MailBox - main mailbox system for player communication.
@@ -39,9 +42,9 @@ export class MailBox extends Sprite {
 
     public static ShowInbox(...args: any[]): void {
         if (MailBox.currentThread) {
-            SOUNDS.Play("close");
+            getSOUNDS().Play("close");
             MailBox.currentThread.prepareForKill();
-            GLOBAL.BlockerRemove();
+            getGLOBAL().BlockerRemove();
             if (MailBox.currentThread.parent) {
                 MailBox.currentThread.parent.removeChild(MailBox.currentThread);
             }
@@ -53,8 +56,8 @@ export class MailBox extends Sprite {
     }
 
     public static ShowThread(thread: Thread): void {
-        GLOBAL.BlockerAdd();
-        GLOBAL._layerWindows.addChild(thread);
+        getGLOBAL().BlockerAdd();
+        getGLOBAL()._layerWindows.addChild(thread);
         thread.x = 100;
         thread.y = -15;
         MailBox.currentThread = thread;
@@ -63,10 +66,10 @@ export class MailBox extends Sprite {
     public Setup(): void {
         MailBox.contacts = [];
         
-        const selfContact = new Contact(String(LOGIN._playerID), {
+        const selfContact = new Contact(String(getLOGIN()._playerID), {
             first_name: "Me",
             last_name: "",
-            pic_square: LOGIN._playerPic
+            pic_square: getLOGIN()._playerPic
         }, true);
         
         const daveContact = new Contact("0", {
@@ -76,8 +79,8 @@ export class MailBox extends Sprite {
         }, true);
         (daveContact as any).picClass = system_message;
         
-        const urlLoader = new URLLoaderApi();
-        urlLoader.load(GLOBAL._apiURL + "player/getmessagetargets", null, this.onTargetsSuccess.bind(this), this.onTargetsFail.bind(this));
+        const urlLoader = new (getURLLoaderApi())();
+        urlLoader.load(getGLOBAL()._apiURL + "player/getmessagetargets", null, this.onTargetsSuccess.bind(this), this.onTargetsFail.bind(this));
     }
 
     public Tick(): void {

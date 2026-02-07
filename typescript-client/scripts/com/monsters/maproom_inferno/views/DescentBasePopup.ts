@@ -4,7 +4,10 @@ import { TweenLite, Elastic } from "gs/TweenLite";
 
 import { DescentBasePopup_CLIP } from "./DescentBasePopup_CLIP";
 
-import { KEYS } from "../../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+
+
 
 /**
  * Descent base popup - displays depth bar and current level info.
@@ -35,17 +38,17 @@ export class DescentBasePopup extends DescentBasePopup_CLIP {
         switch (this.currLvl) {
             case 9:
             case 10:
-                this.depthTxt = KEYS.Get("descent_depthBar");
-                this.depthTxt2 = KEYS.Get("descent_depthBarWarn1");
+                this.depthTxt = getKEYS().Get("descent_depthBar");
+                this.depthTxt2 = getKEYS().Get("descent_depthBarWarn1");
                 break;
             case 11:
             case 12:
-                this.depthTxt = KEYS.Get("descent_depthBar");
-                this.depthTxt2 = KEYS.Get("descent_depthBarWarn2");
+                this.depthTxt = getKEYS().Get("descent_depthBar");
+                this.depthTxt2 = getKEYS().Get("descent_depthBarWarn2");
                 break;
             case 13:
-                this.depthTxt = KEYS.Get("descent_depthBar");
-                this.depthTxt2 = KEYS.Get("descent_depthBarWarn3");
+                this.depthTxt = getKEYS().Get("descent_depthBar");
+                this.depthTxt2 = getKEYS().Get("descent_depthBarWarn3");
             // Fall-through intentional
             case 1:
             case 2:
@@ -56,7 +59,7 @@ export class DescentBasePopup extends DescentBasePopup_CLIP {
             case 7:
             case 8:
             default:
-                this.depthTxt = KEYS.Get("descent_depthBar");
+                this.depthTxt = getKEYS().Get("descent_depthBar");
                 this.depthTxt2 = "";
         }
         const barWidth: number = 100 / this.maxDepth * level;

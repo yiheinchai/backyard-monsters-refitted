@@ -1,10 +1,13 @@
 import BitmapFilter from "openfl/filters/BitmapFilter";
 import GlowFilter from "openfl/filters/GlowFilter";
 
-import { MonsterBase } from "../../MonsterBase";
 import { CModifiableProperty } from "../CModifiableProperty";
 import { Component } from "../Component";
 import { AdditionPropertyModifier } from "../modifiers/AdditionPropertyModifier";
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+
 
 /**
  * Looting modifier - internal class for looting multiplier.
@@ -30,7 +33,7 @@ export class LootingMultiplier extends Component {
     }
 
     protected override onRegister(): void {
-        this.m_lootingProperty = this.owner.getComponentByName(MonsterBase.k_LOOT_PROPERTY) as CModifiableProperty;
+        this.m_lootingProperty = this.owner.getComponentByName(getMonsterBase().k_LOOT_PROPERTY) as CModifiableProperty;
         if (this.m_lootingProperty) {
             this.m_modifier = new LootingModifier(this.m_multiplier);
             this.m_lootingProperty.addModifier(this.m_modifier);

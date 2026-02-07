@@ -7,10 +7,13 @@ import { MapRoom3Cell } from "../MapRoom3Cell";
 import { Bookmark } from "../bookmarks/Bookmark";
 import { MapRoom3TileSetManager } from "../tiles/MapRoom3TileSetManager";
 import { IMapRoomCell } from "../../maproom_manager/IMapRoomCell";
-import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
 import { MapRoom3AllianceData } from "./MapRoom3AllianceData";
 
-import { URLLoaderApi } from "../../../../URLLoaderApi";
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../../maproom_manager/MapRoomManager").MapRoomManager; }
+function getURLLoaderApi(): any { return require("../../../../URLLoaderApi").URLLoaderApi; }
+
+
 
 /**
  * MapRoom3Data - data management for Map Room 3.
@@ -56,7 +59,7 @@ export class MapRoom3Data {
     }
 
     public static GetCellsRequestURL(): string {
-        return MapRoomManager.instance.mapRoom3URL + "getcells";
+        return getMapRoomManager().instance.mapRoom3URL + "getcells";
     }
 
     private static GenerateDefaultMapData(): Record<string, any> {
@@ -135,7 +138,7 @@ export class MapRoom3Data {
         if (MapRoom3Data.DEBUG_WORLD_ID) {
             vars.push(["worldid", MapRoom3Data.DEBUG_WORLD_ID]);
         }
-        new URLLoaderApi().load(MapRoomManager.instance.mapRoom3URL + "initworldmap", vars, this.OnInitialPlayerCellDataLoaded.bind(this));
+        new (getURLLoaderApi())().load(getMapRoomManager().instance.mapRoom3URL + "initworldmap", vars, this.OnInitialPlayerCellDataLoaded.bind(this));
     }
 
     private OnInitialPlayerCellDataLoaded(initworldmapData: Record<string, any>): void {
@@ -150,7 +153,7 @@ export class MapRoom3Data {
         const maxY = Math.min(this.m_Height, this.m_InitialCentrePoint.y + MapRoom3Data.CELL_LOAD_BUFFER_Y + 1);
         for (let x = minX; x < maxX; x++) {
             for (let y = minY; y < maxY; y++) {
-                const cellId = MapRoomManager.instance.CalculateCellId(x, y);
+                const cellId = getMapRoomManager().instance.CalculateCellId(x, y);
                 cellIds.push(cellId);
             }
         }
@@ -158,7 +161,7 @@ export class MapRoom3Data {
         if (MapRoom3Data.DEBUG_WORLD_ID) {
             vars.push(["worldid", MapRoom3Data.DEBUG_WORLD_ID]);
         }
-        new URLLoaderApi().load(MapRoom3Data.GetCellsRequestURL(), vars, this.OnInitialCellDataLoaded.bind(this));
+        new (getURLLoaderApi())().load(MapRoom3Data.GetCellsRequestURL(), vars, this.OnInitialCellDataLoaded.bind(this));
     }
 
     private OnInitialCellDataLoaded(data: Record<string, any>): void {
@@ -206,7 +209,7 @@ export class MapRoom3Data {
             const cellX = bookmarks[i].cellX;
             const cellY = bookmarks[i].cellY;
             if (!(cellX < 0 || cellX >= this.m_Width || cellY < 0 || cellY >= this.m_Height)) {
-                const cellId = MapRoomManager.instance.CalculateCellId(cellX, cellY);
+                const cellId = getMapRoomManager().instance.CalculateCellId(cellX, cellY);
                 const expiry = this.m_ExpiryTimeByCellId.get(cellId);
                 if (!(expiry !== undefined && (expiry === -1 || timer < expiry))) {
                     this.m_ExpiryTimeByCellId.set(cellId, -1);
@@ -225,7 +228,7 @@ export class MapRoom3Data {
             vars.push(["worldid", MapRoom3Data.DEBUG_WORLD_ID]);
         }
         this.m_PendingCellDataRequest = vars;
-        new URLLoaderApi().load(MapRoom3Data.GetCellsRequestURL(), vars, this.OnCellDataLoaded.bind(this));
+        new (getURLLoaderApi())().load(MapRoom3Data.GetCellsRequestURL(), vars, this.OnCellDataLoaded.bind(this));
     }
 
     public UpdateCellLoading(centre: Point): void {
@@ -252,7 +255,7 @@ export class MapRoom3Data {
             dx += dirX;
             dy += dirY;
             if (!(cellX < 0 || cellX >= this.m_Width || cellY < 0 || cellY >= this.m_Height)) {
-                const cellId = MapRoomManager.instance.CalculateCellId(cellX, cellY);
+                const cellId = getMapRoomManager().instance.CalculateCellId(cellX, cellY);
                 const expiry = this.m_ExpiryTimeByCellId.get(cellId);
                 if (!(expiry !== undefined && (expiry === -1 || timer < expiry))) {
                     this.m_ExpiryTimeByCellId.set(cellId, -1);
@@ -271,7 +274,7 @@ export class MapRoom3Data {
             vars.push(["worldid", MapRoom3Data.DEBUG_WORLD_ID]);
         }
         this.m_PendingCellDataRequest = vars;
-        new URLLoaderApi().load(MapRoom3Data.GetCellsRequestURL(), vars, this.OnCellDataLoaded.bind(this));
+        new (getURLLoaderApi())().load(MapRoom3Data.GetCellsRequestURL(), vars, this.OnCellDataLoaded.bind(this));
     }
 
     private OnCellDataLoaded(getcellsData: Record<string, any>): void {
@@ -290,7 +293,7 @@ export class MapRoom3Data {
             const cellData = cellDataArray[i];
             const mapRoomCell = this.GetMapRoom3Cell(cellData.x, cellData.y);
             mapRoomCell.Setup(cellData);
-            const cellID = MapRoomManager.instance.CalculateCellId(mapRoomCell.cellX, mapRoomCell.cellY);
+            const cellID = getMapRoomManager().instance.CalculateCellId(mapRoomCell.cellX, mapRoomCell.cellY);
             this.m_ExpiryTimeByCellId.set(cellID, timer + MapRoom3Data.DEFAULT_CELL_EXPIRIY_TIME);
             if (mapRoomCell.isOwnedByPlayer) {
                 this.m_ExpiryTimeByCellId.set(cellID, timer + MapRoom3Data.PLAYER_CELL_EXPIRIY_TIME);

@@ -6,9 +6,12 @@ import { BasePlannerTransferPopup } from "./BasePlannerTransferPopup";
 import { BasePlannerTransferRow } from "./BasePlannerTransferRow";
 import { BasePlannerTransferConfirmation } from "./BasePlannerTransferConfirmation";
 
-import { KEYS } from "../../../../../KEYS";
-import { POPUPS } from "../../../../../POPUPS";
 import { POPUPSETTINGS } from "../../../../../POPUPSETTINGS";
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../../KEYS").KEYS; }
+function getPOPUPS(): any { return require("../../../../../POPUPS").POPUPS; }
+
 
 /**
  * Base planner save popup - popup for saving base layouts.
@@ -19,11 +22,11 @@ export class BasePlannerSavePopup extends BasePlannerTransferPopup {
 
     constructor() {
         super();
-        this.tTitle.htmlText = KEYS.Get("basePlanner_savetitle");
+        this.tTitle.htmlText = getKEYS().Get("basePlanner_savetitle");
     }
 
     public override get name(): string {
-        return KEYS.Get("basePlanner_btnSave");
+        return getKEYS().Get("basePlanner_btnSave");
     }
 
     protected override clickedTransfer(event: Event): void {
@@ -33,7 +36,7 @@ export class BasePlannerSavePopup extends BasePlannerTransferPopup {
                 this._confirmationPopup = new BasePlannerTransferConfirmation("'" + this._row.template.name + "'");
                 this._confirmationPopup.addEventListener(BasePlannerEvent.SAVE, this.confirmedSave.bind(this));
                 this._confirmationPopup.addEventListener(Event.CLOSE, this.clickedClose.bind(this));
-                POPUPS.Add(this._confirmationPopup);
+                getPOPUPS().Add(this._confirmationPopup);
                 POPUPSETTINGS.AlignToCenter(this._confirmationPopup);
             }
         } else {
@@ -45,7 +48,7 @@ export class BasePlannerSavePopup extends BasePlannerTransferPopup {
         if (this._confirmationPopup) {
             this._confirmationPopup.removeEventListener(BasePlannerEvent.SAVE, this.confirmedSave.bind(this));
             this._confirmationPopup.removeEventListener(Event.CLOSE, this.clickedClose.bind(this));
-            POPUPS.Remove(this._confirmationPopup);
+            getPOPUPS().Remove(this._confirmationPopup);
             this._confirmationPopup = null;
         }
     }

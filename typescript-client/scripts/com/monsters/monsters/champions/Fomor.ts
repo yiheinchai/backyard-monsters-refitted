@@ -1,23 +1,26 @@
 import Point from "openfl/geom/Point";
 
 import { ITargetable } from "../../interfaces/ITargetable";
-import { InstanceManager } from "../../managers/InstanceManager";
 import { AOEEnrage } from "../components/abilities/AOEEnrage";
-import { PATHING } from "../../pathing/PATHING";
 import { ChampionBase } from "./ChampionBase";
 
-import { ATTACK } from "../../../../ATTACK";
-import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { CHAMPIONCAGE } from "../../../../CHAMPIONCAGE";
-import { FIREBALL } from "../../../../FIREBALL";
-import { FIREBALLS } from "../../../../FIREBALLS";
-import { GLOBAL } from "../../../../GLOBAL";
-import { KEYS } from "../../../../KEYS";
-import { LOGGER } from "../../../../LOGGER";
-import { LOGIN } from "../../../../LOGIN";
-import { SOUNDS } from "../../../../SOUNDS";
-import { SPRITES } from "../../../../SPRITES";
-import { Targeting } from "../../../../Targeting";
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("../../managers/InstanceManager").InstanceManager; }
+function getPATHING(): any { return require("../../pathing/PATHING").PATHING; }
+function getATTACK(): any { return require("../../../../ATTACK").ATTACK; }
+function getBFOUNDATION(): any { return require("../../../../BFOUNDATION").BFOUNDATION; }
+function getCHAMPIONCAGE(): any { return require("../../../../CHAMPIONCAGE").CHAMPIONCAGE; }
+function getFIREBALL(): any { return require("../../../../FIREBALL").FIREBALL; }
+function getFIREBALLS(): any { return require("../../../../FIREBALLS").FIREBALLS; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../../LOGGER").LOGGER; }
+function getLOGIN(): any { return require("../../../../LOGIN").LOGIN; }
+function getSOUNDS(): any { return require("../../../../SOUNDS").SOUNDS; }
+function getSPRITES(): any { return require("../../../../SPRITES").SPRITES; }
+function getTargeting(): any { return require("../../../../Targeting").Targeting; }
+
+
 
 /**
  * Fomor - Water champion that buffs allies and attacks enemies.
@@ -44,9 +47,9 @@ export class Fomor extends ChampionBase {
             this._graphicMC.y -= this._altitude;
             this.changeModeBuff();
         }
-        SPRITES.SetupSprite("bigshadow");
+        getSPRITES().SetupSprite("bigshadow");
         this.addComponent(new AOEEnrage(250, 1 + this._buff * 2, this._buff));
-        this.attackFlags = Targeting.getOldStyleTargets(1);
+        this.attackFlags = getTargeting().getOldStyleTargets(1);
     }
 
     public override tick(delta: number = 1): boolean {
@@ -66,18 +69,18 @@ export class Fomor extends ChampionBase {
         if (this._targetCreep === null) {
             return false;
         }
-        const dist = GLOBAL.QuickDistance(this._targetCreep._tmpPoint, this._tmpPoint);
+        const dist = getGLOBAL().QuickDistance(this._targetCreep._tmpPoint, this._tmpPoint);
         if (dist > this.m_range) {
             return false;
         }
-        if (PATHING.LineOfSight(this._tmpPoint.x, this._tmpPoint.y, this._targetCreep._tmpPoint.x, this._targetCreep._tmpPoint.y)) {
+        if (getPATHING().LineOfSight(this._tmpPoint.x, this._tmpPoint.y, this._targetCreep._tmpPoint.x, this._targetCreep._tmpPoint.y)) {
             return true;
         }
         return false;
     }
 
     public findBuffTargets(): void {
-        const buildings = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION);
         let hasValidBuilding = false;
         for (const building of buildings) {
             const b = building as BFOUNDATION;
@@ -91,7 +94,7 @@ export class Fomor extends ChampionBase {
         }
         this._looking = true;
         let findNewTarget = false;
-        this._targetCreeps = Targeting.getCreepsInRange(1500, this._tmpPoint, Targeting.getOldStyleTargets(1), this);
+        this._targetCreeps = getTargeting().getCreepsInRange(1500, this._tmpPoint, getTargeting().getOldStyleTargets(1), this);
         if (this._targetCreeps.length > 0) {
             this._targetCreeps.sort((a: any, b: any) => a.dist - b.dist);
             if (!(Boolean(this._targetCreep) && this._targetCreep!.health > 0 && this._targetCreep!.health < this._targetCreep!.maxHealth)) {
@@ -167,29 +170,29 @@ export class Fomor extends ChampionBase {
     protected override rangedAttack(target: ITargetable): ITargetable {
         let fireball: FIREBALL;
         const startPos = Point.interpolate(this._tmpPoint.add(new Point(0, -this._altitude)), this._targetPosition, 0.8);
-        if (target instanceof BFOUNDATION) {
-            fireball = FIREBALLS.Spawn(startPos, this._targetPosition, this._targetBuilding!, 8, this.damage, 0, 0, FIREBALLS.TYPE_FIREBALL, this);
+        if (target instanceof getBFOUNDATION()) {
+            fireball = getFIREBALLS().Spawn(startPos, this._targetPosition, this._targetBuilding!, 8, this.damage, 0, 0, getFIREBALLS().TYPE_FIREBALL, this);
         } else {
-            fireball = FIREBALLS.Spawn2(startPos, this._targetCreep!._tmpPoint, this._targetCreep!, 8, this.damage, 0, FIREBALLS.TYPE_FIREBALL, 1, this);
+            fireball = getFIREBALLS().Spawn2(startPos, this._targetCreep!._tmpPoint, this._targetCreep!, 8, this.damage, 0, getFIREBALLS().TYPE_FIREBALL, 1, this);
         }
-        SOUNDS.Play("hit" + Math.floor(1 + Math.random() * 3), 0.1 + Math.random() * 0.1);
-        FIREBALLS._fireballs[FIREBALLS._id - 1]._graphic.gotoAndStop(3);
+        getSOUNDS().Play("hit" + Math.floor(1 + Math.random() * 3), 0.1 + Math.random() * 0.1);
+        getFIREBALLS()._fireballs[getFIREBALLS()._id - 1]._graphic.gotoAndStop(3);
         return fireball;
     }
 
     public tickBBuff(): void {
         if (this.health <= 0) {
-            Targeting.CreepCellDelete(this._id, this.node);
+            getTargeting().CreepCellDelete(this._id, this.node);
             this.changeModeRetreat();
-            ATTACK.Log(this._creatureID, KEYS.Get("attacklog_champ_retreated", {
-                "v1": LOGIN._playerName,
+            getATTACK().Log(this._creatureID, getKEYS().Get("attacklog_champ_retreated", {
+                "v1": getLOGIN()._playerName,
                 "v2": this._level.Get(),
-                "v3": CHAMPIONCAGE._guardians[this._creatureID].name
+                "v3": getCHAMPIONCAGE()._guardians[this._creatureID].name
             }));
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK) {
-                LOGGER.Stat([54, this._creatureID, 1, this._level.Get()]);
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK) {
+                getLOGGER().Stat([54, this._creatureID, 1, this._level.Get()]);
             }
-            SOUNDS.Play("monsterland" + (1 + Math.floor(Math.random() * 3)));
+            getSOUNDS().Play("monsterland" + (1 + Math.floor(Math.random() * 3)));
             return;
         }
         if (this._frameNumber % 100 === 0) {
@@ -209,7 +212,7 @@ export class Fomor extends ChampionBase {
                         this._targetCreep = null;
                     }
                     this.findBuffTargets();
-                } else if (GLOBAL.QuickDistance(this._targetCreep._tmpPoint, this._tmpPoint) < this.m_range) {
+                } else if (getGLOBAL().QuickDistance(this._targetCreep._tmpPoint, this._tmpPoint) < this.m_range) {
                     this._atTarget = true;
                 } else {
                     this._atTarget = false;
@@ -227,11 +230,11 @@ export class Fomor extends ChampionBase {
                         this._helpCreep = null;
                     }
                     this.findBuffTargets();
-                } else if (this._helpCreep && GLOBAL.QuickDistance(this._helpCreep._tmpPoint, this._tmpPoint) < this.m_range && Boolean(this._helpCreep._targetBuilding) && GLOBAL.QuickDistance(this._helpCreep._targetBuilding._position, this._tmpPoint) < this.m_range) {
+                } else if (this._helpCreep && getGLOBAL().QuickDistance(this._helpCreep._tmpPoint, this._tmpPoint) < this.m_range && Boolean(this._helpCreep._targetBuilding) && getGLOBAL().QuickDistance(this._helpCreep._targetBuilding._position, this._tmpPoint) < this.m_range) {
                     this._atTarget = true;
                 } else if (!this._attacking && !this._looking && this._frameNumber % 120 === 0) {
                     this.findBuffTargets();
-                } else if (this._attacking && this._helpCreep && GLOBAL.QuickDistance(this._helpCreep._tmpPoint, this._tmpPoint) > this.m_range * 1.25) {
+                } else if (this._attacking && this._helpCreep && getGLOBAL().QuickDistance(this._helpCreep._tmpPoint, this._tmpPoint) > this.m_range * 1.25) {
                     this._attacking = false;
                     this._atTarget = false;
                 } else if (this._waypoints.length === 0 && !this._atTarget) {
@@ -295,7 +298,7 @@ export class Fomor extends ChampionBase {
                     if (this._helpCreep) {
                         this._targetBuilding = this._helpCreep._targetBuilding;
                     }
-                    if (Boolean(this._targetBuilding) && GLOBAL.QuickDistance(this._targetBuilding!._position, this._tmpPoint) < this.m_range) {
+                    if (Boolean(this._targetBuilding) && getGLOBAL().QuickDistance(this._targetBuilding!._position, this._tmpPoint) < this.m_range) {
                         this._attacking = true;
                         this._targetCenter = this._targetBuilding!._position;
                         this._targetPosition = this._targetBuilding!._position;

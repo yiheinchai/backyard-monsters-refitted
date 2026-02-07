@@ -8,11 +8,14 @@ import { ResourceBombs } from './com/monsters/effects/ResourceBombs';
 import { CATAPULTPOPUP_view } from './CATAPULTPOPUP_view';
 import { CATAPULTITEM } from './CATAPULTITEM';
 import { CHAMPIONBUTTON } from './CHAMPIONBUTTON';
-import { ATTACK } from './ATTACK';
-import { UI2 } from './UI2';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
 import { POPUPSETTINGS } from './POPUPSETTINGS';
+
+// Lazy imports to break circular dependency chains
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getUI2(): any { return require("./UI2").UI2; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+
 
 /**
  * CATAPULTPOPUP - Catapult popup for bomb selection and firing
@@ -36,10 +39,10 @@ export class CATAPULTPOPUP extends CATAPULTPOPUP_view {
         let _loc4_: string = "";
         if (param1 > 1000000) {
             _loc3_ = "" + param1 / 1000000;
-            _loc4_ = param2 ? " " + KEYS.Get("bomb_million_long") : KEYS.Get("bomb_million_short");
+            _loc4_ = param2 ? " " + getKEYS().Get("bomb_million_long") : getKEYS().Get("bomb_million_short");
             _loc3_ += _loc4_;
         } else {
-            _loc3_ = GLOBAL.FormatNumber(param1);
+            _loc3_ = getGLOBAL().FormatNumber(param1);
         }
         return _loc3_;
     }
@@ -125,14 +128,14 @@ export class CATAPULTPOPUP extends CATAPULTPOPUP_view {
     public Update(): void {
         let _loc4_: CATAPULTITEM;
         const _loc1_: any = {
-            "tw": KEYS.Get("bomb_tw_name"),
-            "pb": KEYS.Get("bomb_pb_name"),
-            "pu": KEYS.Get("bomb_pu_name")
+            "tw": getKEYS().Get("bomb_tw_name"),
+            "pb": getKEYS().Get("bomb_pb_name"),
+            "pu": getKEYS().Get("bomb_pu_name")
         };
         const _loc2_: any = ResourceBombs._bombs[ResourceBombs._bombid];
-        (this._mc as any).tTitleTwig.htmlText = KEYS.Get("bomb_tw_name_pl");
-        (this._mc as any).tTitlePebble.htmlText = KEYS.Get("bomb_pb_name_pl");
-        (this._mc as any).tTitlePutty.htmlText = KEYS.Get("bomb_pu_name");
+        (this._mc as any).tTitleTwig.htmlText = getKEYS().Get("bomb_tw_name_pl");
+        (this._mc as any).tTitlePebble.htmlText = getKEYS().Get("bomb_pb_name_pl");
+        (this._mc as any).tTitlePutty.htmlText = getKEYS().Get("bomb_pu_name");
         const _loc3_: string = String(_loc1_[ResourceBombs._bombid.substr(0, 2)]);
         if (_loc2_.image != this._currentImage) {
             ImageCache.GetImageWithCallBack(_loc2_.image, this.onImageLoaded.bind(this));
@@ -167,15 +170,15 @@ export class CATAPULTPOPUP extends CATAPULTPOPUP_view {
     public Show(param1: MouseEvent | null = null): void {
         let _loc2_: string = "";
         let _loc3_: any;
-        for (_loc2_ in ATTACK._flingerBucket) {
-            if (ATTACK._flingerBucket[_loc2_].Get() > 0) {
+        for (_loc2_ in getATTACK()._flingerBucket) {
+            if (getATTACK()._flingerBucket[_loc2_].Get() > 0) {
                 if (_loc2_.substr(0, 1) != "G") {
-                    ATTACK._curCreaturesAvailable[_loc2_] += ATTACK._flingerBucket[_loc2_].Get();
-                    ATTACK._flingerBucket[_loc2_].Set(0);
+                    getATTACK()._curCreaturesAvailable[_loc2_] += getATTACK()._flingerBucket[_loc2_].Get();
+                    getATTACK()._flingerBucket[_loc2_].Set(0);
                 }
             }
         }
-        for (_loc3_ of UI2._top._creatureButtons) {
+        for (_loc3_ of getUI2()._top._creatureButtons) {
             if (_loc3_ instanceof CHAMPIONBUTTON) {
                 if (_loc3_._sent) {
                     (_loc3_ as CHAMPIONBUTTON).deSelectSend();
@@ -183,9 +186,9 @@ export class CATAPULTPOPUP extends CATAPULTPOPUP_view {
             }
             _loc3_.Update();
         }
-        ATTACK.RemoveDropZone();
-        if (UI2._top._siegeweapon) {
-            UI2._top._siegeweapon.Cancel();
+        getATTACK().RemoveDropZone();
+        if (getUI2()._top._siegeweapon) {
+            getUI2()._top._siegeweapon.Cancel();
         }
         if (ResourceBombs._state != 0) {
             ResourceBombs.BombRemove();
@@ -204,12 +207,12 @@ export class CATAPULTPOPUP extends CATAPULTPOPUP_view {
     }
 
     public Fire(param1: MouseEvent | null = null): void {
-        this.m_waitTime = GLOBAL.Timestamp() + 1;
-        if (UI2._top._siegeweapon) {
-            UI2._top._siegeweapon.Cancel();
+        this.m_waitTime = getGLOBAL().Timestamp() + 1;
+        if (getUI2()._top._siegeweapon) {
+            getUI2()._top._siegeweapon.Cancel();
         }
         if (ResourceBombs._state == 0) {
-            if (ResourceBombs._bombid && !ResourceBombs._bombs[ResourceBombs._bombid].used && GLOBAL._attackersResources["r" + ResourceBombs._bombs[ResourceBombs._bombid].resource].Get() >= ResourceBombs._bombs[ResourceBombs._bombid].cost) {
+            if (ResourceBombs._bombid && !ResourceBombs._bombs[ResourceBombs._bombid].used && getGLOBAL()._attackersResources["r" + ResourceBombs._bombs[ResourceBombs._bombid].resource].Get() >= ResourceBombs._bombs[ResourceBombs._bombid].cost) {
                 ResourceBombs.BombAdd(ResourceBombs._bombs[ResourceBombs._bombid]);
             }
         } else {

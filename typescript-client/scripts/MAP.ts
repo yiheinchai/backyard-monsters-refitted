@@ -1,6 +1,5 @@
 import { BYMConfig } from './com/monsters/configs/BYMConfig';
 import { KeyboardInputHandler } from './com/monsters/input/KeyboardInputHandler';
-import { MonsterBase } from './com/monsters/monsters/MonsterBase';
 import { RasterData } from './com/monsters/rendering/RasterData';
 import { Renderer } from './com/monsters/rendering/Renderer';
 import Bitmap from 'openfl/display/Bitmap';
@@ -15,15 +14,19 @@ import MouseEvent from 'openfl/events/MouseEvent';
 import Matrix from 'openfl/geom/Matrix';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
-import { BFOUNDATION } from './BFOUNDATION';
-import { CREEPS } from './CREEPS';
-import { GLOBAL } from './GLOBAL';
-import { GRID } from './GRID';
-import { LOGGER } from './LOGGER';
 import { MAPBG } from './MAPBG';
-import { Targeting } from './Targeting';
 import { TweenLite } from './gs/TweenLite';
-import { UI2 } from './UI2';
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getGRID(): any { return require("./GRID").GRID; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getTargeting(): any { return require("./Targeting").Targeting; }
+function getUI2(): any { return require("./UI2").UI2; }
+
 
 /**
  * MAP - Main Game Map Management
@@ -90,15 +93,15 @@ export class MAP {
 
     constructor(texture: string) {
         MAP._instance = this;
-        MAP.stage = GLOBAL._ROOT.stage;
+        MAP.stage = getGLOBAL()._ROOT.stage;
         try {
-            MAP.tx = GLOBAL._SCREENINIT.width / 2;
-            MAP.ty = GLOBAL._SCREENINIT.height / 2;
-            MAP._viewRect.x = GLOBAL._SCREEN.x + MAP.MAP_WIDTH / 2;
-            MAP._viewRect.y = GLOBAL._SCREEN.y + MAP.MAP_HEIGHT / 2;
-            MAP._viewRect.width = GLOBAL._SCREEN.width;
-            MAP._viewRect.height = GLOBAL._SCREEN.height;
-            MAP._GROUND = GLOBAL._layerMap.addChild(new Sprite()) as Sprite;
+            MAP.tx = getGLOBAL()._SCREENINIT.width / 2;
+            MAP.ty = getGLOBAL()._SCREENINIT.height / 2;
+            MAP._viewRect.x = getGLOBAL()._SCREEN.x + MAP.MAP_WIDTH / 2;
+            MAP._viewRect.y = getGLOBAL()._SCREEN.y + MAP.MAP_HEIGHT / 2;
+            MAP._viewRect.width = getGLOBAL()._SCREEN.width;
+            MAP._viewRect.height = getGLOBAL()._SCREEN.height;
+            MAP._GROUND = getGLOBAL()._layerMap.addChild(new Sprite()) as Sprite;
             if (!BYMConfig.instance.RENDERER_ON) {
                 MAP._BGTILES = MAP._GROUND.addChild(new MovieClip()) as MovieClip;
             }
@@ -110,7 +113,7 @@ export class MAP {
                 MAP._GROUND.addChild(MAP._canvasContainer);
             }
         } catch (e: any) {
-            LOGGER.Log("err", "MAP.Setup A: " + e.message + " | " + e.stack);
+            getLOGGER().Log("err", "MAP.Setup A: " + e.message + " | " + e.stack);
         }
         try {
             MAP._GROUND.x = MAP.tx;
@@ -161,20 +164,20 @@ export class MAP {
             MAP._GROUND.addEventListener(MouseEvent.MOUSE_DOWN, MAP.Click);
             MAP._GROUND.addEventListener(Event.ENTER_FRAME, MAP.Scroll);
             MAP._GROUND.stage.addEventListener(KeyboardEvent.KEY_DOWN, KeyboardInputHandler.instance.OnKeyDown);
-            if (GLOBAL.DOES_USE_SCROLL) {
+            if (getGLOBAL().DOES_USE_SCROLL) {
                 MAP._GROUND.stage.addEventListener(MouseEvent.MOUSE_WHEEL, MAP.onMouseScroll);
             }
             MAP._GROUND.stage.addEventListener(KeyboardEvent.KEY_UP, MAP.KeyUp);
             MAP._EDGE = null;
         } catch (e: any) {
-            LOGGER.Log("err", "MAP.Setup B: " + e.message + " | " + e.stack);
+            getLOGGER().Log("err", "MAP.Setup B: " + e.message + " | " + e.stack);
         }
         if (!BYMConfig.instance.RENDERER_ON) MAP.Edge();
         if (BYMConfig.instance.RENDERER_ON) {
             this._renderer = new Renderer(MAP._canvas!, MAP._viewRect);
-            GLOBAL._ROOT.addEventListener(Event.RENDER, this.render.bind(this));
+            getGLOBAL()._ROOT.addEventListener(Event.RENDER, this.render.bind(this));
         }
-        Targeting.init();
+        getTargeting().init();
         MAP._inited = true;
     }
 
@@ -233,8 +236,8 @@ export class MAP {
         if (MAP._BUILDINGTOPS) {
             while (MAP._BUILDINGTOPS.numChildren) MAP._BUILDINGTOPS.removeChildAt(0);
         }
-        if (BYMConfig.instance.RENDERER_ON && GLOBAL._ROOT.hasEventListener(Event.RENDER) && MAP._instance) {
-            GLOBAL._ROOT.removeEventListener(Event.RENDER, MAP._instance.render);
+        if (BYMConfig.instance.RENDERER_ON && getGLOBAL()._ROOT.hasEventListener(Event.RENDER) && MAP._instance) {
+            getGLOBAL()._ROOT.removeEventListener(Event.RENDER, MAP._instance.render);
         }
         MAP._BGTILES = null;
         MAP._BUILDINGBASES = null;
@@ -260,20 +263,20 @@ export class MAP {
     }
 
     public static Edge(): void {
-        if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD && GLOBAL.mode !== GLOBAL.e_BASE_MODE.IBUILD) return;
+        if (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD && getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.IBUILD) return;
         try {
             if (MAP._EDGE && MAP._EDGE.parent === MAP._UNDERLAY) MAP._UNDERLAY!.removeChild(MAP._EDGE);
             MAP._EDGE = BYMConfig.instance.RENDERER_ON ? new MovieClip() : MAP._UNDERLAY!.addChild(new MovieClip()) as MovieClip;
             MAP._EDGE.graphics.lineStyle(2, 0xFFFFFF, 0.5);
-            let iso: Point = GRID.ToISO((0 - GLOBAL._mapWidth) / 2, (0 - GLOBAL._mapHeight) / 2, 0);
+            let iso: Point = getGRID().ToISO((0 - getGLOBAL()._mapWidth) / 2, (0 - getGLOBAL()._mapHeight) / 2, 0);
             MAP._EDGE.graphics.moveTo(iso.x, iso.y);
-            iso = GRID.ToISO(GLOBAL._mapWidth / 2, (0 - GLOBAL._mapHeight) / 2, 0);
+            iso = getGRID().ToISO(getGLOBAL()._mapWidth / 2, (0 - getGLOBAL()._mapHeight) / 2, 0);
             MAP._EDGE.graphics.lineTo(iso.x, iso.y);
-            iso = GRID.ToISO(GLOBAL._mapWidth / 2, GLOBAL._mapHeight / 2, 0);
+            iso = getGRID().ToISO(getGLOBAL()._mapWidth / 2, getGLOBAL()._mapHeight / 2, 0);
             MAP._EDGE.graphics.lineTo(iso.x, iso.y);
-            iso = GRID.ToISO((0 - GLOBAL._mapWidth) / 2, GLOBAL._mapHeight / 2, 0);
+            iso = getGRID().ToISO((0 - getGLOBAL()._mapWidth) / 2, getGLOBAL()._mapHeight / 2, 0);
             MAP._EDGE.graphics.lineTo(iso.x, iso.y);
-            iso = GRID.ToISO((0 - GLOBAL._mapWidth) / 2, (0 - GLOBAL._mapHeight) / 2, 0);
+            iso = getGRID().ToISO((0 - getGLOBAL()._mapWidth) / 2, (0 - getGLOBAL()._mapHeight) / 2, 0);
             MAP._EDGE.graphics.lineTo(iso.x, iso.y);
             if (BYMConfig.instance.RENDERER_ON) {
                 MAP._EFFECTSBMP!.draw(MAP._EDGE, new Matrix(1, 0, 0, 1, MAP._EFFECTSBMP!.width * 0.5, MAP._EFFECTSBMP!.height * 0.5));
@@ -281,7 +284,7 @@ export class MAP {
                 MAP._EDGE.cacheAsBitmap = true;
             }
         } catch (e: any) {
-            LOGGER.Log("err", "MAP.Edge: " + e.message + " | " + e.stack);
+            getLOGGER().Log("err", "MAP.Edge: " + e.message + " | " + e.stack);
         }
     }
 
@@ -302,13 +305,13 @@ export class MAP {
     }
 
     private static onMouseScroll(event: MouseEvent): void {
-        GLOBAL.magnification += event.delta * 0.05;
+        getGLOBAL().magnification += event.delta * 0.05;
     }
 
     public static KeyUp(event: KeyboardEvent): void {}
 
     public static Click(event: MouseEvent | null = null): void {
-        if (UI2._scrollMap && MAP.stage) {
+        if (getUI2()._scrollMap && MAP.stage) {
             MAP._dragX = MAP.stage.mouseX - MAP._GROUND!.x;
             MAP._dragY = MAP.stage.mouseY - MAP._GROUND!.y;
             MAP._startX = MAP._GROUND!.x;
@@ -325,9 +328,9 @@ export class MAP {
     }
 
     public static Focus(x: number, y: number): void {
-        if (!GLOBAL._catchup && MAP._GROUND) {
-            MAP.tx = GLOBAL._SCREEN.x - (x - GLOBAL._SCREEN.width / 2);
-            MAP.ty = GLOBAL._SCREEN.y - (y - GLOBAL._SCREEN.height / 2);
+        if (!getGLOBAL()._catchup && MAP._GROUND) {
+            MAP.tx = getGLOBAL()._SCREEN.x - (x - getGLOBAL()._SCREEN.width / 2);
+            MAP.ty = getGLOBAL()._SCREEN.y - (y - getGLOBAL()._SCREEN.height / 2);
             MAP._GROUND.x = MAP.tx;
             MAP._GROUND.y = MAP.ty;
             MAP._instance?.resizeViewRect();
@@ -336,7 +339,7 @@ export class MAP {
 
     public static FocusTo(x: number, y: number, time: number, delay: number = 0, pause: number = 0, 
                           ease: boolean = true, callback: Function | null = null): void {
-        if (!GLOBAL._catchup && MAP._GROUND) {
+        if (!getGLOBAL()._catchup && MAP._GROUND) {
             const FocusToDone = () => {
                 if (!MAP._GROUND) return;
                 MAP.tx = MAP._GROUND.x;
@@ -344,11 +347,11 @@ export class MAP {
                 MAP._autoScroll = false;
                 if (callback) callback();
                 MAP._instance?.resizeViewRect();
-                BFOUNDATION.updateAllRasterData();
+                getBFOUNDATION().updateAllRasterData();
             };
             if (pause > 0) {
-                UI2.Hide("top");
-                UI2.Hide("bottom");
+                getUI2().Hide("top");
+                getUI2().Hide("bottom");
             }
             MAP._autoScroll = true;
             MAP.tx = 0 - (x - 380);
@@ -357,7 +360,7 @@ export class MAP {
                 x: MAP.tx, y: MAP.ty,
                 ease: ease ? "Cubic.easeInOut" : "Linear.easeNone",
                 delay: delay,
-                onUpdate: BFOUNDATION.updateAllRasterData,
+                onUpdate: getBFOUNDATION().updateAllRasterData,
                 onComplete: FocusToDone,
                 overwrite: false
             });
@@ -365,21 +368,21 @@ export class MAP {
     }
 
     public static FollowStart(): void {
-        UI2.Hide("top");
-        UI2.Hide("bottom");
+        getUI2().Hide("top");
+        getUI2().Hide("bottom");
         MAP._following = true;
     }
 
     public static FollowStop(): void {
-        UI2.Show("top");
-        UI2.Show("bottom");
+        getUI2().Show("top");
+        getUI2().Show("bottom");
         MAP._following = false;
     }
 
     public static Scroll(event: Event | null = null): void {
         if (!MAP._GROUND || !MAP.stage) return;
         if (MAP._following) {
-            const creeps = CREEPS._creeps;
+            const creeps = getCREEPS()._creeps;
             let count = 0;
             MAP.tx = 0;
             MAP.ty = 0;
@@ -394,17 +397,17 @@ export class MAP {
             if (count <= 0) {
                 MAP.tx = MAP._dragX;
                 MAP.ty = MAP._dragY;
-                if (CREEPS._creepCount === 0) MAP.FollowStop();
+                if (getCREEPS()._creepCount === 0) MAP.FollowStop();
                 return;
             }
             MAP.tx /= count;
             MAP.ty /= count;
-            MAP.tx = 0 - MAP.tx + GLOBAL._ROOT.stage.stageWidth * 0.5;
-            MAP.ty = 0 - MAP.ty + GLOBAL._ROOT.stage.stageHeight * 0.5;
+            MAP.tx = 0 - MAP.tx + getGLOBAL()._ROOT.stage.stageWidth * 0.5;
+            MAP.ty = 0 - MAP.ty + getGLOBAL()._ROOT.stage.stageHeight * 0.5;
             MAP._dragX = MAP.tx;
             MAP._dragY = MAP.ty;
-            BFOUNDATION.updateAllRasterData();
-        } else if (MAP._dragging && UI2._scrollMap && !MAP._autoScroll && MAP._canScroll) {
+            getBFOUNDATION().updateAllRasterData();
+        } else if (MAP._dragging && getUI2()._scrollMap && !MAP._autoScroll && MAP._canScroll) {
             const mx = MAP.stage.mouseX;
             const my = MAP.stage.mouseY;
             MAP.tx = (mx - MAP._dragX) >> 0;
@@ -414,12 +417,12 @@ export class MAP {
             MAP._dragDistance = Math.abs(dx * dx + dy * dy);
             if (MAP._dragDistance > 100) {
                 MAP._dragged = true;
-                BFOUNDATION.updateAllRasterData();
+                getBFOUNDATION().updateAllRasterData();
             }
         }
         // Boundary constraints
-        const w = GLOBAL._ROOT.stage.stageWidth;
-        const h = GLOBAL._ROOT.stage.stageHeight;
+        const w = getGLOBAL()._ROOT.stage.stageWidth;
+        const h = getGLOBAL()._ROOT.stage.stageHeight;
         const minX = -1615, maxX = 2375, minY = -650, maxY = 1325;
         let limit = maxX - (w >> 1);
         if (MAP.tx > limit) MAP.tx = limit;
@@ -455,17 +458,17 @@ export class MAP {
     public get viewRect(): Rectangle { return MAP._viewRect; }
 
     public resizeCanvas(): void {
-        if (MAP._inited && MAP._canvas && (MAP._canvas.width !== GLOBAL._SCREEN.width || MAP._canvas.height !== GLOBAL._SCREEN.height)) {
-            MAP._canvas = new BitmapData(GLOBAL._SCREEN.width, GLOBAL._SCREEN.height, true, 0xFF00FF00);
+        if (MAP._inited && MAP._canvas && (MAP._canvas.width !== getGLOBAL()._SCREEN.width || MAP._canvas.height !== getGLOBAL()._SCREEN.height)) {
+            MAP._canvas = new BitmapData(getGLOBAL()._SCREEN.width, getGLOBAL()._SCREEN.height, true, 0xFF00FF00);
             MAP._canvasContainer!.bitmapData = MAP._canvas;
-            MAP._canvasContainer!.x = GLOBAL._SCREEN.x;
-            MAP._canvasContainer!.y = GLOBAL._SCREEN.y;
+            MAP._canvasContainer!.x = getGLOBAL()._SCREEN.x;
+            MAP._canvasContainer!.y = getGLOBAL()._SCREEN.y;
             this._renderer!.canvas = MAP._canvas;
         }
     }
 
     public resizeViewRect(): void {
-        const rect = GLOBAL._SCREEN;
+        const rect = getGLOBAL()._SCREEN;
         MAP._viewRect.width = rect.width * (1 / MAP._GROUND!.scaleX) + 32;
         MAP._viewRect.height = rect.height * (1 / MAP._GROUND!.scaleY) + 32;
         MAP._viewRect.x = -(MAP._GROUND!.x * (1 / MAP._GROUND!.scaleX)) + (MAP.MAP_WIDTH >>> 1) + rect.x - 32;

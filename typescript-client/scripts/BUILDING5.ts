@@ -2,10 +2,13 @@ import MovieClip from 'openfl/display/MovieClip';
 import MouseEvent from 'openfl/events/MouseEvent';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BFOUNDATION } from './BFOUNDATION';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { POPUPS } from './POPUPS';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+
 
 /**
  * BUILDING5 - Monster Flinger
@@ -45,32 +48,32 @@ export class BUILDING5 extends BFOUNDATION {
     }
 
     public override PlaceB(): void {
-        GLOBAL._bFlinger = this;
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-            GLOBAL._playerFlingerLevel.Set(this._lvl.Get());
+        getGLOBAL()._bFlinger = this;
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+            getGLOBAL()._playerFlingerLevel.Set(this._lvl.Get());
         }
         super.PlaceB();
     }
 
     public override Cancel(): void {
-        GLOBAL._bFlinger = null;
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-            GLOBAL._playerFlingerLevel.Set(0);
+        getGLOBAL()._bFlinger = null;
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+            getGLOBAL()._playerFlingerLevel.Set(0);
         }
         super.Cancel();
     }
 
     public override RecycleC(): void {
-        GLOBAL._bFlinger = null;
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-            GLOBAL._playerFlingerLevel.Set(0);
+        getGLOBAL()._bFlinger = null;
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+            getGLOBAL()._playerFlingerLevel.Set(0);
         }
         super.RecycleC();
     }
 
     public override Description(): void {
         super.Description();
-        this._upgradeDescription = KEYS.Get("building_flinger_upgrade_desc");
+        this._upgradeDescription = getKEYS().Get("building_flinger_upgrade_desc");
     }
 
     public override Update(force: boolean = false): void {
@@ -79,26 +82,26 @@ export class BUILDING5 extends BFOUNDATION {
 
     public override Constructed(): void {
         super.Constructed();
-        GLOBAL._bFlinger = this;
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-            GLOBAL._playerFlingerLevel.Set(this._lvl.Get());
+        getGLOBAL()._bFlinger = this;
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+            getGLOBAL()._playerFlingerLevel.Set(this._lvl.Get());
         }
     }
 
     public override Upgraded(): void {
         super.Upgraded();
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && BASE.isMainYard) {
-            GLOBAL._playerFlingerLevel.Set(this._lvl.Get());
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && getBASE().isMainYard) {
+            getGLOBAL()._playerFlingerLevel.Set(this._lvl.Get());
         }
     }
 
     public override Setup(building: any): void {
         super.Setup(building);
         if (this._countdownBuild.Get() <= 0) {
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-                GLOBAL._playerFlingerLevel.Set(this._lvl.Get());
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+                getGLOBAL()._playerFlingerLevel.Set(this._lvl.Get());
             }
-            GLOBAL._bFlinger = this;
+            getGLOBAL()._bFlinger = this;
         }
     }
 }

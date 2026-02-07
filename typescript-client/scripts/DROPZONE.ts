@@ -3,15 +3,18 @@ import Event from 'openfl/events/Event';
 import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import Sprite from 'openfl/display/Sprite';
-import { ATTACK } from './ATTACK';
-import { BASE } from './BASE';
-import { BFOUNDATION } from './BFOUNDATION';
-import { BTOWER } from './BTOWER';
-import { BUILDING22 } from './BUILDING22';
-import { CREEPS } from './CREEPS';
-import { MAP } from './MAP';
 import { SIEGEWEAPONPOPUP } from './SIEGEWEAPONPOPUP';
-import { UI2 } from './UI2';
+
+// Lazy imports to break circular dependency chains
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBTOWER(): any { return require("./BTOWER").BTOWER; }
+function getBUILDING22(): any { return require("./BUILDING22").BUILDING22; }
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getUI2(): any { return require("./UI2").UI2; }
+
 
 /**
  * DROPZONE - Drop Zone Manager
@@ -40,7 +43,7 @@ export class DROPZONE extends Sprite {
         this._dropTarget = dropTarget;
         this.ring1 = {};
         // In original: ring1.addEventListener(MouseEvent.MOUSE_UP, this.Place);
-        // ring1.addEventListener(MouseEvent.MOUSE_DOWN, MAP.Click);
+        // ring1.addEventListener(MouseEvent.MOUSE_DOWN, getMAP().Click);
         // addEventListener(Event.ENTER_FRAME, this.Follow);
         this.Update(this._size, dropTarget);
     }
@@ -55,25 +58,25 @@ export class DROPZONE extends Sprite {
     }
 
     public Place(event: MouseEvent): void {
-        if (!MAP._dragged && ATTACK._countdown >= 0) {
+        if (!getMAP()._dragged && getATTACK()._countdown >= 0) {
             this.Drop();
         }
     }
 
     public Follow(event: Event | null = null): void {
-        if (MAP._GROUND) {
-            this.x = MAP._GROUND.mouseX;
-            this.y = MAP._GROUND.mouseY;
+        if (getMAP()._GROUND) {
+            this.x = getMAP()._GROUND.mouseX;
+            this.y = getMAP()._GROUND.mouseY;
             switch (this._dropTarget) {
                 case DROPZONE.GROUND:
-                    if (!BASE.BuildingOverlap(new Point(this.x, this.y), this._size, true, true, true)) {
+                    if (!getBASE().BuildingOverlap(new Point(this.x, this.y), this._size, true, true, true)) {
                         this.ring1.gotoAndStop(1);
                     } else {
                         this.ring1.gotoAndStop(2);
                     }
                     break;
                 case DROPZONE.SIEGEWEAPON_GROUND:
-                    if (!BASE.BuildingOverlap(new Point(this.x, this.y), this._size, true, true, true)) {
+                    if (!getBASE().BuildingOverlap(new Point(this.x, this.y), this._size, true, true, true)) {
                         this.ring1.gotoAndStop(1);
                     } else {
                         this.ring1.gotoAndStop(2);
@@ -81,7 +84,7 @@ export class DROPZONE extends Sprite {
                     this.UpdateTargetBuildings(this.x, this.y, this._size);
                     break;
                 case DROPZONE.SIEGEWEAPON_GROUND_SPECIAL:
-                    if (!BASE.BuildingOverlap(new Point(this.x, this.y), DROPZONE.SIEGEWEAPON_GROUND_SPECIAL_RADIUS, true, true, true)) {
+                    if (!getBASE().BuildingOverlap(new Point(this.x, this.y), DROPZONE.SIEGEWEAPON_GROUND_SPECIAL_RADIUS, true, true, true)) {
                         this.ring1.gotoAndStop(1);
                     } else {
                         this.ring1.gotoAndStop(2);
@@ -90,7 +93,7 @@ export class DROPZONE extends Sprite {
                     break;
                 case DROPZONE.BUILDINGS:
                 case DROPZONE.SIEGEWEAPON_BUILDINGS:
-                    if (BASE.BuildingOverlap(new Point(this.x, this.y), this._size, true, true, true)) {
+                    if (getBASE().BuildingOverlap(new Point(this.x, this.y), this._size, true, true, true)) {
                         this.ring1.gotoAndStop(1);
                     } else {
                         this.ring1.gotoAndStop(2);
@@ -98,7 +101,7 @@ export class DROPZONE extends Sprite {
                     this.UpdateTargetBuildings(this.x, this.y, this._size);
                     break;
                 case DROPZONE.MONSTERS:
-                    if (CREEPS.CreepOverlap(new Point(this.x, this.y), this._size)) {
+                    if (getCREEPS().CreepOverlap(new Point(this.x, this.y), this._size)) {
                         this.ring1.gotoAndStop(1);
                     } else {
                         this.ring1.gotoAndStop(2);
@@ -125,18 +128,18 @@ export class DROPZONE extends Sprite {
 
     public UpdateTargetBuildings(x: number, y: number, size: number): void {
         this.Clear();
-        BASE.GetBuildingOverlap(x, y, size, this._targetedBuildings);
+        getBASE().GetBuildingOverlap(x, y, size, this._targetedBuildings);
         switch (this._dropTarget) {
             case DROPZONE.SIEGEWEAPON_BUILDINGS:
                 for (let i = this._targetedBuildings.length - 1; i >= 0; i--) {
-                    if (!(this._targetedBuildings[i] instanceof BTOWER)) {
+                    if (!(this._targetedBuildings[i] instanceof getBTOWER())) {
                         this._targetedBuildings.splice(i, 1);
                     }
                 }
                 break;
             case DROPZONE.SIEGEWEAPON_GROUND_SPECIAL:
                 for (let i = this._targetedBuildings.length - 1; i >= 0; i--) {
-                    if (!(this._targetedBuildings[i] instanceof BUILDING22)) {
+                    if (!(this._targetedBuildings[i] instanceof getBUILDING22())) {
                         this._targetedBuildings.splice(i, 1);
                     }
                 }
@@ -151,43 +154,43 @@ export class DROPZONE extends Sprite {
         let siegePopup: SIEGEWEAPONPOPUP;
         switch (this._dropTarget) {
             case DROPZONE.GROUND:
-                if (!BASE.BuildingOverlap(new Point(this.x, this.y), this._size, true, true, true)) {
-                    ATTACK.Spawn(new Point(this.x, this.y), this._size / 2);
+                if (!getBASE().BuildingOverlap(new Point(this.x, this.y), this._size, true, true, true)) {
+                    getATTACK().Spawn(new Point(this.x, this.y), this._size / 2);
                 }
                 break;
             case DROPZONE.BUILDINGS:
-                if (BASE.BuildingOverlap(new Point(this.x, this.y), this._size, true, true, true)) {
+                if (getBASE().BuildingOverlap(new Point(this.x, this.y), this._size, true, true, true)) {
                     ResourceBombs.BombDrop();
                 }
                 break;
             case DROPZONE.MONSTERS:
-                if (CREEPS.CreepOverlap(new Point(this.x, this.y), this._size)) {
+                if (getCREEPS().CreepOverlap(new Point(this.x, this.y), this._size)) {
                     ResourceBombs.BombDrop();
                 }
                 break;
             case DROPZONE.SIEGEWEAPON_GROUND:
-                if (BASE.BuildingOverlap(new Point(this.x, this.y), this._size, true, true, true)) {
+                if (getBASE().BuildingOverlap(new Point(this.x, this.y), this._size, true, true, true)) {
                     break;
                 }
-                siegePopup = UI2._top._siegeweapon;
+                siegePopup = getUI2()._top._siegeweapon;
                 if (siegePopup && siegePopup._state === 1) {
                     siegePopup.Fire(this.x, this.y);
                 }
                 break;
             case DROPZONE.SIEGEWEAPON_BUILDINGS:
-                if (!BASE.BuildingOverlap(new Point(this.x, this.y), this._size, true, true, true)) {
+                if (!getBASE().BuildingOverlap(new Point(this.x, this.y), this._size, true, true, true)) {
                     break;
                 }
-                siegePopup = UI2._top._siegeweapon;
+                siegePopup = getUI2()._top._siegeweapon;
                 if (siegePopup && siegePopup._state === 1) {
                     siegePopup.Fire(this.x, this.y);
                 }
                 break;
             case DROPZONE.SIEGEWEAPON_GROUND_SPECIAL:
-                if (BASE.BuildingOverlap(new Point(this.x, this.y), DROPZONE.SIEGEWEAPON_GROUND_SPECIAL_RADIUS, true, true, true)) {
+                if (getBASE().BuildingOverlap(new Point(this.x, this.y), DROPZONE.SIEGEWEAPON_GROUND_SPECIAL_RADIUS, true, true, true)) {
                     break;
                 }
-                siegePopup = UI2._top._siegeweapon;
+                siegePopup = getUI2()._top._siegeweapon;
                 if (siegePopup && siegePopup._state === 1) {
                     siegePopup.Fire(this.x, this.y);
                 }

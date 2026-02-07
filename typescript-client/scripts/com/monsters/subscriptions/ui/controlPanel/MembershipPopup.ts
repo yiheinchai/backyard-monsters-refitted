@@ -5,9 +5,12 @@ import { SubscriptionHandler } from "../../SubscriptionHandler";
 import { SubscriptionCancelPopup } from "./SubscriptionCancelPopup";
 import { subscriptions_membership_popup } from "../../../../../subscriptions_membership_popup";
 
-import { KEYS } from "../../../../../KEYS";
-import { POPUPS } from "../../../../../POPUPS";
 import { POPUPSETTINGS } from "../../../../../POPUPSETTINGS";
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../../KEYS").KEYS; }
+function getPOPUPS(): any { return require("../../../../../POPUPS").POPUPS; }
+
 
 /**
  * Membership popup - subscription management popup.
@@ -18,16 +21,16 @@ export class MembershipPopup extends subscriptions_membership_popup {
     constructor() {
         super();
         const isActive: boolean = this.subscriptionActive();
-        this.tTitle.htmlText = KEYS.Get("dc_panel_benefits");
-        this.tDescription.htmlText = KEYS.Get("dc_benefits_desc");
+        this.tTitle.htmlText = getKEYS().Get("dc_panel_benefits");
+        this.tDescription.htmlText = getKEYS().Get("dc_benefits_desc");
         if (isActive) {
-            this.tRenew.htmlText = KEYS.Get("dc_benefits_renew", { "v1": new Date(SubscriptionHandler.instance.renewalDate * 1000).toLocaleDateString() });
+            this.tRenew.htmlText = getKEYS().Get("dc_benefits_renew", { "v1": new Date(SubscriptionHandler.instance.renewalDate * 1000).toLocaleDateString() });
         } else {
-            this.tRenew.htmlText = KEYS.Get("dc_benefits_expire", { "v1": new Date(SubscriptionHandler.instance.expirationDate * 1000).toLocaleDateString() });
+            this.tRenew.htmlText = getKEYS().Get("dc_benefits_expire", { "v1": new Date(SubscriptionHandler.instance.expirationDate * 1000).toLocaleDateString() });
         }
         if (isActive) {
             this.bChange.buttonMode = true;
-            this.bChange.Setup(KEYS.Get("btn_changepayment"));
+            this.bChange.Setup(getKEYS().Get("btn_changepayment"));
             this.bChange.addEventListener(MouseEvent.CLICK, this.clickedChange.bind(this));
         } else {
             this.bChange.Enabled = false;
@@ -37,15 +40,15 @@ export class MembershipPopup extends subscriptions_membership_popup {
         }
         this.bCancel.buttonMode = true;
         if (isActive) {
-            this.bCancel.Setup(KEYS.Get("btn_cancelsub"));
+            this.bCancel.Setup(getKEYS().Get("btn_cancelsub"));
             this.bCancel.addEventListener(MouseEvent.CLICK, this.clickedCancelConfirm.bind(this));
         } else {
-            this.bCancel.Setup(KEYS.Get("btn_reactivatesub"));
+            this.bCancel.Setup(getKEYS().Get("btn_reactivatesub"));
             this.bCancel.addEventListener(MouseEvent.CLICK, this.clickedReactivate.bind(this));
         }
         this.bClose.Highlight = true;
         this.bClose.buttonMode = true;
-        this.bClose.Setup(KEYS.Get("btn_close"));
+        this.bClose.Setup(getKEYS().Get("btn_close"));
         this.bClose.addEventListener(MouseEvent.CLICK, this.Hide.bind(this));
     }
 
@@ -74,7 +77,7 @@ export class MembershipPopup extends subscriptions_membership_popup {
 
     private clickedCancelConfirm(event: MouseEvent | null = null): void {
         this._cancelConfirm = new SubscriptionCancelPopup();
-        POPUPS.Add(this._cancelConfirm);
+        getPOPUPS().Add(this._cancelConfirm);
         this._cancelConfirm.addEventListener(SubscriptionHandler.CANCELCONFIRM, this.eventCancel.bind(this));
         this._cancelConfirm.addEventListener(SubscriptionHandler.CLOSECONFIRM, this.removeConfirmationPopup.bind(this));
         POPUPSETTINGS.AlignToCenter(this._cancelConfirm);
@@ -83,7 +86,7 @@ export class MembershipPopup extends subscriptions_membership_popup {
     private removeConfirmationPopup(event: Event | null = null): void {
         this._cancelConfirm!.removeEventListener(SubscriptionHandler.CANCELCONFIRM, this.clickedCancel.bind(this));
         this._cancelConfirm!.removeEventListener(SubscriptionHandler.CLOSECONFIRM, this.removeConfirmationPopup.bind(this));
-        POPUPS.Remove(this._cancelConfirm!);
+        getPOPUPS().Remove(this._cancelConfirm!);
     }
 
     public Hide(event: MouseEvent | null = null): void {

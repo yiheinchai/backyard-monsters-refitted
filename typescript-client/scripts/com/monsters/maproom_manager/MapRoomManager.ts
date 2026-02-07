@@ -8,16 +8,19 @@ import { CModifiableProperty } from "../monsters/components/CModifiableProperty"
 import { IMapRoom } from "./IMapRoom";
 import { IMapRoomCell } from "./IMapRoomCell";
 import { SingletonLock } from "../../../config/singletonlock/SingletonLock";
-import { URLLoaderApi } from "../../../URLLoaderApi";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
 import { INFERNO_DESCENT_POPUPS } from "../../../INFERNO_DESCENT_POPUPS";
-import { KEYS } from "../../../KEYS";
-import { LOGGER } from "../../../LOGGER";
 import { MONSTERBAITER } from "../../../MONSTERBAITER";
 import { PLEASEWAIT } from "../../../PLEASEWAIT";
-import { WMATTACK } from "../../../WMATTACK";
+
+// Lazy imports to break circular dependency chains
+function getURLLoaderApi(): any { return require("../../../URLLoaderApi").URLLoaderApi; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+function getWMATTACK(): any { return require("../../../WMATTACK").WMATTACK; }
+
 
 /**
  * MapRoomManager - singleton manager for map room functionality.
@@ -120,7 +123,7 @@ export class MapRoomManager {
 
     public OnMapRoom3RelocationSuccessful(headerURL: string): void {
         this.BookmarksClear();
-        GLOBAL._currentCell = null;
+        getGLOBAL()._currentCell = null;
         this.m_CurrentMapRoom = new MapRoom3(headerURL);
     }
 
@@ -144,34 +147,34 @@ export class MapRoomManager {
     }
 
     public Show(): void {
-        if (GLOBAL.mode === "build") {
-            GLOBAL.m_mapRoomFunctional = true;
+        if (getGLOBAL().mode === "build") {
+            getGLOBAL().m_mapRoomFunctional = true;
         }
-        if (WMATTACK._inProgress || Boolean(MONSTERBAITER._attacking)) {
+        if (getWMATTACK()._inProgress || Boolean(MONSTERBAITER._attacking)) {
             return;
         }
-        if (!GLOBAL._flags.discordOldEnough) {
-            GLOBAL.Message(KEYS.Get("newmap_discord_age"));
+        if (!getGLOBAL()._flags.discordOldEnough) {
+            getGLOBAL().Message(getKEYS().Get("newmap_discord_age"));
             return;
         }
-        if (GLOBAL._flags.maproom2 !== 1) {
-            GLOBAL.Message(KEYS.Get("map_msg_disabled"));
+        if (getGLOBAL()._flags.maproom2 !== 1) {
+            getGLOBAL().Message(getKEYS().Get("map_msg_disabled"));
             return;
         }
-        if ((!BASE.isMainYard || GLOBAL._bMap && GLOBAL._bMap._canFunction || GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD) && (GLOBAL.mode === "help" || !this.isOpen)) {
-            PLEASEWAIT.Show(KEYS.Get("newmap_opening"));
+        if ((!getBASE().isMainYard || getGLOBAL()._bMap && getGLOBAL()._bMap._canFunction || getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD) && (getGLOBAL().mode === "help" || !this.isOpen)) {
+            PLEASEWAIT.Show(getKEYS().Get("newmap_opening"));
             if (this.isOpen) {
                 this.Hide();
             }
-            GLOBAL._showMapWaiting = 1;
+            getGLOBAL()._showMapWaiting = 1;
             return;
         }
-        if (!GLOBAL._bMap) {
-            GLOBAL.Message(KEYS.Get("map_msg_notbuilt"));
+        if (!getGLOBAL()._bMap) {
+            getGLOBAL().Message(getKEYS().Get("map_msg_notbuilt"));
             return;
         }
-        if (!GLOBAL._bMap._canFunction) {
-            GLOBAL.Message(KEYS.Get("map_msg_damaged"));
+        if (!getGLOBAL()._bMap._canFunction) {
+            getGLOBAL().Message(getKEYS().Get("map_msg_damaged"));
             return;
         }
     }
@@ -229,27 +232,27 @@ export class MapRoomManager {
     }
 
     public UpgradeToMapRoom3(): void {
-        GLOBAL._save = false;
-        PLEASEWAIT.Show(KEYS.Get("upgrading_to_map_room3"));
-        new URLLoaderApi().load(this.m_MapRoom3URL + "setmapversion", [["version", 3]], this.MapRoom3UpgradeSuccess.bind(this), this.MapRoom3UpgradeFail.bind(this));
+        getGLOBAL()._save = false;
+        PLEASEWAIT.Show(getKEYS().Get("upgrading_to_map_room3"));
+        new (getURLLoaderApi())().load(this.m_MapRoom3URL + "setmapversion", [["version", 3]], this.MapRoom3UpgradeSuccess.bind(this), this.MapRoom3UpgradeFail.bind(this));
     }
 
     private MapRoom3UpgradeSuccess(result: Record<string, any>): void {
         if (result.error === 0) {
             PLEASEWAIT.Hide();
-            PLEASEWAIT.Show(KEYS.Get("upgraded_to_map_room3_refresh"));
-            GLOBAL.CallJS("cc.reloadParent");
+            PLEASEWAIT.Show(getKEYS().Get("upgraded_to_map_room3_refresh"));
+            getGLOBAL().CallJS("cc.reloadParent");
         } else {
             PLEASEWAIT.Hide();
-            LOGGER.Log("err", result.error);
-            GLOBAL.ErrorMessage("Error upgrading to Map Room 3");
+            getLOGGER().Log("err", result.error);
+            getGLOBAL().ErrorMessage("Error upgrading to Map Room 3");
         }
     }
 
     private MapRoom3UpgradeFail(event: IOErrorEvent): void {
         PLEASEWAIT.Hide();
-        LOGGER.Log("err", "HTTP error upgrading to Map Room 3");
-        GLOBAL.ErrorMessage("HTTP error upgrading to Map Room 3");
+        getLOGGER().Log("err", "HTTP error upgrading to Map Room 3");
+        getGLOBAL().ErrorMessage("HTTP error upgrading to Map Room 3");
     }
 
     public DowngradeFromMapRoom3(): void {
@@ -262,7 +265,7 @@ export class MapRoomManager {
         if (this.currentMapRoom instanceof MapRoom3) {
             return;
         }
-        if (BASE.isInfernoMainYardOrOutpost === true) {
+        if (getBASE().isInfernoMainYardOrOutpost === true) {
             return;
         }
         if (INFERNO_DESCENT_POPUPS.isInDescent() === true) {

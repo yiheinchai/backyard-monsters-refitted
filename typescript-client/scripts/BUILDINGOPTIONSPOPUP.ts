@@ -6,23 +6,26 @@ import TextFieldAutoSize from 'openfl/text/TextFieldAutoSize';
 import { SecNum } from './com/cc/utils/SecNum';
 import { BuildingAssetContainer } from './com/monsters/display/BuildingAssetContainer';
 import { ImageCache } from './com/monsters/display/ImageCache';
-import { InventoryManager } from './com/monsters/inventory/InventoryManager';
-import { InstanceManager } from './com/monsters/managers/InstanceManager';
 import { BUILDINGOPTIONSPOPUP_CLIP } from './BUILDINGOPTIONSPOPUP_CLIP';
-import { BFOUNDATION } from './BFOUNDATION';
-import { BASE } from './BASE';
-import { BUILDINGS } from './BUILDINGS';
-import { BUILDINGOPTIONS } from './BUILDINGOPTIONS';
 import { Checkbox } from './Checkbox';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { POPUPS } from './POPUPS';
 import { POPUPSETTINGS } from './POPUPSETTINGS';
-import { SOUNDS } from './SOUNDS';
-import { STORE } from './STORE';
-import { TUTORIAL } from './TUTORIAL';
-import { BUILDING14 } from './BUILDING14';
-import { INFERNOQUAKETOWER } from './INFERNOQUAKETOWER';
+
+// Lazy imports to break circular dependency chains
+function getInventoryManager(): any { return require("./com/monsters/inventory/InventoryManager").InventoryManager; }
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getBUILDINGS(): any { return require("./BUILDINGS").BUILDINGS; }
+function getBUILDINGOPTIONS(): any { return require("./BUILDINGOPTIONS").BUILDINGOPTIONS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+function getBUILDING14(): any { return require("./BUILDING14").BUILDING14; }
+function getINFERNOQUAKETOWER(): any { return require("./INFERNOQUAKETOWER").INFERNOQUAKETOWER; }
+
 
 /**
  * BUILDINGOPTIONSPOPUP - Building options popup for build/upgrade/fortify/recycle
@@ -44,26 +47,26 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
         this.mcInfoCB.visible = false;
         
         if (param1 == "build") {
-            this._building = new BFOUNDATION();
-            InstanceManager.removeInstance(this._building);
+            this._building = new (getBFOUNDATION())();
+            getInstanceManager().removeInstance(this._building);
             this._building._type = param2;
-            if (!STORE._storeItems["BUILDING" + this._building._type]) {
+            if (!getSTORE()._storeItems["BUILDING" + this._building._type]) {
                 this.mcInstant.bAction.addEventListener(MouseEvent.CLICK, this.ActionInstantBuild.bind(this));
-                this.mcInstant.bAction.Setup(KEYS.Get("buildoptions_shiny", { "v1": this._building.InstantBuildCost() }));
-                this.mcInstant.tDescription.htmlText = KEYS.Get("buildoptions_buildinstant");
+                this.mcInstant.bAction.Setup(getKEYS().Get("buildoptions_shiny", { "v1": this._building.InstantBuildCost() }));
+                this.mcInstant.tDescription.htmlText = getKEYS().Get("buildoptions_buildinstant");
                 this.mcInstant.gCoin.mouseEnabled = false;
             }
         } else if (param1 == "fortify") {
-            this._building = BUILDINGOPTIONS._building;
+            this._building = getBUILDINGOPTIONS()._building;
             this.mcInstant.bAction.addEventListener(MouseEvent.CLICK, this.ActionInstantFortify.bind(this));
-            this.mcInstant.bAction.Setup(KEYS.Get("btn_useshiny", { "v1": this._building.InstantFortifyCost() }));
-            this.mcInstant.tDescription.htmlText = KEYS.Get("buildoptions_fortifyinstant");
+            this.mcInstant.bAction.Setup(getKEYS().Get("btn_useshiny", { "v1": this._building.InstantFortifyCost() }));
+            this.mcInstant.tDescription.htmlText = getKEYS().Get("buildoptions_fortifyinstant");
             this.mcInstant.gCoin.mouseEnabled = false;
         } else {
-            this._building = BUILDINGOPTIONS._building;
+            this._building = getBUILDINGOPTIONS()._building;
             this.mcInstant.bAction.addEventListener(MouseEvent.CLICK, this.ActionInstantUpgrade.bind(this));
-            this.mcInstant.bAction.Setup(KEYS.Get("btn_useshiny", { "v1": this._building.InstantUpgradeCost() }));
-            this.mcInstant.tDescription.htmlText = KEYS.Get("buildoptions_upgradeinstant");
+            this.mcInstant.bAction.Setup(getKEYS().Get("btn_useshiny", { "v1": this._building.InstantUpgradeCost() }));
+            this.mcInstant.tDescription.htmlText = getKEYS().Get("buildoptions_upgradeinstant");
             this.mcInstant.gCoin.mouseEnabled = false;
         }
         
@@ -95,29 +98,29 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
         let _loc3_: any = {};
         let _loc4_: string = "";
         
-        SOUNDS.Play("click1");
-        const _loc5_: BFOUNDATION[] = InstanceManager.getInstancesByClass(BFOUNDATION);
+        getSOUNDS().Play("click1");
+        const _loc5_: BFOUNDATION[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
         
         if (param1 == "build") {
             this.mcResources.bAction.addEventListener(MouseEvent.CLICK, this.ActionResourceBuild.bind(this));
             this.mcResources.bAction.Highlight = true;
-            if (InventoryManager.buildingStorageCount(this._building._type) > 0) {
+            if (getInventoryManager().buildingStorageCount(this._building._type) > 0) {
                 this.mcResources.bAction.SetupKey("btn_place");
             } else {
                 this.mcResources.bAction.SetupKey("btn_build");
             }
             
-            for (const _loc6_item of GLOBAL._buildingProps[this._building._type - 1].costs[0].re) {
+            for (const _loc6_item of getGLOBAL()._buildingProps[this._building._type - 1].costs[0].re) {
                 _loc6_ = _loc6_item;
                 _loc7_ = 0;
                 _loc8_ = "#CC0000";
-                if (_loc6_[0] == INFERNOQUAKETOWER.UNDERHALL_ID) {
+                if (_loc6_[0] == getINFERNOQUAKETOWER().UNDERHALL_ID) {
                     _loc9_ = "#bi_townhall#";
-                    if (GLOBAL.StatGet(BUILDING14.UNDERHALL_LEVEL) >= _loc6_[2] || Boolean(GLOBAL._buildingProps[this._building._type - 1].rewarded)) {
+                    if (getGLOBAL().StatGet(getBUILDING14().UNDERHALL_LEVEL) >= _loc6_[2] || Boolean(getGLOBAL()._buildingProps[this._building._type - 1].rewarded)) {
                         _loc7_ = 1;
                     }
                 } else {
-                    _loc9_ = String(GLOBAL._buildingProps[_loc6_[0] - 1].name);
+                    _loc9_ = String(getGLOBAL()._buildingProps[_loc6_[0] - 1].name);
                     for (const _loc10_item of _loc5_) {
                         _loc10_ = _loc10_item;
                         if (_loc10_._type == _loc6_[0] && _loc10_._lvl.Get() >= _loc6_[2]) {
@@ -131,50 +134,50 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
                 _loc4_ += "<font color=\"" + _loc8_ + "\">";
                 if (_loc6_[1] == 1) {
                     if (_loc6_[2] == 1) {
-                        _loc4_ += "• " + KEYS.Get(_loc9_);
+                        _loc4_ += "• " + getKEYS().Get(_loc9_);
                     } else {
-                        _loc4_ += "• " + KEYS.Get("bdg_buildingrequirement", {
+                        _loc4_ += "• " + getKEYS().Get("bdg_buildingrequirement", {
                             "v1": _loc6_[2],
-                            "v2": KEYS.Get(_loc9_)
+                            "v2": getKEYS().Get(_loc9_)
                         });
                     }
                 } else if (_loc6_[2] == 1) {
-                    _loc4_ += "• " + KEYS.Get(_loc9_) + " x" + _loc6_[1];
+                    _loc4_ += "• " + getKEYS().Get(_loc9_) + " x" + _loc6_[1];
                 } else {
-                    _loc4_ += "• " + KEYS.Get("bdg_buildingsrequirement", {
+                    _loc4_ += "• " + getKEYS().Get("bdg_buildingsrequirement", {
                         "v1": _loc6_[2],
-                        "v2": KEYS.Get(_loc9_),
+                        "v2": getKEYS().Get(_loc9_),
                         "v3": _loc6_[1]
                     });
                 }
                 _loc4_ += "</font><br>";
             }
             
-            if (Boolean(GLOBAL._buildingProps[this._building._type - 1].names) && GLOBAL._buildingProps[this._building._type - 1].names.length > 1) {
+            if (Boolean(getGLOBAL()._buildingProps[this._building._type - 1].names) && getGLOBAL()._buildingProps[this._building._type - 1].names.length > 1) {
                 _loc12_ = this._building._lvl.Get();
                 if (_loc12_ < 1) {
-                    _loc12_ = Number(BASE._buildingsStored["bl" + this._building._type].Get());
+                    _loc12_ = Number(getBASE()._buildingsStored["bl" + this._building._type].Get());
                 }
-                _loc2_ = "<b>" + KEYS.Get(GLOBAL._buildingProps[this._building._type - 1].names[_loc12_ - 1]) + "</b><br>";
+                _loc2_ = "<b>" + getKEYS().Get(getGLOBAL()._buildingProps[this._building._type - 1].names[_loc12_ - 1]) + "</b><br>";
             } else {
-                _loc2_ = "<b>" + KEYS.Get(GLOBAL._buildingProps[this._building._type - 1].name) + "</b><br>";
+                _loc2_ = "<b>" + getKEYS().Get(getGLOBAL()._buildingProps[this._building._type - 1].name) + "</b><br>";
             }
             
-            if (Boolean(GLOBAL._buildingProps[this._building._type - 1].descriptions) && GLOBAL._buildingProps[this._building._type - 1].descriptions.length > 1) {
+            if (Boolean(getGLOBAL()._buildingProps[this._building._type - 1].descriptions) && getGLOBAL()._buildingProps[this._building._type - 1].descriptions.length > 1) {
                 _loc12_ = this._building._lvl.Get();
                 if (_loc12_ < 1) {
-                    _loc12_ = Number(BASE._buildingsStored["bl" + this._building._type].Get());
+                    _loc12_ = Number(getBASE()._buildingsStored["bl" + this._building._type].Get());
                 }
-                _loc2_ += KEYS.Get(GLOBAL._buildingProps[this._building._type - 1].descriptions[_loc12_ - 1]);
+                _loc2_ += getKEYS().Get(getGLOBAL()._buildingProps[this._building._type - 1].descriptions[_loc12_ - 1]);
             } else {
-                _loc2_ += KEYS.Get(GLOBAL._buildingProps[this._building._type - 1].description);
+                _loc2_ += getKEYS().Get(getGLOBAL()._buildingProps[this._building._type - 1].description);
             }
             
             if (_loc4_ != "") {
-                _loc2_ += "<br><br>" + KEYS.Get("bdg_upgraderequirements", { "v1": _loc4_ });
+                _loc2_ += "<br><br>" + getKEYS().Get("bdg_upgraderequirements", { "v1": _loc4_ });
             }
-            _loc3_ = GLOBAL._buildingProps[this._building._type - 1].costs[0];
-            if (GLOBAL._buildingProps[this._building._type - 1].rewarded) {
+            _loc3_ = getGLOBAL()._buildingProps[this._building._type - 1].costs[0];
+            if (getGLOBAL()._buildingProps[this._building._type - 1].rewarded) {
                 _loc3_ = {
                     "r1": new SecNum(0),
                     "r2": new SecNum(0),
@@ -187,37 +190,37 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
             this.toggleCheckbox(true);
         } else if (param1 == "upgrade") {
             this.mcResources.bAction.addEventListener(MouseEvent.CLICK, this.ActionResourceUpgrade.bind(this));
-            this.mcResources.bAction.Setup(KEYS.Get("buildoptions_resources"));
+            this.mcResources.bAction.Setup(getKEYS().Get("buildoptions_resources"));
             if (this._building._lvl.Get() < this._building._buildingProps.costs.length) {
                 // Handle upgrade requirements - similar pattern to build
-                _loc2_ = KEYS.Get("bdg_upgradedesc", {
-                    "v1": KEYS.Get(this._building._buildingProps.name),
+                _loc2_ = getKEYS().Get("bdg_upgradedesc", {
+                    "v1": getKEYS().Get(this._building._buildingProps.name),
                     "v2": this._building._lvl.Get() + 1,
                     "v3": this._building._upgradeDescription
                 });
                 if (_loc4_ != "") {
-                    _loc2_ += KEYS.Get("bdg_upgraderequirements", { "v1": _loc4_ });
+                    _loc2_ += getKEYS().Get("bdg_upgraderequirements", { "v1": _loc4_ });
                 }
                 _loc3_ = this._building.UpgradeCost();
                 this.toggleCheckbox(true);
             } else {
-                _loc2_ = KEYS.Get("bdg_fullyupgraded");
+                _loc2_ = getKEYS().Get("bdg_fullyupgraded");
                 _loc3_ = null;
                 this.toggleCheckbox(false);
             }
         } else if (param1 == "fortify") {
             this.mcResources.bAction.addEventListener(MouseEvent.CLICK, this.ActionResourceFortify.bind(this));
-            this.mcResources.bAction.Setup(KEYS.Get("buildoptions_resources"));
+            this.mcResources.bAction.Setup(getKEYS().Get("buildoptions_resources"));
             if (Boolean(this._building._buildingProps.can_fortify) && this._building._fortification.Get() < this._building._buildingProps.fortify_costs.length) {
-                _loc2_ = "<b>Fortify your " + KEYS.Get(this._building._buildingProps.name) + " to level " + (this._building._fortification.Get() + 1) + "!</b><br>";
+                _loc2_ = "<b>Fortify your " + getKEYS().Get(this._building._buildingProps.name) + " to level " + (this._building._fortification.Get() + 1) + "!</b><br>";
                 _loc2_ += "Damage protection goes from " + (this._building._fortification.Get() ? this._building._fortification.Get() * 10 + 10 : 0) + "% to " + (this._building._fortification.Get() * 10 + 20) + "%.<br><br>";
                 if (_loc4_ != "") {
-                    _loc2_ += KEYS.Get("bdg_upgraderequirements", { "v1": _loc4_ });
+                    _loc2_ += getKEYS().Get("bdg_upgraderequirements", { "v1": _loc4_ });
                 }
                 _loc3_ = this._building.FortifyCost();
                 this.toggleCheckbox(true);
             } else {
-                _loc2_ = KEYS.Get("bdg_fullyfortified");
+                _loc2_ = getKEYS().Get("bdg_fullyfortified");
                 _loc3_ = null;
                 this.toggleCheckbox(false);
             }
@@ -225,16 +228,16 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
             this.mcResources.bAction.addEventListener(MouseEvent.CLICK, this.ActionRecycle.bind(this));
             this.mcResources.bAction.SetupKey("btn_recycle");
             if (this._building._buildingProps.costs.length == 1) {
-                _loc2_ = KEYS.Get("bdg_morenolevel", {
-                    "v1": KEYS.Get(this._building._buildingProps.name),
-                    "v2": KEYS.Get(this._building._buildingProps.description),
+                _loc2_ = getKEYS().Get("bdg_morenolevel", {
+                    "v1": getKEYS().Get(this._building._buildingProps.name),
+                    "v2": getKEYS().Get(this._building._buildingProps.description),
                     "v3": this._building._recycleDescription
                 });
             } else {
-                _loc2_ = KEYS.Get("bdg_more", {
-                    "v1": KEYS.Get(this._building._buildingProps.name),
+                _loc2_ = getKEYS().Get("bdg_more", {
+                    "v1": getKEYS().Get(this._building._buildingProps.name),
                     "v2": this._building._lvl.Get(),
-                    "v3": KEYS.Get(this._building._buildingProps.description),
+                    "v3": getKEYS().Get(this._building._buildingProps.description),
                     "v4": this._building._recycleDescription
                 });
             }
@@ -242,7 +245,7 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
                 this.mcResources.bAction.SetupKey("btn_addstorage");
             } else {
                 this.mcResources.bAction.SetupKey("btn_recycle");
-                if (TUTORIAL._stage < 200) {
+                if (getTUTORIAL()._stage < 200) {
                     this.mcResources.bAction.Enabled = false;
                 }
             }
@@ -258,12 +261,12 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
             _loc14_ = 1;
             while (_loc14_ < 5) {
                 _loc15_ = (this.mcResources as any)["mcR" + _loc14_];
-                _loc16_ = BASE.isInfernoBuilding(this._building._type);
-                _loc17_ = _loc16_ ? BASE._iresources : BASE._resources;
-                _loc18_ = _loc16_ ? GLOBAL.iresourceNames : GLOBAL._resourceNames;
-                _loc15_.gotoAndStop(_loc16_ || BASE.isInfernoMainYardOrOutpost ? _loc14_ + 6 : _loc14_);
-                (_loc15_ as any).tTitle.htmlText = "<b>" + KEYS.Get(_loc18_[_loc14_ - 1]) + "</b>";
-                (_loc15_ as any).tValue.htmlText = "<b><font color=\"#" + (_loc3_["r" + _loc14_].Get() > _loc17_["r" + _loc14_].Get() && (param1 == "upgrade" || param1 == "build" || param1 == "fortify") ? "FF0000" : "000000") + "\">" + GLOBAL.FormatNumber(_loc3_["r" + _loc14_].Get()) + "</font></b>";
+                _loc16_ = getBASE().isInfernoBuilding(this._building._type);
+                _loc17_ = _loc16_ ? getBASE()._iresources : getBASE()._resources;
+                _loc18_ = _loc16_ ? getGLOBAL().iresourceNames : getGLOBAL()._resourceNames;
+                _loc15_.gotoAndStop(_loc16_ || getBASE().isInfernoMainYardOrOutpost ? _loc14_ + 6 : _loc14_);
+                (_loc15_ as any).tTitle.htmlText = "<b>" + getKEYS().Get(_loc18_[_loc14_ - 1]) + "</b>";
+                (_loc15_ as any).tValue.htmlText = "<b><font color=\"#" + (_loc3_["r" + _loc14_].Get() > _loc17_["r" + _loc14_].Get() && (param1 == "upgrade" || param1 == "build" || param1 == "fortify") ? "FF0000" : "000000") + "\">" + getGLOBAL().FormatNumber(_loc3_["r" + _loc14_].Get()) + "</font></b>";
                 if (Boolean(_loc3_["r" + _loc14_].Get()) && _loc3_["r" + _loc14_].Get() > 0) {
                     _loc15_.alpha = 1;
                 } else {
@@ -273,16 +276,16 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
             }
             
             _loc15_ = (this.mcResources as any).mcTime;
-            _loc15_.gotoAndStop(BASE.isInfernoBuilding(this._building._type) || BASE.isInfernoMainYardOrOutpost ? 12 : 6);
-            if (TUTORIAL._stage >= 200 && _loc3_.time.Get() > 0) {
+            _loc15_.gotoAndStop(getBASE().isInfernoBuilding(this._building._type) || getBASE().isInfernoMainYardOrOutpost ? 12 : 6);
+            if (getTUTORIAL()._stage >= 200 && _loc3_.time.Get() > 0) {
                 _loc15_.visible = true;
-                (_loc15_ as any).tTitle.htmlText = "<b>" + KEYS.Get(_loc18_![5]) + "</b>";
-                (_loc15_ as any).tValue.htmlText = "<b>" + GLOBAL.ToTime(_loc13_, true, false) + "</b>";
+                (_loc15_ as any).tTitle.htmlText = "<b>" + getKEYS().Get(_loc18_![5]) + "</b>";
+                (_loc15_ as any).tValue.htmlText = "<b>" + getGLOBAL().ToTime(_loc13_, true, false) + "</b>";
             } else {
                 _loc15_.visible = false;
             }
             
-            if (TUTORIAL._stage < 200 || STORE._storeItems["BUILDING" + this._building._type] || param1 != GLOBAL.e_BASE_MODE.BUILD && param1 != "upgrade" && param1 != "fortify") {
+            if (getTUTORIAL()._stage < 200 || getSTORE()._storeItems["BUILDING" + this._building._type] || param1 != getGLOBAL().e_BASE_MODE.BUILD && param1 != "upgrade" && param1 != "fortify") {
                 this.mcInstant.visible = false;
                 _loc11_ = this.tDescription.height + 53;
             } else {
@@ -300,7 +303,7 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
         this.mcBG.height = _loc11_;
         this.mcBG.Setup();
         
-        if (TUTORIAL._stage < 200 || STORE._storeItems["BUILDING" + this._building._type] || param1 != GLOBAL.e_BASE_MODE.BUILD && param1 != "upgrade" && param1 != "fortify") {
+        if (getTUTORIAL()._stage < 200 || getSTORE()._storeItems["BUILDING" + this._building._type] || param1 != getGLOBAL().e_BASE_MODE.BUILD && param1 != "upgrade" && param1 != "fortify") {
             this.mcResources.y = this.mcBG.y + _loc11_ - 63;
         } else {
             this.mcResources.y = this.mcBG.y + _loc11_ - 63;
@@ -309,8 +312,8 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
     }
 
     private ActionRecycle(param1: MouseEvent): void {
-        if (TUTORIAL._stage < 200) {
-            GLOBAL.Message(KEYS.Get("tut_recycle_locked"), KEYS.Get("btn_close"));
+        if (getTUTORIAL()._stage < 200) {
+            getGLOBAL().Message(getKEYS().Get("tut_recycle_locked"), getKEYS().Get("btn_close"));
         } else {
             this._building.Recycle();
         }
@@ -323,10 +326,10 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
         let _loc2_: boolean = false;
         let _loc3_: number = 0;
         let _loc4_: number = 0;
-        const _loc5_: any = BASE.CanBuild(this._building._type);
-        let _loc6_: any = GLOBAL._buildingProps[this._building._type - 1].costs[0];
+        const _loc5_: any = getBASE().CanBuild(this._building._type);
+        let _loc6_: any = getGLOBAL()._buildingProps[this._building._type - 1].costs[0];
         
-        if (GLOBAL._buildingProps[this._building._type - 1].rewarded) {
+        if (getGLOBAL()._buildingProps[this._building._type - 1].rewarded) {
             _loc6_ = {
                 "r1": new SecNum(0),
                 "r2": new SecNum(0),
@@ -338,25 +341,25 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
         }
         
         if (Boolean(_loc5_.error) && !_loc5_.needResource) {
-            GLOBAL.Message(_loc5_.errorMessage);
+            getGLOBAL().Message(_loc5_.errorMessage);
         } else {
-            if (STORE._storeItems["BUILDING" + this._building._type]) {
-                if (InventoryManager.buildingStorageCount(this._building._type) > 0) {
-                    if (BASE.addBuildingB(this._building._type)) {
-                        BUILDINGS.Hide(param1);
+            if (getSTORE()._storeItems["BUILDING" + this._building._type]) {
+                if (getInventoryManager().buildingStorageCount(this._building._type) > 0) {
+                    if (getBASE().addBuildingB(this._building._type)) {
+                        getBUILDINGS().Hide(param1);
                     }
                     return;
                 }
-                if (STORE._storeItems["BUILDING" + this._building._type].c[0] > BASE._credits.Get()) {
-                    POPUPS.DisplayGetShiny();
+                if (getSTORE()._storeItems["BUILDING" + this._building._type].c[0] > getBASE()._credits.Get()) {
+                    getPOPUPS().DisplayGetShiny();
                     return;
                 }
             }
             
             if (_loc5_.needResource) {
                 _loc3_ = 0;
-                _loc7_ = BASE.isInfernoBuilding(this._building._type);
-                _loc8_ = _loc7_ ? BASE._iresources : BASE._resources;
+                _loc7_ = getBASE().isInfernoBuilding(this._building._type);
+                _loc8_ = _loc7_ ? getBASE()._iresources : getBASE()._resources;
                 _loc9_ = 1;
                 while (_loc9_ < 5) {
                     if (_loc6_["r" + _loc9_].Get() > 0) {
@@ -372,15 +375,15 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
                 }
                 _loc4_ = Math.ceil(Math.pow(Math.sqrt(_loc3_ / 2), 0.75));
                 if (_loc2_) {
-                    GLOBAL.Message(_loc7_ ? KEYS.Get("inf_buildoptions_err_moresilos") : KEYS.Get("buildoptions_err_moresilos"));
+                    getGLOBAL().Message(_loc7_ ? getKEYS().Get("inf_buildoptions_err_moresilos") : getKEYS().Get("buildoptions_err_moresilos"));
                 } else {
-                    GLOBAL.Message(KEYS.Get("buildoptions_err_moreresources", {
-                        "v1": GLOBAL.FormatNumber(_loc3_),
-                        "v2": GLOBAL.FormatNumber(_loc4_)
-                    }), KEYS.Get("btn_getresources"), this.TopoffBuild.bind(this));
+                    getGLOBAL().Message(getKEYS().Get("buildoptions_err_moreresources", {
+                        "v1": getGLOBAL().FormatNumber(_loc3_),
+                        "v2": getGLOBAL().FormatNumber(_loc4_)
+                    }), getKEYS().Get("btn_getresources"), this.TopoffBuild.bind(this));
                 }
-            } else if (BASE.addBuildingB(this._building._type)) {
-                BUILDINGS.Hide(param1);
+            } else if (getBASE().addBuildingB(this._building._type)) {
+                getBUILDINGS().Hide(param1);
             }
         }
     }
@@ -391,12 +394,12 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
         let _loc2_: boolean = false;
         let _loc3_: number = 0;
         let _loc4_: number = 0;
-        const _loc5_: any = BASE.CanUpgrade(this._building);
-        const _loc6_: boolean = BASE.isInfernoBuilding(this._building._type);
-        const _loc7_: any = _loc6_ ? BASE._iresources : BASE._resources;
+        const _loc5_: any = getBASE().CanUpgrade(this._building);
+        const _loc6_: boolean = getBASE().isInfernoBuilding(this._building._type);
+        const _loc7_: any = _loc6_ ? getBASE()._iresources : getBASE()._resources;
         
         if (Boolean(_loc5_.error) && !_loc5_.needResource) {
-            GLOBAL.Message(_loc5_.errorMessage);
+            getGLOBAL().Message(_loc5_.errorMessage);
         } else if (_loc5_.needResource) {
             _loc8_ = this._building._buildingProps.costs[this._building._lvl.Get()];
             _loc3_ = 0;
@@ -413,16 +416,16 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
             }
             _loc4_ = Math.ceil(Math.pow(Math.sqrt(_loc3_ / 2), 0.75));
             if (_loc2_) {
-                GLOBAL.Message(_loc6_ || BASE.isInfernoMainYardOrOutpost ? KEYS.Get("inf_buildoptions_err_moresilosupgrade") : KEYS.Get("buildoptions_err_moresilosupgrade"));
+                getGLOBAL().Message(_loc6_ || getBASE().isInfernoMainYardOrOutpost ? getKEYS().Get("inf_buildoptions_err_moresilosupgrade") : getKEYS().Get("buildoptions_err_moresilosupgrade"));
             } else {
-                GLOBAL.Message(KEYS.Get("buildoptions_err_moreresourcesupgrade", {
-                    "v1": GLOBAL.FormatNumber(_loc3_),
-                    "v2": GLOBAL.FormatNumber(_loc4_)
-                }), KEYS.Get("btn_getresources"), this.TopoffUpgrade.bind(this));
+                getGLOBAL().Message(getKEYS().Get("buildoptions_err_moreresourcesupgrade", {
+                    "v1": getGLOBAL().FormatNumber(_loc3_),
+                    "v2": getGLOBAL().FormatNumber(_loc4_)
+                }), getKEYS().Get("btn_getresources"), this.TopoffUpgrade.bind(this));
             }
         } else {
             if (this._building.Upgrade()) {
-                BUILDINGOPTIONS.Hide();
+                getBUILDINGOPTIONS().Hide();
             }
         }
     }
@@ -433,35 +436,35 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
         let _loc2_: boolean = false;
         let _loc3_: number = 0;
         let _loc4_: number = 0;
-        const _loc5_: any = BASE.CanFortify(this._building);
+        const _loc5_: any = getBASE().CanFortify(this._building);
         
         if (Boolean(_loc5_.error) && !_loc5_.needResource) {
-            GLOBAL.Message(_loc5_.errorMessage);
+            getGLOBAL().Message(_loc5_.errorMessage);
         } else if (_loc5_.needResource) {
             _loc6_ = this._building._buildingProps.fortify_costs[this._building._fortification.Get()];
             _loc3_ = 0;
             _loc7_ = 1;
             while (_loc7_ < 5) {
                 if (_loc6_["r" + _loc7_].Get() > 0) {
-                    if (_loc6_["r" + _loc7_].Get() > BASE._resources["r" + _loc7_ + "max"]) {
+                    if (_loc6_["r" + _loc7_].Get() > getBASE()._resources["r" + _loc7_ + "max"]) {
                         _loc2_ = true;
-                    } else if (_loc6_["r" + _loc7_].Get() > BASE._resources["r" + _loc7_].Get()) {
-                        _loc3_ += _loc6_["r" + _loc7_].Get() - BASE._resources["r" + _loc7_].Get();
+                    } else if (_loc6_["r" + _loc7_].Get() > getBASE()._resources["r" + _loc7_].Get()) {
+                        _loc3_ += _loc6_["r" + _loc7_].Get() - getBASE()._resources["r" + _loc7_].Get();
                     }
                 }
                 _loc7_++;
             }
             _loc4_ = Math.ceil(Math.pow(Math.sqrt(_loc3_ / 2), 0.75));
             if (_loc2_) {
-                GLOBAL.Message(KEYS.Get("buildoptions_err_moresilosfortify"));
+                getGLOBAL().Message(getKEYS().Get("buildoptions_err_moresilosfortify"));
             } else {
-                GLOBAL.Message(KEYS.Get("buildoptions_err_moreresourcesfortify", {
-                    "v1": GLOBAL.FormatNumber(_loc3_),
-                    "v2": GLOBAL.FormatNumber(_loc4_)
-                }), KEYS.Get("btn_getresources"), this.TopoffFortify.bind(this));
+                getGLOBAL().Message(getKEYS().Get("buildoptions_err_moreresourcesfortify", {
+                    "v1": getGLOBAL().FormatNumber(_loc3_),
+                    "v2": getGLOBAL().FormatNumber(_loc4_)
+                }), getKEYS().Get("btn_getresources"), this.TopoffFortify.bind(this));
             }
         } else if (this._building.Fortify()) {
-            BUILDINGOPTIONS.Hide();
+            getBUILDINGOPTIONS().Hide();
         }
     }
 
@@ -474,11 +477,11 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
         let _loc2_: boolean = false;
         let _loc3_: number = 0;
         let _loc4_: number = 0;
-        const _loc5_: any = BASE.CanBuild(this._building._type, true);
-        const _loc6_: any = GLOBAL._buildingProps[this._building._type - 1].costs[0];
+        const _loc5_: any = getBASE().CanBuild(this._building._type, true);
+        const _loc6_: any = getGLOBAL()._buildingProps[this._building._type - 1].costs[0];
         
         if (_loc5_.error) {
-            GLOBAL.Message(_loc5_.errorMessage);
+            getGLOBAL().Message(_loc5_.errorMessage);
         } else {
             _loc7_ = Number(_loc6_.time.Get());
             if (_loc7_ <= 300) {
@@ -486,39 +489,39 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
             }
             _loc8_ = _loc6_.r1.Get() + _loc6_.r2.Get() + _loc6_.r3.Get();
             _loc9_ = Math.ceil(Math.pow(Math.sqrt(_loc8_ / 2), 0.75));
-            _loc10_ = STORE.GetTimeCost(_loc7_);
+            _loc10_ = getSTORE().GetTimeCost(_loc7_);
             _loc11_ = _loc9_ + _loc10_;
             _loc11_ = Math.floor(_loc11_ * 0.95);
             if (_loc11_ <= 5) {
                 _loc11_ = 5;
             }
-            if (_loc11_ > BASE._credits.Get()) {
-                POPUPS.DisplayGetShiny();
+            if (_loc11_ > getBASE()._credits.Get()) {
+                getPOPUPS().DisplayGetShiny();
                 return;
             }
-            if (BASE.addBuildingB(this._building._type, true)) {
-                BUILDINGS.Hide(param1);
-                GLOBAL._newBuilding._buildInstant = true;
-                GLOBAL._newBuilding._buildInstantCost = new SecNum(_loc11_);
+            if (getBASE().addBuildingB(this._building._type, true)) {
+                getBUILDINGS().Hide(param1);
+                getGLOBAL()._newBuilding._buildInstant = true;
+                getGLOBAL()._newBuilding._buildInstantCost = new SecNum(_loc11_);
             }
         }
     }
 
     private ActionInstantUpgrade(param1: MouseEvent): void {
-        const _loc2_: any = BASE.CanUpgrade(this._building);
+        const _loc2_: any = getBASE().CanUpgrade(this._building);
         if (Boolean(_loc2_.error) && !_loc2_.needResource) {
-            GLOBAL.Message(_loc2_.errorMessage);
+            getGLOBAL().Message(_loc2_.errorMessage);
         } else if (this._building.DoInstantUpgrade()) {
-            BUILDINGOPTIONS.Hide();
+            getBUILDINGOPTIONS().Hide();
         }
     }
 
     private ActionInstantFortify(param1: MouseEvent): void {
-        const _loc2_: any = BASE.CanFortify(this._building);
+        const _loc2_: any = getBASE().CanFortify(this._building);
         if (Boolean(_loc2_.error) && !_loc2_.needResource) {
-            GLOBAL.Message(_loc2_.errorMessage);
+            getGLOBAL().Message(_loc2_.errorMessage);
         } else if (this._building.DoInstantFortify()) {
-            BUILDINGOPTIONS.Hide();
+            getBUILDINGOPTIONS().Hide();
         }
     }
 
@@ -527,8 +530,8 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
         let _loc8_: number = 0;
         let _loc2_: number = 0;
         let _loc3_: boolean = false;
-        const _loc5_: boolean = BASE.isInfernoBuilding(this._building._type);
-        const _loc6_: any = _loc5_ ? BASE._iresources : BASE._resources;
+        const _loc5_: boolean = getBASE().isInfernoBuilding(this._building._type);
+        const _loc6_: any = _loc5_ ? getBASE()._iresources : getBASE()._resources;
         const _loc7_: any = this._building._buildingProps.costs[this._building._lvl.Get()];
         
         _loc8_ = 1;
@@ -545,29 +548,29 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
         _loc4_ = Math.ceil(Math.pow(Math.sqrt(_loc2_ / 2), 0.75));
         
         if (_loc3_) {
-            GLOBAL.Message(KEYS.Get("msg_overcapacity"));
-        } else if (BASE._pendingPurchase.length == 0) {
-            if (_loc4_ > BASE._credits.Get()) {
-                POPUPS.DisplayGetShiny();
+            getGLOBAL().Message(getKEYS().Get("msg_overcapacity"));
+        } else if (getBASE()._pendingPurchase.length == 0) {
+            if (_loc4_ > getBASE()._credits.Get()) {
+                getPOPUPS().DisplayGetShiny();
             } else {
                 _loc8_ = 1;
                 while (_loc8_ < 5) {
                     if (_loc7_["r" + _loc8_].Get() > 0 && _loc7_["r" + _loc8_].Get() > _loc6_["r" + _loc8_].Get()) {
-                        BASE.Fund(_loc8_, _loc7_["r" + _loc8_].Get() - _loc6_["r" + _loc8_].Get(), false, null, _loc5_);
+                        getBASE().Fund(_loc8_, _loc7_["r" + _loc8_].Get() - _loc6_["r" + _loc8_].Get(), false, null, _loc5_);
                     }
                     _loc8_++;
                 }
                 this._building.Upgrade();
                 this.Hide();
-                BASE.Purchase("BRTOPUP", _loc4_, "BUILDINGOPTIONS.TopoffUpgrade");
+                getBASE().Purchase("BRTOPUP", _loc4_, "getBUILDINGOPTIONS().TopoffUpgrade");
             }
         }
     }
 
     public TopoffBuild(param1: MouseEvent | null = null): void {
-        const _loc2_: any = GLOBAL._buildingProps[this._building._type - 1].costs[0];
-        const _loc3_: boolean = BASE.isInfernoBuilding(this._building._type);
-        const _loc4_: any = _loc3_ ? BASE._iresources : BASE._resources;
+        const _loc2_: any = getGLOBAL()._buildingProps[this._building._type - 1].costs[0];
+        const _loc3_: boolean = getBASE().isInfernoBuilding(this._building._type);
+        const _loc4_: any = _loc3_ ? getBASE()._iresources : getBASE()._resources;
         let _loc5_: number = 0;
         let _loc6_: boolean = false;
         let _loc7_: number = 1;
@@ -585,15 +588,15 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
         const _loc8_: number = Math.ceil(Math.pow(Math.sqrt(_loc5_ / 2), 0.75));
         
         if (_loc6_) {
-            GLOBAL.Message(KEYS.Get("msg_overcapacity"));
-        } else if (_loc8_ > BASE._credits.Get()) {
-            POPUPS.DisplayGetShiny();
+            getGLOBAL().Message(getKEYS().Get("msg_overcapacity"));
+        } else if (_loc8_ > getBASE()._credits.Get()) {
+            getPOPUPS().DisplayGetShiny();
         } else {
-            BASE.Purchase("BRTOPUP", _loc8_, "BUILDINGOPTIONS.TopoffBuild");
+            getBASE().Purchase("BRTOPUP", _loc8_, "getBUILDINGOPTIONS().TopoffBuild");
             _loc7_ = 1;
             while (_loc7_ < 5) {
                 if (_loc2_["r" + _loc7_].Get() > 0 && _loc2_["r" + _loc7_].Get() > _loc4_["r" + _loc7_].Get()) {
-                    BASE.Fund(_loc7_, _loc2_["r" + _loc7_].Get() - _loc4_["r" + _loc7_].Get(), false, null, _loc3_);
+                    getBASE().Fund(_loc7_, _loc2_["r" + _loc7_].Get() - _loc4_["r" + _loc7_].Get(), false, null, _loc3_);
                 }
                 _loc7_++;
             }
@@ -611,10 +614,10 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
         _loc6_ = 1;
         while (_loc6_ < 5) {
             if (_loc5_["r" + _loc6_].Get() > 0) {
-                if (_loc5_["r" + _loc6_].Get() > BASE._resources["r" + _loc6_ + "max"]) {
+                if (_loc5_["r" + _loc6_].Get() > getBASE()._resources["r" + _loc6_ + "max"]) {
                     _loc3_ = true;
-                } else if (_loc5_["r" + _loc6_].Get() > BASE._resources["r" + _loc6_].Get()) {
-                    _loc2_ += _loc5_["r" + _loc6_].Get() - BASE._resources["r" + _loc6_].Get();
+                } else if (_loc5_["r" + _loc6_].Get() > getBASE()._resources["r" + _loc6_].Get()) {
+                    _loc2_ += _loc5_["r" + _loc6_].Get() - getBASE()._resources["r" + _loc6_].Get();
                 }
             }
             _loc6_++;
@@ -622,21 +625,21 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
         _loc4_ = Math.ceil(Math.pow(Math.sqrt(_loc2_ / 2), 0.75));
         
         if (_loc3_) {
-            GLOBAL.Message(KEYS.Get("msg_overcapacity"));
-        } else if (BASE._pendingPurchase.length == 0) {
-            if (_loc4_ > BASE._credits.Get()) {
-                POPUPS.DisplayGetShiny();
+            getGLOBAL().Message(getKEYS().Get("msg_overcapacity"));
+        } else if (getBASE()._pendingPurchase.length == 0) {
+            if (_loc4_ > getBASE()._credits.Get()) {
+                getPOPUPS().DisplayGetShiny();
             } else {
                 _loc6_ = 1;
                 while (_loc6_ < 5) {
-                    if (_loc5_["r" + _loc6_].Get() > 0 && _loc5_["r" + _loc6_].Get() > BASE._resources["r" + _loc6_].Get()) {
-                        BASE.Fund(_loc6_, _loc5_["r" + _loc6_].Get() - BASE._resources["r" + _loc6_].Get());
+                    if (_loc5_["r" + _loc6_].Get() > 0 && _loc5_["r" + _loc6_].Get() > getBASE()._resources["r" + _loc6_].Get()) {
+                        getBASE().Fund(_loc6_, _loc5_["r" + _loc6_].Get() - getBASE()._resources["r" + _loc6_].Get());
                     }
                     _loc6_++;
                 }
                 this._building.Fortify();
                 this.Hide();
-                BASE.Purchase("BRTOPUP", _loc4_, "BUILDINGOPTIONS.TopoffFortify");
+                getBASE().Purchase("BRTOPUP", _loc4_, "getBUILDINGOPTIONS().TopoffFortify");
             }
         }
     }
@@ -644,7 +647,7 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
     private Render(param1: string): string {
         const self = this;
         let img: string = "";
-        const buildingProps: any = GLOBAL._buildingProps[this._building._type - 1];
+        const buildingProps: any = getGLOBAL()._buildingProps[this._building._type - 1];
         
         if (param1 == "fortify") {
             const FortifyImageLoaded = (param1: string, param2: BitmapData): void => {
@@ -696,8 +699,8 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
                 self.imageContainer.Clear();
                 self.imageContainer.addChild(new Bitmap(param2));
             };
-            if (Boolean(buildingProps.buildingbuttons) && Boolean(BASE._buildingsStored["bl" + this._building._type]) && buildingProps.buildingbuttons.length >= BASE._buildingsStored["bl" + this._building._type].Get()) {
-                img = "buildingbuttons/" + buildingProps.buildingbuttons[BASE._buildingsStored["bl" + this._building._type].Get() - 1] + ".jpg";
+            if (Boolean(buildingProps.buildingbuttons) && Boolean(getBASE()._buildingsStored["bl" + this._building._type]) && buildingProps.buildingbuttons.length >= getBASE()._buildingsStored["bl" + this._building._type].Get()) {
+                img = "buildingbuttons/" + buildingProps.buildingbuttons[getBASE()._buildingsStored["bl" + this._building._type].Get() - 1] + ".jpg";
             } else if (Boolean(buildingProps.buildingbuttons) && buildingProps.buildingbuttons.length >= this._building._lvl.Get()) {
                 img = "buildingbuttons/" + buildingProps.buildingbuttons[this._building._lvl.Get() - 1] + ".jpg";
             } else if (Boolean(buildingProps.buildingbuttons) && buildingProps.buildingbuttons.length > 0) {
@@ -711,19 +714,19 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
     }
 
     private onPostRollOver(param1: MouseEvent): void {
-        if (this._doStreamPost && BASE.isMainYard) {
+        if (this._doStreamPost && getBASE().isMainYard) {
             this.mcInfoCB.visible = true;
         }
     }
 
     private onPostRollOut(param1: MouseEvent): void {
-        if (this._doStreamPost && BASE.isMainYard) {
+        if (this._doStreamPost && getBASE().isMainYard) {
             this.mcInfoCB.visible = false;
         }
     }
 
     public toggleCheckbox(param1: boolean = false): void {
-        if (this._doStreamPost && BASE.isMainYard) {
+        if (this._doStreamPost && getBASE().isMainYard) {
             this.mcInfoCB.visible = false;
             this.mcCBBG.visible = param1;
             this.streampost_cb.visible = param1;
@@ -732,11 +735,11 @@ export class BUILDINGOPTIONSPOPUP extends BUILDINGOPTIONSPOPUP_CLIP {
 
     public Hide(): void {
         try {
-            BUILDINGS._mc.HideInfo();
+            getBUILDINGS()._mc.HideInfo();
         } catch (e) {
         }
         try {
-            BUILDINGOPTIONS.Hide();
+            getBUILDINGOPTIONS().Hide();
         } catch (e) {
         }
     }

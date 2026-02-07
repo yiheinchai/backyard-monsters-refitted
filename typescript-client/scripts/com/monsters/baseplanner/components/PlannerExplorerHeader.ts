@@ -8,7 +8,10 @@ import { PlannerExplorerButton } from "./PlannerExplorerButton";
 import { PlannerItem } from "./PlannerItem";
 import { BasePlannerPopup_ExplorerItem_Category } from "../../../../BasePlannerPopup_ExplorerItem_Category";
 
-import { KEYS } from "../../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+
+
 
 /**
  * Planner explorer header - collapsible category header in the base planner sidebar.
@@ -27,26 +30,26 @@ export class PlannerExplorerHeader extends PlannerItem {
         let label: string;
         switch (category) {
             case BuildingItem.TYPE_DEFENSIVE:
-                label = KEYS.Get("basePlanner_catDefensive");
+                label = getKEYS().Get("basePlanner_catDefensive");
                 break;
             case BuildingItem.TYPE_BUILDING:
-                label = KEYS.Get("basePlanner_catBuilding");
+                label = getKEYS().Get("basePlanner_catBuilding");
                 break;
             case BuildingItem.TYPE_RESOURCE:
-                label = KEYS.Get("basePlanner_catResource");
+                label = getKEYS().Get("basePlanner_catResource");
                 break;
             case BuildingItem.TYPE_DECORATION:
-                label = KEYS.Get("basePlanner_catDecoration");
+                label = getKEYS().Get("basePlanner_catDecoration");
                 break;
             case BuildingItem.TYPE_TRAP:
-                label = KEYS.Get("basePlanner_catTrap");
+                label = getKEYS().Get("basePlanner_catTrap");
                 break;
             case BuildingItem.TYPE_WALL:
-                label = KEYS.Get("basePlanner_catWall");
+                label = getKEYS().Get("basePlanner_catWall");
                 break;
             case BuildingItem.TYPE_MISC:
             default:
-                label = KEYS.Get("basePlanner_catMisc");
+                label = getKEYS().Get("basePlanner_catMisc");
         }
         this.mc.tLabel.htmlText = label;
         this.mc.mcCarrot.rotation = 90;

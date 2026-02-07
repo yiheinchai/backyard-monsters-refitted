@@ -1,11 +1,14 @@
 import { BasePlanner } from './com/monsters/baseplanner/BasePlanner';
 import MouseEvent from 'openfl/events/MouseEvent';
 import StageDisplayState from 'openfl/display/StageDisplayState';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
 import { PLANNERPOPUP } from './PLANNERPOPUP';
-import { SOUNDS } from './SOUNDS';
-import { STORE } from './STORE';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+
 
 /**
  * PLANNER - Yard Planner Controller
@@ -24,19 +27,19 @@ export class PLANNER {
     }
 
     public static Show(event: MouseEvent | null = null): void {
-        if (GLOBAL._selectedBuilding) {
-            GLOBAL._selectedBuilding.StopMoveB();
+        if (getGLOBAL()._selectedBuilding) {
+            getGLOBAL()._selectedBuilding.StopMoveB();
         }
-        if (GLOBAL._newBuilding) {
-            (GLOBAL._newBuilding as any).Cancel();
+        if (getGLOBAL()._newBuilding) {
+            (getGLOBAL()._newBuilding as any).Cancel();
         }
-        BASE.BuildingDeselect();
+        getBASE().BuildingDeselect();
         PLANNER._selected = false;
         
-        if (GLOBAL._flags?.yp_version !== null) {
-            switch (GLOBAL._flags.yp_version) {
+        if (getGLOBAL()._flags?.yp_version !== null) {
+            switch (getGLOBAL()._flags.yp_version) {
                 case 0:
-                    GLOBAL.Message(">Yard PLANNER has been disabled for this ENVIRONMENT");
+                    getGLOBAL().Message(">Yard PLANNER has been disabled for this ENVIRONMENT");
                     return;
                 case 1:
                     PLANNER._useOldPlanner = true;
@@ -49,15 +52,15 @@ export class PLANNER {
         
         if (!PLANNER._open) {
             PLANNER._open = true;
-            SOUNDS.Play("click1");
-            BASE.BuildingDeselect();
-            GLOBAL.BlockerAdd();
+            getSOUNDS().Play("click1");
+            getBASE().BuildingDeselect();
+            getGLOBAL().BlockerAdd();
             
             if (PLANNER._useOldPlanner) {
-                if (GLOBAL._ROOT.stage.displayState === StageDisplayState.FULL_SCREEN) {
-                    GLOBAL._ROOT.stage.displayState = StageDisplayState.NORMAL;
+                if (getGLOBAL()._ROOT.stage.displayState === StageDisplayState.FULL_SCREEN) {
+                    getGLOBAL()._ROOT.stage.displayState = StageDisplayState.NORMAL;
                 }
-                PLANNER._mc = GLOBAL._layerWindows.addChild(new PLANNERPOPUP()) as PLANNERPOPUP;
+                PLANNER._mc = getGLOBAL()._layerWindows.addChild(new PLANNERPOPUP()) as PLANNERPOPUP;
             } else {
                 if (PLANNER.basePlanner) {
                     PLANNER.basePlanner.setup();
@@ -70,21 +73,21 @@ export class PLANNER {
     }
 
     public static Hide(event: MouseEvent | null = null): void {
-        GLOBAL.BlockerRemove();
-        if (GLOBAL._selectedBuilding && GLOBAL._selectedBuilding._class !== "mushroom") {
-            GLOBAL._selectedBuilding.StopMoveB();
+        getGLOBAL().BlockerRemove();
+        if (getGLOBAL()._selectedBuilding && getGLOBAL()._selectedBuilding._class !== "mushroom") {
+            getGLOBAL()._selectedBuilding.StopMoveB();
         }
-        if (GLOBAL._newBuilding) {
-            (GLOBAL._newBuilding as any).Cancel();
+        if (getGLOBAL()._newBuilding) {
+            (getGLOBAL()._newBuilding as any).Cancel();
         }
-        BASE.BuildingDeselect();
+        getBASE().BuildingDeselect();
         
         if (PLANNER._open) {
-            SOUNDS.Play("close");
+            getSOUNDS().Play("close");
             PLANNER._open = false;
             if (PLANNER._useOldPlanner) {
                 PLANNER._mc!.Remove();
-                GLOBAL._layerWindows.removeChild(PLANNER._mc!);
+                getGLOBAL()._layerWindows.removeChild(PLANNER._mc!);
                 PLANNER._mc = null;
             } else {
                 PLANNER.basePlanner?.hide();
@@ -99,7 +102,7 @@ export class PLANNER {
     public static Update(): void {
         if (PLANNER._open) {
             if (PLANNER._useOldPlanner) {
-                STORE.Hide();
+                getSTORE().Hide();
                 PLANNER.Hide();
                 PLANNER.Show();
             }

@@ -7,13 +7,16 @@ import { PlannerDesignView } from "../PlannerDesignView";
 import { PlannerNode } from "../PlannerNode";
 import { BasePlannerNodeEvent } from "../events/BasePlannerNodeEvent";
 import { PlannerItem } from "./PlannerItem";
-import { Console } from "../../debug/Console";
 import { BasePlannerPopup_DisplayItem_Building } from "../../../../BasePlannerPopup_DisplayItem_Building";
 
-import { GLOBAL } from "../../../../GLOBAL";
-import { KEYS } from "../../../../KEYS";
-import { PLANNER } from "../../../../PLANNER";
 import { YARD_PROPS } from "../../../../YARD_PROPS";
+
+// Lazy imports to break circular dependency chains
+function getConsole(): any { return require("../../debug/Console").Console; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getPLANNER(): any { return require("../../../../PLANNER").PLANNER; }
+
 
 /**
  * Building item - represents a building in the base planner grid.
@@ -46,7 +49,7 @@ export class BuildingItem extends PlannerItem {
             this.size = new Rectangle(0, 0, this.node.building._footprint[0].width, this.node.building._footprint[0].height);
         }
         this.category = this.defineCategory(this.node.type)!;
-        this.desc = this.node.name + " " + KEYS.Get("basePlanner_buildingLevel") + this.node.level;
+        this.desc = this.node.name + " " + getKEYS().Get("basePlanner_buildingLevel") + this.node.level;
         this.x = Math.floor(this.node.x / PlannerDesignView.MOUSE_POSITION_SNAP_THRESHHOLD) * PlannerDesignView.MOUSE_POSITION_SNAP_THRESHHOLD;
         this.y = Math.floor(this.node.y / PlannerDesignView.MOUSE_POSITION_SNAP_THRESHHOLD) * PlannerDesignView.MOUSE_POSITION_SNAP_THRESHHOLD;
         this.setPositionReference();
@@ -85,9 +88,9 @@ export class BuildingItem extends PlannerItem {
     }
 
     public defineCategory(buildingType: number): string | null {
-        this.props = GLOBAL._buildingProps[buildingType - 1];
+        this.props = getGLOBAL()._buildingProps[buildingType - 1];
         if (!this.props) {
-            Console.warning("props fail" + buildingType);
+            getConsole().warning("props fail" + buildingType);
             return null;
         }
         const group: number = this.props.group;
@@ -163,7 +166,7 @@ export class BuildingItem extends PlannerItem {
 
     public override onMouseUp(event: MouseEvent | null = null): void {
         super.onMouseDown(event);
-        if (!PLANNER.basePlanner.popup.designView._dragged) {
+        if (!getPLANNER().basePlanner.popup.designView._dragged) {
             this.dispatchEvent(new BasePlannerNodeEvent(PlannerDesignView.BUILDING_CLICK, this.node));
         }
     }

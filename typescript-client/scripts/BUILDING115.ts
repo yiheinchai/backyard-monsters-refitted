@@ -1,21 +1,24 @@
 import { IAttackable } from './com/monsters/interfaces/IAttackable';
-import { MonsterBase } from './com/monsters/monsters/MonsterBase';
-import { PATHING } from './com/monsters/pathing/PATHING';
-import { Vacuum } from './com/monsters/siege/weapons/Vacuum';
 import BitmapData from 'openfl/display/BitmapData';
 import MovieClip from 'openfl/display/MovieClip';
 import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BTOWER } from './BTOWER';
-import { ATTACK } from './ATTACK';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { POPUPS } from './POPUPS';
 import { PROJECTILES } from './PROJECTILES';
-import { SOUNDS } from './SOUNDS';
-import { Targeting } from './Targeting';
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getPATHING(): any { return require("./com/monsters/pathing/PATHING").PATHING; }
+function getVacuum(): any { return require("./com/monsters/siege/weapons/Vacuum").Vacuum; }
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getTargeting(): any { return require("./Targeting").Targeting; }
+
 
 /**
  * BUILDING115 - Aerial Defense Tower (AA Tower)
@@ -39,7 +42,7 @@ export class BUILDING115 extends BTOWER {
         this._fireStage = 1;
         this.SetProps();
         this.Props();
-        this.attackFlags = Targeting.getOldStyleTargets(2);
+        this.attackFlags = getTargeting().getOldStyleTargets(2);
     }
 
     public override TickAttack(): void {
@@ -73,7 +76,7 @@ export class BUILDING115 extends BTOWER {
                             targetIdx = this._shotsFired % this._targetCreeps.length;
                         }
                         if (this._targetVacuum) {
-                            this.Fire(Vacuum.getHose());
+                            this.Fire(getVacuum().getHose());
                             ++this._shotsFired;
                         } else if (this._targetCreeps[targetIdx].creep.health > 0) {
                             this.Fire(this._targetCreeps[targetIdx].creep);
@@ -90,8 +93,8 @@ export class BUILDING115 extends BTOWER {
         }
         if (this._hasTargets) {
             const targetCreep: MonsterBase = this._targetCreeps[0].creep;
-            const targetPos: Point = PATHING.FromISO(targetCreep._tmpPoint);
-            let myPos: Point = PATHING.FromISO(new Point(this._mc!.x, this._mc!.y));
+            const targetPos: Point = getPATHING().FromISO(targetCreep._tmpPoint);
+            let myPos: Point = getPATHING().FromISO(new Point(this._mc!.x, this._mc!.y));
             myPos = myPos.add(new Point(35, 35));
             const dx: number = targetPos.x - myPos.x;
             const dy: number = targetPos.y - myPos.y;
@@ -106,7 +109,7 @@ export class BUILDING115 extends BTOWER {
     }
 
     public override AnimFrame(advance: boolean = true): void {
-        if (this._animLoaded && GLOBAL._render) {
+        if (this._animLoaded && getGLOBAL()._render) {
             this._animRect!.x = this._animRect!.width * this._animTick;
             this._animContainerBMD!.copyPixels(this._animBMD!, this._animRect!, this._nullPoint!);
         }
@@ -114,15 +117,15 @@ export class BUILDING115 extends BTOWER {
 
     public override Fire(target: IAttackable): void {
         super.Fire(target);
-        SOUNDS.Play("snipe1", !this.isJard ? 0.8 : 0.4);
+        getSOUNDS().Play("snipe1", !this.isJard ? 0.8 : 0.4);
         const healthRatio: number = 0.5 + 0.5 / this.maxHealth * this.health;
         let overdrive: number = 1;
-        if (GLOBAL._towerOverdrive && GLOBAL._towerOverdrive.Get() >= GLOBAL.Timestamp()) {
+        if (getGLOBAL()._towerOverdrive && getGLOBAL()._towerOverdrive.Get() >= getGLOBAL().Timestamp()) {
             overdrive = 1.25;
         }
         if (this.isJard) {
             this._jarHealth!.Add(-Math.floor(this.damage * healthRatio * overdrive));
-            ATTACK.Damage(this._mc!.x, this._mc!.y + this._top, this.damage * healthRatio * overdrive);
+            getATTACK().Damage(this._mc!.x, this._mc!.y + this._top, this.damage * healthRatio * overdrive);
             if (this._jarHealth!.Get() <= 0) {
                 this.KillJar();
             }
@@ -139,18 +142,18 @@ export class BUILDING115 extends BTOWER {
             const nextStats: any = this._buildingProps.stats[this._lvl.Get()];
             let currentRange: number = currentStats.range;
             let nextRange: number = nextStats.range;
-            if (BASE.isOutpost) {
-                currentRange = BTOWER.AdjustTowerRange(GLOBAL._currentCell, currentRange);
-                nextRange = BTOWER.AdjustTowerRange(GLOBAL._currentCell, nextRange);
+            if (getBASE().isOutpost) {
+                currentRange = BTOWER.AdjustTowerRange(getGLOBAL()._currentCell, currentRange);
+                nextRange = BTOWER.AdjustTowerRange(getGLOBAL()._currentCell, nextRange);
             }
             if (currentStats.range < nextStats.range) {
-                this._upgradeDescription += KEYS.Get("building_rangeincrease", { v1: currentRange, v2: nextRange }) + "<br>";
+                this._upgradeDescription += getKEYS().Get("building_rangeincrease", { v1: currentRange, v2: nextRange }) + "<br>";
             }
             if (currentStats.damage < nextStats.damage) {
-                this._upgradeDescription += KEYS.Get("building_dpsincrease", { v1: currentStats.damage, v2: nextStats.damage }) + "<br>";
+                this._upgradeDescription += getKEYS().Get("building_dpsincrease", { v1: currentStats.damage, v2: nextStats.damage }) + "<br>";
             }
             if (this._lvl.Get() > 1) {
-                this._upgradeDescription += KEYS.Get("building_sfpsincrease", { v1: this._targetArray[this._lvl.Get() - 1], v2: this._targetArray[this._lvl.Get()] }) + "<br>";
+                this._upgradeDescription += getKEYS().Get("building_sfpsincrease", { v1: this._targetArray[this._lvl.Get() - 1], v2: this._targetArray[this._lvl.Get()] }) + "<br>";
             }
         }
     }

@@ -7,15 +7,18 @@ import MouseEvent from "openfl/events/MouseEvent";
 import { ImageCache } from "../display/ImageCache";
 import { TRIBES } from "./TRIBES";
 
-import { BASE } from "../../../BASE";
-import { CREATURELOCKER } from "../../../CREATURELOCKER";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
 import { POPUPSETTINGS } from "../../../POPUPSETTINGS";
-import { SOUNDS } from "../../../SOUNDS";
-import { WMATTACK } from "../../../WMATTACK";
 import { AIATTACKPOPUP_CLIP } from "../../../AIATTACKPOPUP_CLIP";
 import { bubblepopup3 } from "../../../bubblepopup3";
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getCREATURELOCKER(): any { return require("../../../CREATURELOCKER").CREATURELOCKER; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+function getWMATTACK(): any { return require("../../../WMATTACK").WMATTACK; }
+
 
 /**
  * Popup displayed when AI is about to attack player's base.
@@ -41,7 +44,7 @@ export class AIATTACKPOPUP extends AIATTACKPOPUP_CLIP {
         this.waitBtn.addEventListener(MouseEvent.MOUSE_DOWN, this.onWaitDown.bind(this));
         this.waitBtn.SetupKey("ai_preparedefenses_btn");
         
-        ImageCache.GetImageWithCallBack(TRIBES.TribeForBaseID(WMATTACK._attackersBaseID)?.splash || "", imageComplete);
+        ImageCache.GetImageWithCallBack(TRIBES.TribeForBaseID(getWMATTACK()._attackersBaseID)?.splash || "", imageComplete);
         this.mcFrame.Setup(false);
         
         this.d1 = new bubblepopup3();
@@ -60,22 +63,22 @@ export class AIATTACKPOPUP extends AIATTACKPOPUP_CLIP {
         this.addChild(this.d3);
         
         this._type = attackerType;
-        this.title_txt.htmlText = KEYS.Get("ai_popupwarning_title");
-        this.x = GLOBAL._SCREENCENTER.x;
-        this.y = GLOBAL._SCREENCENTER.y;
+        this.title_txt.htmlText = getKEYS().Get("ai_popupwarning_title");
+        this.x = getGLOBAL()._SCREENCENTER.x;
+        this.y = getGLOBAL()._SCREENCENTER.y;
     }
 
     private onWaitDown(event: MouseEvent): void {
-        SOUNDS.Play("click1");
-        WMATTACK._queued.warned = 1;
-        BASE.Save(0, false, true);
+        getSOUNDS().Play("click1");
+        getWMATTACK()._queued.warned = 1;
+        getBASE().Save(0, false, true);
         if (this.parent) {
             this.parent.removeChild(this);
         }
     }
 
     private onAdd(event: Event): void {
-        const attack = WMATTACK._queued.attack;
+        const attack = getWMATTACK()._queued.attack;
         const creatureTypes: string[] = [];
         
         for (const key in attack) {
@@ -96,7 +99,7 @@ export class AIATTACKPOPUP extends AIATTACKPOPUP_CLIP {
         
         const bubbles = [this.d1, this.d2, this.d3];
         for (let i = 0; i < creatureTypes.length; i++) {
-            bubbles[i].Setup(47, 23, KEYS.Get(CREATURELOCKER._creatures[creatureTypes[i]].description), 3);
+            bubbles[i].Setup(47, 23, getKEYS().Get(getCREATURELOCKER()._creatures[creatureTypes[i]].description), 3);
         }
         
         this.c1.addChild(this.d1);
@@ -114,18 +117,18 @@ export class AIATTACKPOPUP extends AIATTACKPOPUP_CLIP {
                 [containers[i].mcIcon]
             );
             containers[i].tInfo.htmlText = "x" + attack[creatureTypes[i]];
-            containers[i].tName.htmlText = "<b>" + KEYS.Get(CREATURELOCKER._creatures[creatureTypes[i]].name) + "</b>";
+            containers[i].tName.htmlText = "<b>" + getKEYS().Get(getCREATURELOCKER()._creatures[creatureTypes[i]].name) + "</b>";
             bubbles[i].visible = false;
             containers[i].mouseChildren = false;
             containers[i].addEventListener(MouseEvent.MOUSE_OVER, this.showDescription.bind(this));
             containers[i].addEventListener(MouseEvent.MOUSE_OUT, this.hideDescription.bind(this));
         }
         
-        const tribe = TRIBES.TribeForBaseID(WMATTACK._attackersBaseID);
-        if (BASE.isInfernoMainYardOrOutpost) {
-            this.name_txt.htmlText = "<b>" + KEYS.Get("inf_ai_tribe_mapview", { v1: tribe?.name || "" }) + "</b>";
+        const tribe = TRIBES.TribeForBaseID(getWMATTACK()._attackersBaseID);
+        if (getBASE().isInfernoMainYardOrOutpost) {
+            this.name_txt.htmlText = "<b>" + getKEYS().Get("inf_ai_tribe_mapview", { v1: tribe?.name || "" }) + "</b>";
         } else {
-            this.name_txt.htmlText = "<b>" + KEYS.Get("ai_tribe", { v1: tribe?.name || "" }) + "</b>";
+            this.name_txt.htmlText = "<b>" + getKEYS().Get("ai_tribe", { v1: tribe?.name || "" }) + "</b>";
         }
     }
 
@@ -161,21 +164,21 @@ export class AIATTACKPOPUP extends AIATTACKPOPUP_CLIP {
     }
 
     private sendDown(event: MouseEvent | null = null): void {
-        SOUNDS.Play("click1");
-        WMATTACK.Attack();
+        getSOUNDS().Play("click1");
+        getWMATTACK().Attack();
         this.closeDown();
     }
 
     private closeDown(event: MouseEvent | null = null): void {
-        SOUNDS.Play("close");
-        WMATTACK.HideWarning();
+        getSOUNDS().Play("close");
+        getWMATTACK().HideWarning();
     }
 
     public Resize(): void {
         POPUPSETTINGS.AlignToCenter(this);
         if (this.bm) {
-            this.bm.x = GLOBAL._SCREENCENTER.x - 520 - this.bm.width * 0.5;
-            this.bm.y = GLOBAL._SCREENCENTER.y - 250 - this.bm.height * 0.5;
+            this.bm.x = getGLOBAL()._SCREENCENTER.x - 520 - this.bm.width * 0.5;
+            this.bm.y = getGLOBAL()._SCREENCENTER.y - 250 - this.bm.height * 0.5;
         }
     }
 }

@@ -5,8 +5,11 @@ import MovieClip from 'openfl/display/MovieClip';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BWALL } from './BWALL';
 import { ACHIEVEMENTS } from './ACHIEVEMENTS';
-import { GLOBAL } from './GLOBAL';
-import { MAP } from './MAP';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getMAP(): any { return require("./MAP").MAP; }
+
 
 /**
  * BUILDING17 - Blocks/Wall Block
@@ -18,8 +21,8 @@ export class BUILDING17 extends BWALL {
         this._type = 17;
         this._footprint = [new Rectangle(0, 0, 20, 20)];
         this._gridCost = [[new Rectangle(-10, -10, 40, 40), 20], [new Rectangle(0, 0, 20, 20), 200]];
-        this._mcBase = MAP._BUILDINGBASES.addChild(new MovieClip()) as MovieClip;
-        this.imageData = GLOBAL._buildingProps[this._type - 1].imageData;
+        this._mcBase = getMAP()._BUILDINGBASES.addChild(new MovieClip()) as MovieClip;
+        this.imageData = getGLOBAL()._buildingProps[this._type - 1].imageData;
         this.SetProps();
     }
 

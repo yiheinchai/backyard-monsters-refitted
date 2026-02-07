@@ -5,11 +5,14 @@ import Point from 'openfl/geom/Point';
 import { BYMConfig } from './com/monsters/configs/BYMConfig';
 import { RasterData } from './com/monsters/rendering/RasterData';
 import { BFOUNDATION } from './BFOUNDATION';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { MAP } from './MAP';
 import { MUSHROOMS } from './MUSHROOMS';
-import { TUTORIAL } from './TUTORIAL';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+
 
 /**
  * BMUSHROOM - Mushroom resource building class
@@ -52,7 +55,7 @@ export class BMUSHROOM extends BFOUNDATION {
             this._mcBase?.addChild(shadowMc);
         } else {
             this._rasterData[BFOUNDATION._RASTERDATA_SHADOW] = this._rasterData[BFOUNDATION._RASTERDATA_SHADOW] || 
-                new RasterData(shadowMc, this._rasterPt[BFOUNDATION._RASTERDATA_SHADOW], MAP.DEPTH_SHADOW, BlendMode.MULTIPLY, true);
+                new RasterData(shadowMc, this._rasterPt[BFOUNDATION._RASTERDATA_SHADOW], getMAP().DEPTH_SHADOW, BlendMode.MULTIPLY, true);
         }
         
         shadowMc.gotoAndStop?.(this._mushroomFrame);
@@ -81,7 +84,7 @@ export class BMUSHROOM extends BFOUNDATION {
     }
 
     public override HasWorker(): void {
-        if (this._shake > 60 && BASE._pendingPurchase.length === 0) {
+        if (this._shake > 60 && getBASE()._pendingPurchase.length === 0) {
             this._mc!.x = this._origin!.x;
             this._mc!.y = this._origin!.y;
             this._mcBase!.x = this._origin!.x;
@@ -100,13 +103,13 @@ export class BMUSHROOM extends BFOUNDATION {
     }
 
     public override Click(event: MouseEvent | null = null): void {
-        if (TUTORIAL._stage >= 200 && !this._picking) {
+        if (getTUTORIAL()._stage >= 200 && !this._picking) {
             super.Click(event);
         }
     }
 
     public override Render(state: string = ""): void {
-        if (GLOBAL._catchup || (state === this._renderState && this._lvl.Get() === this._renderLevel)) {
+        if (getGLOBAL()._catchup || (state === this._renderState && this._lvl.Get() === this._renderLevel)) {
             return;
         }
         this.updateRasterData();

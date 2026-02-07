@@ -1,8 +1,11 @@
 import { Reward } from "../../../../rewarding/Reward";
 
-import { GLOBAL } from "../../../../../../GLOBAL";
-import { BASE } from "../../../../../../BASE";
-import { INFERNO_MAGMA_TOWER } from "../../../../../../INFERNO_MAGMA_TOWER";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../../../GLOBAL").GLOBAL; }
+function getBASE(): any { return require("../../../../../../BASE").BASE; }
+function getINFERNO_MAGMA_TOWER(): any { return require("../../../../../../INFERNO_MAGMA_TOWER").INFERNO_MAGMA_TOWER; }
+
+
 
 /**
  * Unlock Magma Tower in outposts reward - allows magma tower construction in outposts.
@@ -15,12 +18,12 @@ export class UnlockMagmaTowerInOutposts extends Reward {
     }
 
     protected override onApplication(): void {
-        GLOBAL._buildingProps[INFERNO_MAGMA_TOWER.ID - 1].block = false;
-        GLOBAL._buildingProps[INFERNO_MAGMA_TOWER.ID - 1].quantity = [this.value];
+        getGLOBAL()._buildingProps[getINFERNO_MAGMA_TOWER().ID - 1].block = false;
+        getGLOBAL()._buildingProps[getINFERNO_MAGMA_TOWER().ID - 1].quantity = [this.value];
     }
 
     public override removed(): void {
-        GLOBAL._buildingProps[INFERNO_MAGMA_TOWER.ID - 1].block = false;
+        getGLOBAL()._buildingProps[getINFERNO_MAGMA_TOWER().ID - 1].block = false;
     }
 
     public override reset(): void {
@@ -30,6 +33,6 @@ export class UnlockMagmaTowerInOutposts extends Reward {
     }
 
     public override canBeApplied(): boolean {
-        return GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && BASE.isOutpost;
+        return getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && getBASE().isOutpost;
     }
 }

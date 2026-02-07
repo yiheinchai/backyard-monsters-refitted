@@ -3,12 +3,15 @@ import StageDisplayState from "openfl/display/StageDisplayState";
 
 import { BYMChat } from "./BYMChat";
 import { ChatBox } from "./ui/ChatBox";
-import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { LOGIN } from "../../../LOGIN";
-import { TUTORIAL } from "../../../TUTORIAL";
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getLOGIN(): any { return require("../../../LOGIN").LOGIN; }
+function getTUTORIAL(): any { return require("../../../TUTORIAL").TUTORIAL; }
+
+
 
 /**
  * Chat system manager - handles chat initialization and connection.
@@ -53,12 +56,12 @@ export class Chat {
         }
         
         Chat._chatroomNumber = 0;
-        if (!GLOBAL._local) {
-            if (MapRoomManager.instance.isInMapRoom3) {
-                Chat._chatroomNumber = MapRoomManager.instance.worldID;
+        if (!getGLOBAL()._local) {
+            if (getMapRoomManager().instance.isInMapRoom3) {
+                Chat._chatroomNumber = getMapRoomManager().instance.worldID;
             } else {
-                const numChatRooms = (GLOBAL._flags !== null && GLOBAL._flags.numchatrooms) ? GLOBAL._flags.numchatrooms : Chat.NUM_CHAT_ROOMS;
-                Chat._chatroomNumber = LOGIN._playerID % numChatRooms;
+                const numChatRooms = (getGLOBAL()._flags !== null && getGLOBAL()._flags.numchatrooms) ? getGLOBAL()._flags.numchatrooms : Chat.NUM_CHAT_ROOMS;
+                Chat._chatroomNumber = getLOGIN()._playerID % numChatRooms;
             }
         }
         
@@ -78,7 +81,7 @@ export class Chat {
             Chat._bymChat = new BYMChat(new ChatBox(), Chat._chatServer);
             Chat._bymChat.system_message("Connecting to chat");
             Chat._chatInited = true;
-            GLOBAL._layerUI.addChild(Chat._bymChat);
+            getGLOBAL()._layerUI.addChild(Chat._bymChat);
         }
         
         Chat._bymChat.init();
@@ -89,7 +92,7 @@ export class Chat {
             return;
         }
         
-        if (TUTORIAL._stage >= TUTORIAL._endstage && Chat.flagsShouldChatExist()) {
+        if (getTUTORIAL()._stage >= getTUTORIAL()._endstage && Chat.flagsShouldChatExist()) {
             if (Chat._chatEnabled && !Chat._bymChat.IsConnected && Chat._bymChat._open) {
                 Chat.connectAndLogin();
             }
@@ -117,17 +120,17 @@ export class Chat {
                 return;
             }
             Chat._bymChat.initServer();
-            Chat._bymChat.login(name, LOGIN._playerID.toString(), BASE.BaseLevel().level);
+            Chat._bymChat.login(name, getLOGIN()._playerID.toString(), getBASE().BaseLevel().level);
             Chat._bymChat.show();
             Chat._bymChat.enter_sector("Sector-" + Chat._chatroomNumber.toString());
         }
     }
 
     private static getFirstNameLastInitial(): string | null {
-        let firstName = LOGIN._playerName;
+        let firstName = getLOGIN()._playerName;
         if (firstName !== null && firstName.length > 0) {
             firstName = firstName.replace(/ /, "_");
-            let lastName = LOGIN._playerLastName;
+            let lastName = getLOGIN()._playerLastName;
             if (lastName !== null && lastName.length > 0) {
                 lastName = lastName.substr(0, 1);
                 if (lastName.length === 1) {
@@ -162,25 +165,25 @@ export class Chat {
     }
 
     public static chatUserIsInABTest(): boolean {
-        if (GLOBAL._flags) {
-            if (GLOBAL._flags.hasOwnProperty("chatwhitelist")) {
-                Chat._chatWhiteList = String(GLOBAL._flags.chatwhitelist).split(",");
+        if (getGLOBAL()._flags) {
+            if (getGLOBAL()._flags.hasOwnProperty("chatwhitelist")) {
+                Chat._chatWhiteList = String(getGLOBAL()._flags.chatwhitelist).split(",");
             }
-            if (GLOBAL._flags.hasOwnProperty("chatblacklist")) {
-                Chat._chatBlackList = String(GLOBAL._flags.chatblacklist).split(",");
+            if (getGLOBAL()._flags.hasOwnProperty("chatblacklist")) {
+                Chat._chatBlackList = String(getGLOBAL()._flags.chatblacklist).split(",");
             }
-            if (GLOBAL._flags.hasOwnProperty("countrycodeblacklist")) {
-                Chat._countryCodeBlackList = String(GLOBAL._flags.countrycodeblacklist).split(",");
+            if (getGLOBAL()._flags.hasOwnProperty("countrycodeblacklist")) {
+                Chat._countryCodeBlackList = String(getGLOBAL()._flags.countrycodeblacklist).split(",");
             }
         }
         
-        if (Chat._chatWhiteList !== null && Chat._chatWhiteList.indexOf(LOGIN._playerID.toString()) !== -1) {
+        if (Chat._chatWhiteList !== null && Chat._chatWhiteList.indexOf(getLOGIN()._playerID.toString()) !== -1) {
             return true;
         }
-        if (Chat._chatBlackList !== null && Chat._chatBlackList.indexOf(LOGIN._playerID.toString()) !== -1) {
+        if (Chat._chatBlackList !== null && Chat._chatBlackList.indexOf(getLOGIN()._playerID.toString()) !== -1) {
             return false;
         }
-        if (Chat._countryCodeBlackList !== null && Chat._countryCodeBlackList.indexOf(GLOBAL._countryCode) !== -1) {
+        if (Chat._countryCodeBlackList !== null && Chat._countryCodeBlackList.indexOf(getGLOBAL()._countryCode) !== -1) {
             return false;
         }
         if (!Chat._chatEnabled) {
@@ -190,30 +193,30 @@ export class Chat {
     }
 
     public static flagsShouldChatDisplay(): boolean {
-        if (GLOBAL._flags === null) {
+        if (getGLOBAL()._flags === null) {
             return false;
         }
-        if (!GLOBAL._flags.hasOwnProperty("chat")) {
+        if (!getGLOBAL()._flags.hasOwnProperty("chat")) {
             return false;
         }
-        if (GLOBAL._flags.chat !== 2) {
+        if (getGLOBAL()._flags.chat !== 2) {
             return false;
         }
-        if (MapRoomManager.instance.isInMapRoom2 && MapRoomManager.instance.isOpen && 
-            GLOBAL._ROOT.stage.displayState === StageDisplayState.FULL_SCREEN) {
+        if (getMapRoomManager().instance.isInMapRoom2 && getMapRoomManager().instance.isOpen && 
+            getGLOBAL()._ROOT.stage.displayState === StageDisplayState.FULL_SCREEN) {
             return false;
         }
         return true;
     }
 
     public static flagsShouldChatExist(): boolean {
-        if (GLOBAL._flags === null) {
+        if (getGLOBAL()._flags === null) {
             return false;
         }
-        if (!GLOBAL._flags.hasOwnProperty("chat")) {
+        if (!getGLOBAL()._flags.hasOwnProperty("chat")) {
             return false;
         }
-        if (GLOBAL._flags.chat <= 0) {
+        if (getGLOBAL()._flags.chat <= 0) {
             return false;
         }
         if (!Chat.chatUserIsInABTest()) {

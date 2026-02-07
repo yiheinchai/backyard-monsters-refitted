@@ -1,5 +1,8 @@
 import { Solution } from "./Solution";
-import { BFOUNDATION } from "../../../BFOUNDATION";
+
+// Lazy imports to break circular dependency chains
+function getBFOUNDATION(): any { return require("../../../BFOUNDATION").BFOUNDATION; }
+
 
 /**
  * Interface for AI attack processes/strategies.

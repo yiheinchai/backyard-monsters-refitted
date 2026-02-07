@@ -1,27 +1,30 @@
 import MouseEvent from "openfl/events/MouseEvent";
 import TextFieldAutoSize from "openfl/text/TextFieldAutoSize";
 
-import { MapRoomManager } from "./com/monsters/maproom_manager/MapRoomManager";
-import { SiegeWeapons } from "./com/monsters/siege/SiegeWeapons";
-import { Decoy } from "./com/monsters/siege/weapons/Decoy";
-import { Jars } from "./com/monsters/siege/weapons/Jars";
-import { Vacuum } from "./com/monsters/siege/weapons/Vacuum";
 import { QUESTSPOPUP } from "./QUESTSPOPUP";
 import { popup_quest } from "./popup_quest";
 import { frame } from "./frame";
-import { GLOBAL } from "./GLOBAL";
-import { KEYS } from "./KEYS";
-import { BASE } from "./BASE";
-import { POPUPS } from "./POPUPS";
-import { SOUNDS } from "./SOUNDS";
-import { LOGGER } from "./LOGGER";
-import { TUTORIAL } from "./TUTORIAL";
 import { ACHIEVEMENTS } from "./ACHIEVEMENTS";
-import { CREATURELOCKER } from "./CREATURELOCKER";
-import { HOUSING } from "./HOUSING";
-import { CREATURES } from "./CREATURES";
 import { INFERNO_QUESTS } from "./INFERNO_QUESTS";
 import { md5 } from "./md5";
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getSiegeWeapons(): any { return require("./com/monsters/siege/SiegeWeapons").SiegeWeapons; }
+function getDecoy(): any { return require("./com/monsters/siege/weapons/Decoy").Decoy; }
+function getJars(): any { return require("./com/monsters/siege/weapons/Jars").Jars; }
+function getVacuum(): any { return require("./com/monsters/siege/weapons/Vacuum").Vacuum; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getHOUSING(): any { return require("./HOUSING").HOUSING; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+
 
 // Quest interface
 interface QuestDef {
@@ -101,7 +104,7 @@ export class QUESTS {
             { "id": 4, "name": "q_evil" }
         ];
 
-        if (!BASE.isInfernoMainYardOrOutpost) {
+        if (!getBASE().isInfernoMainYardOrOutpost) {
             QUESTS.setupMainQuests();
         } else {
             QUESTS.setupInfernoQuests();
@@ -173,7 +176,7 @@ export class QUESTS {
         QUESTS._mainQuests.push({
             order: 58, list: true, reward: [0, 0, 0, 0, 0], id: "SW1", group: 2,
             name: "q_buildweapon_name", description: "q_buildweapon_desc",
-            keyvars: { "v1": SiegeWeapons.getWeapon(Decoy.ID)?.name || "Decoy" },
+            keyvars: { "v1": getSiegeWeapons().getWeapon(getDecoy().ID)?.name || "Decoy" },
             hint: "q_buildweapon_hint", questimage: "siegeweapon_decoy.jpg",
             questicon: "icon_siegeweapon_decoy.v2.png", streamImage: "siegebuild_decoy.png",
             streamTitle: "q_builddecoy_streamtitle", streamDescription: "q_builddecoy_streambody",
@@ -183,7 +186,7 @@ export class QUESTS {
         QUESTS._mainQuests.push({
             order: 59, list: true, reward: [0, 0, 0, 0, 0], id: "SW2", group: 2,
             name: "q_buildweapon_name", description: "q_buildweapon_desc",
-            keyvars: { "v1": SiegeWeapons.getWeapon(Vacuum.ID)?.name || "Vacuum" },
+            keyvars: { "v1": getSiegeWeapons().getWeapon(getVacuum().ID)?.name || "Vacuum" },
             hint: "q_buildweapon_hint", questimage: "siegeweapon_vacuum.jpg",
             questicon: "icon_siegeweapon_vacuum.v2.png", streamImage: "siegebuild_vacuum.png",
             streamTitle: "q_buildvacuum_streamtitle", streamDescription: "q_buildvacuum_streambody",
@@ -193,7 +196,7 @@ export class QUESTS {
         QUESTS._mainQuests.push({
             order: 60, list: true, reward: [0, 0, 0, 0, 0], id: "SW3", group: 2,
             name: "q_buildweapon_name", description: "q_buildweapon_desc",
-            keyvars: { "v1": SiegeWeapons.getWeapon(Jars.ID)?.name || "Jars" },
+            keyvars: { "v1": getSiegeWeapons().getWeapon(getJars().ID)?.name || "Jars" },
             hint: "q_buildweapon_hint", questimage: "siegeweapon_jars.jpg",
             questicon: "icon_siegeweapon_jars.v2.png", streamImage: "siegebuild_jars.png",
             streamTitle: "q_buildjars_streamtitle", streamDescription: "q_buildjars_streambody",
@@ -218,8 +221,8 @@ export class QUESTS {
 
     public static Check(n: string = "", v: number = 0): void {
         try {
-            if ((GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && MapRoomManager.instance.isInMapRoom3 && BASE.isMainYardOrInfernoMainYard) || 
-                (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && !MapRoomManager.instance.isInMapRoom3)) {
+            if ((getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && getMapRoomManager().instance.isInMapRoom3 && getBASE().isMainYardOrInfernoMainYard) || 
+                (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && !getMapRoomManager().instance.isInMapRoom3)) {
                 
                 if (n && QUESTS._global[n] < v) {
                     QUESTS._global[n] = v;
@@ -233,19 +236,19 @@ export class QUESTS {
                     const q = QUESTS._quests[i];
                     let block = false;
                     
-                    if (q.id === "BOOKMARK" && !GLOBAL._flags.fanfriendbookmarkquests) {
+                    if (q.id === "BOOKMARK" && !getGLOBAL()._flags.fanfriendbookmarkquests) {
                         block = true;
                     }
-                    if (q.id.substr(0, 6) === "INVITE" && !GLOBAL._flags.fanfriendbookmarkquests) {
+                    if (q.id.substr(0, 6) === "INVITE" && !getGLOBAL()._flags.fanfriendbookmarkquests) {
                         block = true;
                     }
-                    if (q.id === "FAN" && !GLOBAL._flags.fanfriendbookmarkquests) {
+                    if (q.id === "FAN" && !getGLOBAL()._flags.fanfriendbookmarkquests) {
                         block = true;
                     }
                     if (q.block) {
                         block = true;
                     }
-                    if (TUTORIAL._stage < 200 && (q.id === "BOOKMARK" || q.id === "FAN")) {
+                    if (getTUTORIAL()._stage < 200 && (q.id === "BOOKMARK" || q.id === "FAN")) {
                         block = true;
                     }
                     
@@ -254,8 +257,8 @@ export class QUESTS {
                             let fail = false;
                             for (const rule in q.rules) {
                                 if (rule === "UNLOCK") {
-                                    if (!CREATURELOCKER._lockerData[q.rules.UNLOCK] || 
-                                        CREATURELOCKER._lockerData[q.rules.UNLOCK].t === 1) {
+                                    if (!getCREATURELOCKER()._lockerData[q.rules.UNLOCK] || 
+                                        getCREATURELOCKER()._lockerData[q.rules.UNLOCK].t === 1) {
                                         fail = true;
                                     }
                                 } else if (q.rules[rule] > QUESTS._global[rule]) {
@@ -269,7 +272,7 @@ export class QUESTS {
                             
                             if (!fail) {
                                 QUESTS._completed[q.id] = 1;
-                                if (BASE.isInfernoMainYardOrOutpost) {
+                                if (getBASE().isInfernoMainYardOrOutpost) {
                                     ACHIEVEMENTS.Check(ACHIEVEMENTS.INFERNO_QUESTS_COMPLETED, QUESTS.amountCompleted);
                                 }
                             }
@@ -278,7 +281,7 @@ export class QUESTS {
                 }
             }
         } catch (e) {
-            LOGGER.Log("err", "Quests.Check: " + e.message);
+            getLOGGER().Log("err", "Quests.Check: " + e.message);
         }
     }
 
@@ -296,13 +299,13 @@ export class QUESTS {
     }
 
     public static get _quests(): QuestDef[] {
-        return BASE.isInfernoMainYardOrOutpost ? QUESTS._infernoQuests : QUESTS._mainQuests;
+        return getBASE().isInfernoMainYardOrOutpost ? QUESTS._infernoQuests : QUESTS._mainQuests;
     }
 
     public static QuestPopup(questID: string, name: string, reward: string, questImage: string, collected: string): void {
         const popup = new popup_quest();
         popup.tA.autoSize = TextFieldAutoSize.LEFT;
-        popup.tA.htmlText = KEYS.Get("pop_questcomplete_body", { "v1": name, "v2": reward });
+        popup.tA.htmlText = getKEYS().Get("pop_questcomplete_body", { "v1": name, "v2": reward });
         popup.bAction.SetupKey("pop_questcomplete_collect_btn");
         popup.bAction.addEventListener(MouseEvent.CLICK, QUESTS.Collect(questID, true));
         popup.bAction.Highlight = true;
@@ -315,11 +318,11 @@ export class QUESTS {
         popup.mcBG.height = h;
         popup.bAction.y = popup.mcBG.y + h - 40;
         
-        if (TUTORIAL._stage < 200) {
+        if (getTUTORIAL()._stage < 200) {
             popup.bClose.visible = false;
         }
         
-        POPUPS.Push(popup, null, null, null, questImage);
+        getPOPUPS().Push(popup, null, null, null, questImage);
     }
 
     public static Collect(questID: string, popup: boolean = false): (e: MouseEvent) => void {
@@ -329,11 +332,11 @@ export class QUESTS {
     }
 
     public static CollectB(questID: string, popup: boolean = false): boolean {
-        if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD) {
             return false;
         }
         
-        if (BASE._pendingPurchase.length === 0) {
+        if (getBASE()._pendingPurchase.length === 0) {
             let found = false;
             let q: QuestDef = null;
             
@@ -349,29 +352,29 @@ export class QUESTS {
             }
             
             if (!found) {
-                GLOBAL.Message(KEYS.Get("q_errorcollecting"));
+                getGLOBAL().Message(getKEYS().Get("q_errorcollecting"));
                 QUESTS.Hide();
                 return false;
             }
             
             // Check housing for monster rewards
             if (q.monster_reward !== undefined) {
-                HOUSING.HousingSpace();
-                const storage = CREATURES.GetProperty(q.reward_creatureid, "cStorage");
-                if (HOUSING._housingSpace.Get() < storage * q.monster_reward) {
-                    if (HOUSING._housingSpace.Get() < storage) {
-                        GLOBAL.Message(
-                            KEYS.Get(BASE.isInfernoMainYardOrOutpost ? "msg_questi_housing" : "msg_quest_housing"),
-                            KEYS.Get("btn_collect"),
+                getHOUSING().HousingSpace();
+                const storage = getCREATURES().GetProperty(q.reward_creatureid, "cStorage");
+                if (getHOUSING()._housingSpace.Get() < storage * q.monster_reward) {
+                    if (getHOUSING()._housingSpace.Get() < storage) {
+                        getGLOBAL().Message(
+                            getKEYS().Get(getBASE().isInfernoMainYardOrOutpost ? "msg_questi_housing" : "msg_quest_housing"),
+                            getKEYS().Get("btn_collect"),
                             QUESTS.CollectSpecial,
                             [questID]
                         );
                         return false;
                     }
-                    const quantity = Math.floor(HOUSING._housingSpace.Get() / storage);
-                    GLOBAL.Message(
-                        KEYS.Get(BASE.isInfernoMainYardOrOutpost ? "inf_msg_housinglimited" : "msg_housinglimited", { "v1": quantity }),
-                        KEYS.Get("btn_collect"),
+                    const quantity = Math.floor(getHOUSING()._housingSpace.Get() / storage);
+                    getGLOBAL().Message(
+                        getKEYS().Get(getBASE().isInfernoMainYardOrOutpost ? "inf_msg_housinglimited" : "msg_housinglimited", { "v1": quantity }),
+                        getKEYS().Get("btn_collect"),
                         QUESTS.CollectSpecial,
                         [questID]
                     );
@@ -381,9 +384,9 @@ export class QUESTS {
             
             // Check siege weapon factory availability
             if (q.siegeweapon_reward) {
-                const hasRoom = GLOBAL._bSiegeFactory && !GLOBAL._bSiegeFactory.upgradingWeapon && !GLOBAL._bSiegeFactory.hasBuiltWeapon;
+                const hasRoom = getGLOBAL()._bSiegeFactory && !getGLOBAL()._bSiegeFactory.upgradingWeapon && !getGLOBAL()._bSiegeFactory.hasBuiltWeapon;
                 if (!hasRoom) {
-                    GLOBAL.Message(KEYS.Get("msg_quest_noroomsiegeweapon", { "v1": SiegeWeapons.getWeapon(q.siegeweapon_reward)?.name }));
+                    getGLOBAL().Message(getKEYS().Get("msg_quest_noroomsiegeweapon", { "v1": getSiegeWeapons().getWeapon(q.siegeweapon_reward)?.name }));
                     return false;
                 }
             }
@@ -396,12 +399,12 @@ export class QUESTS {
             for (let r = 0; r < reward.length; r++) {
                 if (reward[r] > 0) {
                     if (r < 4) {
-                        BASE.Fund(r + 1, reward[r], true);
+                        getBASE().Fund(r + 1, reward[r], true);
                     } else {
                         QUESTS._completed[questID] = 2;
-                        BASE._credits.Add(reward[r]);
-                        BASE._hpCredits += reward[r];
-                        BASE.Purchase("Q" + questID, 1, "quest");
+                        getBASE()._credits.Add(reward[r]);
+                        getBASE()._hpCredits += reward[r];
+                        getBASE().Purchase("Q" + questID, 1, "quest");
                         saveOK = false;
                     }
                     value += reward[r];
@@ -411,37 +414,37 @@ export class QUESTS {
             // Collect monster rewards
             if (q.monster_reward !== undefined) {
                 for (let z = 0; z < q.monster_reward; z++) {
-                    if (q.id.substr(0, 2) === "UC" && GLOBAL._bLocker) {
-                        HOUSING.HousingStore(q.reward_creatureid, GLOBAL._bLocker._position);
+                    if (q.id.substr(0, 2) === "UC" && getGLOBAL()._bLocker) {
+                        getHOUSING().HousingStore(q.reward_creatureid, getGLOBAL()._bLocker._position);
                     } else {
-                        HOUSING.HousingStore(q.reward_creatureid, GLOBAL.townHall._position);
+                        getHOUSING().HousingStore(q.reward_creatureid, getGLOBAL().townHall._position);
                     }
-                    value += CREATURES.GetProperty(q.reward_creatureid, "cResource");
+                    value += getCREATURES().GetProperty(q.reward_creatureid, "cResource");
                 }
             }
             
             // Collect siege weapon rewards
             if (q.siegeweapon_reward && q.siegeweapon_rewardcount) {
-                GLOBAL._bSiegeFactory.CompleteUpgradingWeapon(q.siegeweapon_reward, false);
+                getGLOBAL()._bSiegeFactory.CompleteUpgradingWeapon(q.siegeweapon_reward, false);
             }
             
             QUESTS._completed[questID] = 2;
-            BASE.PointsAdd(Math.ceil(value / 50));
+            getBASE().PointsAdd(Math.ceil(value / 50));
             
             if (questID === "C0") {
-                BASE.PointsAdd(100);
+                getBASE().PointsAdd(100);
             }
             
             if (saveOK) {
-                BASE.Save();
+                getBASE().Save();
             }
             
             QUESTS.Check();
             
             // Show brag popup
-            if (TUTORIAL._stage >= 200 && q.streamTitle) {
+            if (getTUTORIAL()._stage >= 200 && q.streamTitle) {
                 const popupMC = new popup_quest();
-                popupMC.tA.htmlText = "<b>" + KEYS.Get("pop_questcollected_body", { "v1": KEYS.Get(q.name, q.keyvars) }) + "</b>";
+                popupMC.tA.htmlText = "<b>" + getKEYS().Get("pop_questcollected_body", { "v1": getKEYS().Get(q.name, q.keyvars) }) + "</b>";
                 popupMC.bAction.SetupKey("btn_brag");
                 popupMC.bAction.addEventListener(MouseEvent.CLICK, (): void => {
                     QUESTS.bragQuest(q);
@@ -456,7 +459,7 @@ export class QUESTS {
                 popupMC.mcBG.height = h;
                 (popupMC.mcBG as frame).Setup();
                 popupMC.bAction.y = popupMC.mcBG.y + h - 45;
-                POPUPS.Push(popupMC, null, null, null, q.questimage);
+                getPOPUPS().Push(popupMC, null, null, null, q.questimage);
             }
         }
         
@@ -465,28 +468,28 @@ export class QUESTS {
 
     private static bragQuest(q: QuestDef): void {
         const rewardArr: any[] = [];
-        if (q.reward[0] > 0) rewardArr.push([q.reward[0], KEYS.Get(GLOBAL._resourceNames[0])]);
-        if (q.reward[1] > 0) rewardArr.push([q.reward[1], KEYS.Get(GLOBAL._resourceNames[1])]);
-        if (q.reward[2] > 0) rewardArr.push([q.reward[2], KEYS.Get(GLOBAL._resourceNames[2])]);
-        if (q.reward[3] > 0) rewardArr.push([q.reward[3], KEYS.Get(GLOBAL._resourceNames[3])]);
-        if (q.reward[4] > 0) rewardArr.push([q.reward[4], KEYS.Get(GLOBAL._resourceNames[4])]);
+        if (q.reward[0] > 0) rewardArr.push([q.reward[0], getKEYS().Get(getGLOBAL()._resourceNames[0])]);
+        if (q.reward[1] > 0) rewardArr.push([q.reward[1], getKEYS().Get(getGLOBAL()._resourceNames[1])]);
+        if (q.reward[2] > 0) rewardArr.push([q.reward[2], getKEYS().Get(getGLOBAL()._resourceNames[2])]);
+        if (q.reward[3] > 0) rewardArr.push([q.reward[3], getKEYS().Get(getGLOBAL()._resourceNames[3])]);
+        if (q.reward[4] > 0) rewardArr.push([q.reward[4], getKEYS().Get(getGLOBAL()._resourceNames[4])]);
         if (q.monster_reward !== undefined) {
-            rewardArr.push([q.monster_reward, KEYS.Get(CREATURELOCKER._creatures[q.reward_creatureid].name)]);
+            rewardArr.push([q.monster_reward, getKEYS().Get(getCREATURELOCKER()._creatures[q.reward_creatureid].name)]);
         }
         if (q.siegeweapon_reward) {
-            rewardArr.push([q.siegeweapon_rewardcount, SiegeWeapons.getWeapon(q.siegeweapon_reward)?.name]);
+            rewardArr.push([q.siegeweapon_rewardcount, getSiegeWeapons().getWeapon(q.siegeweapon_reward)?.name]);
         }
         
-        const collected = GLOBAL.Array2String(rewardArr);
-        const streamTitle = KEYS.Get(q.streamTitle).replace("#questname#", KEYS.Get(q.name, q.keyvars)).replace("#collected#", collected);
-        const streamDesc = KEYS.Get(q.streamDescription).replace("#questname#", KEYS.Get(q.name, q.keyvars)).replace("#collected#", collected);
+        const collected = getGLOBAL().Array2String(rewardArr);
+        const streamTitle = getKEYS().Get(q.streamTitle).replace("#questname#", getKEYS().Get(q.name, q.keyvars)).replace("#collected#", collected);
+        const streamDesc = getKEYS().Get(q.streamDescription).replace("#questname#", getKEYS().Get(q.name, q.keyvars)).replace("#collected#", collected);
         
-        GLOBAL.CallJS("sendFeed", ["quest-collected", streamTitle, streamDesc, q.streamImage, 0]);
-        POPUPS.Next();
+        getGLOBAL().CallJS("sendFeed", ["quest-collected", streamTitle, streamDesc, q.streamImage, 0]);
+        getPOPUPS().Next();
     }
 
     public static CollectSpecial(questID: string): void {
-        if (BASE._pendingPurchase.length === 0) {
+        if (getBASE()._pendingPurchase.length === 0) {
             let found = false;
             let q: QuestDef = null;
             
@@ -502,7 +505,7 @@ export class QUESTS {
             }
             
             if (!found) {
-                GLOBAL.Message(KEYS.Get("q_errorcollecting"));
+                getGLOBAL().Message(getKEYS().Get("q_errorcollecting"));
                 QUESTS.Hide();
                 return;
             }
@@ -511,27 +514,27 @@ export class QUESTS {
             
             if (q.monster_reward !== undefined) {
                 for (let z = 0; z < q.monster_reward; z++) {
-                    if (q.id.substr(0, 2) === "UC" && GLOBAL._bLocker) {
-                        HOUSING.HousingStore(q.reward_creatureid, GLOBAL._bLocker._position);
+                    if (q.id.substr(0, 2) === "UC" && getGLOBAL()._bLocker) {
+                        getHOUSING().HousingStore(q.reward_creatureid, getGLOBAL()._bLocker._position);
                     } else {
-                        HOUSING.HousingStore(q.reward_creatureid, GLOBAL.townHall._position);
+                        getHOUSING().HousingStore(q.reward_creatureid, getGLOBAL().townHall._position);
                     }
-                    value += CREATURES.GetProperty(q.reward_creatureid, "cResource");
+                    value += getCREATURES().GetProperty(q.reward_creatureid, "cResource");
                 }
             }
             
             if (q.siegeweapon_reward && q.siegeweapon_rewardcount) {
-                GLOBAL._bSiegeFactory.CompleteUpgradingWeapon(q.siegeweapon_reward, false);
+                getGLOBAL()._bSiegeFactory.CompleteUpgradingWeapon(q.siegeweapon_reward, false);
             }
             
             QUESTS._completed[questID] = 2;
-            BASE.PointsAdd(Math.ceil(value / 50));
-            BASE.Save();
+            getBASE().PointsAdd(Math.ceil(value / 50));
+            getBASE().Save();
             QUESTS.Check();
             
-            if (TUTORIAL._stage >= 200 && q.streamTitle) {
+            if (getTUTORIAL()._stage >= 200 && q.streamTitle) {
                 const popupMC = new popup_quest();
-                popupMC.tA.htmlText = "<b>" + KEYS.Get("pop_questcollected_body", { "v1": KEYS.Get(q.name, q.keyvars) }) + "</b>";
+                popupMC.tA.htmlText = "<b>" + getKEYS().Get("pop_questcollected_body", { "v1": getKEYS().Get(q.name, q.keyvars) }) + "</b>";
                 popupMC.bAction.SetupKey("btn_brag");
                 popupMC.bAction.addEventListener(MouseEvent.CLICK, (): void => {
                     QUESTS.bragQuest(q);
@@ -546,7 +549,7 @@ export class QUESTS {
                 popupMC.mcBG.height = h;
                 (popupMC.mcBG as frame).Setup();
                 popupMC.bAction.y = popupMC.mcBG.y + h - 45;
-                POPUPS.Push(popupMC, null, null, null, q.questimage);
+                getPOPUPS().Push(popupMC, null, null, null, q.questimage);
             }
             
             QUESTS.Hide();
@@ -554,16 +557,16 @@ export class QUESTS {
     }
 
     public static Show(e: MouseEvent = null): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-            if (GLOBAL._newBuilding) {
-                GLOBAL._newBuilding.Cancel();
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+            if (getGLOBAL()._newBuilding) {
+                getGLOBAL()._newBuilding.Cancel();
             }
             if (!QUESTS._open) {
-                SOUNDS.Play("click1");
+                getSOUNDS().Play("click1");
                 QUESTS._open = true;
-                BASE.BuildingDeselect();
-                GLOBAL.BlockerAdd();
-                QUESTS._mc = GLOBAL._layerWindows.addChild(new QUESTSPOPUP()) as QUESTSPOPUP;
+                getBASE().BuildingDeselect();
+                getGLOBAL().BlockerAdd();
+                QUESTS._mc = getGLOBAL()._layerWindows.addChild(new QUESTSPOPUP()) as QUESTSPOPUP;
                 QUESTS._mc.Center();
                 QUESTS._mc.ScaleUp();
             }
@@ -573,10 +576,10 @@ export class QUESTS {
     public static Hide(e: MouseEvent = null): void {
         if (QUESTS._open) {
             QUESTS._open = false;
-            POPUPS.Next();
+            getPOPUPS().Next();
             if (QUESTS._mc) {
-                GLOBAL.BlockerRemove();
-                GLOBAL._layerWindows.removeChild(QUESTS._mc);
+                getGLOBAL().BlockerRemove();
+                getGLOBAL()._layerWindows.removeChild(QUESTS._mc);
                 QUESTS._mc = null;
             }
         }

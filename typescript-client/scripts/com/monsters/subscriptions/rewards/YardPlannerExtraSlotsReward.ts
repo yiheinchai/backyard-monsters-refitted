@@ -2,7 +2,10 @@ import { BasePlanner } from "../../baseplanner/BasePlanner";
 import { Reward } from "../../rewarding/Reward";
 import { SubscriptionHandler } from "../SubscriptionHandler";
 
-import { GLOBAL } from "../../../../GLOBAL";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+
+
 
 /**
  * Yard planner extra slots reward - unlocks extra planner slots for subscribers.
@@ -15,7 +18,7 @@ export class YardPlannerExtraSlotsReward extends Reward {
     }
 
     public override canBeApplied(): boolean {
-        return GLOBAL.isAtHome();
+        return getGLOBAL().isAtHome();
     }
 
     protected override onApplication(): void {

@@ -16,14 +16,17 @@ import { VideoUtils } from "../../../utils/VideoUtils";
 import { MonsterMadnessPopup } from "./MonsterMadnessPopup";
 import { Button } from "../../../../../Button";
 
-import { BASE } from "../../../../../BASE";
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
-import { BUILDINGS } from "../../../../../BUILDINGS";
-import { BUILDINGOPTIONS } from "../../../../../BUILDINGOPTIONS";
-import { GLOBAL } from "../../../../../GLOBAL";
-import { INFERNOPORTAL } from "../../../../../INFERNOPORTAL";
-import { KEYS } from "../../../../../KEYS";
-import { POPUPS } from "../../../../../POPUPS";
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../../../BASE").BASE; }
+function getBFOUNDATION(): any { return require("../../../../../BFOUNDATION").BFOUNDATION; }
+function getBUILDINGS(): any { return require("../../../../../BUILDINGS").BUILDINGS; }
+function getBUILDINGOPTIONS(): any { return require("../../../../../BUILDINGOPTIONS").BUILDINGOPTIONS; }
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+function getINFERNOPORTAL(): any { return require("../../../../../INFERNOPORTAL").INFERNOPORTAL; }
+function getKEYS(): any { return require("../../../../../KEYS").KEYS; }
+function getPOPUPS(): any { return require("../../../../../POPUPS").POPUPS; }
+
+
 
 /**
  * Monster Madness popup info - base class for popup dialogs.
@@ -90,15 +93,15 @@ export class MonsterMadnessPopupInfo extends EventDispatcher {
     }
 
     protected setupUpgradeButton(button: Button): void {
-        if (BASE.isInfernoMainYardOrOutpost) {
+        if (getBASE().isInfernoMainYardOrOutpost) {
             this.setupRSVPButton(button);
             return;
         }
-        const townHall: BFOUNDATION = GLOBAL.townHall;
+        const townHall: BFOUNDATION = getGLOBAL().townHall;
         let keyStr: string = "btn_upgradenow";
         let clickHandler: Function | null = null;
         if (townHall._lvl.Get() >= 6) {
-            if (GLOBAL._bMap) {
+            if (getGLOBAL()._bMap) {
                 clickHandler = this.onClickUpgradeMaproom.bind(this);
             } else {
                 clickHandler = this.onClickBuildMaproom.bind(this);
@@ -107,7 +110,7 @@ export class MonsterMadnessPopupInfo extends EventDispatcher {
         } else {
             clickHandler = this.onClickUpgradeTownhall.bind(this);
         }
-        button.Setup(KEYS.Get(keyStr));
+        button.Setup(getKEYS().Get(keyStr));
         button.addEventListener(MouseEvent.CLICK, clickHandler as any);
         button.Highlight = true;
     }
@@ -115,22 +118,22 @@ export class MonsterMadnessPopupInfo extends EventDispatcher {
     protected onClickBuildMaproom(event: MouseEvent): void {
         this.close();
         (event.target as any).removeEventListener(MouseEvent.CLICK, this.onClickBuildMaproom.bind(this));
-        BUILDINGS._buildingID = 11;
-        BUILDINGS.Show();
+        getBUILDINGS()._buildingID = 11;
+        getBUILDINGS().Show();
     }
 
     protected onClickUpgradeMaproom(event: MouseEvent): void {
         this.close();
         (event.target as any).removeEventListener(MouseEvent.CLICK, this.onClickUpgradeMaproom.bind(this));
-        GLOBAL._selectedBuilding = GLOBAL._bMap;
-        BUILDINGOPTIONS.Show(GLOBAL._bMap, "upgrade");
+        getGLOBAL()._selectedBuilding = getGLOBAL()._bMap;
+        getBUILDINGOPTIONS().Show(getGLOBAL()._bMap, "upgrade");
     }
 
     protected onClickUpgradeTownhall(event: MouseEvent): void {
         this.close();
         (event.target as any).removeEventListener(MouseEvent.CLICK, this.onClickUpgradeTownhall.bind(this));
-        GLOBAL._selectedBuilding = GLOBAL.townHall;
-        BUILDINGOPTIONS.Show(GLOBAL.townHall, "upgrade");
+        getGLOBAL()._selectedBuilding = getGLOBAL().townHall;
+        getBUILDINGOPTIONS().Show(getGLOBAL().townHall, "upgrade");
     }
 
     protected setupRSVPButton(button: Button): void {
@@ -138,7 +141,7 @@ export class MonsterMadnessPopupInfo extends EventDispatcher {
             button.visible = false;
             return;
         }
-        button.Setup(KEYS.Get("btn_rsvp"));
+        button.Setup(getKEYS().Get("btn_rsvp"));
         button.addEventListener(MouseEvent.CLICK, this.onClickRSVPButton.bind(this));
         button.Highlight = true;
     }
@@ -150,32 +153,32 @@ export class MonsterMadnessPopupInfo extends EventDispatcher {
     }
 
     protected setupMapButtton(button: Button): void {
-        if (BASE.isInfernoMainYardOrOutpost) {
+        if (getBASE().isInfernoMainYardOrOutpost) {
             this.setupExitButton(button);
             return;
         }
-        button.Setup(KEYS.Get("btn_openmap"));
+        button.Setup(getKEYS().Get("btn_openmap"));
         button.addEventListener(MouseEvent.CLICK, this.onClickMapButton.bind(this));
     }
 
     private setupExitButton(button: Button): void {
-        button.Setup(KEYS.Get("btn_exitcavern"));
+        button.Setup(getKEYS().Get("btn_exitcavern"));
         button.addEventListener(MouseEvent.CLICK, this.onClickExitButton.bind(this));
     }
 
     protected onClickExitButton(event: MouseEvent): void {
         this.close();
-        INFERNOPORTAL.ToggleYard();
+        getINFERNOPORTAL().ToggleYard();
     }
 
     private onClickMapButton(event: MouseEvent): void {
         this.close();
         (event.target as any).removeEventListener(MouseEvent.CLICK, this.onClickMapButton.bind(this));
-        GLOBAL.ShowMap();
+        getGLOBAL().ShowMap();
     }
 
     protected setupCloseButtton(button: Button): void {
-        button.Setup(KEYS.Get("btn_close"));
+        button.Setup(getKEYS().Get("btn_close"));
         button.addEventListener(MouseEvent.CLICK, this.onClickCloseButton.bind(this));
     }
 
@@ -185,12 +188,12 @@ export class MonsterMadnessPopupInfo extends EventDispatcher {
     }
 
     protected ShowBrag(imageUrl: string, titleKey: string, bodyKey: string, linkUrl: string): void {
-        GLOBAL.CallJS("sendFeed", [imageUrl, KEYS.Get(titleKey), KEYS.Get(bodyKey), linkUrl]);
+        getGLOBAL().CallJS("sendFeed", [imageUrl, getKEYS().Get(titleKey), getKEYS().Get(bodyKey), linkUrl]);
         this.close();
     }
 
     protected close(): void {
-        POPUPS.Next();
+        getPOPUPS().Next();
         if (this._videoStream) {
             this._videoStream.close();
         }

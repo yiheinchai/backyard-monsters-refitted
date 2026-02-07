@@ -1,13 +1,16 @@
 import Point from "openfl/geom/Point";
 
 import { ITargetable } from "../../../interfaces/ITargetable";
-import { MonsterBase } from "../../MonsterBase";
 import { CreepBase } from "../CreepBase";
 import { ProjectileUtils } from "../../../projectiles/ProjectileUtils";
 import { Projectilev2 } from "../../../projectiles/Projectilev2";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
 import { LoanShark } from "../../../../../org/kissmyas/utils/loanshark/LoanShark";
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+function getBFOUNDATION(): any { return require("../../../../../BFOUNDATION").BFOUNDATION; }
+
 
 /**
  * Sabnox v2 - rebalanced inferno creep with projectile pool.

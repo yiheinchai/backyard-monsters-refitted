@@ -3,8 +3,11 @@ import BitmapData from 'openfl/display/BitmapData';
 import BitmapDataChannel from 'openfl/display/BitmapDataChannel';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
-import { BASE } from './BASE';
-import { LOGGER } from './LOGGER';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+
 
 /**
  * MAPBG - Map Background Generator
@@ -84,7 +87,7 @@ export class MAPBG {
             groundCompiled.draw(t.t1);
             for (let tile = 2; tile <= tileCount; tile++) {
                 const groundMask: BitmapData = new BitmapData(1000, 500, true, 0);
-                groundMask.perlinNoise(50 * tile, 25 * tile, 2, BASE._baseSeed + 1 + tile, true, false, BitmapDataChannel.ALPHA, true, null);
+                groundMask.perlinNoise(50 * tile, 25 * tile, 2, getBASE()._baseSeed + 1 + tile, true, false, BitmapDataChannel.ALPHA, true, null);
                 groundCompiled.copyPixels(t["t" + tile], new Rectangle(0, 0, 1000, 500), new Point(0, 0), groundMask, null, true);
             }
 
@@ -94,7 +97,7 @@ export class MAPBG {
                 t["t" + i]?.dispose();
             }
         } catch (e: any) {
-            LOGGER.Log("err", "MAPBG.MakeTile: " + e.message + " | " + (e.stack || ""));
+            getLOGGER().Log("err", "MAPBG.MakeTile: " + e.message + " | " + (e.stack || ""));
         }
         return groundCompiled;
     }

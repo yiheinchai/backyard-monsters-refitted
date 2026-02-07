@@ -1,9 +1,12 @@
 import { TweenLite, Bounce } from './gs/TweenLite';
-import { BFOUNDATION } from './BFOUNDATION';
-import { GLOBAL } from './GLOBAL';
-import { MAP } from './MAP';
 import { ResourcePackage_CLIP } from './ResourcePackage_CLIP';
-import { SOUNDS } from './SOUNDS';
+
+// Lazy imports to break circular dependency chains
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+
 
 /**
  * ParticleLoot - Particle effect for loot dropping from buildings
@@ -14,10 +17,10 @@ export class ParticleLoot {
     private _building: BFOUNDATION;
 
     constructor(param1: BFOUNDATION, param2: number, param3: number) {
-        if (!GLOBAL._catchup) {
+        if (!getGLOBAL()._catchup) {
             this._building = param1;
             this._resourcePackage = new ResourcePackage_CLIP();
-            MAP._RESOURCES.addChild(this._resourcePackage);
+            getMAP()._RESOURCES.addChild(this._resourcePackage);
             this._resourcePackage.mcDot.gotoAndStop(param3);
             this._resourcePackage.x = param1._mc.x;
             this._resourcePackage.y = param1._mc.y;
@@ -27,7 +30,7 @@ export class ParticleLoot {
                 "delay": 1.5,
                 "overwrite": 0
             });
-            SOUNDS.Play("bankland");
+            getSOUNDS().Play("bankland");
         }
     }
 
@@ -60,7 +63,7 @@ export class ParticleLoot {
 
     public Remove(): void {
         try {
-            MAP._RESOURCES.removeChild(this._resourcePackage);
+            getMAP()._RESOURCES.removeChild(this._resourcePackage);
         } catch (e: any) {
         }
         this._resourcePackage = null!;

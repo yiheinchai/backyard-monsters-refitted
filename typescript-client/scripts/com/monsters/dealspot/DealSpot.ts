@@ -7,9 +7,12 @@ import URLRequest from "openfl/net/URLRequest";
 import LoaderContext from "openfl/system/LoaderContext";
 import Security from "openfl/system/Security";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
 import { UI_TOP } from "../../../UI_TOP";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+
 
 // Forward declaration
 declare class ExternalInterface {
@@ -42,15 +45,15 @@ export class DealSpot extends MovieClip {
         context.checkPolicyFile = true;
         Security.allowDomain("*");
         
-        this._appIDVal = GLOBAL._appid;
-        this._sidVal = GLOBAL._tpid;
-        this._currIDVal = GLOBAL._currencyURL;
+        this._appIDVal = getGLOBAL()._appid;
+        this._sidVal = getGLOBAL()._tpid;
+        this._currIDVal = getGLOBAL()._currencyURL;
         this._top = top;
         
         this._loader = new Loader();
         this._req = new URLRequest("" + this._reqURL + this._reqAppID + this._appIDVal + this._reqSID + this._sidVal + this._reqCurrID + this._currIDVal + this._tp2);
         
-        this._loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, GLOBAL.handleLoadError);
+        this._loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, getGLOBAL().handleLoadError);
         this._loader.contentLoaderInfo.addEventListener(Event.COMPLETE, this.onLoaderFinish.bind(this));
         this._loader.addEventListener("trialpayClick", this.trialpayClick.bind(this));
         this._loader.addEventListener("onOfferUnavailable", this.trialpayOfferUnavailable.bind(this));
@@ -65,7 +68,7 @@ export class DealSpot extends MovieClip {
     public onLoaderFinish(e: Event): void {
         this.addChild(this._loader.content);
         this._loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, this.onLoaderFinish.bind(this));
-        this._loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, GLOBAL.handleLoadError);
+        this._loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, getGLOBAL().handleLoadError);
         this.addEventListener(MouseEvent.MOUSE_OVER, this.onRollOver.bind(this));
         this.addEventListener(MouseEvent.MOUSE_OUT, this.onRollOut.bind(this));
         this._loader.removeEventListener("trialpayClick", this.trialpayClick.bind(this));
@@ -76,7 +79,7 @@ export class DealSpot extends MovieClip {
         if (this._top._bubbleDo) {
             this._top.BubbleHide();
         }
-        const text = KEYS.Get("popup_earnshiny");
+        const text = getKEYS().Get("popup_earnshiny");
         const xPos = this.parent.x + 80;
         const yPos = this.parent.y + 50;
         this._top.BubbleShow(xPos, yPos, text);

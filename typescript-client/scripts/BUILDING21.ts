@@ -3,11 +3,14 @@ import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { IAttackable } from './com/monsters/interfaces/IAttackable';
 import { BTOWER } from './BTOWER';
-import { ATTACK } from './ATTACK';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
 import { PROJECTILES } from './PROJECTILES';
-import { SOUNDS } from './SOUNDS';
+
+// Lazy imports to break circular dependency chains
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+
 
 /**
  * BUILDING21 - Sniper Tower
@@ -20,7 +23,7 @@ export class BUILDING21 extends BTOWER {
         super();
         this._frameNumber = 0;
         this._type = 21;
-        this._top = BASE.isInfernoMainYardOrOutpost ? -60 : -30;
+        this._top = getBASE().isInfernoMainYardOrOutpost ? -60 : -30;
         this._footprint = [new Rectangle(0, 0, 70, 70)];
         this._gridCost = [[new Rectangle(0, 0, 70, 70), 10], [new Rectangle(10, 10, 50, 50), 200]];
         this.SetProps();
@@ -33,7 +36,7 @@ export class BUILDING21 extends BTOWER {
     }
 
     public override AnimFrame(advance: boolean = true): void {
-        if (this._animLoaded && GLOBAL._render) {
+        if (this._animLoaded && getGLOBAL()._render) {
             this._animRect!.x = this._animRect!.width * this._animTick;
             this._animContainerBMD!.copyPixels(this._animBMD!, this._animRect!, this._nullPoint!);
         }
@@ -41,19 +44,19 @@ export class BUILDING21 extends BTOWER {
 
     public override Fire(target: IAttackable): void {
         super.Fire(target);
-        if (BASE.isInfernoMainYardOrOutpost) {
-            SOUNDS.Play("isniper", !this.isJard ? 0.8 : 0.4);
+        if (getBASE().isInfernoMainYardOrOutpost) {
+            getSOUNDS().Play("isniper", !this.isJard ? 0.8 : 0.4);
         } else {
-            SOUNDS.Play("snipe1", !this.isJard ? 0.8 : 0.4);
+            getSOUNDS().Play("snipe1", !this.isJard ? 0.8 : 0.4);
         }
         const healthRatio: number = 0.5 + 0.5 / this.maxHealth * this.health;
         let overdrive: number = 1;
-        if (GLOBAL._towerOverdrive && GLOBAL._towerOverdrive.Get() >= GLOBAL.Timestamp()) {
+        if (getGLOBAL()._towerOverdrive && getGLOBAL()._towerOverdrive.Get() >= getGLOBAL().Timestamp()) {
             overdrive = 1.25;
         }
         if (this.isJard) {
             this._jarHealth!.Add(-Math.floor(this.damage * healthRatio * overdrive));
-            ATTACK.Damage(this._mc!.x, this._mc!.y + this._top, this.damage * healthRatio * overdrive);
+            getATTACK().Damage(this._mc!.x, this._mc!.y + this._top, this.damage * healthRatio * overdrive);
             if (this._jarHealth!.Get() <= 0) {
                 this.KillJar();
             }

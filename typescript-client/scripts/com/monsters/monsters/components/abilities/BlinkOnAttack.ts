@@ -4,9 +4,12 @@ import { IAttackable } from "../../../interfaces/IAttackable";
 import { ITargetable } from "../../../interfaces/ITargetable";
 import { Component } from "../Component";
 import { IAttackingComponent } from "../IAttackingComponent";
-import { Targeting } from "../../../../../Targeting";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
+// Lazy imports to break circular dependency chains
+function getTargeting(): any { return require("../../../../../Targeting").Targeting; }
+function getBFOUNDATION(): any { return require("../../../../../BFOUNDATION").BFOUNDATION; }
+
+
 
 /**
  * Blink on attack - teleports to a new target after attacking a certain number of times.
@@ -58,7 +61,7 @@ export class BlinkOnAttack extends Component implements IAttackingComponent {
     private startBlink(data: Record<string, any>): void {
         this.m_blinkDistance = data.dist;
         this.m_blinkTarget = data.creep;
-        this.owner.WaypointTo(new Point(this.m_blinkTarget!.x, this.m_blinkTarget!.y), this.m_blinkTarget instanceof BFOUNDATION ? this.m_blinkTarget as BFOUNDATION : null);
+        this.owner.WaypointTo(new Point(this.m_blinkTarget!.x, this.m_blinkTarget!.y), this.m_blinkTarget instanceof getBFOUNDATION() ? this.m_blinkTarget as BFOUNDATION : null);
         this.m_blinkPoints = this.m_maxBlinkPoints;
         this.owner.graphic.alpha = 0.3;
         ++this.owner.targetableStatus;
@@ -92,7 +95,7 @@ export class BlinkOnAttack extends Component implements IAttackingComponent {
     }
 
     private getNewBlinkTarget(): Record<string, any> | null {
-        const buildings: Array<any> = Targeting.getBuildingsInRange(this.m_maxBlinkDistance, new Point(this.owner.x, this.owner.y));
+        const buildings: Array<any> = getTargeting().getBuildingsInRange(this.m_maxBlinkDistance, new Point(this.owner.x, this.owner.y));
         for (let i = 0; i < buildings.length; i++) {
             if (buildings[i].creep === this.owner._targetBuilding) {
                 buildings.splice(i, 1);

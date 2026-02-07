@@ -1,11 +1,14 @@
 import Point from "openfl/geom/Point";
 
 import { ITargetable } from "../../../interfaces/ITargetable";
-import { MonsterBase } from "../../MonsterBase";
 import { CreepBase } from "../CreepBase";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
-import { FIREBALLS } from "../../../../../FIREBALLS";
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+function getBFOUNDATION(): any { return require("../../../../../BFOUNDATION").BFOUNDATION; }
+function getFIREBALLS(): any { return require("../../../../../FIREBALLS").FIREBALLS; }
+
+
 
 /**
  * Sabnox - inferno creep with ranged magma attack that deals double damage to towers.
@@ -29,9 +32,9 @@ export class Sabnox extends CreepBase {
     }
 
     protected override rangedAttack(target: ITargetable): ITargetable {
-        if (target instanceof BFOUNDATION) {
+        if (target instanceof getBFOUNDATION()) {
             if (this._targetBuilding._class === "tower") {
-                return FIREBALLS.Spawn(
+                return getFIREBALLS().Spawn(
                     this._tmpPoint,
                     this._targetBuilding._position,
                     this._targetBuilding,
@@ -39,11 +42,11 @@ export class Sabnox extends CreepBase {
                     this.damage * 2,
                     0,
                     0,
-                    FIREBALLS.TYPE_MAGMA,
+                    getFIREBALLS().TYPE_MAGMA,
                     this
                 );
             }
-            return FIREBALLS.Spawn(
+            return getFIREBALLS().Spawn(
                 this._tmpPoint,
                 this._targetBuilding._position,
                 this._targetBuilding,
@@ -51,18 +54,18 @@ export class Sabnox extends CreepBase {
                 this.damage,
                 0,
                 0,
-                FIREBALLS.TYPE_MAGMA,
+                getFIREBALLS().TYPE_MAGMA,
                 this
             );
         }
-        return FIREBALLS.Spawn2(
+        return getFIREBALLS().Spawn2(
             this._tmpPoint,
             this._targetCreep._tmpPoint,
             this._targetCreep,
             10,
             this.damage,
             0,
-            FIREBALLS.TYPE_MAGMA,
+            getFIREBALLS().TYPE_MAGMA,
             1,
             this
         );

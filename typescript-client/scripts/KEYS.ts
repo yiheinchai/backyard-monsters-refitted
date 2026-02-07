@@ -1,8 +1,11 @@
 import Event from 'openfl/events/Event';
 import IOErrorEvent from 'openfl/events/IOErrorEvent';
 import SecurityErrorEvent from 'openfl/events/SecurityErrorEvent';
-import { GLOBAL } from './GLOBAL';
-import { URLLoaderApi } from './URLLoaderApi';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getURLLoaderApi(): any { return require("./URLLoaderApi").URLLoaderApi; }
+
 
 /**
  * KEYS - Localization Key System
@@ -30,7 +33,7 @@ export class KEYS {
 
     public static async GetSupportedLanguages(): Promise<void> {
         try {
-            const response = await fetch(GLOBAL._apiURL + "supportedLangs");
+            const response = await fetch(getGLOBAL()._apiURL + "supportedLangs");
             const data = await response.json();
             KEYS.handleSupportedLangsSucc(data);
         } catch (error) {
@@ -40,13 +43,13 @@ export class KEYS {
 
     private static handleLangFileSucc(data: any): void {
         KEYS.languageFileJson = data;
-        GLOBAL.textContentLoaded = true;
-        GLOBAL.eventDispatcher.dispatchEvent(new Event(KEYS.LANGUAGE_FILE_LOADED));
+        getGLOBAL().textContentLoaded = true;
+        getGLOBAL().eventDispatcher.dispatchEvent(new Event(KEYS.LANGUAGE_FILE_LOADED));
     }
 
     private static handleSupportedLangsSucc(data: any): void {
         KEYS.supportedLanguagesJson = data;
-        GLOBAL.supportedLangsLoaded = true;
+        getGLOBAL().supportedLangsLoaded = true;
     }
 
     public static Get(jsonKeyPath: string, placeholders: Record<string, any> | null = null): string {

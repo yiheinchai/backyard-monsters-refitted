@@ -1,8 +1,11 @@
 import { KeywordMessage } from "../KeywordMessage";
 
-import { POPUPS } from "../../../../../POPUPS";
-import { BUILDINGOPTIONS } from "../../../../../BUILDINGOPTIONS";
-import { GLOBAL } from "../../../../../GLOBAL";
+// Lazy imports to break circular dependency chains
+function getPOPUPS(): any { return require("../../../../../POPUPS").POPUPS; }
+function getBUILDINGOPTIONS(): any { return require("../../../../../BUILDINGOPTIONS").BUILDINGOPTIONS; }
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+
+
 
 /**
  * News 06 - Town Hall Level 10 news message.
@@ -13,11 +16,11 @@ export class News06TownHallLevel10 extends KeywordMessage {
     }
 
     protected override onButtonClick(): void {
-        POPUPS.Next();
-        BUILDINGOPTIONS.Show(GLOBAL.townHall, "upgrade");
+        getPOPUPS().Next();
+        getBUILDINGOPTIONS().Show(getGLOBAL().townHall, "upgrade");
     }
 
     public override get areRequirementsMet(): boolean {
-        return GLOBAL.townHall._lvl.Get() === 9;
+        return getGLOBAL().townHall._lvl.Get() === 9;
     }
 }

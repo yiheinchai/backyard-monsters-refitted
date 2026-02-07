@@ -18,14 +18,10 @@ import { DealSpot } from "./com/monsters/dealspot/DealSpot";
 import { ScrollSetV } from "./com/monsters/display/ScrollSetV";
 import { EnumYardType } from "./com/monsters/enums/EnumYardType";
 import { KOTHHUDGraphic } from "./com/monsters/kingOfTheHill/graphics/KOTHHUDGraphic";
-import { InstanceManager } from "./com/monsters/managers/InstanceManager";
 import { MapRoom3Cell } from "./com/monsters/maproom3/MapRoom3Cell";
 import { DescentDebuffPopup } from "./com/monsters/maproom_inferno/views/DescentDebuffPopup";
-import { MapRoomManager } from "./com/monsters/maproom_manager/MapRoomManager";
 import { ChampionBase } from "./com/monsters/monsters/champions/ChampionBase";
-import { SiegeWeapons } from "./com/monsters/siege/SiegeWeapons";
 import { SubscriptionHandler } from "./com/monsters/subscriptions/SubscriptionHandler";
-import { ResourceOutpost } from "./ResourceOutpost";
 import { TweenLite, Elastic, Linear } from "./gs";
 import { UI_TOP_CLIP } from "./UI_TOP_CLIP";
 import { flingerLevel } from "./flingerLevel";
@@ -37,22 +33,29 @@ import { CREATUREBUTTON } from "./CREATUREBUTTON";
 import { CHAMPIONBUTTON } from "./CHAMPIONBUTTON";
 import { CATAPULTPOPUP } from "./CATAPULTPOPUP";
 import { SIEGEWEAPONPOPUP } from "./SIEGEWEAPONPOPUP";
-import { CHAMPIONCAGE } from "./CHAMPIONCAGE";
-import { CREATURELOCKER } from "./CREATURELOCKER";
-import { CREATURES } from "./CREATURES";
 import { YARD_PROPS } from "./YARD_PROPS";
 import { POWERUPS } from "./POWERUPS";
-import { GLOBAL } from "./GLOBAL";
-import { KEYS } from "./KEYS";
-import { BASE } from "./BASE";
-import { ATTACK } from "./ATTACK";
-import { POPUPS } from "./POPUPS";
-import { STORE } from "./STORE";
-import { TUTORIAL } from "./TUTORIAL";
-import { BUY } from "./BUY";
 import { MAILBOX } from "./MAILBOX";
 import { MAPROOM_DESCENT } from "./MAPROOM_DESCENT";
-import { LOGGER } from "./LOGGER";
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getSiegeWeapons(): any { return require("./com/monsters/siege/SiegeWeapons").SiegeWeapons; }
+function getResourceOutpost(): any { return require("./ResourceOutpost").ResourceOutpost; }
+function getCHAMPIONCAGE(): any { return require("./CHAMPIONCAGE").CHAMPIONCAGE; }
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+function getBUY(): any { return require("./BUY").BUY; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+
 
 export class UI_TOP extends UI_TOP_CLIP {
     public static readonly CREATUREBUTTONOVER: string = "creatureButtonOver";
@@ -82,47 +85,47 @@ export class UI_TOP extends UI_TOP_CLIP {
 
     constructor() {
         super();
-        let mode = GLOBAL.mode;
+        let mode = getGLOBAL().mode;
         
-        switch (GLOBAL.mode) {
-            case GLOBAL.e_BASE_MODE.BUILD:
-            case GLOBAL.e_BASE_MODE.IBUILD:
-                mode = GLOBAL.e_BASE_MODE.BUILD;
+        switch (getGLOBAL().mode) {
+            case getGLOBAL().e_BASE_MODE.BUILD:
+            case getGLOBAL().e_BASE_MODE.IBUILD:
+                mode = getGLOBAL().e_BASE_MODE.BUILD;
                 break;
-            case GLOBAL.e_BASE_MODE.ATTACK:
-            case GLOBAL.e_BASE_MODE.IATTACK:
-                mode = GLOBAL.e_BASE_MODE.ATTACK;
+            case getGLOBAL().e_BASE_MODE.ATTACK:
+            case getGLOBAL().e_BASE_MODE.IATTACK:
+                mode = getGLOBAL().e_BASE_MODE.ATTACK;
                 break;
-            case GLOBAL.e_BASE_MODE.WMATTACK:
-            case GLOBAL.e_BASE_MODE.IWMATTACK:
-                mode = GLOBAL.e_BASE_MODE.WMATTACK;
+            case getGLOBAL().e_BASE_MODE.WMATTACK:
+            case getGLOBAL().e_BASE_MODE.IWMATTACK:
+                mode = getGLOBAL().e_BASE_MODE.WMATTACK;
                 break;
-            case GLOBAL.e_BASE_MODE.VIEW:
-            case GLOBAL.e_BASE_MODE.IVIEW:
-                mode = GLOBAL.e_BASE_MODE.VIEW;
+            case getGLOBAL().e_BASE_MODE.VIEW:
+            case getGLOBAL().e_BASE_MODE.IVIEW:
+                mode = getGLOBAL().e_BASE_MODE.VIEW;
                 break;
-            case GLOBAL.e_BASE_MODE.HELP:
-            case GLOBAL.e_BASE_MODE.IHELP:
-                mode = GLOBAL.e_BASE_MODE.HELP;
+            case getGLOBAL().e_BASE_MODE.HELP:
+            case getGLOBAL().e_BASE_MODE.IHELP:
+                mode = getGLOBAL().e_BASE_MODE.HELP;
                 break;
-            case GLOBAL.e_BASE_MODE.WMVIEW:
-            case GLOBAL.e_BASE_MODE.IWMVIEW:
-                mode = MapRoomManager.instance.isInMapRoom3 ? GLOBAL.e_BASE_MODE.ATTACK : GLOBAL.e_BASE_MODE.WMVIEW;
+            case getGLOBAL().e_BASE_MODE.WMVIEW:
+            case getGLOBAL().e_BASE_MODE.IWMVIEW:
+                mode = getMapRoomManager().instance.isInMapRoom3 ? getGLOBAL().e_BASE_MODE.ATTACK : getGLOBAL().e_BASE_MODE.WMVIEW;
                 break;
         }
         
-        if (MapRoomManager.instance.isInMapRoom3 && (GLOBAL.mode === GLOBAL.e_BASE_MODE.VIEW || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMVIEW)) {
-            this.gotoAndStop(GLOBAL.e_BASE_MODE.ATTACK);
+        if (getMapRoomManager().instance.isInMapRoom3 && (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.VIEW || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMVIEW)) {
+            this.gotoAndStop(getGLOBAL().e_BASE_MODE.ATTACK);
         } else {
-            this.gotoAndStop(GLOBAL._loadmode);
+            this.gotoAndStop(getGLOBAL()._loadmode);
         }
         
-        if (GLOBAL._loadmode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL._loadmode === GLOBAL.e_BASE_MODE.IBUILD) {
+        if (getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.IBUILD) {
             this.setupBuildMode();
-        } else if (GLOBAL._loadmode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL._loadmode === GLOBAL.e_BASE_MODE.WMATTACK || 
-                   GLOBAL._loadmode === GLOBAL.e_BASE_MODE.IATTACK || GLOBAL._loadmode === GLOBAL.e_BASE_MODE.IWMATTACK) {
+        } else if (getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.WMATTACK || 
+                   getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.IATTACK || getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.IWMATTACK) {
             this.setupAttackMode();
-        } else if (MapRoomManager.instance.isInMapRoom3 && (GLOBAL.mode === GLOBAL.e_BASE_MODE.VIEW || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMVIEW)) {
+        } else if (getMapRoomManager().instance.isInMapRoom3 && (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.VIEW || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMVIEW)) {
             this.setupScoutMode();
         } else {
             this.DescentDebuffHide();
@@ -145,29 +148,29 @@ export class UI_TOP extends UI_TOP_CLIP {
         }
         
         this._resourceUI = {};
-        this._resourceUI.r1 = BASE._resources.r1.Get();
-        this._resourceUI.r2 = BASE._resources.r2.Get();
-        this._resourceUI.r3 = BASE._resources.r3.Get();
-        this._resourceUI.r4 = BASE._resources.r4.Get();
+        this._resourceUI.r1 = getBASE()._resources.r1.Get();
+        this._resourceUI.r2 = getBASE()._resources.r2.Get();
+        this._resourceUI.r3 = getBASE()._resources.r3.Get();
+        this._resourceUI.r4 = getBASE()._resources.r4.Get();
         
         for (let i = 1; i <= 4; i++) {
-            this.mc["mcR" + i]._resource = BASE._resources["r" + i].Get();
+            this.mc["mcR" + i]._resource = getBASE()._resources["r" + i].Get();
         }
         
         this.mc.mcR5.bAdd.txtAdd.autoSize = TextFieldAutoSize.LEFT;
-        this.mc.mcR5.bAdd.txtAdd.htmlText = KEYS.Get("ui_topaddshiny");
+        this.mc.mcR5.bAdd.txtAdd.htmlText = getKEYS().Get("ui_topaddshiny");
         this.mc.mcR5.bAdd.mcBG.width = this.mc.mcR5.bAdd.txtAdd.width + 11;
         this.mc.mcR5.mcBG.width = 82 + this.mc.mcR5.bAdd.width;
         
         this.mc.mcR5.bAdd.addEventListener(MouseEvent.CLICK, (e: MouseEvent): void => {
-            GLOBAL.Message(KEYS.Get("disabled_addshiny"));
+            getGLOBAL().Message(getKEYS().Get("disabled_addshiny"));
         });
         this.mc.mcR5.bAdd.buttonMode = true;
         this.mc.mcR5.bAdd.mouseChildren = false;
         
         this.mc.mcOutposts.mcHit.addEventListener(MouseEvent.MOUSE_OVER, this.ButtonInfoShow.bind(this));
         this.mc.mcOutposts.mcHit.addEventListener(MouseEvent.MOUSE_OUT, this.ButtonInfoHide.bind(this));
-        this.mc.mcOutposts.bNext.addEventListener(MouseEvent.CLICK, BASE.LoadNext);
+        this.mc.mcOutposts.bNext.addEventListener(MouseEvent.CLICK, getBASE().LoadNext);
         this.mc.mcOutposts.bNext.buttonMode = true;
         this.mc.mcOutposts.bNext.mouseEnabled = true;
         this.mc.mcOutposts.bNext.mouseChildren = false;
@@ -193,8 +196,8 @@ export class UI_TOP extends UI_TOP_CLIP {
         }
         
         if (this.mc.bEarn) {
-            this.mc.bEarn.bAction.tLabel.htmlText = KEYS.Get("btn_earn");
-            if (GLOBAL._flags.showFBCEarn === 1) {
+            this.mc.bEarn.bAction.tLabel.htmlText = getKEYS().Get("btn_earn");
+            if (getGLOBAL()._flags.showFBCEarn === 1) {
                 this.mc.bEarn.buttonMode = true;
                 this.mc.bEarn.mouseChildren = false;
                 this.mc.bEarn.addEventListener(MouseEvent.CLICK, this.ButtonClick("earn"));
@@ -208,8 +211,8 @@ export class UI_TOP extends UI_TOP_CLIP {
         }
         
         if (this.mc.bDailyDeal) {
-            this.mc.bDailyDeal.tLabel.htmlText = KEYS.Get("btn_dailydeal");
-            if (GLOBAL._flags.showFBCDaily === 1) {
+            this.mc.bDailyDeal.tLabel.htmlText = getKEYS().Get("btn_dailydeal");
+            if (getGLOBAL()._flags.showFBCDaily === 1) {
                 this.mc.bDailyDeal.buttonMode = true;
                 this.mc.bDailyDeal.mouseChildren = false;
                 this.mc.bDailyDeal.addEventListener(MouseEvent.CLICK, this.ButtonClick("daily"));
@@ -225,10 +228,10 @@ export class UI_TOP extends UI_TOP_CLIP {
 
     private setupScoutMode(): void {
         this.setupAttackMode();
-        if (!GLOBAL._attackersFlinger) {
-            this._creatureButtonsMC._mc._txtContainer.flinger_txt.htmlText = KEYS.Get("no_flinger");
+        if (!getGLOBAL()._attackersFlinger) {
+            this._creatureButtonsMC._mc._txtContainer.flinger_txt.htmlText = getKEYS().Get("no_flinger");
         } else {
-            this._creatureButtonsMC._mc._txtContainer.flinger_txt.htmlText = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("monster_limit") : KEYS.Get("attack_flingerbar");
+            this._creatureButtonsMC._mc._txtContainer.flinger_txt.htmlText = getBASE().isInfernoMainYardOrOutpost ? getKEYS().Get("monster_limit") : getKEYS().Get("attack_flingerbar");
         }
         this._creatureButtonsMC._mc._txtContainer.mcBar.visible = false;
         this._creatureButtonsMC._mc._txtContainer.tA.htmlText = "";
@@ -241,7 +244,7 @@ export class UI_TOP extends UI_TOP_CLIP {
 
     private setupAttackMode(): void {
         this._creatureButtonsMC = this.mc.addChild(new flingerLevel()) as flingerLevel;
-        this._creatureButtonsMC._mc._txtContainer.flinger_txt.htmlText = KEYS.Get("txt_flinger_capacity");
+        this._creatureButtonsMC._mc._txtContainer.flinger_txt.htmlText = getKEYS().Get("txt_flinger_capacity");
         this._creatureButtonsMC._mc._txtContainer.mcBar.visible = true;
         this._creatureButtonsMC._mc._txtContainer.tA.htmlText = "0%";
         this._creatureButtonsMC.y = 180;
@@ -249,8 +252,8 @@ export class UI_TOP extends UI_TOP_CLIP {
         this._creatureButtonsMC._mc.y = -6;
         this._creatureButtons = [];
         
-        if (!GLOBAL._attackersFlinger) {
-            this._creatureButtonsMC._mc._txtContainer.flinger_txt.htmlText = KEYS.Get("no_flinger");
+        if (!getGLOBAL()._attackersFlinger) {
+            this._creatureButtonsMC._mc._txtContainer.flinger_txt.htmlText = getKEYS().Get("no_flinger");
             this._creatureButtonsMC._mc._txtContainer.tA.htmlText = "";
             this._creatureButtonsMC._mc._bottomBar.visible = false;
         } else {
@@ -260,13 +263,13 @@ export class UI_TOP extends UI_TOP_CLIP {
             this.setupCreatureButtons(this.m_creatureContainer, result[0], result[1]);
             
             if (this.m_creatureContainer.numChildren === 0) {
-                this._creatureButtonsMC._mc._txtContainer.flinger_txt.htmlText = KEYS.Get("no_monsters");
+                this._creatureButtonsMC._mc._txtContainer.flinger_txt.htmlText = getKEYS().Get("no_monsters");
                 this._creatureButtonsMC._mc._bottomBar.visible = false;
             }
             
             const mask = new Sprite();
             mask.graphics.beginFill(0xFFFFFF, 1);
-            mask.graphics.drawRect(0, 22, 200, GLOBAL._SCREEN.height - 476);
+            mask.graphics.drawRect(0, 22, 200, getGLOBAL()._SCREEN.height - 476);
             mask.graphics.endFill();
             mask.mouseEnabled = false;
             mask.mouseChildren = false;
@@ -279,20 +282,20 @@ export class UI_TOP extends UI_TOP_CLIP {
             this._creatureButtonsMC.addChild(this.m_scrollBar);
         }
         
-        if (SiegeWeapons.availableWeapon != null && !BASE.isInfernoMainYardOrOutpost) {
+        if (getSiegeWeapons().availableWeapon != null && !getBASE().isInfernoMainYardOrOutpost) {
             this._siegeweapon = new SIEGEWEAPONPOPUP();
             this.mc.addChild(this._siegeweapon);
             this._siegeweapon.x = 442;
             this._siegeweapon.y = 20;
-            this._siegeweapon.Setup(!GLOBAL.isInAttackMode);
+            this._siegeweapon.Setup(!getGLOBAL().isInAttackMode);
         }
         
-        if (GLOBAL._attackersCatapult > 0 && !BASE.isInfernoMainYardOrOutpost) {
+        if (getGLOBAL()._attackersCatapult > 0 && !getBASE().isInfernoMainYardOrOutpost) {
             this._catapult = new CATAPULTPOPUP();
             this.mc.addChild(this._catapult);
             this._catapult.x = 350;
             this._catapult.y = 20;
-            this._catapult.Setup(!GLOBAL.isInAttackMode);
+            this._catapult.Setup(!getGLOBAL().isInAttackMode);
         }
     }
 
@@ -302,14 +305,14 @@ export class UI_TOP extends UI_TOP_CLIP {
         let hasNormal = false;
         let lastButton: MovieClip = null;
         
-        for (let i = 0; i < GLOBAL._playerGuardianData.length; i++) {
-            const guardian = GLOBAL._playerGuardianData[i];
+        for (let i = 0; i < getGLOBAL()._playerGuardianData.length; i++) {
+            const guardian = getGLOBAL()._playerGuardianData[i];
             if (guardian && guardian.hp.Get() > 0) {
                 const status = guardian.status || ChampionBase.k_CHAMPION_STATUS_NORMAL;
                 if (status === ChampionBase.k_CHAMPION_STATUS_NORMAL) {
                     if (hasNormal && guardian.t !== 5) {
-                        LOGGER.Log("log", "User is initializing combat with more than one normal champ.");
-                    } else if (GLOBAL._loadmode === GLOBAL.mode || (GLOBAL._loadmode !== GLOBAL.mode && !MAPROOM_DESCENT.DescentPassed)) {
+                        getLOGGER().Log("log", "User is initializing combat with more than one normal champ.");
+                    } else if (getGLOBAL()._loadmode === getGLOBAL().mode || (getGLOBAL()._loadmode !== getGLOBAL().mode && !MAPROOM_DESCENT.DescentPassed)) {
                         if (guardian.t !== 5) {
                             hasNormal = true;
                         }
@@ -326,23 +329,23 @@ export class UI_TOP extends UI_TOP_CLIP {
         }
         
         if (lastButton) {
-            this._creatureButtonsMC._mc._bottomBar.y = Math.min(GLOBAL._SCREEN.height - 450, lastButton.y + lastButton.height - this._creatureButtonsMC._mc._bottomBar.height * 0.8);
+            this._creatureButtonsMC._mc._bottomBar.y = Math.min(getGLOBAL()._SCREEN.height - 450, lastButton.y + lastButton.height - this._creatureButtonsMC._mc._bottomBar.height * 0.8);
         }
         
         return [count, total];
     }
 
     private setupCreatureButtons(container: DisplayObjectContainer, startIndex: number, total: number): void {
-        const creatures = CREATURELOCKER._creatures;
+        const creatures = getCREATURELOCKER()._creatures;
         let lastButton: MovieClip = null;
         let index = startIndex;
         
         for (const key in creatures) {
-            if (ATTACK._curCreaturesAvailable[key] && ATTACK._curCreaturesAvailable[key] > 0) {
+            if (getATTACK()._curCreaturesAvailable[key] && getATTACK()._curCreaturesAvailable[key] > 0) {
                 lastButton = container.addChild(new CREATUREBUTTON(key, index, this._creatureButtonsMC)) as MovieClip;
                 lastButton.x = 14;
                 lastButton.y = 34 + index * 53;
-                if (MapRoomManager.instance.isInMapRoom2or3) {
+                if (getMapRoomManager().instance.isInMapRoom2or3) {
                     lastButton.addEventListener(UI_TOP.CREATUREBUTTONOVER, this.sortCreatureButtons.bind(this));
                 }
                 this._creatureButtons.push(lastButton);
@@ -351,7 +354,7 @@ export class UI_TOP extends UI_TOP_CLIP {
         }
         
         if (lastButton) {
-            this._creatureButtonsMC._mc._bottomBar.y = Math.min(GLOBAL._SCREEN.height - 450, lastButton.y + lastButton.height - this._creatureButtonsMC._mc._bottomBar.height * 0.8);
+            this._creatureButtonsMC._mc._bottomBar.y = Math.min(getGLOBAL()._SCREEN.height - 450, lastButton.y + lastButton.height - this._creatureButtonsMC._mc._bottomBar.height * 0.8);
         }
     }
 
@@ -361,10 +364,10 @@ export class UI_TOP extends UI_TOP_CLIP {
 
     private InfoShow(e: MouseEvent): void {
         this.mc.mcPoints.gotoAndStop(2);
-        const level = BASE.BaseLevel();
-        this.mc.mcPoints.tInfo.htmlText = KEYS.Get("pop_experiencebar", {
-            "v1": GLOBAL.FormatNumber(level.points),
-            "v2": GLOBAL.FormatNumber(level.needed),
+        const level = getBASE().BaseLevel();
+        this.mc.mcPoints.tInfo.htmlText = getKEYS().Get("pop_experiencebar", {
+            "v1": getGLOBAL().FormatNumber(level.points),
+            "v2": getGLOBAL().FormatNumber(level.needed),
             "v3": level.level + 1
         });
     }
@@ -381,7 +384,7 @@ export class UI_TOP extends UI_TOP_CLIP {
         this.mcSpecialEvent.x = rect.width - 125;
         this.mcBuffHolder.x = rect.width - 200;
         
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
             this.mcZoom.x = rect.width - 38 - 24;
             this.mcFullscreen.x = rect.width - 38;
             this.mcSound.x = rect.width - 38 - 24;
@@ -406,14 +409,14 @@ export class UI_TOP extends UI_TOP_CLIP {
                 this._creatureButtons[i].y = 34 + i * 53;
             }
             if (count > 0) {
-                this._creatureButtonsMC._mc._bottomBar.y = Math.min(GLOBAL._SCREEN.height - 450, 
+                this._creatureButtonsMC._mc._bottomBar.y = Math.min(getGLOBAL()._SCREEN.height - 450, 
                     this._creatureButtons[count - 1].y + this._creatureButtons[count - 1].height - this._creatureButtonsMC._mc._bottomBar.height * 0.8);
             }
             
             const mask = this.m_creatureContainer.mask as Sprite;
             mask.graphics.clear();
             mask.graphics.beginFill(0xFFFFFF, 1);
-            mask.graphics.drawRect(0, 22, 200, GLOBAL._SCREEN.height - 476);
+            mask.graphics.drawRect(0, 22, 200, getGLOBAL()._SCREEN.height - 476);
             mask.graphics.endFill();
             this.m_creatureContainer.mask = mask;
             this.m_scrollBar.checkResize();
@@ -421,42 +424,42 @@ export class UI_TOP extends UI_TOP_CLIP {
     }
 
     public Update(): void {
-        if (!GLOBAL._catchup) {
-            if (GLOBAL._loadmode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL._loadmode === GLOBAL.e_BASE_MODE.IBUILD) {
+        if (!getGLOBAL()._catchup) {
+            if (getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.IBUILD) {
                 this.updateBuildMode();
-            } else if (MapRoomManager.instance.isInMapRoom3 && (GLOBAL._loadmode === GLOBAL.e_BASE_MODE.VIEW || GLOBAL._loadmode === GLOBAL.e_BASE_MODE.WMVIEW)) {
+            } else if (getMapRoomManager().instance.isInMapRoom3 && (getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.VIEW || getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.WMVIEW)) {
                 this.updateScoutMode();
-            } else if (GLOBAL._loadmode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL._loadmode === GLOBAL.e_BASE_MODE.WMATTACK || 
-                       GLOBAL._loadmode === GLOBAL.e_BASE_MODE.IATTACK || GLOBAL._loadmode === GLOBAL.e_BASE_MODE.IWMATTACK) {
+            } else if (getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.WMATTACK || 
+                       getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.IATTACK || getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.IWMATTACK) {
                 this.updateAttackMode();
             }
             
-            const level = BASE.BaseLevel();
+            const level = getBASE().BaseLevel();
             this.SetPoints(level.lower, level.upper, level.needed, level.points, level.level, false);
         }
     }
 
     private updateBuildMode(): void {
-        const r1 = BASE._resources.r1.Get();
-        const r2 = BASE._resources.r2.Get();
-        const r3 = BASE._resources.r3.Get();
-        const r4 = BASE._resources.r4.Get();
+        const r1 = getBASE()._resources.r1.Get();
+        const r2 = getBASE()._resources.r2.Get();
+        const r3 = getBASE()._resources.r3.Get();
+        const r4 = getBASE()._resources.r4.Get();
         
         TweenLite.to(this.mc.mcR1, 0.5, { "_resource": r1, "onUpdate": () => this.UpdateTweenResourceText(1), "ease": Linear.easeNone, "overwrite": 1 });
         TweenLite.to(this.mc.mcR2, 0.5, { "_resource": r2, "onUpdate": () => this.UpdateTweenResourceText(2), "ease": Linear.easeNone, "overwrite": 1 });
         TweenLite.to(this.mc.mcR3, 0.5, { "_resource": r3, "onUpdate": () => this.UpdateTweenResourceText(3), "ease": Linear.easeNone, "overwrite": 1 });
         TweenLite.to(this.mc.mcR4, 0.5, { "_resource": r4, "onUpdate": () => this.UpdateTweenResourceText(4), "ease": Linear.easeNone, "overwrite": 1 });
         
-        this.mc.mcR5.tR.htmlText = "<b>" + GLOBAL.FormatNumber(BASE._credits.Get()) + "</b>";
+        this.mc.mcR5.tR.htmlText = "<b>" + getGLOBAL().FormatNumber(getBASE()._credits.Get()) + "</b>";
         
-        if (MapRoomManager.instance.isInMapRoom2) {
+        if (getMapRoomManager().instance.isInMapRoom2) {
             this.mc.mcOutposts.visible = true;
-            this.mc.mcOutposts.tR.htmlText = GLOBAL._mapOutpost.length;
+            this.mc.mcOutposts.tR.htmlText = getGLOBAL()._mapOutpost.length;
         } else {
             this.mc.mcOutposts.visible = false;
         }
         
-        if (TUTORIAL._stage < 200) {
+        if (getTUTORIAL()._stage < 200) {
             this.mc.bInvite.visible = false;
             this.mc.bGift.visible = false;
             this.mc.bInbox.visible = false;
@@ -470,8 +473,8 @@ export class UI_TOP extends UI_TOP_CLIP {
             this.SortButtonIcons();
         } else {
             this.mc.mcR5.bAdd.visible = true;
-            this.mc.bEarn.visible = GLOBAL._flags.showFBCEarn === 1;
-            this.mc.bDailyDeal.visible = GLOBAL._flags.showFBCDaily === 1;
+            this.mc.bEarn.visible = getGLOBAL()._flags.showFBCEarn === 1;
+            this.mc.bDailyDeal.visible = getGLOBAL()._flags.showFBCDaily === 1;
             for (let i = 1; i < 6; i++) {
                 if (!this.mc["mcR" + i].bAdd.visible) {
                     this.mc["mcR" + i].bAdd.visible = true;
@@ -485,7 +488,7 @@ export class UI_TOP extends UI_TOP_CLIP {
     private updateAttackMode(): void {
         for (let i = 1; i < 5; i++) {
             const mc = this.mc["mcR" + i];
-            mc.tR.htmlText = "<b>" + GLOBAL.FormatNumber(ATTACK._loot["r" + i].Get()) + "</b>";
+            mc.tR.htmlText = "<b>" + getGLOBAL().FormatNumber(getATTACK()._loot["r" + i].Get()) + "</b>";
             mc.mcBar.visible = false;
         }
         
@@ -493,38 +496,38 @@ export class UI_TOP extends UI_TOP_CLIP {
             this._creatureButtons[i].Update();
         }
         
-        let capacity = GLOBAL._buildingProps[4].capacity[GLOBAL._attackersFlinger - 1];
+        let capacity = getGLOBAL()._buildingProps[4].capacity[getGLOBAL()._attackersFlinger - 1];
         if (MAPROOM_DESCENT.InDescent) {
-            capacity = YARD_PROPS._yardProps[4].capacity[GLOBAL._attackersFlinger - 1];
+            capacity = YARD_PROPS._yardProps[4].capacity[getGLOBAL()._attackersFlinger - 1];
         }
         if (POWERUPS.CheckPowers(POWERUPS.ALLIANCE_DECLAREWAR, "OFFENSE")) {
             capacity += capacity * 0.25;
         }
         
         let remaining = capacity;
-        if (MapRoomManager.instance.isInMapRoom3 && ATTACK.USE_CUMULATIVE_FLINGER_CAPACITY) {
-            remaining -= ATTACK._flungSpace.Get();
+        if (getMapRoomManager().instance.isInMapRoom3 && getATTACK().USE_CUMULATIVE_FLINGER_CAPACITY) {
+            remaining -= getATTACK()._flungSpace.Get();
         }
         
-        for (const key in ATTACK._flingerBucket) {
+        for (const key in getATTACK()._flingerBucket) {
             const isGuardian = key.substr(0, 1) === "G";
-            if (!MapRoomManager.instance.isInMapRoom3 && isGuardian) {
-                remaining -= CHAMPIONCAGE.GetGuardianProperty(key.substr(0, 2), 1, "bucket");
+            if (!getMapRoomManager().instance.isInMapRoom3 && isGuardian) {
+                remaining -= getCHAMPIONCAGE().GetGuardianProperty(key.substr(0, 2), 1, "bucket");
             } else if (!isGuardian) {
-                remaining -= CREATURES.GetProperty(key, "bucket") * ATTACK._flingerBucket[key].Get();
+                remaining -= getCREATURES().GetProperty(key, "bucket") * getATTACK()._flingerBucket[key].Get();
             }
         }
         
         this._creatureButtonsMC._mc._txtContainer.mcBar.width = 115 - 115 / capacity * remaining;
         
-        if (MapRoomManager.instance.isInMapRoom3) {
+        if (getMapRoomManager().instance.isInMapRoom3) {
             this._creatureButtonsMC._mc._txtContainer.mcBar.scaleX = (1 - remaining / capacity) * 1.2;
         } else {
             this._creatureButtonsMC._mc._txtContainer.mcBar.scaleX = (100 - 100 / capacity * remaining) / 100;
         }
         
-        if (GLOBAL._attackersFlinger) {
-            if (MapRoomManager.instance.isInMapRoom3) {
+        if (getGLOBAL()._attackersFlinger) {
+            if (getMapRoomManager().instance.isInMapRoom3) {
                 this._creatureButtonsMC._mc._txtContainer.tA.width = 60;
                 this._creatureButtonsMC._mc._txtContainer.tA.htmlText = (capacity - remaining).toString() + "/" + capacity.toString();
             } else {
@@ -539,7 +542,7 @@ export class UI_TOP extends UI_TOP_CLIP {
     private updateScoutMode(): void {
         for (let i = 1; i < 5; i++) {
             const mc = this.mc["mcR" + i];
-            mc.tR.htmlText = "<b>" + GLOBAL.FormatNumber((GLOBAL._currentCell as MapRoom3Cell).attackCost[i - 1]) + "</b>";
+            mc.tR.htmlText = "<b>" + getGLOBAL().FormatNumber((getGLOBAL()._currentCell as MapRoom3Cell).attackCost[i - 1]) + "</b>";
             mc.mcBar.visible = false;
         }
         
@@ -551,34 +554,34 @@ export class UI_TOP extends UI_TOP_CLIP {
     }
 
     private updateTimerDisplay(): void {
-        if (GLOBAL.mode !== GLOBAL._loadmode) {
-            if (ATTACK._countdown > 0) {
-                this.mc.tMessage.htmlText = KEYS.Get("attack_ui_attacklock");
+        if (getGLOBAL().mode !== getGLOBAL()._loadmode) {
+            if (getATTACK()._countdown > 0) {
+                this.mc.tMessage.htmlText = getKEYS().Get("attack_ui_attacklock");
             } else {
-                this.mc.tMessage.htmlText = KEYS.Get("attack_ui_attackends");
+                this.mc.tMessage.htmlText = getKEYS().Get("attack_ui_attackends");
             }
-        } else if (ATTACK._countdown > 0) {
-            this.mc.tMessage.htmlText = KEYS.Get("attack_ui_flingerlock");
+        } else if (getATTACK()._countdown > 0) {
+            this.mc.tMessage.htmlText = getKEYS().Get("attack_ui_flingerlock");
         } else {
-            this.mc.tMessage.htmlText = KEYS.Get("attack_ui_attackends");
+            this.mc.tMessage.htmlText = getKEYS().Get("attack_ui_attackends");
         }
         
-        if (ATTACK._countdown > 30) {
-            this.mc.tTime.htmlText = GLOBAL.ToTime(ATTACK._countdown, true);
-        } else if (ATTACK._countdown > 0) {
-            this.mc.tTime.htmlText = "<font color=\"#FF0000\">" + GLOBAL.ToTime(ATTACK._countdown, true) + "</font>";
-        } else if (ATTACK._countdown > -120) {
-            this.mc.tTime.htmlText = "<font color=\"#FFFFFF\">" + GLOBAL.ToTime(120 + ATTACK._countdown, true) + "</font>";
+        if (getATTACK()._countdown > 30) {
+            this.mc.tTime.htmlText = getGLOBAL().ToTime(getATTACK()._countdown, true);
+        } else if (getATTACK()._countdown > 0) {
+            this.mc.tTime.htmlText = "<font color=\"#FF0000\">" + getGLOBAL().ToTime(getATTACK()._countdown, true) + "</font>";
+        } else if (getATTACK()._countdown > -120) {
+            this.mc.tTime.htmlText = "<font color=\"#FFFFFF\">" + getGLOBAL().ToTime(120 + getATTACK()._countdown, true) + "</font>";
         } else {
-            this.mc.tTime.htmlText = "<font color=\"#FFFFFF\">" + KEYS.Get("attack_ui_over") + "</font>";
+            this.mc.tTime.htmlText = "<font color=\"#FFFFFF\">" + getKEYS().Get("attack_ui_over") + "</font>";
         }
     }
 
     public UpdateTweenResourceText(n: number): void {
         const mc = this.mc["mcR" + n];
         const value = mc._resource;
-        mc.tR.htmlText = "<b>" + GLOBAL.FormatNumber(value) + "</b>";
-        let barWidth = 90 / BASE._resources["r" + n + "max"] * value;
+        mc.tR.htmlText = "<b>" + getGLOBAL().FormatNumber(value) + "</b>";
+        let barWidth = 90 / getBASE()._resources["r" + n + "max"] * value;
         if (barWidth > 90) barWidth = 90;
         mc.mcBar.width = barWidth;
     }
@@ -586,10 +589,10 @@ export class UI_TOP extends UI_TOP_CLIP {
     public Topup(n: number): (e?: MouseEvent) => void {
         return (e?: MouseEvent): void => {
             const scrollPos = Math.min((n - 1) * 0.4, 1);
-            if (BASE.isInfernoMainYardOrOutpost) {
-                STORE.ShowB(2, scrollPos, ["BR" + n + "1I", "BR" + n + "2I", "BR" + n + "3I"]);
+            if (getBASE().isInfernoMainYardOrOutpost) {
+                getSTORE().ShowB(2, scrollPos, ["BR" + n + "1I", "BR" + n + "2I", "BR" + n + "3I"]);
             } else {
-                STORE.ShowB(2, scrollPos, ["BR" + n + "1", "BR" + n + "2", "BR" + n + "3"]);
+                getSTORE().ShowB(2, scrollPos, ["BR" + n + "1", "BR" + n + "2", "BR" + n + "3"]);
             }
         };
     }
@@ -601,25 +604,25 @@ export class UI_TOP extends UI_TOP_CLIP {
             
             if (n < 5) {
                 if (topup) {
-                    text = "<b><font size=\"12\">" + KEYS.Get(GLOBAL._resourceNames[n - 1]) + "</font></b><br><b>" + KEYS.Get("bubble_topup") + "</b>";
+                    text = "<b><font size=\"12\">" + getKEYS().Get(getGLOBAL()._resourceNames[n - 1]) + "</font></b><br><b>" + getKEYS().Get("bubble_topup") + "</b>";
                     lines = 2;
-                } else if (MapRoomManager.instance.isInMapRoom2or3) {
-                    text = KEYS.Get("pop_resource2", {
-                        "v1": KEYS.Get(GLOBAL._resourceNames[n - 1]),
-                        "v2": GLOBAL.FormatNumber(BASE._resources["r" + n + "max"]),
-                        "v3": GLOBAL.FormatNumber(BASE._resources["r" + n + "Rate"]),
-                        "v4": GLOBAL.FormatNumber(BASE.getEmpireResources(n))
+                } else if (getMapRoomManager().instance.isInMapRoom2or3) {
+                    text = getKEYS().Get("pop_resource2", {
+                        "v1": getKEYS().Get(getGLOBAL()._resourceNames[n - 1]),
+                        "v2": getGLOBAL().FormatNumber(getBASE()._resources["r" + n + "max"]),
+                        "v3": getGLOBAL().FormatNumber(getBASE()._resources["r" + n + "Rate"]),
+                        "v4": getGLOBAL().FormatNumber(getBASE().getEmpireResources(n))
                     });
                     lines = 4;
                 } else {
-                    text = "<b><font size=\"12\">" + KEYS.Get(GLOBAL._resourceNames[n - 1]) + "</font></b><br>" + KEYS.Get("pop_resource", {
-                        "v1": GLOBAL.FormatNumber(BASE._resources["r" + n + "max"]),
-                        "v2": GLOBAL.FormatNumber(BASE._resources["r" + n + "Rate"])
+                    text = "<b><font size=\"12\">" + getKEYS().Get(getGLOBAL()._resourceNames[n - 1]) + "</font></b><br>" + getKEYS().Get("pop_resource", {
+                        "v1": getGLOBAL().FormatNumber(getBASE()._resources["r" + n + "max"]),
+                        "v2": getGLOBAL().FormatNumber(getBASE()._resources["r" + n + "Rate"])
                     });
                     lines = 3;
                 }
             } else {
-                text = "<b>" + KEYS.Get("bubble_getshiny") + "</b>";
+                text = "<b>" + getKEYS().Get("bubble_getshiny") + "</b>";
                 lines = 2;
             }
             
@@ -635,28 +638,28 @@ export class UI_TOP extends UI_TOP_CLIP {
     public ButtonClick(label: string): (e: MouseEvent) => void {
         return (e: MouseEvent): void => {
             if (label === "gift") {
-                GLOBAL.Message(KEYS.Get("disabled_gifts"));
+                getGLOBAL().Message(getKEYS().Get("disabled_gifts"));
             } else if (label === "alert") {
-                if (BASE._currentAttacks && BASE._currentAttacks.length > 0) {
-                    for (const attack of BASE._currentAttacks) {
+                if (getBASE()._currentAttacks && getBASE()._currentAttacks.length > 0) {
+                    for (const attack of getBASE()._currentAttacks) {
                         attack.seen = true;
                     }
-                    BASE._attacksModified = true;
-                    BASE.Save();
+                    getBASE()._attacksModified = true;
+                    getBASE().Save();
                 }
-                POPUPS.Show("alerts");
+                getPOPUPS().Show("alerts");
             } else if (label === "invite") {
-                POPUPS.Invite();
+                getPOPUPS().Invite();
             } else if (label === "inbox") {
-                if (GLOBAL._flags.messaging === 1) {
+                if (getGLOBAL()._flags.messaging === 1) {
                     MAILBOX.Show();
                 } else {
-                    GLOBAL.Message(KEYS.Get("disabled_mail"));
+                    getGLOBAL().Message(getKEYS().Get("disabled_mail"));
                 }
             } else if (label === "daily") {
-                BUY.Offers("daily");
+                getBUY().Offers("daily");
             } else if (label === "earn") {
-                GLOBAL.Message(KEYS.Get("discord_earn"));
+                getGLOBAL().Message(getKEYS().Get("discord_earn"));
             }
         };
     }
@@ -668,7 +671,7 @@ export class UI_TOP extends UI_TOP_CLIP {
         const rowHeight = 55;
         
         let offset = yOffset;
-        if (MapRoomManager.instance.isInMapRoom2) {
+        if (getMapRoomManager().instance.isInMapRoom2) {
             offset += 35;
         }
         
@@ -705,7 +708,7 @@ export class UI_TOP extends UI_TOP_CLIP {
             let row = 0;
             
             for (const key in powerups) {
-                if (POWERUPS._expireRealTime && powerups[key].endtime.Get() < GLOBAL.Timestamp()) {
+                if (POWERUPS._expireRealTime && powerups[key].endtime.Get() < getGLOBAL().Timestamp()) {
                     this.BuffHide(null);
                     continue;
                 }
@@ -735,10 +738,10 @@ export class UI_TOP extends UI_TOP_CLIP {
         if (!buff) return;
         
         const description = buff.description;
-        let duration = "<b>" + KEYS.Get("buff_duration") + "</b>";
+        let duration = "<b>" + getKEYS().Get("buff_duration") + "</b>";
         
         if (POWERUPS.Timeleft(target.name) > 0) {
-            duration += GLOBAL.ToTime(POWERUPS.Timeleft(target.name), true);
+            duration += getGLOBAL().ToTime(POWERUPS.Timeleft(target.name), true);
         } else {
             duration = "";
         }
@@ -768,19 +771,19 @@ export class UI_TOP extends UI_TOP_CLIP {
         
         switch (e.target.name) {
             case "bInvite":
-                text = KEYS.Get("pop_invite");
+                text = getKEYS().Get("pop_invite");
                 break;
             case "bGift":
-                text = POPUPS.QueueCount("gifts") > 0 ? KEYS.Get("pop_acceptgifts", { "v1": POPUPS.QueueCount("gifts") }) : KEYS.Get("pop_sendgifts");
+                text = getPOPUPS().QueueCount("gifts") > 0 ? getKEYS().Get("pop_acceptgifts", { "v1": getPOPUPS().QueueCount("gifts") }) : getKEYS().Get("pop_sendgifts");
                 break;
             case "bInbox":
-                text = KEYS.Get("pop_mailbox");
+                text = getKEYS().Get("pop_mailbox");
                 break;
             case "bAlert":
-                text = KEYS.Get("pop_alerts");
+                text = getKEYS().Get("pop_alerts");
                 break;
             case "mcHit":
-                text = KEYS.Get("pop_outposts");
+                text = getKEYS().Get("pop_outposts");
                 x = e.target.parent.x + 140;
                 y = e.target.parent.y + 20;
                 break;
@@ -796,8 +799,8 @@ export class UI_TOP extends UI_TOP_CLIP {
     }
 
     public DescentDebuffShow(): void {
-        const shouldShow = (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) && 
-                           BASE.isInfernoMainYardOrOutpost && !MAPROOM_DESCENT.DescentPassed && 
+        const shouldShow = (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) && 
+                           getBASE().isInfernoMainYardOrOutpost && !MAPROOM_DESCENT.DescentPassed && 
                            (MAPROOM_DESCENT.DescentLevel > 6 && MAPROOM_DESCENT.DescentLevel < MAPROOM_DESCENT._descentLvlMax);
         
         if (this._descentDebuff) {
@@ -817,7 +820,7 @@ export class UI_TOP extends UI_TOP_CLIP {
     }
 
     private SetPoints(lower: number, upper: number, needed: number, points: number, level: number, animate: boolean): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
             this.mc.mcPoints.mcLevel.text = level.toString();
             const barWidth = 200 / (upper - lower) * (points - lower);
             TweenLite.to(this.mc.mcPoints.mcBar, 0.6, { "width": barWidth, "ease": Elastic.easeInOut });
@@ -869,7 +872,7 @@ export class UI_TOP extends UI_TOP_CLIP {
         if (!this._popupWarning) {
             this._popupWarning = this.addChild(new bubblepopup4()) as bubblepopup4;
         }
-        this._popupWarning.tA.htmlText = BASE.isInfernoMainYardOrOutpost ? KEYS.Get("inf_ui_needmoreroom") : KEYS.Get("ui_needmoreroom");
+        this._popupWarning.tA.htmlText = getBASE().isInfernoMainYardOrOutpost ? getKEYS().Get("inf_ui_needmoreroom") : getKEYS().Get("ui_needmoreroom");
         this._popupWarning.x = 150;
         this._popupWarning.y = 20 + 41 * row;
         this._popupWarning.Wobble();
@@ -896,13 +899,13 @@ export class UI_TOP extends UI_TOP_CLIP {
      * Deselect monster selection mode
      */
     public MonsterDeselect(): void {
-        for (const key in ATTACK._flingerBucket) {
-            if (ATTACK._flingerBucket[key] && ATTACK._flingerBucket[key].Get() > 0) {
-                (ATTACK._curCreaturesAvailable[key] as any).Add(ATTACK._flingerBucket[key].Get());
-                ATTACK._flingerBucket[key].Set(0);
+        for (const key in getATTACK()._flingerBucket) {
+            if (getATTACK()._flingerBucket[key] && getATTACK()._flingerBucket[key].Get() > 0) {
+                (getATTACK()._curCreaturesAvailable[key] as any).Add(getATTACK()._flingerBucket[key].Get());
+                getATTACK()._flingerBucket[key].Set(0);
             }
         }
-        ATTACK.BucketUpdate();
+        getATTACK().BucketUpdate();
         for (let i = 0; i < this._creatureButtons.length; i++) {
             this._creatureButtons[i].Update();
         }
@@ -912,7 +915,7 @@ export class UI_TOP extends UI_TOP_CLIP {
      * Add an icon to the UI (e.g., KOTH icon)
      */
     public addIcon(icon: DisplayObject): void {
-        if (this.mc && GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+        if (this.mc && getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
             icon.x = 222;
             icon.y = 0;
             this._kothIcon = this.mc.addChild(icon);
@@ -929,7 +932,7 @@ export class UI_TOP extends UI_TOP_CLIP {
     public removeIcon(icon: DisplayObject): void {
         if (this.mc && this.mc.contains(icon)) {
             this.mc.removeChild(icon);
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
                 (this.mc as any).mcR5.x = 227;
                 (this.mc as any).bEarn.x = 358;
                 (this.mc as any).bDailyDeal.x = 436;
@@ -949,8 +952,8 @@ export class UI_TOP extends UI_TOP_CLIP {
      */
     public addResourceBar(bar: DisplayObject): void {
         let targetMC: MovieClip | null = null;
-        if (this.mc && GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && !BASE.isInfernoMainYardOrOutpost) {
-            if (MapRoomManager.instance.isInMapRoom2) {
+        if (this.mc && getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && !getBASE().isInfernoMainYardOrOutpost) {
+            if (getMapRoomManager().instance.isInMapRoom2) {
                 targetMC = (this.mc as any).mcOutposts;
             } else {
                 targetMC = (this.mc as any).mcR4;
@@ -967,7 +970,7 @@ export class UI_TOP extends UI_TOP_CLIP {
      * Clear all event listeners and UI components
      */
     public Clear(): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
             if ((this.mc as any).mcPoints) {
                 (this.mc as any).mcPoints.removeEventListener(MouseEvent.MOUSE_OVER, this.InfoShow);
                 (this.mc as any).mcPoints.removeEventListener(MouseEvent.MOUSE_OUT, this.InfoHide);
@@ -986,13 +989,13 @@ export class UI_TOP extends UI_TOP_CLIP {
             }
             const mcR5 = (this.mc as any).mcR5;
             if (mcR5 && mcR5.bAdd) {
-                mcR5.bAdd.removeEventListener(MouseEvent.CLICK, BUY.Show);
+                mcR5.bAdd.removeEventListener(MouseEvent.CLICK, getBUY().Show);
             }
             const mcOutposts = (this.mc as any).mcOutposts;
             if (mcOutposts && mcOutposts.mcHit && mcOutposts.bNext) {
                 mcOutposts.mcHit.removeEventListener(MouseEvent.MOUSE_OVER, this.ButtonInfoShow);
                 mcOutposts.mcHit.removeEventListener(MouseEvent.MOUSE_OUT, this.ButtonInfoHide);
-                mcOutposts.bNext.removeEventListener(MouseEvent.CLICK, BASE.LoadNext);
+                mcOutposts.bNext.removeEventListener(MouseEvent.CLICK, getBASE().LoadNext);
             }
             const bInvite = (this.mc as any).bInvite;
             if (bInvite) {
@@ -1007,42 +1010,42 @@ export class UI_TOP extends UI_TOP_CLIP {
      * Setup the UI based on current game mode
      */
     public Setup(): void {
-        const mode = GLOBAL.mode;
-        if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD && GLOBAL.mode !== GLOBAL.e_BASE_MODE.IBUILD) {
+        const mode = getGLOBAL().mode;
+        if (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD && getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.IBUILD) {
             const onImageLoad = (e: Event): void => {
                 (this.mc as any).mcPic.mcBG.addChild(loader);
-                if (GLOBAL._flags.viximo || GLOBAL._flags.kongregate) {
+                if (getGLOBAL()._flags.viximo || getGLOBAL()._flags.kongregate) {
                     loader.width = loader.height = 50;
                 }
             };
             const LoadImageError = (e: IOErrorEvent): void => {
                 // Error loading image
             };
-            if (BASE._ownerName) {
-                if (BASE._ownerName.toLowerCase().charAt(BASE._ownerName.length - 1) === "s") {
-                    (this.mc as any).mcPoints.tName.htmlText = KEYS.Get("uitop_yardownershort", { v1: BASE._ownerName.toUpperCase() });
+            if (getBASE()._ownerName) {
+                if (getBASE()._ownerName.toLowerCase().charAt(getBASE()._ownerName.length - 1) === "s") {
+                    (this.mc as any).mcPoints.tName.htmlText = getKEYS().Get("uitop_yardownershort", { v1: getBASE()._ownerName.toUpperCase() });
                 } else {
-                    (this.mc as any).mcPoints.tName.htmlText = KEYS.Get("uitop_yardownerlong", { v1: BASE._ownerName.toUpperCase() });
+                    (this.mc as any).mcPoints.tName.htmlText = getKEYS().Get("uitop_yardownerlong", { v1: getBASE()._ownerName.toUpperCase() });
                 }
-            } else if (GLOBAL.mode === GLOBAL._loadmode) {
-                (this.mc as any).mcPoints.tName.htmlText = KEYS.Get("uitop_backyardmonsters");
+            } else if (getGLOBAL().mode === getGLOBAL()._loadmode) {
+                (this.mc as any).mcPoints.tName.htmlText = getKEYS().Get("uitop_backyardmonsters");
             } else {
-                (this.mc as any).mcPoints.tName.htmlText = KEYS.Get("uitop_backyardmonstersinferno");
+                (this.mc as any).mcPoints.tName.htmlText = getKEYS().Get("uitop_backyardmonstersinferno");
             }
             const loader = new Loader();
             loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, LoadImageError, false, 0, true);
             loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoad);
-            if (GLOBAL._loadmode === "wmattack" || GLOBAL._loadmode === "wmview" || GLOBAL._loadmode === "iwmattack" || GLOBAL._loadmode === "iwmview") {
-                loader.load(new URLRequest(GLOBAL._storageURL + BASE._ownerPic));
-            } else if (!GLOBAL._flags.viximo || !GLOBAL._flags.kongregate) {
-                loader.load(new URLRequest(BASE._ownerPic));
+            if (getGLOBAL()._loadmode === "wmattack" || getGLOBAL()._loadmode === "wmview" || getGLOBAL()._loadmode === "iwmattack" || getGLOBAL()._loadmode === "iwmview") {
+                loader.load(new URLRequest(getGLOBAL()._storageURL + getBASE()._ownerPic));
+            } else if (!getGLOBAL()._flags.viximo || !getGLOBAL()._flags.kongregate) {
+                loader.load(new URLRequest(getBASE()._ownerPic));
             } else {
-                loader.load(new URLRequest("http://graph.facebook.com/" + BASE._loadedFBID + "/picture"));
+                loader.load(new URLRequest("http://graph.facebook.com/" + getBASE()._loadedFBID + "/picture"));
             }
-        } else if (GLOBAL.mode === GLOBAL._loadmode) {
-            (this.mc as any).mcPoints.tName.htmlText = KEYS.Get("uitop_backyardmonsters");
+        } else if (getGLOBAL().mode === getGLOBAL()._loadmode) {
+            (this.mc as any).mcPoints.tName.htmlText = getKEYS().Get("uitop_backyardmonsters");
         } else {
-            (this.mc as any).mcPoints.tName.htmlText = KEYS.Get("uitop_backyardmonstersinferno");
+            (this.mc as any).mcPoints.tName.htmlText = getKEYS().Get("uitop_backyardmonstersinferno");
         }
     }
 }

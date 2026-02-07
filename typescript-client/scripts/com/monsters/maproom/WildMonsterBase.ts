@@ -19,7 +19,10 @@ import { WildMonsterBase_CLIP } from "./WildMonsterBase_CLIP";
 import { WildMonsterBaseInfo } from "./WildMonsterBaseInfo";
 import { Button } from "../../../Button";
 
-import { KEYS } from "../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+
+
 
 /**
  * WildMonsterBase - represents a wild monster base on the map.
@@ -50,7 +53,7 @@ export class WildMonsterBase extends WildMonsterBase_CLIP {
     constructor() {
         super();
         this.popUp = new MapBasePopup();
-        this.popUp.title_txt.htmlText = "<b>" + KEYS.Get("map_options") + "</b>";
+        this.popUp.title_txt.htmlText = "<b>" + getKEYS().Get("map_options") + "</b>";
         this.popUp.x = 21;
         this.popUp.y = 40;
         this.addChild(this.popUp);

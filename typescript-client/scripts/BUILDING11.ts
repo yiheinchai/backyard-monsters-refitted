@@ -3,19 +3,22 @@ import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { ALLIANCES } from './com/monsters/alliances/ALLIANCES';
-import { BuildingEvent } from './com/monsters/events/BuildingEvent';
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
 import { BFOUNDATION } from './BFOUNDATION';
 import { ACHIEVEMENTS } from './ACHIEVEMENTS';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { LOGGER } from './LOGGER';
 import { MAPROOM } from './MAPROOM';
 import { PLEASEWAIT } from './PLEASEWAIT';
-import { POPUPS } from './POPUPS';
-import { STORE } from './STORE';
-import { URLLoaderApi } from './URLLoaderApi';
+
+// Lazy imports to break circular dependency chains
+function getBuildingEvent(): any { return require("./com/monsters/events/BuildingEvent").BuildingEvent; }
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getURLLoaderApi(): any { return require("./URLLoaderApi").URLLoaderApi; }
+
 
 /**
  * BUILDING11 - Map Room
@@ -40,18 +43,18 @@ export class BUILDING11 extends BFOUNDATION {
             this._canFunction = true;
             MAPROOM.initMaproomSetup = true;
         }
-        if (MapRoomManager.instance.isInMapRoom3) {
-            GLOBAL.StatSet("mrl", 3);
+        if (getMapRoomManager().instance.isInMapRoom3) {
+            getGLOBAL().StatSet("mrl", 3);
         } else {
-            if (this._lvl.Get() < 2 && GLOBAL.StatGet("mrl") === 2) {
-                GLOBAL.StatSet("mrl", 2);
+            if (this._lvl.Get() < 2 && getGLOBAL().StatGet("mrl") === 2) {
+                getGLOBAL().StatSet("mrl", 2);
             }
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && this._lvl.Get() === 1 && 
-                GLOBAL.StatGet("mrl") !== 2 && BASE._saveCounterA === BASE._saveCounterB && !BASE._saving) {
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && this._lvl.Get() === 1 && 
+                getGLOBAL().StatGet("mrl") !== 2 && getBASE()._saveCounterA === getBASE()._saveCounterB && !getBASE()._saving) {
                 this.NewWorld();
             }
         }
-        if (!GLOBAL._catchup && GLOBAL._render && this._countdownUpgrade.Get() && 
+        if (!getGLOBAL()._catchup && getGLOBAL()._render && this._countdownUpgrade.Get() && 
             this._countdownUpgrade.Get() < 60 * 60 * 24 * 2) {
             this.PopupUpgrade(2);
         }
@@ -59,51 +62,51 @@ export class BUILDING11 extends BFOUNDATION {
     }
 
     private NewWorld(): void {
-        if (!MapRoomManager.instance.isInMapRoom3 && GLOBAL.mode === GLOBAL._loadmode && GLOBAL._flags.maproom2) {
+        if (!getMapRoomManager().instance.isInMapRoom3 && getGLOBAL().mode === getGLOBAL()._loadmode && getGLOBAL()._flags.maproom2) {
             ACHIEVEMENTS.Check("map2", 1);
             if (this.callPending) return;
             this.callPending = true;
             const data: any[] = [["version", 2]];
-            new URLLoaderApi().load(GLOBAL._mapURL + "setmapversion", data, this.NewWorldSuccess.bind(this), this.NewWorldFail.bind(this));
+            new (getURLLoaderApi())().load(getGLOBAL()._mapURL + "setmapversion", data, this.NewWorldSuccess.bind(this), this.NewWorldFail.bind(this));
         }
     }
 
     private NewWorldSuccess(serverData: any): void {
         if (serverData.error === 0) {
-            if (GLOBAL.mode !== GLOBAL._loadmode) return;
-            GLOBAL.StatSet(BUILDING11.CHANGED_TO_MR2, 1);
-            GLOBAL.StatSet("mrl", 2, true);
-            MapRoomManager.instance.mapRoomVersion = MapRoomManager.MAP_ROOM_VERSION_2;
-            GLOBAL._baseURL = serverData.baseurl;
-            GLOBAL._homeBaseID = serverData.homebaseid;
-            BASE._loadedBaseID = serverData.homebaseid;
-            BASE._baseID = 0;
-            BASE._loadedFriendlyBaseID = GLOBAL._homeBaseID;
-            MapRoomManager.instance.BookmarksClear();
+            if (getGLOBAL().mode !== getGLOBAL()._loadmode) return;
+            getGLOBAL().StatSet(BUILDING11.CHANGED_TO_MR2, 1);
+            getGLOBAL().StatSet("mrl", 2, true);
+            getMapRoomManager().instance.mapRoomVersion = getMapRoomManager().MAP_ROOM_VERSION_2;
+            getGLOBAL()._baseURL = serverData.baseurl;
+            getGLOBAL()._homeBaseID = serverData.homebaseid;
+            getBASE()._loadedBaseID = serverData.homebaseid;
+            getBASE()._baseID = 0;
+            getBASE()._loadedFriendlyBaseID = getGLOBAL()._homeBaseID;
+            getMapRoomManager().instance.BookmarksClear();
             if (serverData.basesaveid !== 1) {
-                BASE._lastSaveID = serverData.basesaveid;
+                getBASE()._lastSaveID = serverData.basesaveid;
             }
             if (serverData.homebase?.length === 2 && serverData.homebase[0] > -1 && serverData.homebase[1] > -1) {
                 if (serverData.worldsize) {
-                    MapRoomManager.instance.mapWidth = serverData.worldsize[0];
-                    MapRoomManager.instance.mapHeight = serverData.worldsize[1];
+                    getMapRoomManager().instance.mapWidth = serverData.worldsize[0];
+                    getMapRoomManager().instance.mapHeight = serverData.worldsize[1];
                 }
-                GLOBAL._mapHome = new Point(serverData.homebase[0], serverData.homebase[1]);
+                getGLOBAL()._mapHome = new Point(serverData.homebase[0], serverData.homebase[1]);
                 if (serverData.outposts) {
-                    GLOBAL._mapOutpost = [];
+                    getGLOBAL()._mapOutpost = [];
                     for (const outpost of serverData.outposts) {
                         if (outpost.length === 2) {
-                            GLOBAL._mapOutpost.push(new Point(outpost[0], outpost[1]));
+                            getGLOBAL()._mapOutpost.push(new Point(outpost[0], outpost[1]));
                         }
                     }
                 }
-                GLOBAL.eventDispatcher.dispatchEvent(new BuildingEvent(BuildingEvent.ENTER_MR2, this));
+                getGLOBAL().eventDispatcher.dispatchEvent(new (getBuildingEvent())(getBuildingEvent().ENTER_MR2, this));
             } else {
-                LOGGER.Log("err", "BUILDING11.NewWorldSuccess Invalid home base coordinate.");
+                getLOGGER().Log("err", "BUILDING11.NewWorldSuccess Invalid home base coordinate.");
             }
         } else {
             this.callPending = true;
-            GLOBAL._flags.discordOldEnough = false;
+            getGLOBAL()._flags.discordOldEnough = false;
         }
         this.callPending = false;
         PLEASEWAIT.Hide();
@@ -111,17 +114,17 @@ export class BUILDING11 extends BFOUNDATION {
 
     private NewWorldFail(event: IOErrorEvent): void {
         this.callPending = false;
-        LOGGER.Log("err", "BUILDING11.NewWorld HTTP");
+        getLOGGER().Log("err", "BUILDING11.NewWorld HTTP");
         PLEASEWAIT.Hide();
     }
 
     public override PlaceB(): void {
         super.PlaceB();
-        GLOBAL._bMap = this;
+        getGLOBAL()._bMap = this;
     }
 
     public override Constructed(): void {
-        GLOBAL._bMap = this;
+        getGLOBAL()._bMap = this;
         super.Constructed();
     }
 
@@ -131,78 +134,78 @@ export class BUILDING11 extends BFOUNDATION {
     }
 
     public PopupUpgrade(n: number): void {
-        if (GLOBAL.StatGet("mrp") < n && !STORE._open) {
-            GLOBAL.StatSet("mrp", n);
-            GLOBAL._selectedBuilding = GLOBAL._bMap;
+        if (getGLOBAL().StatGet("mrp") < n && !getSTORE()._open) {
+            getGLOBAL().StatSet("mrp", n);
+            getGLOBAL()._selectedBuilding = getGLOBAL()._bMap;
         }
     }
 
     public override Upgraded(): void {
-        if (!MapRoomManager.instance.isInMapRoom3) {
-            PLEASEWAIT.Show(KEYS.Get("wait_newworld"));
+        if (!getMapRoomManager().instance.isInMapRoom3) {
+            PLEASEWAIT.Show(getKEYS().Get("wait_newworld"));
         }
         super.Upgraded();
     }
 
     public override Recycle(): void {
-        if (MapRoomManager.instance.isInMapRoom2) {
+        if (getMapRoomManager().instance.isInMapRoom2) {
             if (ALLIANCES._myAlliance !== null) {
-                GLOBAL.Message(KEYS.Get("map_alliance_recycle", { v1: ALLIANCES._myAlliance.name }));
+                getGLOBAL().Message(getKEYS().Get("map_alliance_recycle", { v1: ALLIANCES._myAlliance.name }));
                 return;
             }
-            GLOBAL._mapOutpostIDs.length = 0;
-            GLOBAL.Message(KEYS.Get("newmap_recycle1"), KEYS.Get("btn_recycle"), this.RecycleD.bind(this));
+            getGLOBAL()._mapOutpostIDs.length = 0;
+            getGLOBAL().Message(getKEYS().Get("newmap_recycle1"), getKEYS().Get("btn_recycle"), this.RecycleD.bind(this));
         } else {
-            if (MapRoomManager.instance.isInMapRoom3 && !GLOBAL._aiDesignMode) {
-                GLOBAL.Message(KEYS.Get("map_cannot_recycle_map_room3"));
+            if (getMapRoomManager().instance.isInMapRoom3 && !getGLOBAL()._aiDesignMode) {
+                getGLOBAL().Message(getKEYS().Get("map_cannot_recycle_map_room3"));
                 return;
             }
-            GLOBAL.Message(KEYS.Get("newmap_recycle2"), KEYS.Get("btn_recycle"), this.RecycleD.bind(this));
+            getGLOBAL().Message(getKEYS().Get("newmap_recycle2"), getKEYS().Get("btn_recycle"), this.RecycleD.bind(this));
         }
-        GLOBAL.eventDispatcher.dispatchEvent(new BuildingEvent(BuildingEvent.ATTEMPT_RECYCLE, this));
+        getGLOBAL().eventDispatcher.dispatchEvent(new (getBuildingEvent())(getBuildingEvent().ATTEMPT_RECYCLE, this));
     }
 
     private RecycleD(): void {
-        if (GLOBAL.mode !== GLOBAL._loadmode) return;
+        if (getGLOBAL().mode !== getGLOBAL()._loadmode) return;
         const data: any[] = [["version", 1]];
-        if (MapRoomManager.instance.isInMapRoom3) {
+        if (getMapRoomManager().instance.isInMapRoom3) {
             this.RecycleB();
             return;
         }
-        new URLLoaderApi().load(GLOBAL._mapURL + "setmapversion", data, this.RecycleDSuccess.bind(this), this.RecycleDFail.bind(this));
+        new (getURLLoaderApi())().load(getGLOBAL()._mapURL + "setmapversion", data, this.RecycleDSuccess.bind(this), this.RecycleDFail.bind(this));
     }
 
     private RecycleDSuccess(serverData: any): void {
         PLEASEWAIT.Hide();
-        if (serverData.error === 0 && GLOBAL.mode === GLOBAL._loadmode) {
-            if (!MapRoomManager.instance.isInMapRoom3) {
-                GLOBAL.StatSet("mrl", 1, true);
+        if (serverData.error === 0 && getGLOBAL().mode === getGLOBAL()._loadmode) {
+            if (!getMapRoomManager().instance.isInMapRoom3) {
+                getGLOBAL().StatSet("mrl", 1, true);
             }
-            GLOBAL._bMap = null;
-            MapRoomManager.instance.mapRoomVersion = MapRoomManager.MAP_ROOM_VERSION_1;
-            GLOBAL._baseURL = serverData.baseurl;
-            BASE._baseID = 0;
-            BASE._loadedFriendlyBaseID = 0;
+            getGLOBAL()._bMap = null;
+            getMapRoomManager().instance.mapRoomVersion = getMapRoomManager().MAP_ROOM_VERSION_1;
+            getGLOBAL()._baseURL = serverData.baseurl;
+            getBASE()._baseID = 0;
+            getBASE()._loadedFriendlyBaseID = 0;
             for (let i = 1; i < 5; i++) {
-                BASE._GIP["r" + i].Set(0);
+                getBASE()._GIP["r" + i].Set(0);
             }
-            BASE._lastProcessedGIP = GLOBAL.Timestamp();
-            GLOBAL._mapOutpost = [];
+            getBASE()._lastProcessedGIP = getGLOBAL().Timestamp();
+            getGLOBAL()._mapOutpost = [];
             if (serverData.basesaveid !== 1) {
-                BASE._lastSaveID = serverData.basesaveid;
+                getBASE()._lastSaveID = serverData.basesaveid;
             }
-            MapRoomManager.instance.BookmarksClear();
+            getMapRoomManager().instance.BookmarksClear();
             this.RecycleB();
             if (this._lvl.Get() === 2) {
-                GLOBAL.Message(KEYS.Get("newmap_return"));
+                getGLOBAL().Message(getKEYS().Get("newmap_return"));
             }
-            GLOBAL.eventDispatcher.dispatchEvent(new BuildingEvent(BuildingEvent.DESTROY_MAPROOM, this));
+            getGLOBAL().eventDispatcher.dispatchEvent(new (getBuildingEvent())(getBuildingEvent().DESTROY_MAPROOM, this));
         }
     }
 
     private RecycleDFail(event: IOErrorEvent): void {
         PLEASEWAIT.Hide();
-        LOGGER.Log("err", "BUILDING11.Recycle HTTP");
+        getLOGGER().Log("err", "BUILDING11.Recycle HTTP");
     }
 
     public override Setup(building: any): void {
@@ -211,7 +214,7 @@ export class BUILDING11 extends BFOUNDATION {
             ACHIEVEMENTS.Check("map2", 1);
         }
         if (this._countdownBuild.Get() === 0) {
-            GLOBAL._bMap = this;
+            getGLOBAL()._bMap = this;
         }
     }
 }

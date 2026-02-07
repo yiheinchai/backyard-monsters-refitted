@@ -8,16 +8,19 @@ import TimerEvent from "openfl/events/TimerEvent";
 import Timer from "openfl/utils/Timer";
 
 import { MapRoom } from "../maproom_advanced/MapRoom";
-import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { FriendPicker } from "./FriendPicker";
 import { Message_CLIPB } from "../../../Message_CLIPB";
-import { URLLoaderApi } from "../../../URLLoaderApi";
 import { frame } from "../../../frame";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGGER } from "../../../LOGGER";
-import { SOUNDS } from "../../../SOUNDS";
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../maproom_manager/MapRoomManager").MapRoomManager; }
+function getURLLoaderApi(): any { return require("../../../URLLoaderApi").URLLoaderApi; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+
+
 
 /**
  * Message - compose and send messages to friends.
@@ -50,9 +53,9 @@ export class Message extends Message_CLIPB {
         this.timer = new Timer(100);
         this.timer.addEventListener(TimerEvent.TIMER, this.Validate.bind(this));
         this.timer.start();
-        this.tolabel_txt.htmlText = KEYS.Get("mail_new_to");
-        this.subjectlabel_txt.htmlText = KEYS.Get("mail_new_subject");
-        this.messagelabel_txt.htmlText = KEYS.Get("mail_new_message");
+        this.tolabel_txt.htmlText = getKEYS().Get("mail_new_to");
+        this.subjectlabel_txt.htmlText = getKEYS().Get("mail_new_subject");
+        this.messagelabel_txt.htmlText = getKEYS().Get("mail_new_message");
     }
 
     public static getNotWS(str: string): string {
@@ -84,7 +87,7 @@ export class Message extends Message_CLIPB {
 
     private detectFS(event: FullScreenEvent | null = null): void {
         if (Boolean(this.stage) && this.stage.displayState === StageDisplayState.FULL_SCREEN) {
-            (this.fsWarning as any).tBody.htmlText = KEYS.Get("fswarning");
+            (this.fsWarning as any).tBody.htmlText = getKEYS().Get("fswarning");
             this.addChild(this.fsWarning);
         } else if (this.contains(this.fsWarning)) {
             this.removeChild(this.fsWarning);
@@ -151,11 +154,11 @@ export class Message extends Message_CLIPB {
             ["subject", this.subject_txt.text],
             ["message", body]
         ];
-        const loader = new URLLoaderApi();
+        const loader = new (getURLLoaderApi())();
         if (this.requestType === "migraterequest" && this.baseID !== 0) {
             params.push(["baseid", this.baseID]);
         }
-        loader.load(GLOBAL._apiURL + "player/sendmessage", params, this.onSuccess.bind(this), this.onFail.bind(this));
+        loader.load(getGLOBAL()._apiURL + "player/sendmessage", params, this.onSuccess.bind(this), this.onFail.bind(this));
         this.sendBtn.Enabled = false;
         this.sendBtn.removeEventListener(MouseEvent.CLICK, this.sendDown.bind(this));
     }
@@ -163,7 +166,7 @@ export class Message extends Message_CLIPB {
     private onSuccess(data: Record<string, any>): void {
         if (data.error !== undefined && data.error !== 0) {
             try {
-                LOGGER.Log("err", "mailbox-" + data.error);
+                getLOGGER().Log("err", "mailbox-" + data.error);
             } catch (e: any) {
             }
             this.displayError();
@@ -176,7 +179,7 @@ export class Message extends Message_CLIPB {
             }
             this.closeDown();
             this.dispatchEvent(new Event(Event.COMPLETE));
-            if (this.requestType === "migraterequest" && MapRoomManager.instance.isInMapRoom2) {
+            if (this.requestType === "migraterequest" && getMapRoomManager().instance.isInMapRoom2) {
                 MapRoom.SetPendingInvitation();
                 MapRoom.HideInfoMine();
             }
@@ -193,9 +196,9 @@ export class Message extends Message_CLIPB {
 
     public displayError(): void {
         if (this.requestType === "migraterequest") {
-            this.status_txt.htmlText = KEYS.Get("mailbox_invitepending");
+            this.status_txt.htmlText = getKEYS().Get("mailbox_invitepending");
         } else {
-            this.status_txt.htmlText = KEYS.Get("mail_messagefailed");
+            this.status_txt.htmlText = getKEYS().Get("mail_messagefailed");
         }
         this.sendBtn.Enabled = true;
         this.sendBtn.addEventListener(MouseEvent.CLICK, this.sendDown.bind(this));
@@ -204,14 +207,14 @@ export class Message extends Message_CLIPB {
     private closeDown(event: MouseEvent | null = null): void {
         this.stage.removeEventListener(FullScreenEvent.FULL_SCREEN, this.detectFS.bind(this));
         this.parent.removeChild(this);
-        SOUNDS.Play("close");
+        getSOUNDS().Play("close");
     }
 
     public Resize(): void {
     }
 
     private onRemoved(event: Event): void {
-        GLOBAL.BlockerRemove();
+        getGLOBAL().BlockerRemove();
         this.removeEventListener(KeyboardEvent.KEY_DOWN, this.onEscapeListener.bind(this));
         this.removeEventListener(Event.REMOVED_FROM_STAGE, this.onRemoved.bind(this));
         this.timer.stop();

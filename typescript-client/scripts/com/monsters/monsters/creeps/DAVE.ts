@@ -1,14 +1,17 @@
 import Point from "openfl/geom/Point";
 
 import { ITargetable } from "../../interfaces/ITargetable";
-import { MonsterBase } from "../MonsterBase";
 import { DAVERockets } from "../components/abilities/DAVERockets";
 import { CreepBase } from "./CreepBase";
 
-import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { FIREBALLS } from "../../../../FIREBALLS";
-import { FIREBALL } from "../../../../FIREBALL";
-import { SOUNDS } from "../../../../SOUNDS";
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../MonsterBase").MonsterBase; }
+function getBFOUNDATION(): any { return require("../../../../BFOUNDATION").BFOUNDATION; }
+function getFIREBALLS(): any { return require("../../../../FIREBALLS").FIREBALLS; }
+function getFIREBALL(): any { return require("../../../../FIREBALL").FIREBALL; }
+function getSOUNDS(): any { return require("../../../../SOUNDS").SOUNDS; }
+
+
 
 /**
  * DAVE - flying creep with dual rocket attacks.
@@ -35,8 +38,8 @@ export class DAVE extends CreepBase {
     }
 
     protected override rangedAttack(target: ITargetable): ITargetable {
-        if (target instanceof BFOUNDATION) {
-            FIREBALLS.Spawn(
+        if (target instanceof getBFOUNDATION()) {
+            getFIREBALLS().Spawn(
                 new Point(this._tmpPoint.x + Math.random() * 20 - 10, this._tmpPoint.y + Math.random() * 20 - 10),
                 this._targetBuilding._position,
                 this._targetBuilding,
@@ -44,10 +47,10 @@ export class DAVE extends CreepBase {
                 this.damage / 2,
                 0,
                 0,
-                FIREBALL.TYPE_MISSILE,
+                getFIREBALL().TYPE_MISSILE,
                 this
             );
-            return FIREBALLS.Spawn(
+            return getFIREBALLS().Spawn(
                 new Point(this._tmpPoint.x + Math.random() * 20 - 10, this._tmpPoint.y + Math.random() * 20 - 10),
                 this._targetBuilding._position,
                 this._targetBuilding,
@@ -55,35 +58,35 @@ export class DAVE extends CreepBase {
                 this.damage / 2,
                 0,
                 0,
-                FIREBALL.TYPE_MISSILE,
+                getFIREBALL().TYPE_MISSILE,
                 this
             );
         }
-        FIREBALLS.Spawn2(
+        getFIREBALLS().Spawn2(
             new Point(this._tmpPoint.x + Math.random() * 20 - 10, this._tmpPoint.y + Math.random() * 20 - 10),
             this._targetCreep._tmpPoint,
             this._targetCreep,
             10,
             this.damage / 2,
             0,
-            FIREBALL.TYPE_MISSILE,
+            getFIREBALL().TYPE_MISSILE,
             1,
             this
         );
-        return FIREBALLS.Spawn2(
+        return getFIREBALLS().Spawn2(
             new Point(this._tmpPoint.x + Math.random() * 20 - 10, this._tmpPoint.y + Math.random() * 20 - 10),
             this._targetCreep._tmpPoint,
             this._targetCreep,
             10,
             this.damage / 2,
             0,
-            FIREBALL.TYPE_MISSILE,
+            getFIREBALL().TYPE_MISSILE,
             1,
             this
         );
     }
 
     public override deathSplat(): void {
-        SOUNDS.Play("monsterlanddave");
+        getSOUNDS().Play("monsterlanddave");
     }
 }

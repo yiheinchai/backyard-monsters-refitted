@@ -4,19 +4,22 @@ import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BFOUNDATION } from './BFOUNDATION';
-import { BASE } from './BASE';
-import { CREEPS } from './CREEPS';
 import { CUSTOMATTACKS } from './CUSTOMATTACKS';
-import { GLOBAL } from './GLOBAL';
 import { INFERNO_EMERGENCE_EVENT } from './INFERNO_EMERGENCE_EVENT';
-import { KEYS } from './KEYS';
-import { LOGIN } from './LOGIN';
-import { MAP } from './MAP';
-import { POPUPS } from './POPUPS';
-import { SOUNDS } from './SOUNDS';
-import { SPECIALEVENT } from './SPECIALEVENT';
-import { UI2 } from './UI2';
-import { WMATTACK } from './WMATTACK';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGIN(): any { return require("./LOGIN").LOGIN; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getSPECIALEVENT(): any { return require("./SPECIALEVENT").SPECIALEVENT; }
+function getUI2(): any { return require("./UI2").UI2; }
+function getWMATTACK(): any { return require("./WMATTACK").WMATTACK; }
+
 
 /**
  * BUILDING27 - Trojan Horse
@@ -37,7 +40,7 @@ export class BUILDING27 extends BFOUNDATION {
         this._gridCost = [[new Rectangle(0, 0, 140, 140), 200]];
         BUILDING27._exists = true;
         this.SetProps();
-        if (GLOBAL.mode !== "wmattack" && GLOBAL.mode !== "wmview") {
+        if (getGLOBAL().mode !== "wmattack" && getGLOBAL().mode !== "wmview") {
             this.Render();
         }
     }
@@ -51,7 +54,7 @@ export class BUILDING27 extends BFOUNDATION {
 
     public Spew(event: Event | null = null): void {
         ++this._spewNumber;
-        const baseValue: number = BASE._basePoints + BASE._baseValue;
+        const baseValue: number = getBASE()._basePoints + getBASE()._baseValue;
         let scale: number = 0.4;
         if (baseValue > 3000000) {
             scale = 0.6;
@@ -69,8 +72,8 @@ export class BUILDING27 extends BFOUNDATION {
             }
             this._animTick = 1;
             this.AnimFrame();
-            SOUNDS.Play("bankland");
-            CREEPS.Spawn("C" + creatureLevel, MAP._BUILDINGTOPS, "bounce", new Point(this._mc!.x - 80, this._mc!.y + 108), Math.random() * 360, scale);
+            getSOUNDS().Play("bankland");
+            getCREEPS().Spawn("C" + creatureLevel, getMAP()._BUILDINGTOPS, "bounce", new Point(this._mc!.x - 80, this._mc!.y + 108), Math.random() * 360, scale);
         } else if (this._spewNumber % 10 === 0) {
             this._animTick = 0;
             this.AnimFrame();
@@ -81,32 +84,32 @@ export class BUILDING27 extends BFOUNDATION {
     }
 
     public StartAttack(event: MouseEvent | null = null): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
             if (!this._spewed) {
-                if (BASE.isInfernoMainYardOrOutpost) {
-                    SOUNDS.PlayMusic("musicipanic");
+                if (getBASE().isInfernoMainYardOrOutpost) {
+                    getSOUNDS().PlayMusic("musicipanic");
                 } else {
-                    SOUNDS.PlayMusic("musicpanic");
+                    getSOUNDS().PlayMusic("musicpanic");
                 }
                 this._spewed = true;
-                POPUPS.Next();
-                UI2.Show("warning");
-                UI2._warning.Update(KEYS.Get("ai_trojan_trap"));
+                getPOPUPS().Next();
+                getUI2().Show("warning");
+                getUI2()._warning.Update(getKEYS().Get("ai_trojan_trap"));
                 this._mc!.addEventListener(Event.ENTER_FRAME, this.Spew.bind(this));
                 this.Spew();
                 CUSTOMATTACKS._started = true;
-                WMATTACK._isAI = false;
-                WMATTACK._inProgress = true;
-                WMATTACK.AttackB();
-                WMATTACK.AttackC();
-                WMATTACK.ResetWait();
+                getWMATTACK()._isAI = false;
+                getWMATTACK()._inProgress = true;
+                getWMATTACK().AttackB();
+                getWMATTACK().AttackC();
+                getWMATTACK().ResetWait();
             }
         }
     }
 
     public override Click(event: MouseEvent | null = null): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-            const activeEvent: any = SPECIALEVENT.getActiveSpecialEvent();
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+            const activeEvent: any = getSPECIALEVENT().getActiveSpecialEvent();
             if (activeEvent.active) {
                 return;
             }
@@ -117,14 +120,14 @@ export class BUILDING27 extends BFOUNDATION {
                 CUSTOMATTACKS._started = true;
                 this._clicked = true;
                 const mc: any = new (GLOBAL as any).popup_horse();
-                mc.tA.htmlText = `<b>${KEYS.Get("ai_trojan_headline")}</b>`;
-                mc.tName.htmlText = KEYS.Get("ai_trojan_letter", { v1: LOGIN._playerName });
+                mc.tA.htmlText = `<b>${getKEYS().Get("ai_trojan_headline")}</b>`;
+                mc.tName.htmlText = getKEYS().Get("ai_trojan_letter", { v1: getLOGIN()._playerName });
                 mc.bA.SetupKey("ai_trojan_sendback_btn");
                 mc.bA.addEventListener(MouseEvent.CLICK, this.StartAttack.bind(this), false, 0, true);
                 mc.bB.SetupKey("ai_trojan_accept_btn");
                 mc.bB.addEventListener(MouseEvent.CLICK, this.StartAttack.bind(this), false, 0, true);
                 mc.addEventListener(Event.REMOVED_FROM_STAGE, this.popupRemoveFromStage.bind(this), false, 0, true);
-                POPUPS.Push(mc);
+                getPOPUPS().Push(mc);
             }
         }
     }

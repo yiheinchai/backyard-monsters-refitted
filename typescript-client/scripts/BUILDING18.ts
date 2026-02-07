@@ -4,7 +4,10 @@ import BlendMode from 'openfl/display/BlendMode';
 import MovieClip from 'openfl/display/MovieClip';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BWALL } from './BWALL';
-import { MAP } from './MAP';
+
+// Lazy imports to break circular dependency chains
+function getMAP(): any { return require("./MAP").MAP; }
+
 
 /**
  * BUILDING18 - Heavy Block/Wall
@@ -16,7 +19,7 @@ export class BUILDING18 extends BWALL {
         this._type = 18;
         this._footprint = [new Rectangle(0, 0, 20, 20)];
         this._gridCost = [[new Rectangle(-10, -10, 40, 40), 20], [new Rectangle(0, 0, 20, 20), 200]];
-        this._mcBase = MAP._BUILDINGBASES.addChild(new MovieClip()) as MovieClip;
+        this._mcBase = getMAP()._BUILDINGBASES.addChild(new MovieClip()) as MovieClip;
         this.SetProps();
     }
 

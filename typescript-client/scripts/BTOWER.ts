@@ -9,24 +9,27 @@ import { SpriteData } from './com/monsters/display/SpriteData';
 import { SpriteSheetAnimation } from './com/monsters/display/SpriteSheetAnimation';
 import { IAttackable } from './com/monsters/interfaces/IAttackable';
 import { IMapRoomCell } from './com/monsters/maproom_manager/IMapRoomCell';
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
-import { MonsterBase } from './com/monsters/monsters/MonsterBase';
-import { PATHING } from './com/monsters/pathing/PATHING';
-import { SiegeWeapons } from './com/monsters/siege/SiegeWeapons';
-import { Jars } from './com/monsters/siege/weapons/Jars';
-import { Vacuum } from './com/monsters/siege/weapons/Vacuum';
-import { VacuumHose } from './com/monsters/siege/weapons/VacuumHose';
 import { BFOUNDATION } from './BFOUNDATION';
-import { BASE } from './BASE';
-import { CREEPS } from './CREEPS';
-import { GLOBAL } from './GLOBAL';
-import { GRID } from './GRID';
-import { KEYS } from './KEYS';
-import { MAP } from './MAP';
-import { POPUPS } from './POPUPS';
-import { SOUNDS } from './SOUNDS';
-import { SPRITES } from './SPRITES';
-import { Targeting } from './Targeting';
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getPATHING(): any { return require("./com/monsters/pathing/PATHING").PATHING; }
+function getSiegeWeapons(): any { return require("./com/monsters/siege/SiegeWeapons").SiegeWeapons; }
+function getJars(): any { return require("./com/monsters/siege/weapons/Jars").Jars; }
+function getVacuum(): any { return require("./com/monsters/siege/weapons/Vacuum").Vacuum; }
+function getVacuumHose(): any { return require("./com/monsters/siege/weapons/VacuumHose").VacuumHose; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getGRID(): any { return require("./GRID").GRID; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getSPRITES(): any { return require("./SPRITES").SPRITES; }
+function getTargeting(): any { return require("./Targeting").Targeting; }
+
 
 /**
  * BTOWER - Tower defense building class
@@ -60,13 +63,13 @@ export class BTOWER extends BFOUNDATION {
         super();
         this._priority = 1;
         this._retarget = 0;
-        this.attackFlags = Targeting.getOldStyleTargets(0);
+        this.attackFlags = getTargeting().getOldStyleTargets(0);
     }
 
     public static AdjustTowerRange(cell: IMapRoomCell | null, range: number): number {
-        if (MapRoomManager.instance.isInMapRoom2 && BASE.isOutpostMapRoom2Only && 
+        if (getMapRoomManager().instance.isInMapRoom2 && getBASE().isOutpostMapRoom2Only && 
             cell && cell.cellHeight && cell.cellHeight >= 100) {
-            return Math.floor(cell.cellHeight * range / GLOBAL._averageAltitude.Get());
+            return Math.floor(cell.cellHeight * range / getGLOBAL()._averageAltitude.Get());
         }
         return range;
     }
@@ -77,33 +80,33 @@ export class BTOWER extends BFOUNDATION {
 
     public Props(): void {
         if (this._lvl.Get() > 0) {
-            if (MapRoomManager.instance.isInMapRoom2 && (BASE.isOutpostMapRoom2Only || GLOBAL.mode === "wmattack")) {
-                const baseRange: number = GLOBAL._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].range;
+            if (getMapRoomManager().instance.isInMapRoom2 && (getBASE().isOutpostMapRoom2Only || getGLOBAL().mode === "wmattack")) {
+                const baseRange: number = getGLOBAL()._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].range;
                 this._range = baseRange;
-                if (GLOBAL._currentCell) {
-                    this._range = BTOWER.AdjustTowerRange(GLOBAL._currentCell, baseRange);
+                if (getGLOBAL()._currentCell) {
+                    this._range = BTOWER.AdjustTowerRange(getGLOBAL()._currentCell, baseRange);
                 }
             } else {
-                this._range = GLOBAL._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].range;
+                this._range = getGLOBAL()._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].range;
             }
-            this.damageProperty.value = GLOBAL._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].damage;
-            this._rate = GLOBAL._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].rate;
-            this._splash = GLOBAL._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].splash;
-            this._speed = GLOBAL._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].speed;
-        } else if (this._lvl.Get() > GLOBAL._buildingProps[this._type - 1].stats.length) {
+            this.damageProperty.value = getGLOBAL()._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].damage;
+            this._rate = getGLOBAL()._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].rate;
+            this._splash = getGLOBAL()._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].splash;
+            this._speed = getGLOBAL()._buildingProps[this._type - 1].stats[this._lvl.Get() - 1].speed;
+        } else if (this._lvl.Get() > getGLOBAL()._buildingProps[this._type - 1].stats.length) {
             throw new Error("ILLEGAL TOWER LEVEL Type: " + this._type + " Level: " + this._lvl.Get());
         }
         this._fireTick = this._rate;
     }
 
     public override Place(event: MouseEvent | null = null): void {
-        ++GLOBAL._bTowerCount;
-        GLOBAL._bTower = this;
+        ++getGLOBAL()._bTowerCount;
+        getGLOBAL()._bTower = this;
         super.Place(event);
     }
 
     public override Description(): void {
-        this._specialDescription = KEYS.Get("bdg_tower_desc");
+        this._specialDescription = getKEYS().Get("bdg_tower_desc");
         super.Description();
         this._upgradeDescription = "";
         if (this._lvl.Get() > 0 && this._lvl.Get() < this._buildingProps.costs.length) {
@@ -111,21 +114,21 @@ export class BTOWER extends BFOUNDATION {
             const nextStats = this._buildingProps.stats[this._lvl.Get()];
             let currentRange: number = currentStats.range;
             let nextRange: number = nextStats.range;
-            if (BASE.isOutpost) {
-                currentRange = BTOWER.AdjustTowerRange(GLOBAL._currentCell, currentRange);
-                nextRange = BTOWER.AdjustTowerRange(GLOBAL._currentCell, nextRange);
+            if (getBASE().isOutpost) {
+                currentRange = BTOWER.AdjustTowerRange(getGLOBAL()._currentCell, currentRange);
+                nextRange = BTOWER.AdjustTowerRange(getGLOBAL()._currentCell, nextRange);
             }
             if (currentStats.range < nextStats.range) {
-                this._upgradeDescription += KEYS.Get("bdg_tower_rangeupgrade", { v1: currentRange, v2: nextRange }) + "<br>";
+                this._upgradeDescription += getKEYS().Get("bdg_tower_rangeupgrade", { v1: currentRange, v2: nextRange }) + "<br>";
             }
             if (currentStats.damage * (40 / currentStats.rate) < nextStats.damage * (40 / nextStats.rate)) {
-                this._upgradeDescription += KEYS.Get("bdg_tower_damageupgrade", {
+                this._upgradeDescription += getKEYS().Get("bdg_tower_damageupgrade", {
                     v1: Math.floor(currentStats.damage * (40 / currentStats.rate)),
                     v2: Math.floor(nextStats.damage * (40 / nextStats.rate))
                 }) + "<br>";
             }
             if (currentStats.splash < nextStats.splash) {
-                this._upgradeDescription += KEYS.Get("bdg_tower_explosionupgrade", { v1: currentStats.splash, v2: nextStats.splash }) + "<br>";
+                this._upgradeDescription += getKEYS().Get("bdg_tower_explosionupgrade", { v1: currentStats.splash, v2: nextStats.splash }) + "<br>";
             }
         }
     }
@@ -135,8 +138,8 @@ export class BTOWER extends BFOUNDATION {
     }
 
     protected canShootVacuumHose(): boolean {
-        const hose: VacuumHose | null = Vacuum.getHose();
-        if (hose && GLOBAL.QuickDistance(new Point(hose.x, hose.y), this._position!) <= this._range && BTOWER._targetFlyerMode[this._type]) {
+        const hose: VacuumHose | null = getVacuum().getHose();
+        if (hose && getGLOBAL().QuickDistance(new Point(hose.x, hose.y), this._position!) <= this._range && BTOWER._targetFlyerMode[this._type]) {
             return true;
         }
         return false;
@@ -147,7 +150,7 @@ export class BTOWER extends BFOUNDATION {
             --this._fireTick;
             if (this._fireTick <= 0) {
                 this._fireTick += this._rate * 2;
-                const hose: VacuumHose | null = Vacuum.getHose();
+                const hose: VacuumHose | null = getVacuum().getHose();
                 if (!this._targetVacuum && (!this._hasTargets || !this.targetInRange())) {
                     if (this.canShootVacuumHose()) {
                         this._targetVacuum = true;
@@ -156,8 +159,8 @@ export class BTOWER extends BFOUNDATION {
                         this._targetVacuum = false;
                         this.FindTargets(this._maxTargets, this._priority);
                         this._fireTick = 30;
-                        if (CREEPS._creepCount > 150) {
-                            this._fireTick += Math.floor(CREEPS._creepCount / 15);
+                        if (getCREEPS()._creepCount > 150) {
+                            this._fireTick += Math.floor(getCREEPS()._creepCount / 15);
                         }
                     }
                 } else {
@@ -180,8 +183,8 @@ export class BTOWER extends BFOUNDATION {
                     if (this._retarget) {
                         this.FindTargets(this._maxTargets, this._priority);
                         this._fireTick = 30;
-                        if (CREEPS._creepCount > 150) {
-                            this._fireTick += Math.floor(CREEPS._creepCount / 15);
+                        if (getCREEPS()._creepCount > 150) {
+                            this._fireTick += Math.floor(getCREEPS()._creepCount / 15);
                         }
                         this._retarget = 0;
                     }
@@ -194,11 +197,11 @@ export class BTOWER extends BFOUNDATION {
     }
 
     public targetInRange(): boolean {
-        const towerPos: Point = GRID.FromISO(this._mc!.x, this._mc!.y);
+        const towerPos: Point = getGRID().FromISO(this._mc!.x, this._mc!.y);
         towerPos.add(new Point(this._footprint[0].width * 0.5, this._footprint[0].height * 0.5));
         for (let i = 0; i < this._targetCreeps.length; i++) {
-            const creepPos: Point = GRID.FromISO(this._targetCreeps[i].creep._tmpPoint.x, this._targetCreeps[i].creep._tmpPoint.y);
-            const distSquared: number = GLOBAL.QuickDistanceSquared(towerPos, creepPos);
+            const creepPos: Point = getGRID().FromISO(this._targetCreeps[i].creep._tmpPoint.x, this._targetCreeps[i].creep._tmpPoint.y);
+            const distSquared: number = getGLOBAL().QuickDistanceSquared(towerPos, creepPos);
             if (distSquared < this._range * this._range) {
                 return true;
             }
@@ -212,26 +215,26 @@ export class BTOWER extends BFOUNDATION {
 
     public ApplyJar(durability: number): void {
         ++this.targetableStatus;
-        this._jarAnimation = new SpriteSheetAnimation(SPRITES.GetSpriteDescriptor(Jars.JAR_GRAPHIC) as SpriteData, Jars.JAR_GRAPHIC_FRAMES);
+        this._jarAnimation = new SpriteSheetAnimation(getSPRITES().GetSpriteDescriptor(getJars().JAR_GRAPHIC) as SpriteData, getJars().JAR_GRAPHIC_FRAMES);
         this._jarAnimation.render();
         this._jarAnimation.x += -(this._jarAnimation.width * 0.5) + this._middle! * 0.5;
         this._jarAnimation.y += -(this._jarAnimation.height * 0.5);
         this.addChild(this._jarAnimation);
-        SOUNDS.Play(BTOWER.GetRandomString(Jars.LAND_SOUNDS));
+        getSOUNDS().Play(BTOWER.GetRandomString(getJars().LAND_SOUNDS));
     }
 
     private JarLanded(): void {
-        this._jarHealth = new SecNum((SiegeWeapons.getWeapon(Jars.ID) as Jars).durability);
+        this._jarHealth = new SecNum((getSiegeWeapons().getWeapon(getJars().ID) as Jars).durability);
     }
 
     private UpdateJar(): void {
-        const ratio: number = this._jarHealth!.Get() / (SiegeWeapons.getWeapon(Jars.ID) as Jars).durability;
+        const ratio: number = this._jarHealth!.Get() / (getSiegeWeapons().getWeapon(getJars().ID) as Jars).durability;
         if (ratio < 0.3) {
             this._jarAnimation!.gotoAndStop(2);
-            SOUNDS.Play(BTOWER.GetRandomString(Jars.CRACKING_SOUNDS));
+            getSOUNDS().Play(BTOWER.GetRandomString(getJars().CRACKING_SOUNDS));
         } else if (ratio < 0.6) {
             this._jarAnimation!.gotoAndStop(1);
-            SOUNDS.Play(BTOWER.GetRandomString(Jars.CRACKING_SOUNDS));
+            getSOUNDS().Play(BTOWER.GetRandomString(getJars().CRACKING_SOUNDS));
         } else {
             this._jarAnimation!.gotoAndStop(0);
         }
@@ -258,7 +261,7 @@ export class BTOWER extends BFOUNDATION {
         this._jarHealth = null;
         if (this._jarAnimation) {
             this._jarAnimation.play();
-            SOUNDS.Play(BTOWER.GetRandomString(Jars.EXPLODE_SOUNDS));
+            getSOUNDS().Play(BTOWER.GetRandomString(getJars().EXPLODE_SOUNDS));
         }
     }
 
@@ -288,8 +291,8 @@ export class BTOWER extends BFOUNDATION {
         if (BTOWER._targetFlyerMode[this._type]) {
             flyerMode = BTOWER._targetFlyerMode[this._type];
         }
-        const flags: number = Targeting.getOldStyleTargets(flyerMode);
-        this.creeps = Targeting.getCreepsInRange(this._range, this._position!.add(new Point(0, this._footprint[0].height / 2)), flags);
+        const flags: number = getTargeting().getOldStyleTargets(flyerMode);
+        this.creeps = getTargeting().getCreepsInRange(this._range, this._position!.add(new Point(0, this._footprint[0].height / 2)), flags);
         this._hasTargets = false;
         if (this.creeps.length > 0) {
             this._targetCreeps = [];
@@ -319,21 +322,21 @@ export class BTOWER extends BFOUNDATION {
     }
 
     public override RecycleC(): void {
-        GLOBAL._bTower = null;
-        --GLOBAL._bTowerCount;
+        getGLOBAL()._bTower = null;
+        --getGLOBAL()._bTowerCount;
         super.RecycleC();
     }
 
     public override Cancel(): void {
-        GLOBAL._bTower = null;
-        --GLOBAL._bTowerCount;
+        getGLOBAL()._bTower = null;
+        --getGLOBAL()._bTowerCount;
         super.Cancel();
     }
 
     protected Rotate(): void {
         if (this._targetVacuum) {
-            const townHallPos: Point = GLOBAL.townHall._position!;
-            let towerPos: Point = PATHING.FromISO(new Point(this._mc!.x, this._mc!.y));
+            const townHallPos: Point = getGLOBAL().townHall._position!;
+            let towerPos: Point = getPATHING().FromISO(new Point(this._mc!.x, this._mc!.y));
             towerPos = towerPos.add(new Point(35, 35));
             const dx: number = townHallPos.x - towerPos.x;
             const dy: number = townHallPos.y - towerPos.y;
@@ -345,8 +348,8 @@ export class BTOWER extends BFOUNDATION {
             ++this._frameNumber;
         } else if (this._hasTargets) {
             const creep: MonsterBase = this._targetCreeps[0].creep;
-            const creepPos: Point = PATHING.FromISO(creep._tmpPoint);
-            let towerPos: Point = PATHING.FromISO(new Point(this._mc!.x, this._mc!.y));
+            const creepPos: Point = getPATHING().FromISO(creep._tmpPoint);
+            let towerPos: Point = getPATHING().FromISO(new Point(this._mc!.x, this._mc!.y));
             towerPos = towerPos.add(new Point(35, 35));
             const dx: number = creepPos.x - towerPos.x;
             const dy: number = creepPos.y - towerPos.y;
@@ -361,13 +364,13 @@ export class BTOWER extends BFOUNDATION {
 
     public override Setup(building: any): void {
         super.Setup(building);
-        ++GLOBAL._bTowerCount;
-        GLOBAL._bTower = this;
+        ++getGLOBAL()._bTowerCount;
+        getGLOBAL()._bTower = this;
         this.Props();
     }
 
     public override Over(event: MouseEvent): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && this._lvl.Get() > 0 && 
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && this._lvl.Get() > 0 && 
             this._countdownBuild.Get() === 0 && this._countdownFortify.Get() === 0 && 
             this._countdownUpgrade.Get() === 0 && this.health > 0) {
             // TweenLite.delayedCall(0.25, this.RangeIndicator);
@@ -375,7 +378,7 @@ export class BTOWER extends BFOUNDATION {
     }
 
     public override Out(event: MouseEvent): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && this._radiusGraphic) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && this._radiusGraphic) {
             if (this._radiusGraphic.parent) {
                 this._radiusGraphic.parent.removeChild(this._radiusGraphic);
             }

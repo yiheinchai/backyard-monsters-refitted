@@ -1,8 +1,11 @@
 import { MapBasePopup_CLIP } from "./MapBasePopup_CLIP";
 
-import { KEYS } from "../../../../KEYS";
 import { TweenLite } from "gs/TweenLite";
 import { Elastic } from "gs/easing/Elastic";
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+
 
 /**
  * Map base popup - popup for map base actions with animation.
@@ -13,7 +16,7 @@ export class MapBasePopup extends MapBasePopup_CLIP {
     }
 
     public initWithTitleAndButtons(title: string, buttons: Array<any>, actions: Array<any>): void {
-        this.title_txt.htmlText = "<b>" + KEYS.Get("map_options") + "</b>";
+        this.title_txt.htmlText = "<b>" + getKEYS().Get("map_options") + "</b>";
     }
 
     public setHeightForButtons(buttonCount: number): void {

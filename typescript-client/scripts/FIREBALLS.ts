@@ -1,10 +1,13 @@
 import { IAttackable } from './com/monsters/interfaces/IAttackable';
-import { MonsterBase } from './com/monsters/monsters/MonsterBase';
-import { VacuumHose } from './com/monsters/siege/weapons/VacuumHose';
 import Point from 'openfl/geom/Point';
-import { FIREBALL } from './FIREBALL';
-import { GLOBAL } from './GLOBAL';
-import { MAP } from './MAP';
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getVacuumHose(): any { return require("./com/monsters/siege/weapons/VacuumHose").VacuumHose; }
+function getFIREBALL(): any { return require("./FIREBALL").FIREBALL; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getMAP(): any { return require("./MAP").MAP; }
+
 
 /**
  * FIREBALLS - Fireball Projectile Pool Manager
@@ -18,7 +21,7 @@ export class FIREBALLS {
     public static _fireballs: Record<number, FIREBALL> = {};
     public static _id: number = 0;
     public static _fireballCount: number = 0;
-    public static _type: string = FIREBALL.TYPE_FIREBALL;
+    public static _type: string = getFIREBALL().TYPE_FIREBALL;
     public static _pool: FIREBALL[] = [];
 
     constructor() {
@@ -26,7 +29,7 @@ export class FIREBALLS {
     }
 
     public static Spawn(startPoint: Point, targetPoint: Point, targetBuilding: any, speed: number, damage: number, splash: number = 0, glaives: number = 0, type: string = "fireball", source: IAttackable | null = null): FIREBALL {
-        if (!type) type = FIREBALL.TYPE_FIREBALL;
+        if (!type) type = getFIREBALL().TYPE_FIREBALL;
         FIREBALLS._type = type;
         
         const fireball = FIREBALLS.PoolGet();
@@ -38,8 +41,8 @@ export class FIREBALLS {
             }
         }
         
-        if (!GLOBAL._catchup) {
-            MAP._FIREBALLS.addChild(fireball._graphic);
+        if (!getGLOBAL()._catchup) {
+            getMAP()._FIREBALLS.addChild(fireball._graphic);
         }
         
         fireball._id = FIREBALLS._id;
@@ -69,12 +72,12 @@ export class FIREBALLS {
     }
 
     public static Spawn2(startPoint: Point, targetPoint: Point, target: IAttackable, speed: number, damage: number, splash: number = 0, type: string = "fireball", targetType: number = 1, source: IAttackable | null = null): FIREBALL {
-        if (!type) type = FIREBALL.TYPE_FIREBALL;
+        if (!type) type = getFIREBALL().TYPE_FIREBALL;
         FIREBALLS._type = type;
         
         const fireball = FIREBALLS.PoolGet();
-        if (!GLOBAL._catchup) {
-            MAP._FIREBALLS.addChild(fireball._graphic);
+        if (!getGLOBAL()._catchup) {
+            getMAP()._FIREBALLS.addChild(fireball._graphic);
         }
         
         if (damage > 0) {
@@ -90,14 +93,14 @@ export class FIREBALLS {
         }
         fireball._source = source;
         fireball._startPoint = startPoint;
-        fireball._targetType = target instanceof VacuumHose ? 4 : targetType;
+        fireball._targetType = target instanceof getVacuumHose() ? 4 : targetType;
         fireball._targetPoint = targetPoint;
         fireball._targetCreep = target;
         fireball._maxSpeed = speed;
         fireball._damage = damage;
         fireball._glaves = 0;
         
-        if (target && target instanceof MonsterBase && (target as MonsterBase)._movement !== "fly") {
+        if (target && target instanceof getMonsterBase() && (target as MonsterBase)._movement !== "fly") {
             fireball._splash = splash;
         } else {
             fireball._splash = 0;
@@ -121,7 +124,7 @@ export class FIREBALLS {
         const fireball = FIREBALLS._fireballs[id];
         try {
             fireball._graphic.filters = [];
-            MAP._FIREBALLS.removeChild(fireball._graphic);
+            getMAP()._FIREBALLS.removeChild(fireball._graphic);
         } catch (e) {}
         FIREBALLS.PoolSet(fireball);
         delete FIREBALLS._fireballs[id];
@@ -138,7 +141,7 @@ export class FIREBALLS {
         for (const id in FIREBALLS._fireballs) {
             const fireball = FIREBALLS._fireballs[id];
             try {
-                MAP._FIREBALLS.removeChild(fireball._graphic);
+                getMAP()._FIREBALLS.removeChild(fireball._graphic);
             } catch (e) {}
         }
         FIREBALLS._fireballs = {};
@@ -155,7 +158,7 @@ export class FIREBALLS {
         if (FIREBALLS._pool.length) {
             fireball = FIREBALLS._pool.pop()!;
         } else {
-            fireball = new FIREBALL();
+            fireball = new (getFIREBALL())();
         }
         fireball.Setup(FIREBALLS._type);
         return fireball;

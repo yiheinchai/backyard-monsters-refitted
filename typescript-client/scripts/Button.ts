@@ -3,7 +3,10 @@ import MouseEvent from 'openfl/events/MouseEvent';
 import TextField from 'openfl/text/TextField';
 import TextFormat from 'openfl/text/TextFormat';
 import TextFormatAlign from 'openfl/text/TextFormatAlign';
-import { KEYS } from './KEYS';
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("./KEYS").KEYS; }
+
 
 /**
  * Button - Standard Interactive Button
@@ -61,7 +64,7 @@ export class Button extends MovieClip {
 
     public SetupKey(key: string = "", isTab: boolean = false, width: number = 0, height: number = 0): void {
         this.labelKey = key;
-        this.Setup(KEYS.Get(this.labelKey), isTab, width, height);
+        this.Setup(getKEYS().Get(this.labelKey), isTab, width, height);
     }
 
     public Update(): void {

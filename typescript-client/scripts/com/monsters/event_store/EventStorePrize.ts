@@ -10,8 +10,11 @@ import { RewardHandler } from "../rewarding/RewardHandler";
 import { RewardLibrary } from "../rewarding/RewardLibrary";
 import { EventStoreItemSelectedPopup } from "./EventStoreItemSelectedPopup";
 
-import { KEYS } from "../../../KEYS";
 import { EventStoreDisplayItem } from "../../../EventStoreDisplayItem";
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+
 
 /**
  * Event store prize - represents a single prize in the event store.
@@ -43,7 +46,7 @@ export class EventStorePrize extends EventStoreDisplayItem {
         this.m_Image = new Bitmap();
         this.buttonMode = true;
         
-        this.nameText.htmlText = KEYS.Get(this.m_NameKey);
+        this.nameText.htmlText = getKEYS().Get(this.m_NameKey);
         this.imageHolder.addChild(this.m_Image);
         
         this.addEventListener(MouseEvent.CLICK, this.OnClicked.bind(this), false, 0, true);
@@ -56,7 +59,7 @@ export class EventStorePrize extends EventStoreDisplayItem {
             this.xpBarGreen.visible = true;
             this.xpBarYellow.visible = false;
         } else {
-            this.xpText.htmlText = KEYS.Get("event_store_prize_unlocked");
+            this.xpText.htmlText = getKEYS().Get("event_store_prize_unlocked");
             this.xpBarBlue.visible = false;
             this.xpBarGreen.visible = false;
             this.xpBarYellow.visible = true;
@@ -72,7 +75,7 @@ export class EventStorePrize extends EventStoreDisplayItem {
             this.xpBarBlue.visible = true;
             this.xpBarGreen.visible = false;
             this.xpBarYellow.visible = false;
-            this.xpText.htmlText = KEYS.Get("event_store_prize_purchased");
+            this.xpText.htmlText = getKEYS().Get("event_store_prize_purchased");
             ImageCache.GetImageWithCallBack(this.m_ImageURL, this.OnImageLoaded.bind(this));
             return;
         }

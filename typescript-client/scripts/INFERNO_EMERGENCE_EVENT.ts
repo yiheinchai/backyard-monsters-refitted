@@ -1,23 +1,26 @@
-import { InstanceManager } from "./com/monsters/managers/InstanceManager";
 import Sprite from "openfl/display/Sprite";
 import Event from "openfl/events/Event";
 import { TweenLite } from "./gs";
-import { GLOBAL } from "./GLOBAL";
-import { INFERNOPORTAL } from "./INFERNOPORTAL";
 import { MAPROOM_DESCENT } from "./MAPROOM_DESCENT";
-import { BASE } from "./BASE";
-import { TUTORIAL } from "./TUTORIAL";
-import { POPUPS } from "./POPUPS";
-import { BUILDINGOPTIONS } from "./BUILDINGOPTIONS";
-import { BUILDINGS } from "./BUILDINGS";
-import { STORE } from "./STORE";
-import { UI2 } from "./UI2";
-import { MAP } from "./MAP";
-import { KEYS } from "./KEYS";
-import { SOUNDS } from "./SOUNDS";
 import { INFERNO_EMERGENCE_POPUPS } from "./INFERNO_EMERGENCE_POPUPS";
 import { INFERNO_PORTAL_ATTACK } from "./INFERNO_PORTAL_ATTACK";
-import { BFOUNDATION } from "./BFOUNDATION";
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getINFERNOPORTAL(): any { return require("./INFERNOPORTAL").INFERNOPORTAL; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getBUILDINGOPTIONS(): any { return require("./BUILDINGOPTIONS").BUILDINGOPTIONS; }
+function getBUILDINGS(): any { return require("./BUILDINGS").BUILDINGS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getUI2(): any { return require("./UI2").UI2; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+
 
 export class INFERNO_EMERGENCE_EVENT {
     public static readonly TOWN_HALL_LEVEL_REQUIREMENT: number = 5;
@@ -56,13 +59,13 @@ export class INFERNO_EMERGENCE_EVENT {
     }
 
     public static Initialize(): boolean {
-        if (GLOBAL.mode != GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode != getGLOBAL().e_BASE_MODE.BUILD) {
             return false;
         }
-        INFERNO_EMERGENCE_EVENT._lastLevel = GLOBAL.StatGet(INFERNO_EMERGENCE_EVENT._LAST_LEVEL_LABEL);
+        INFERNO_EMERGENCE_EVENT._lastLevel = getGLOBAL().StatGet(INFERNO_EMERGENCE_EVENT._LAST_LEVEL_LABEL);
         INFERNO_EMERGENCE_EVENT._currentDate = new Date();
-        if (INFERNO_EMERGENCE_EVENT.ShouldShowPortal() && INFERNO_EMERGENCE_EVENT._maxLevel > 5 || BASE.isInfernoMainYardOrOutpost && MAPROOM_DESCENT.DescentPassed && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
-            INFERNOPORTAL.AddPortal(5);
+        if (INFERNO_EMERGENCE_EVENT.ShouldShowPortal() && INFERNO_EMERGENCE_EVENT._maxLevel > 5 || getBASE().isInfernoMainYardOrOutpost && MAPROOM_DESCENT.DescentPassed && getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD) {
+            getINFERNOPORTAL().AddPortal(5);
             return false;
         }
         INFERNO_EMERGENCE_EVENT.ns = INFERNO_EMERGENCE_EVENT.IsPostEvent() ? "postEvent" : "duringEvent";
@@ -77,14 +80,14 @@ export class INFERNO_EMERGENCE_EVENT {
     }
 
     private static ShowUpgradePopup(): void {
-        if (GLOBAL.StatGet(INFERNO_EMERGENCE_POPUPS.INFERNO_UPGRADE_SHOWN) == 0 && GLOBAL.townHall._lvl.Get() >= 5) {
+        if (getGLOBAL().StatGet(INFERNO_EMERGENCE_POPUPS.INFERNO_UPGRADE_SHOWN) == 0 && getGLOBAL().townHall._lvl.Get() >= 5) {
             INFERNO_EMERGENCE_POPUPS.ShowUpgrade();
-            GLOBAL.StatSet(INFERNO_EMERGENCE_POPUPS.INFERNO_UPGRADE_SHOWN, 1);
+            getGLOBAL().StatSet(INFERNO_EMERGENCE_POPUPS.INFERNO_UPGRADE_SHOWN, 1);
         }
     }
 
     private static SetupPortal(): void {
-        const _loc1_: INFERNOPORTAL = INFERNOPORTAL.AddPortal(INFERNO_EMERGENCE_EVENT._lastLevel);
+        const _loc1_: INFERNOPORTAL = getINFERNOPORTAL().AddPortal(INFERNO_EMERGENCE_EVENT._lastLevel);
         if (INFERNO_EMERGENCE_EVENT._lastLevel == 0) {
             _loc1_.Hide();
             TweenLite.delayedCall(INFERNO_EMERGENCE_EVENT._FOCUS_DELAY, INFERNO_EMERGENCE_EVENT.FocusOnPortal);
@@ -96,13 +99,13 @@ export class INFERNO_EMERGENCE_EVENT {
     }
 
     private static Save(): void {
-        GLOBAL.StatSet(INFERNO_EMERGENCE_EVENT._LAST_LEVEL_LABEL, INFERNOPORTAL.building._lvl.Get(), false);
-        GLOBAL.StatSet(INFERNO_EMERGENCE_EVENT._LAST_TIME_LABEL, INFERNO_EMERGENCE_EVENT._currentDate.getTime() / 1000, false);
-        BASE.Save(0, false, true);
+        getGLOBAL().StatSet(INFERNO_EMERGENCE_EVENT._LAST_LEVEL_LABEL, getINFERNOPORTAL().building._lvl.Get(), false);
+        getGLOBAL().StatSet(INFERNO_EMERGENCE_EVENT._LAST_TIME_LABEL, INFERNO_EMERGENCE_EVENT._currentDate.getTime() / 1000, false);
+        getBASE().Save(0, false, true);
     }
 
     public static IsBelowMaxLevel(param1: number): boolean {
-        const _loc2_: number = GLOBAL.StatGet(INFERNO_EMERGENCE_EVENT._LAST_TIME_LABEL);
+        const _loc2_: number = getGLOBAL().StatGet(INFERNO_EMERGENCE_EVENT._LAST_TIME_LABEL);
         if (INFERNO_EMERGENCE_EVENT._currentDate.getTime() / 1000 - _loc2_ >= INFERNO_EMERGENCE_EVENT._intermissionDuration) {
             if (param1 < INFERNO_EMERGENCE_EVENT._maxLevel) {
                 return true;
@@ -130,15 +133,15 @@ export class INFERNO_EMERGENCE_EVENT {
         if (!INFERNO_EMERGENCE_EVENT.ShouldShowPortal()) {
             return;
         }
-        if (POPUPS._open || BUILDINGOPTIONS._open || BUILDINGS._open || STORE._open) {
+        if (getPOPUPS()._open || getBUILDINGOPTIONS()._open || getBUILDINGS()._open || getSTORE()._open) {
             TweenLite.delayedCall(1, INFERNO_EMERGENCE_EVENT.FocusOnPortal);
             return;
         }
-        UI2.Hide("top");
-        UI2.Hide("wmbar");
-        UI2.Hide("bottom");
-        const _loc1_: Sprite = INFERNOPORTAL.building._mc;
-        MAP.FocusTo(_loc1_.x, _loc1_.y, 2, 0, 0, true, INFERNO_EMERGENCE_EVENT.FocusedOnPortal);
+        getUI2().Hide("top");
+        getUI2().Hide("wmbar");
+        getUI2().Hide("bottom");
+        const _loc1_: Sprite = getINFERNOPORTAL().building._mc;
+        getMAP().FocusTo(_loc1_.x, _loc1_.y, 2, 0, 0, true, INFERNO_EMERGENCE_EVENT.FocusedOnPortal);
     }
 
     private static FocusedOnPortal(): void {
@@ -156,16 +159,16 @@ export class INFERNO_EMERGENCE_EVENT {
         if (!INFERNO_EMERGENCE_EVENT.ShouldShowPortal()) {
             return;
         }
-        const _loc2_: INFERNOPORTAL = INFERNOPORTAL.building;
+        const _loc2_: INFERNOPORTAL = getINFERNOPORTAL().building;
         _loc2_.Show();
         _loc2_.SetLevel(INFERNO_EMERGENCE_EVENT.GetUpgradeLevel());
         INFERNO_EMERGENCE_EVENT.Save();
         if (!INFERNO_EMERGENCE_EVENT.isBaseReadyForAttack()) {
             return;
         }
-        UI2.Show("warning");
-        UI2._warning.Update("<font size=\"26\">" + KEYS.Get(INFERNO_EMERGENCE_EVENT._WARNING_KEY) + "</font>");
-        BASE.Shake(INFERNO_EMERGENCE_EVENT._SHAKE_AMOUNT);
+        getUI2().Show("warning");
+        getUI2()._warning.Update("<font size=\"26\">" + getKEYS().Get(INFERNO_EMERGENCE_EVENT._WARNING_KEY) + "</font>");
+        getBASE().Shake(INFERNO_EMERGENCE_EVENT._SHAKE_AMOUNT);
         TweenLite.delayedCall(INFERNO_EMERGENCE_EVENT._ATTACK_DELAY, INFERNO_EMERGENCE_EVENT.ShowWarningPopup);
     }
 
@@ -179,7 +182,7 @@ export class INFERNO_EMERGENCE_EVENT {
     }
 
     public static TriggerAttack(param1: Event): void {
-        SOUNDS.PlayMusic("musicpanic");
+        getSOUNDS().PlayMusic("musicpanic");
         INFERNO_PORTAL_ATTACK.SpawnAttack();
     }
 
@@ -189,7 +192,7 @@ export class INFERNO_EMERGENCE_EVENT {
         let _loc5_: BFOUNDATION = null;
         let _loc6_: number = NaN;
         const _loc1_: boolean = false;
-        const _loc4_: Array<any> = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const _loc4_: Array<any> = getInstanceManager().getInstancesByClass(BFOUNDATION);
         for (const building of _loc4_) {
             _loc5_ = building as BFOUNDATION;
             _loc2_ += _loc5_.health;
@@ -200,15 +203,15 @@ export class INFERNO_EMERGENCE_EVENT {
     }
 
     public static ShouldShowPortal(): boolean {
-        return INFERNO_EMERGENCE_EVENT._SHOULD_RUN_EVENT && !GLOBAL._flags.viximo && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && GLOBAL.townHall && (INFERNO_EMERGENCE_EVENT.ns == "duringEvent" || INFERNO_EMERGENCE_EVENT.ns == "postEvent" && GLOBAL.townHall && GLOBAL.townHall._lvl.Get() >= INFERNO_EMERGENCE_EVENT.TOWN_HALL_LEVEL_REQUIREMENT || INFERNO_EMERGENCE_EVENT.ns == "postEvent" && INFERNO_EMERGENCE_EVENT._lastLevel > 0) && INFERNO_EMERGENCE_EVENT._maxLevel > 0 && BASE.isMainYardOrInfernoMainYard && TUTORIAL._stage > 200;
+        return INFERNO_EMERGENCE_EVENT._SHOULD_RUN_EVENT && !getGLOBAL()._flags.viximo && getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD && getGLOBAL().townHall && (INFERNO_EMERGENCE_EVENT.ns == "duringEvent" || INFERNO_EMERGENCE_EVENT.ns == "postEvent" && getGLOBAL().townHall && getGLOBAL().townHall._lvl.Get() >= INFERNO_EMERGENCE_EVENT.TOWN_HALL_LEVEL_REQUIREMENT || INFERNO_EMERGENCE_EVENT.ns == "postEvent" && INFERNO_EMERGENCE_EVENT._lastLevel > 0) && INFERNO_EMERGENCE_EVENT._maxLevel > 0 && getBASE().isMainYardOrInfernoMainYard && getTUTORIAL()._stage > 200;
     }
 
     public static ShouldRunEvent(): boolean {
-        return INFERNO_EMERGENCE_EVENT._SHOULD_RUN_EVENT && !GLOBAL._flags.viximo && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && GLOBAL.townHall && (INFERNO_EMERGENCE_EVENT.ns == "duringEvent" || INFERNO_EMERGENCE_EVENT.ns == "postEvent" && GLOBAL.townHall._lvl.Get() >= INFERNO_EMERGENCE_EVENT.TOWN_HALL_LEVEL_REQUIREMENT || INFERNO_EMERGENCE_EVENT.ns == "postEvent" && INFERNO_EMERGENCE_EVENT._lastLevel > 0) && INFERNO_EMERGENCE_EVENT._maxLevel > 0 && INFERNO_EMERGENCE_EVENT._lastLevel < 5 && BASE.isMainYard && TUTORIAL._stage > 200;
+        return INFERNO_EMERGENCE_EVENT._SHOULD_RUN_EVENT && !getGLOBAL()._flags.viximo && getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD && getGLOBAL().townHall && (INFERNO_EMERGENCE_EVENT.ns == "duringEvent" || INFERNO_EMERGENCE_EVENT.ns == "postEvent" && getGLOBAL().townHall._lvl.Get() >= INFERNO_EMERGENCE_EVENT.TOWN_HALL_LEVEL_REQUIREMENT || INFERNO_EMERGENCE_EVENT.ns == "postEvent" && INFERNO_EMERGENCE_EVENT._lastLevel > 0) && INFERNO_EMERGENCE_EVENT._maxLevel > 0 && INFERNO_EMERGENCE_EVENT._lastLevel < 5 && getBASE().isMainYard && getTUTORIAL()._stage > 200;
     }
 
     public static ShouldShowUpgradePopup(): boolean {
-        return INFERNO_EMERGENCE_EVENT._SHOULD_RUN_EVENT && !GLOBAL._flags.viximo && GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && INFERNO_EMERGENCE_EVENT._maxLevel > 0 && BASE.isMainYardOrInfernoMainYard && TUTORIAL._stage > 200;
+        return INFERNO_EMERGENCE_EVENT._SHOULD_RUN_EVENT && !getGLOBAL()._flags.viximo && getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD && INFERNO_EMERGENCE_EVENT._maxLevel > 0 && getBASE().isMainYardOrInfernoMainYard && getTUTORIAL()._stage > 200;
     }
 
     public static IsPostEvent(): boolean {

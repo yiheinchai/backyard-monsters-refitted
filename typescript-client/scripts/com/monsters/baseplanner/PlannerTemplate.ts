@@ -1,14 +1,17 @@
 import Point from "openfl/geom/Point";
 
-import { InstanceManager } from "../managers/InstanceManager";
 import { BaseTemplate } from "./BaseTemplate";
 import { BaseTemplateNode } from "./BaseTemplateNode";
 import { PlannerNode } from "./PlannerNode";
 
-import { BASE } from "../../../BASE";
-import { BFOUNDATION } from "../../../BFOUNDATION";
-import { GRID } from "../../../GRID";
 import { YARD_PROPS } from "../../../YARD_PROPS";
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("../managers/InstanceManager").InstanceManager; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getBFOUNDATION(): any { return require("../../../BFOUNDATION").BFOUNDATION; }
+function getGRID(): any { return require("../../../GRID").GRID; }
+
 
 /**
  * PlannerTemplate - represents a saved base layout template.
@@ -35,7 +38,7 @@ export class PlannerTemplate {
         const nodes: Array<BaseTemplateNode> = [];
         for (let i = 0; i < this.displayData.length; i++) {
             const node = this.displayData[i];
-            if (!BASE.isBuildingIgnoredInYardPlannerSave(node.building)) {
+            if (!getBASE().isBuildingIgnoredInYardPlannerSave(node.building)) {
                 nodes.push(new BaseTemplateNode(node.x, node.y, node.id, node.type));
             }
         }
@@ -69,7 +72,7 @@ export class PlannerTemplate {
         for (let i = 0; i < unusedNodes.length; i++) {
             const node = unusedNodes[i];
             if (node.category === "misc") {
-                const pt = GRID.FromISO(node.building.x, node.building.y);
+                const pt = getGRID().FromISO(node.building.x, node.building.y);
                 node.x = pt.x;
                 node.y = pt.y;
                 this.displayData.push(node);
@@ -99,11 +102,11 @@ export class PlannerTemplate {
     }
 
     private getBuildingFromNode(templateNode: BaseTemplateNode): BFOUNDATION | null {
-        return BASE.getBuildingByID(templateNode.id);
+        return getBASE().getBuildingByID(templateNode.id);
     }
 
     private getNodesFromUnusedBuildings(template: BaseTemplate): Array<PlannerNode> {
-        const buildings = BASE.getYardPlannerBuildings();
+        const buildings = getBASE().getYardPlannerBuildings();
         const result: Array<PlannerNode> = [];
         for (const building of buildings) {
             if (!template.getNodeFromBuildingID(building._id)) {
@@ -115,11 +118,11 @@ export class PlannerTemplate {
 
     private getNodesFromStoredBuildings(): Array<PlannerNode> {
         const result: Array<PlannerNode> = [];
-        if (BASE._buildingsStored) {
-            for (const key in BASE._buildingsStored) {
+        if (getBASE()._buildingsStored) {
+            for (const key in getBASE()._buildingsStored) {
                 if (key.charAt(1) !== "l") {
                     const buildingType = parseInt(key.substr(key.indexOf("b") + 1));
-                    const count = BASE._buildingsStored[key].Get();
+                    const count = getBASE()._buildingsStored[key].Get();
 
                     if (YARD_PROPS._yardProps[buildingType - 1] && YARD_PROPS._yardProps[buildingType - 1].cls === null) {
                         continue;
@@ -132,12 +135,12 @@ export class PlannerTemplate {
                         data.y = 0;
                         data.id = PlannerTemplate._DECORATION_ID;
                         let level = 1;
-                        if (BASE._buildingsStored["bl" + buildingType]) {
-                            level = BASE._buildingsStored["bl" + buildingType].Get();
+                        if (getBASE()._buildingsStored["bl" + buildingType]) {
+                            level = getBASE()._buildingsStored["bl" + buildingType].Get();
                         }
                         data.l = level;
-                        const building = new BFOUNDATION();
-                        InstanceManager.removeInstance(building);
+                        const building = new (getBFOUNDATION())();
+                        getInstanceManager().removeInstance(building);
                         building._id = PlannerTemplate._DECORATION_ID;
                         building._type = buildingType;
                         building._lvl.Set(level);

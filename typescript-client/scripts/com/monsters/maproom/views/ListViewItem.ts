@@ -10,7 +10,10 @@ import { PlayerHandler } from "../PlayerHandler";
 import { BaseObject } from "../model/BaseObject";
 import { ListViewItem_CLIP } from "./ListViewItem_CLIP";
 
-import { KEYS } from "../../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+
+
 
 /**
  * List view item - displays player base info in map room list.
@@ -70,7 +73,7 @@ export class ListViewItem extends ListViewItem_CLIP {
     public Update(event: Event | null = null): void {
         const config: any = this.handler!.configure(this);
         this.name_txt.htmlText = "<b>" + this.data!.ownerName;
-        this.userid_txt.text = KEYS.Get("label_userid", { "v1": this.data!.userid.Get() });
+        this.userid_txt.text = getKEYS().Get("label_userid", { "v1": this.data!.userid.Get() });
         this.online_txt.text = "";
         if (this.data!.saved.Get() >= MapRoom.BRIDGE.Timestamp() - 62) {
             this.dot.gotoAndStop(2);
@@ -86,7 +89,7 @@ export class ListViewItem extends ListViewItem_CLIP {
         const levels: Array<number> = [1, 10, 85, 200];
         const attackColor: string = this.attackStarPoints === 0 ? "#666666" : "#990000";
         const battleKey: string = this.attackStarPoints === 1 ? "map_battle" : "map_battles";
-        this.attacks_txt.htmlText = "<font color='" + attackColor + "'>" + MapRoom.BRIDGE.KEYS.Get(battleKey, { "v1": this.attackStarPoints });
+        this.attacks_txt.htmlText = "<font color='" + attackColor + "'>" + MapRoom.BRIDGE.getKEYS().Get(battleKey, { "v1": this.attackStarPoints });
         this.status_txt.htmlText = "<font color='" + config.relationColor + "'>" + config.relation;
         this.extraStatus_txt.htmlText = "<b><font color='" + config.extraStatusColor + "'>" + config.extraStatus;
         (this.levelStar as any).lv_txt.htmlText = "<b>" + this.level;

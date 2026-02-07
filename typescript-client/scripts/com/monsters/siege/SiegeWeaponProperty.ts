@@ -1,5 +1,8 @@
-import { KEYS } from "../../../KEYS";
 import { SiegeWeapon } from "./weapons/SiegeWeapon";
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+
 
 /**
  * Siege weapon property - defines a leveled property of siege weapons.
@@ -20,7 +23,7 @@ export class SiegeWeaponProperty {
     }
 
     public getDescription(level: number): string {
-        return KEYS.Get(this.descriptionKey, { v1: this.getValueForLevel(level) });
+        return getKEYS().Get(this.descriptionKey, { v1: this.getValueForLevel(level) });
     }
 
     public getValueForLevel(level: number): any {

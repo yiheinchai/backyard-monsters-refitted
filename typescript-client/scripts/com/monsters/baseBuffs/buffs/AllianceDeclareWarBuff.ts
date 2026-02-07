@@ -1,7 +1,10 @@
 import { BaseBuff } from "../BaseBuff";
-import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
 
-import { KEYS } from "../../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../../maproom_manager/MapRoomManager").MapRoomManager; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+
+
 
 /**
  * Alliance declare war buff - buff applied during alliance war.
@@ -14,7 +17,7 @@ export class AllianceDeclareWarBuff extends BaseBuff {
     }
 
     public override get description(): string {
-        return KEYS.Get(MapRoomManager.instance.isInMapRoom2 ? "ap_declarewar_desc" : "nwm_ap_declarewar_desc");
+        return getKEYS().Get(getMapRoomManager().instance.isInMapRoom2 ? "ap_declarewar_desc" : "nwm_ap_declarewar_desc");
     }
 
     public override apply(): void {

@@ -22,8 +22,11 @@ import { MapRoom3Cell } from "./MapRoom3Cell";
 import { MapRoom3CellGraphic } from "./MapRoom3CellGraphic";
 import { MapRoom3CellMouseoverButton } from "./MapRoom3CellMouseoverButton";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+
+
 
 /**
  * MapRoom3CellMouseover - Mouseover tooltip for Map Room 3 cells.
@@ -253,9 +256,9 @@ export class MapRoom3CellMouseover extends Sprite {
     }
 
     private SetPosition(xPos: number, yPos: number): void {
-        const stageX = GLOBAL.StageX;
-        const stageRight = GLOBAL.StageX + GLOBAL.StageWidth;
-        const stageTop = GLOBAL.StageY + 80;
+        const stageX = getGLOBAL().StageX;
+        const stageRight = getGLOBAL().StageX + getGLOBAL().StageWidth;
+        const stageTop = getGLOBAL().StageY + 80;
         const halfWidth = this.m_InfoDisplay!.width * 0.5;
         if (xPos - halfWidth < stageX) {
             xPos = stageX + halfWidth;
@@ -320,17 +323,17 @@ export class MapRoom3CellMouseover extends Sprite {
                 }
             }
             if (playerMonsterBuff > 0 && playerTowerBuff > 0 && playerMonsterBuff === playerTowerBuff) {
-                this.m_InfoTextBuff1!.htmlText = KEYS.Get("mr3_shbuff_towermonster", { "v1": playerMonsterBuff });
+                this.m_InfoTextBuff1!.htmlText = getKEYS().Get("mr3_shbuff_towermonster", { "v1": playerMonsterBuff });
                 this.m_TextDisplay!.addChild(this.m_InfoTextBuff1!);
             } else if (playerMonsterBuff > 0) {
-                this.m_InfoTextBuff1!.htmlText = KEYS.Get("mr3_shbuff_monster", { "v1": playerMonsterBuff });
+                this.m_InfoTextBuff1!.htmlText = getKEYS().Get("mr3_shbuff_monster", { "v1": playerMonsterBuff });
                 this.m_TextDisplay!.addChild(this.m_InfoTextBuff1!);
             } else if (playerTowerBuff > 0) {
-                this.m_InfoTextBuff1!.htmlText = KEYS.Get("mr3_shbuff_tower", { "v1": playerTowerBuff });
+                this.m_InfoTextBuff1!.htmlText = getKEYS().Get("mr3_shbuff_tower", { "v1": playerTowerBuff });
                 this.m_TextDisplay!.addChild(this.m_InfoTextBuff1!);
             }
             if (enemyTowerBuff > 0) {
-                this.m_InfoTextBuff2!.htmlText = KEYS.Get("mr3_shbuff_tower", { "v1": enemyTowerBuff });
+                this.m_InfoTextBuff2!.htmlText = getKEYS().Get("mr3_shbuff_tower", { "v1": enemyTowerBuff });
                 this.m_TextDisplay!.addChild(this.m_InfoTextBuff2!);
             }
         }
@@ -479,8 +482,8 @@ export class MapRoom3CellMouseover extends Sprite {
 
     private OnRequestTruceClicked(event: MouseEvent): void {
         if (this.m_SelectedCell !== null) {
-            const subject = KEYS.Get("mr3_trucerequest", { "v1": this.m_SelectedCell.name });
-            const body = KEYS.Get("map_trucemessage");
+            const subject = getKEYS().Get("mr3_trucerequest", { "v1": this.m_SelectedCell.name });
+            const body = getKEYS().Get("map_trucemessage");
             this.ShowMailboxMessage("trucerequest", subject, body);
         }
     }
@@ -503,7 +506,7 @@ export class MapRoom3CellMouseover extends Sprite {
         this.m_MailboxMessage.requestType = type;
         this.m_MailboxMessage.subject_txt.htmlText = subject;
         this.m_MailboxMessage.body_txt.htmlText = body;
-        GLOBAL.BlockerAdd();
-        GLOBAL._layerWindows.addChild(this.m_MailboxMessage);
+        getGLOBAL().BlockerAdd();
+        getGLOBAL()._layerWindows.addChild(this.m_MailboxMessage);
     }
 }

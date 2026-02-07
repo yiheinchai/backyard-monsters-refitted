@@ -1,9 +1,12 @@
-import { BASE } from './BASE';
-import { CREATURELOCKER } from './CREATURELOCKER';
-import { GLOBAL } from './GLOBAL';
-import { LOGGER } from './LOGGER';
 import { MAPROOM_DESCENT } from './MAPROOM_DESCENT';
-import { QUESTS } from './QUESTS';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getQUESTS(): any { return require("./QUESTS").QUESTS; }
+
 
 /**
  * ACHIEVEMENTS - Achievement System
@@ -75,19 +78,19 @@ export class ACHIEVEMENTS {
             ACHIEVEMENTS._stats = data;
         }
         
-        if (!ACHIEVEMENTS._stats.upgrade_champ1 && QUESTS._completed?.UG1) {
+        if (!ACHIEVEMENTS._stats.upgrade_champ1 && getQUESTS()._completed?.UG1) {
             ACHIEVEMENTS._stats.upgrade_champ1 = 1;
         }
-        if (!ACHIEVEMENTS._stats.upgrade_champ2 && QUESTS._completed?.UG2) {
+        if (!ACHIEVEMENTS._stats.upgrade_champ2 && getQUESTS()._completed?.UG2) {
             ACHIEVEMENTS._stats.upgrade_champ2 = 1;
         }
-        if (!ACHIEVEMENTS._stats.upgrade_champ3 && QUESTS._completed?.UG3) {
+        if (!ACHIEVEMENTS._stats.upgrade_champ3 && getQUESTS()._completed?.UG3) {
             ACHIEVEMENTS._stats.upgrade_champ3 = 1;
         }
-        if (ACHIEVEMENTS._stats.monstersblended < QUESTS._global?.monstersblended) {
-            ACHIEVEMENTS._stats.monstersblended = QUESTS._global.monstersblended;
+        if (ACHIEVEMENTS._stats.monstersblended < getQUESTS()._global?.monstersblended) {
+            ACHIEVEMENTS._stats.monstersblended = getQUESTS()._global.monstersblended;
         }
-        if (!ACHIEVEMENTS._stats.wm2hall && QUESTS._completed?.WM2) {
+        if (!ACHIEVEMENTS._stats.wm2hall && getQUESTS()._completed?.WM2) {
             ACHIEVEMENTS._stats.wm2hall = 1;
         }
         ACHIEVEMENTS.Check("", 0, true);
@@ -95,14 +98,14 @@ export class ACHIEVEMENTS {
 
     public static CheckRetroactiveAchievments(): void {
         ACHIEVEMENTS.Check(ACHIEVEMENTS.DESCENT_LEVEL, MAPROOM_DESCENT.DescentLevel);
-        if (BASE.isInfernoMainYardOrOutpost) {
-            ACHIEVEMENTS.Check(ACHIEVEMENTS.INFERNO_QUESTS_COMPLETED, QUESTS.amountCompleted);
+        if (getBASE().isInfernoMainYardOrOutpost) {
+            ACHIEVEMENTS.Check(ACHIEVEMENTS.INFERNO_QUESTS_COMPLETED, getQUESTS().amountCompleted);
         }
     }
 
     public static Check(stat: string = "", value: number = 0, checkall: boolean = false): void {
         try {
-            if (GLOBAL._loadmode === GLOBAL.e_BASE_MODE.BUILD || stat === "hugerage" || checkall) {
+            if (getGLOBAL()._loadmode === getGLOBAL().e_BASE_MODE.BUILD || stat === "hugerage" || checkall) {
                 if (stat && ACHIEVEMENTS._stats[stat] !== undefined && ACHIEVEMENTS._stats[stat] < value) {
                     ACHIEVEMENTS._stats[stat] = value;
                 }
@@ -119,7 +122,7 @@ export class ACHIEVEMENTS {
                         let fail = false;
                         for (const n in a.rules) {
                             if (n === "UNLOCK") {
-                                if (!CREATURELOCKER._lockerData[a.rules.UNLOCK] || CREATURELOCKER._lockerData[a.rules.UNLOCK].t === 1) {
+                                if (!getCREATURELOCKER()._lockerData[a.rules.UNLOCK] || getCREATURELOCKER()._lockerData[a.rules.UNLOCK].t === 1) {
                                     fail = true;
                                 }
                             } else if (a.rules[n] > ACHIEVEMENTS._stats[n]) {
@@ -137,7 +140,7 @@ export class ACHIEVEMENTS {
                 }
             }
         } catch (e: any) {
-            LOGGER.Log("err", "ACHIEVEMENTS.Check: " + (e.message || "") + " | " + (e.stack || ""));
+            getLOGGER().Log("err", "ACHIEVEMENTS.Check: " + (e.message || "") + " | " + (e.stack || ""));
         }
     }
 

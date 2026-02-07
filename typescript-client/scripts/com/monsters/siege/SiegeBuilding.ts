@@ -3,13 +3,16 @@ import Event from "openfl/events/Event";
 
 import { SecNum } from "../../cc/utils/SecNum";
 import { SiegeBuildingPopup } from "./SiegeBuildingPopup";
-import { SiegeWeapons } from "./SiegeWeapons";
 import { SiegeWeapon } from "./weapons/SiegeWeapon";
 
 import { BFOUNDATION } from "../../../BFOUNDATION";
-import { GLOBAL } from "../../../GLOBAL";
 import { POPUPSETTINGS } from "../../../POPUPSETTINGS";
-import { SOUNDS } from "../../../SOUNDS";
+
+// Lazy imports to break circular dependency chains
+function getSiegeWeapons(): any { return require("./SiegeWeapons").SiegeWeapons; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+
 
 /**
  * Base class for siege buildings (factory and lab).
@@ -35,8 +38,8 @@ export class SiegeBuilding extends BFOUNDATION {
     public static Show(mode: string, section: string | null = null): void {
         if (!SiegeBuilding._popup) {
             SiegeBuilding._popup = new SiegeBuildingPopup(mode, section);
-            GLOBAL.BlockerAdd();
-            GLOBAL._layerWindows.addChild(SiegeBuilding._popup);
+            getGLOBAL().BlockerAdd();
+            getGLOBAL()._layerWindows.addChild(SiegeBuilding._popup);
             POPUPSETTINGS.AlignToCenter(SiegeBuilding._popup);
             POPUPSETTINGS.ScaleUp(SiegeBuilding._popup);
         }
@@ -44,16 +47,16 @@ export class SiegeBuilding extends BFOUNDATION {
 
     public static Hide(): void {
         if (SiegeBuilding._popup) {
-            GLOBAL.BlockerRemove();
-            SOUNDS.Play("close");
-            GLOBAL._layerWindows.removeChild(SiegeBuilding._popup);
+            getGLOBAL().BlockerRemove();
+            getSOUNDS().Play("close");
+            getGLOBAL()._layerWindows.removeChild(SiegeBuilding._popup);
             SiegeBuilding._popup = null;
         }
     }
 
     public get upgradingWeapon(): SiegeWeapon | null {
         for (const weaponId in this.unlockingWeapons) {
-            return SiegeWeapons.getWeapon(weaponId);
+            return getSiegeWeapons().getWeapon(weaponId);
         }
         return null;
     }
@@ -114,7 +117,7 @@ export class SiegeBuilding extends BFOUNDATION {
         if (data.unlockingWeapons && !(data.unlockingWeapons instanceof Array)) {
             this.unlockingWeapons = {};
             for (const weaponId in data.unlockingWeapons) {
-                this.unlockingWeapons[weaponId] = new SecNum(data.unlockingWeapons[weaponId] - GLOBAL.Timestamp());
+                this.unlockingWeapons[weaponId] = new SecNum(data.unlockingWeapons[weaponId] - getGLOBAL().Timestamp());
             }
         } else if (data.unlockingWeapons2) {
             this.unlockingWeapons = {};

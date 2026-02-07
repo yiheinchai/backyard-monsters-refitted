@@ -1,19 +1,22 @@
 import { SecNum } from './com/cc/utils/SecNum';
-import { InstanceManager } from './com/monsters/managers/InstanceManager';
 import MovieClip from 'openfl/display/MovieClip';
 import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import { HatcheryBase } from './HatcheryBase';
-import { BASE } from './BASE';
-import { BUILDING13 } from './BUILDING13';
-import { CREATURES } from './CREATURES';
-import { GLOBAL } from './GLOBAL';
 import { HATCHERYCC } from './HATCHERYCC';
-import { HOUSING } from './HOUSING';
-import { KEYS } from './KEYS';
-import { POPUPS } from './POPUPS';
-import { ResourcePackages } from './ResourcePackages';
-import { STORE } from './STORE';
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getBUILDING13(): any { return require("./BUILDING13").BUILDING13; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getHOUSING(): any { return require("./HOUSING").HOUSING; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getResourcePackages(): any { return require("./ResourcePackages").ResourcePackages; }
+function getSTORE(): any { return require("./STORE").STORE; }
+
 
 /**
  * BUILDING16 - Hatchery Control Center
@@ -37,17 +40,17 @@ export class BUILDING16 extends HatcheryBase {
         
         if (this._monsterQueue.length > 0) {
             for (const queueItem of this._monsterQueue) {
-                if (BASE.isInfernoCreep(queueItem[0])) {
-                    resourceRefunds[1].Add(CREATURES.GetProperty(queueItem[0], "cResource") * queueItem[1]);
+                if (getBASE().isInfernoCreep(queueItem[0])) {
+                    resourceRefunds[1].Add(getCREATURES().GetProperty(queueItem[0], "cResource") * queueItem[1]);
                 } else {
-                    resourceRefunds[0].Add(CREATURES.GetProperty(queueItem[0], "cResource") * queueItem[1]);
+                    resourceRefunds[0].Add(getCREATURES().GetProperty(queueItem[0], "cResource") * queueItem[1]);
                 }
             }
             this._monsterQueue = [];
         }
         
         for (let i = 0; i < resourceRefunds.length; i++) {
-            BASE.Fund(4, Math.ceil(resourceRefunds[i].Get() * 0.75), false, this, !!i);
+            getBASE().Fund(4, Math.ceil(resourceRefunds[i].Get() * 0.75), false, this, !!i);
             let packageCount: number = 0;
             const amount = resourceRefunds[i].Get();
             if (amount > 20000) packageCount = 12;
@@ -60,7 +63,7 @@ export class BUILDING16 extends HatcheryBase {
             else if (amount > 0) packageCount = 1;
             
             for (let j = 0; j < packageCount; j++) {
-                ResourcePackages.Spawn(this, GLOBAL.townHall, BASE.isInfernoMainYardOrOutpost || !!i ? 8 : 4, j);
+                getResourcePackages().Spawn(this, getGLOBAL().townHall, getBASE().isInfernoMainYardOrOutpost || !!i ? 8 : 4, j);
             }
         }
         super.Destroyed(byAttacker);
@@ -78,19 +81,19 @@ export class BUILDING16 extends HatcheryBase {
 
     public override Tick(seconds: number): void {
         super.Tick(seconds);
-        let housingSpace: number = HOUSING._housingSpace.Get();
+        let housingSpace: number = getHOUSING()._housingSpace.Get();
         let totalTime: number = 0;
         this._finishQueue = {};
         this._finishAll = true;
         
         if (this._countdownBuild.Get() === 0 && this.health > 10) {
             this._canFunction = true;
-            const hatcheries: any[] = InstanceManager.getInstancesByClass(BUILDING13);
+            const hatcheries: any[] = getInstanceManager().getInstancesByClass(BUILDING13);
             
             for (const hatchery of hatcheries) {
                 if (hatchery._canFunction) {
-                    if (hatchery._inProduction !== "" && housingSpace >= CREATURES.GetProperty(hatchery._inProduction, "cStorage")) {
-                        housingSpace -= CREATURES.GetProperty(hatchery._inProduction, "cStorage");
+                    if (hatchery._inProduction !== "" && housingSpace >= getCREATURES().GetProperty(hatchery._inProduction, "cStorage")) {
+                        housingSpace -= getCREATURES().GetProperty(hatchery._inProduction, "cStorage");
                         if (this._finishQueue[hatchery._inProduction]) {
                             ++this._finishQueue[hatchery._inProduction];
                         } else {
@@ -116,9 +119,9 @@ export class BUILDING16 extends HatcheryBase {
             if (this._monsterQueue.length > 0 && housingSpace >= 10) {
                 for (const queueItem of this._monsterQueue) {
                     const creatureId: string = queueItem[0];
-                    const storage: number = CREATURES.GetProperty(creatureId, "cStorage");
+                    const storage: number = getCREATURES().GetProperty(creatureId, "cStorage");
                     if (housingSpace >= storage * queueItem[1]) {
-                        totalTime += CREATURES.GetProperty(creatureId, "cTime") * queueItem[1];
+                        totalTime += getCREATURES().GetProperty(creatureId, "cTime") * queueItem[1];
                         housingSpace -= storage * queueItem[1];
                         if (this._finishQueue[creatureId]) {
                             this._finishQueue[creatureId] += queueItem[1];
@@ -126,7 +129,7 @@ export class BUILDING16 extends HatcheryBase {
                             this._finishQueue[creatureId] = queueItem[1];
                         }
                     } else if (housingSpace >= storage) {
-                        totalTime += CREATURES.GetProperty(creatureId, "cTime") * Math.floor(housingSpace / storage);
+                        totalTime += getCREATURES().GetProperty(creatureId, "cTime") * Math.floor(housingSpace / storage);
                         if (this._finishQueue[creatureId]) {
                             this._finishQueue[creatureId] += Math.floor(housingSpace / storage);
                         } else {
@@ -142,7 +145,7 @@ export class BUILDING16 extends HatcheryBase {
         }
         
         if (this._canFunction && totalTime > 0) {
-            this._finishCost.Set(STORE.GetTimeCost(totalTime, false) * 4);
+            this._finishCost.Set(getSTORE().GetTimeCost(totalTime, false) * 4);
         } else {
             this._finishCost.Set(0);
         }
@@ -150,21 +153,21 @@ export class BUILDING16 extends HatcheryBase {
 
     public FinishNow(): void {
         if (!this._canFunction) {
-            GLOBAL.Message(KEYS.Get("building_hcc_cantfunction"));
+            getGLOBAL().Message(getKEYS().Get("building_hcc_cantfunction"));
             return;
         }
-        if (BASE._credits.Get() >= this._finishCost.Get()) {
+        if (getBASE()._credits.Get() >= this._finishCost.Get()) {
             const hatcheryList: any[] = [];
-            let housingSpace: number = HOUSING._housingSpace.Get();
-            const hatcheries: any[] = InstanceManager.getInstancesByClass(BUILDING13);
+            let housingSpace: number = getHOUSING()._housingSpace.Get();
+            const hatcheries: any[] = getInstanceManager().getInstancesByClass(BUILDING13);
             
             for (const hatchery of hatcheries) {
                 if (hatchery._canFunction) {
                     hatcheryList.push(hatchery);
-                    if (hatchery._inProduction !== "" && housingSpace >= CREATURES.GetProperty(hatchery._inProduction, "cStorage")) {
+                    if (hatchery._inProduction !== "" && housingSpace >= getCREATURES().GetProperty(hatchery._inProduction, "cStorage")) {
                         const pos: Point = new Point(hatchery._mc.x - 10 + Math.random() * 20, hatchery._mc.y - 10 + Math.random() * 20);
-                        HOUSING.HousingStore(hatchery._inProduction, pos);
-                        housingSpace -= CREATURES.GetProperty(hatchery._inProduction, "cStorage");
+                        getHOUSING().HousingStore(hatchery._inProduction, pos);
+                        housingSpace -= getCREATURES().GetProperty(hatchery._inProduction, "cStorage");
                         hatchery._inProduction = "";
                         hatchery._productionStage.Set(0);
                     }
@@ -173,13 +176,13 @@ export class BUILDING16 extends HatcheryBase {
             
             while (this._monsterQueue.length > 0 && housingSpace > 0) {
                 const creatureId: string = this._monsterQueue[0][0];
-                const storage: number = CREATURES.GetProperty(creatureId, "cStorage");
+                const storage: number = getCREATURES().GetProperty(creatureId, "cStorage");
                 while (this._monsterQueue[0][1] > 0 && housingSpace >= storage) {
                     const idx: number = Math.floor(Math.random() * hatcheryList.length);
                     const pos: Point = new Point(hatcheryList[idx]._mc.x - 10 + Math.random() * 20, hatcheryList[idx]._mc.y - 10 + Math.random() * 20);
                     --this._monsterQueue[0][1];
                     housingSpace -= storage;
-                    HOUSING.HousingStore(creatureId, pos);
+                    getHOUSING().HousingStore(creatureId, pos);
                 }
                 if (this._monsterQueue[0][1] <= 0) {
                     this._monsterQueue.shift();
@@ -187,26 +190,26 @@ export class BUILDING16 extends HatcheryBase {
                     break;
                 }
             }
-            BASE.Purchase("FQ", this._finishCost.Get(), "BUILDING16.FinishNow");
+            getBASE().Purchase("FQ", this._finishCost.Get(), "BUILDING16.FinishNow");
         } else {
-            POPUPS.DisplayGetShiny();
+            getPOPUPS().DisplayGetShiny();
         }
     }
 
     public override Constructed(): void {
         super.Constructed();
-        GLOBAL._bHatcheryCC = this;
-        const hatcheries: any[] = InstanceManager.getInstancesByClass(BUILDING13);
+        getGLOBAL()._bHatcheryCC = this;
+        const hatcheries: any[] = getInstanceManager().getInstancesByClass(BUILDING13);
         for (const hatchery of hatcheries) {
             for (const queueItem of hatchery._monsterQueue) {
-                BASE.Fund(4, queueItem[1] * CREATURES.GetProperty(queueItem[0], "cResource"));
+                getBASE().Fund(4, queueItem[1] * getCREATURES().GetProperty(queueItem[0], "cResource"));
             }
             hatchery._monsterQueue = [];
         }
     }
 
     public override RecycleC(): void {
-        GLOBAL._bHatcheryCC = null;
+        getGLOBAL()._bHatcheryCC = null;
         super.RecycleC();
     }
 
@@ -226,7 +229,7 @@ export class BUILDING16 extends HatcheryBase {
         }
         super.Setup(building);
         if (this._countdownBuild.Get() === 0) {
-            GLOBAL._bHatcheryCC = this;
+            getGLOBAL()._bHatcheryCC = this;
         }
     }
 

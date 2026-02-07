@@ -1,6 +1,9 @@
-import { BFOUNDATION } from "../../../BFOUNDATION";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
+
+
+// Lazy imports to break circular dependency chains
+function getBFOUNDATION(): any { return require("../../../BFOUNDATION").BFOUNDATION; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
 
 /**
  * PlannerNode - represents a building node in the base planner.
@@ -43,7 +46,7 @@ export class PlannerNode {
         this.fortification = building._fortification.Get();
         this.order = order;
         this.shootrange = building._range;
-        this.name = KEYS.Get(GLOBAL._buildingProps[this.type - 1].name);
+        this.name = getKEYS().Get(getGLOBAL()._buildingProps[this.type - 1].name);
         this.defineCategory(building._type);
         if (this.category !== PlannerNode.TYPE_DECORATION) {
             if (this.name.length > PlannerNode.MAX_TEXT_BEFORE_LEVEL && this.name.indexOf(" ") !== this.name.lastIndexOf(" ")) {
@@ -52,14 +55,14 @@ export class PlannerNode {
                 this.displayName = this.name;
             }
             if (building._buildingProps.type !== "enemy") {
-                this.displayName += " " + KEYS.Get("basePlanner_buildingLevel") + building._lvl.Get();
+                this.displayName += " " + getKEYS().Get("basePlanner_buildingLevel") + building._lvl.Get();
             }
         } else {
             this.displayName = this.name;
         }
         this.displayNameFull = this.displayName;
         if (this.building._fortification.Get() > 0) {
-            this.displayNameFull += " " + KEYS.Get("basePlanner_buildingFort") + " " + building._fortification.Get();
+            this.displayNameFull += " " + getKEYS().Get("basePlanner_buildingFort") + " " + building._fortification.Get();
         }
     }
 
@@ -79,7 +82,7 @@ export class PlannerNode {
     }
 
     public defineCategory(buildingType: number): void {
-        this.props = GLOBAL._buildingProps[buildingType - 1];
+        this.props = getGLOBAL()._buildingProps[buildingType - 1];
         if (!this.props) {
             return;
         }
@@ -90,30 +93,30 @@ export class PlannerNode {
         switch (group) {
             case 1:
                 category = PlannerNode.TYPE_RESOURCE;
-                categoryName = KEYS.Get("basePlanner_catResource");
+                categoryName = getKEYS().Get("basePlanner_catResource");
                 break;
             case 2:
                 category = PlannerNode.TYPE_BUILDING;
-                categoryName = KEYS.Get("basePlanner_catBuilding");
+                categoryName = getKEYS().Get("basePlanner_catBuilding");
                 break;
             case 3:
                 category = PlannerNode.TYPE_DEFENSIVE;
-                categoryName = KEYS.Get("basePlanner_catDefensive");
+                categoryName = getKEYS().Get("basePlanner_catDefensive");
                 if (type === "wall") {
                     category = PlannerNode.TYPE_WALL;
-                    categoryName = KEYS.Get("basePlanner_catWall");
+                    categoryName = getKEYS().Get("basePlanner_catWall");
                 } else if (type === "trap") {
                     category = PlannerNode.TYPE_TRAP;
-                    categoryName = KEYS.Get("basePlanner_catTrap");
+                    categoryName = getKEYS().Get("basePlanner_catTrap");
                 }
                 break;
             case 4:
                 category = PlannerNode.TYPE_DECORATION;
-                categoryName = KEYS.Get("basePlanner_catDecoration");
+                categoryName = getKEYS().Get("basePlanner_catDecoration");
                 break;
             default:
                 category = PlannerNode.TYPE_MISC;
-                categoryName = KEYS.Get("basePlanner_catMisc");
+                categoryName = getKEYS().Get("basePlanner_catMisc");
         }
         this.categoryName = categoryName;
         this.category = category;

@@ -27,13 +27,16 @@ import { BuildingAssetContainer } from "./com/monsters/display/BuildingAssetCont
 import { ImageCache } from "./com/monsters/display/ImageCache";
 import { Fire } from "./com/monsters/effects/fire/Fire";
 
+// Lazy imports to break circular dependency chains
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getGRID(): any { return require("./GRID").GRID; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+
+
 // Lazy imports for singletons to break circular dependency chains.
 // BFOUNDATION is extended by BSTORAGE, BRESOURCE, etc., and must complete
 // class definition before those modules execute. All modules that could
 // transitively import BSTORAGE/BRESOURCE (via GLOBAL) must be lazy.
-import { LOGGER } from "./LOGGER";
-import { GRID } from "./GRID";
-import { KEYS } from "./KEYS";
 
 // All other modules that import GLOBAL or BFOUNDATION are accessed lazily
 function lazyModule(requireFn: () => any): any {
@@ -396,7 +399,7 @@ export class BFOUNDATION extends GameObject {
         }
 
         if (!hasTownHall) {
-            LOGGER.Log("err", "User missing TownHall upon save");
+            getLOGGER().Log("err", "User missing TownHall upon save");
             Console.warning("BFOUNDATION::getBuildingSaveData(TownHall missing upon save)");
         }
 
@@ -459,9 +462,9 @@ export class BFOUNDATION extends GameObject {
                 this.Destroyed(source != null);
             }
         } else if (this._class != "wall") {
-            ATTACK.Log("b" + this._id, "<font color=\"#990000\">" + KEYS.Get("attack_log_%damaged", {
+            ATTACK.Log("b" + this._id, "<font color=\"#990000\">" + getKEYS().Get("attack_log_%damaged", {
                 "v1": this._lvl.Get(),
-                "v2": KEYS.Get(this._buildingProps.name),
+                "v2": getKEYS().Get(this._buildingProps.name),
                 "v3": 100 - Math.floor(100 / this.maxHealth * this.health)
             }) + "</font>");
         }
@@ -489,14 +492,14 @@ export class BFOUNDATION extends GameObject {
         try {
             this._buildingProps = GLOBAL._buildingProps[this._type - 1];
         } catch (e) {
-            LOGGER.Log("err", "BFOUNDATION.SetProps:  buildingprops | " + e.message + " | " + e.getStackTrace());
+            getLOGGER().Log("err", "BFOUNDATION.SetProps:  buildingprops | " + e.message + " | " + e.getStackTrace());
             GLOBAL.ErrorMessage("BFOUNDATION.SetProps buildingprops");
             return;
         }
         try {
             this._mcFootprint = BYMConfig.instance.RENDERER_ON ? this.GetFootprintMC() : MAP._BUILDINGFOOTPRINTS.addChild(this.GetFootprintMC()) as MovieClip;
         } catch (e) {
-            LOGGER.Log("err", "BFOUNDATION.SetProps:  mcfootprint 1 | " + e.message + " | " + e.getStackTrace());
+            getLOGGER().Log("err", "BFOUNDATION.SetProps:  mcfootprint 1 | " + e.message + " | " + e.getStackTrace());
             GLOBAL.ErrorMessage("BFOUNDATION.SetProps mcfootprint1");
             return;
         }
@@ -507,7 +510,7 @@ export class BFOUNDATION extends GameObject {
                 this._mc = new MovieClip();
             }
         } catch (e) {
-            LOGGER.Log("err", "BFOUNDATION.SetProps:  mc | " + e.message + " | " + e.getStackTrace());
+            getLOGGER().Log("err", "BFOUNDATION.SetProps:  mc | " + e.message + " | " + e.getStackTrace());
             GLOBAL.ErrorMessage("BFOUNDATION.SetProps:  mc");
             return;
         }
@@ -516,7 +519,7 @@ export class BFOUNDATION extends GameObject {
             this.topContainer.mouseChildren = false;
             this.topContainer.mouseEnabled = false;
         } catch (e) {
-            LOGGER.Log("err", "BFOUNDATION.SetProps:  topContainer | " + e.message + " | " + e.getStackTrace());
+            getLOGGER().Log("err", "BFOUNDATION.SetProps:  topContainer | " + e.message + " | " + e.getStackTrace());
             GLOBAL.ErrorMessage("BFOUNDATION.SetProps:  topContainer");
             return;
         }
@@ -525,7 +528,7 @@ export class BFOUNDATION extends GameObject {
             this.animContainer.mouseChildren = false;
             this.animContainer.mouseEnabled = false;
         } catch (e) {
-            LOGGER.Log("err", "BFOUNDATION.SetProps:  animContainer | " + e.message + " | " + e.getStackTrace());
+            getLOGGER().Log("err", "BFOUNDATION.SetProps:  animContainer | " + e.message + " | " + e.getStackTrace());
             GLOBAL.ErrorMessage("BFOUNDATION.SetProps:  animContainer");
             return;
         }
@@ -534,7 +537,7 @@ export class BFOUNDATION extends GameObject {
             this._fortFrontContainer.mouseChildren = false;
             this._fortFrontContainer.mouseEnabled = false;
         } catch (e) {
-            LOGGER.Log("err", "BFOUNDATION.SetProps:  _fortFrontContainer | " + e.message + " | " + e.getStackTrace());
+            getLOGGER().Log("err", "BFOUNDATION.SetProps:  _fortFrontContainer | " + e.message + " | " + e.getStackTrace());
             GLOBAL.ErrorMessage("BFOUNDATION.SetProps:  _fortFrontContainer");
             return;
         }
@@ -543,7 +546,7 @@ export class BFOUNDATION extends GameObject {
             this._fortBackContainer.mouseChildren = false;
             this._fortBackContainer.mouseEnabled = false;
         } catch (e) {
-            LOGGER.Log("err", "BFOUNDATION.SetProps:  _fortBackContainer | " + e.message + " | " + e.getStackTrace());
+            getLOGGER().Log("err", "BFOUNDATION.SetProps:  _fortBackContainer | " + e.message + " | " + e.getStackTrace());
             GLOBAL.ErrorMessage("BFOUNDATION.SetProps:  _fortBackContainer");
             return;
         }
@@ -555,7 +558,7 @@ export class BFOUNDATION extends GameObject {
                 this._mc.addChild(this._fortFrontContainer);
             }
         } catch (e) {
-            LOGGER.Log("err", "BFOUNDATION.SetProps:  mc.addChildren | " + e.message + " | " + e.getStackTrace());
+            getLOGGER().Log("err", "BFOUNDATION.SetProps:  mc.addChildren | " + e.message + " | " + e.getStackTrace());
             GLOBAL.ErrorMessage("BFOUNDATION.SetProps:  mc.addChildren");
             return;
         }
@@ -566,7 +569,7 @@ export class BFOUNDATION extends GameObject {
                 this._mcBase = new BuildingAssetContainer();
             }
         } catch (e) {
-            LOGGER.Log("err", "BFOUNDATION.SetProps:  mcBase | " + e.message + " | " + e.getStackTrace());
+            getLOGGER().Log("err", "BFOUNDATION.SetProps:  mcBase | " + e.message + " | " + e.getStackTrace());
             GLOBAL.ErrorMessage("BFOUNDATION.SetProps:  mcBase");
             return;
         }
@@ -581,7 +584,7 @@ export class BFOUNDATION extends GameObject {
             this._mcHit.cacheAsBitmap = true;
             this._mcHit.alpha = 0;
         } catch (e) {
-            LOGGER.Log("err", "BFOUNDATION.SetProps:  mcHit | " + e.message + " | " + e.getStackTrace());
+            getLOGGER().Log("err", "BFOUNDATION.SetProps:  mcHit | " + e.message + " | " + e.getStackTrace());
             GLOBAL.ErrorMessage("BFOUNDATION.SetProps:  mcHit");
             return;
         }
@@ -589,14 +592,14 @@ export class BFOUNDATION extends GameObject {
             (this as any)._size = this._buildingProps.size;
             this._class = this._buildingProps.type;
         } catch (e) {
-            LOGGER.Log("err", "BFOUNDATION.SetProps:  size/class | " + e.message + " | " + e.getStackTrace());
+            getLOGGER().Log("err", "BFOUNDATION.SetProps:  size/class | " + e.message + " | " + e.getStackTrace());
             GLOBAL.ErrorMessage("BFOUNDATION.SetProps:  size/class");
             return;
         }
         try {
             this._mcFootprint.gotoAndStop(1);
         } catch (e) {
-            LOGGER.Log("err", "BFOUNDATION.SetProps:  mcFootprint 2 | " + e.message + " | " + e.getStackTrace());
+            getLOGGER().Log("err", "BFOUNDATION.SetProps:  mcFootprint 2 | " + e.message + " | " + e.getStackTrace());
             GLOBAL.ErrorMessage("BFOUNDATION.SetProps:  mcFootprint 2");
             return;
         }
@@ -605,7 +608,7 @@ export class BFOUNDATION extends GameObject {
             this._mouseOffset = new Point(0, Math.floor(this._mcFootprint.height / 20) * 10);
             (this as any)._middle = this._footprint[0].height * 0.5;
         } catch (e) {
-            LOGGER.Log("err", "BFOUNDATION.SetProps:  end stuff | " + e.message + " | " + e.getStackTrace());
+            getLOGGER().Log("err", "BFOUNDATION.SetProps:  end stuff | " + e.message + " | " + e.getStackTrace());
             GLOBAL.ErrorMessage("BFOUNDATION.SetProps:  end");
             return;
         }
@@ -643,18 +646,18 @@ export class BFOUNDATION extends GameObject {
         } else {
             this._buildingTitle = "<b>" + this._buildingProps.name + "</b>";
             if (this._buildingProps.costs.length > 1) {
-                this._buildingTitle += " " + KEYS.Get("bdg_level", { "v1": this._lvl.Get() });
+                this._buildingTitle += " " + getKEYS().Get("bdg_level", { "v1": this._lvl.Get() });
             }
         }
 
         if (this.health < this.maxHealth) {
             if (this._countdownUpgrade.Get() > 0) {
-                this._repairDescription = "<font color=\"#FF0000\"><b>" + KEYS.Get("repaironhold_upgrade") + "</b></font>";
+                this._repairDescription = "<font color=\"#FF0000\"><b>" + getKEYS().Get("repaironhold_upgrade") + "</b></font>";
             } else if (this._countdownFortify.Get() > 0) {
-                this._repairDescription = "<font color=\"#FF0000\"><b>" + KEYS.Get("repaironhold_fortify") + "</b></font>";
+                this._repairDescription = "<font color=\"#FF0000\"><b>" + getKEYS().Get("repaironhold_fortify") + "</b></font>";
             } else {
                 percentDamaged = 100 - Math.ceil(100 / this.maxHealth * this.health);
-                this._specialDescription = "<font color=\"#FF0000\"><b>" + KEYS.Get("building_percentdamaged", { "v1": percentDamaged }) + "</b></font>";
+                this._specialDescription = "<font color=\"#FF0000\"><b>" + getKEYS().Get("building_percentdamaged", { "v1": percentDamaged }) + "</b></font>";
             }
         } else {
             if (this._buildingProps.descriptions != null && this._buildingProps.descriptions.length >= this._lvl.Get()) {
@@ -665,7 +668,7 @@ export class BFOUNDATION extends GameObject {
 
             if (!(this._type == 24 || this._type == 25 || this._type == 26)) {
                 if (this._type == 20 || this._type == 21) {
-                    this._buildingStats = KEYS.Get("building_stats_dps", {
+                    this._buildingStats = getKEYS().Get("building_stats_dps", {
                         "v1": this._range,
                         "v2": this.damage,
                         "v3": Math.floor(this.damage * (40 / this._rate)),
@@ -674,13 +677,13 @@ export class BFOUNDATION extends GameObject {
                     });
 
                     if (this._type == 20) {
-                        this._buildingDescription = KEYS.Get("building_cannon_desc");
+                        this._buildingDescription = getKEYS().Get("building_cannon_desc");
                     }
                     if (this._type == 21) {
-                        this._buildingDescription = KEYS.Get("building_sniper_desc");
+                        this._buildingDescription = getKEYS().Get("building_sniper_desc");
                     }
                     if (this._lvl.Get() < this._buildingProps.costs.length) {
-                        this._upgradeDescription = KEYS.Get("building_stats", {
+                        this._upgradeDescription = getKEYS().Get("building_stats", {
                             "v1": this._buildingProps.stats[this._lvl.Get()].range,
                             "v2": this._buildingProps.stats[this._lvl.Get()].damage,
                             "v3": this._buildingProps.stats[this._lvl.Get()].splash,
@@ -693,22 +696,22 @@ export class BFOUNDATION extends GameObject {
 
         this._recycleDescription = "";
         if (this._repairing == 1) {
-            this._repairDescription = "<font color=\"#FF0000\"><b>" + KEYS.Get("building_damagedinattack") + "</b></font><br>" + KEYS.Get("building_repairinprogress", {
+            this._repairDescription = "<font color=\"#FF0000\"><b>" + getKEYS().Get("building_damagedinattack") + "</b></font><br>" + getKEYS().Get("building_repairinprogress", {
                 "v1": Math.floor(100 / this.maxHealth * this.health),
                 "v2": GLOBAL.ToTime(this.getEstimatedRepairTimeRemaining())
             });
         } else {
-            this._repairDescription = "<font color=\"#FF0000\"><b>" + KEYS.Get("building_damagedinattack") + "</b></font><br>" + KEYS.Get("building_repairfree");
+            this._repairDescription = "<font color=\"#FF0000\"><b>" + getKEYS().Get("building_damagedinattack") + "</b></font><br>" + getKEYS().Get("building_repairfree");
             if (this._countdownBuild.Get() > 0) {
-                this._repairDescription += "<br>" + KEYS.Get("building_attackdestroy");
+                this._repairDescription += "<br>" + getKEYS().Get("building_attackdestroy");
             }
             if (this._countdownUpgrade.Get() > 0) {
-                this._repairDescription += "<br>" + KEYS.Get("building_attacksetback");
+                this._repairDescription += "<br>" + getKEYS().Get("building_attacksetback");
             }
         }
 
         if (this._lvl.Get() >= this._buildingProps.costs.length) {
-            this._upgradeDescription = KEYS.Get("bdg_fullyupgraded");
+            this._upgradeDescription = getKEYS().Get("bdg_fullyupgraded");
             this._upgradeCosts = "";
         } else {
             this._upgradeCosts = "";
@@ -856,7 +859,7 @@ export class BFOUNDATION extends GameObject {
 
         if (this._fortification.Get() != this._renderFortLevel) {
             if (this._fortification.Get() > 4) {
-                LOGGER.Log("err", "Illegal fortification level " + this._fortification.Get());
+                getLOGGER().Log("err", "Illegal fortification level " + this._fortification.Get());
                 throw new Error("ILLEGAL FORTIFICATION LEVEL " + this._fortification.Get());
             }
 
@@ -1442,7 +1445,7 @@ export class BFOUNDATION extends GameObject {
     }
 
     public Instructions(): void {
-        this._buildingInstructions += KEYS.Get("building_instructions");
+        this._buildingInstructions += getKEYS().Get("building_instructions");
     }
 
     public FollowMouse(): void {
@@ -1615,59 +1618,59 @@ export class BFOUNDATION extends GameObject {
                     if (this._buildInstantCost.Get() > 0) {
                         BASE.Purchase("IB", this._buildInstantCost.Get(), "building");
                     }
-                    LOGGER.Stat([71, this._buildInstantCost.Get(), this._type]);
+                    getLOGGER().Stat([71, this._buildInstantCost.Get(), this._type]);
                     this.Constructed();
                 }
             } else {
                 this.Constructed();
                 if (this._type == 120) {
-                    LOGGER.Stat([75, "placedgoldenbiggulp"]);
+                    getLOGGER().Stat([75, "placedgoldenbiggulp"]);
                 }
                 if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && BASE.isMainYard) {
                     BragBiggulp = (): void => {
-                        GLOBAL.CallJS("sendFeed", ["biggulp-construct", KEYS.Get("pop_biggulpbuilt_streamtitle"), KEYS.Get("pop_biggulpbuilt_streambody"), "dave_711promo.png"]);
+                        GLOBAL.CallJS("sendFeed", ["biggulp-construct", getKEYS().Get("pop_biggulpbuilt_streamtitle"), getKEYS().Get("pop_biggulpbuilt_streambody"), "dave_711promo.png"]);
                         POPUPS.Next();
                     };
                     BragTotem = (totemType: number): Function => {
                         return (e: MouseEvent = null): void => {
                             switch (totemType) {
                                 case 121:
-                                    GLOBAL.CallJS("sendFeed", ["wmitotem-construct", KEYS.Get("wmi_wave1streamtitle"), KEYS.Get("wmi_wave1streamdesc"), "wmitotemfeed1.1.png"]);
+                                    GLOBAL.CallJS("sendFeed", ["wmitotem-construct", getKEYS().Get("wmi_wave1streamtitle"), getKEYS().Get("wmi_wave1streamdesc"), "wmitotemfeed1.1.png"]);
                                     break;
                                 case 122:
-                                    GLOBAL.CallJS("sendFeed", ["wmitotem-construct", KEYS.Get("wmi_wave10streamtitle"), KEYS.Get("wmi_wave10streamdesc"), "wmitotemfeed2.png"]);
+                                    GLOBAL.CallJS("sendFeed", ["wmitotem-construct", getKEYS().Get("wmi_wave10streamtitle"), getKEYS().Get("wmi_wave10streamdesc"), "wmitotemfeed2.png"]);
                                     break;
                                 case 123:
-                                    GLOBAL.CallJS("sendFeed", ["wmitotem-construct", KEYS.Get("wmi_wave20streamtitle"), KEYS.Get("wmi_wave20streamdesc"), "wmitotemfeed3.png"]);
+                                    GLOBAL.CallJS("sendFeed", ["wmitotem-construct", getKEYS().Get("wmi_wave20streamtitle"), getKEYS().Get("wmi_wave20streamdesc"), "wmitotemfeed3.png"]);
                                     break;
                                 case 124:
-                                    GLOBAL.CallJS("sendFeed", ["wmitotem-construct", KEYS.Get("wmi_wave30streamtitle"), KEYS.Get("wmi_wave30streamdesc"), "wmitotemfeed4.png"]);
+                                    GLOBAL.CallJS("sendFeed", ["wmitotem-construct", getKEYS().Get("wmi_wave30streamtitle"), getKEYS().Get("wmi_wave30streamdesc"), "wmitotemfeed4.png"]);
                                     break;
                                 case 125:
-                                    GLOBAL.CallJS("sendFeed", ["wmitotem-construct", KEYS.Get("wmi_wave31streamtitle"), KEYS.Get("wmi_wave31streamdesc"), "wmitotemfeed5.png"]);
+                                    GLOBAL.CallJS("sendFeed", ["wmitotem-construct", getKEYS().Get("wmi_wave31streamtitle"), getKEYS().Get("wmi_wave31streamdesc"), "wmitotemfeed5.png"]);
                                     break;
                                 case 126:
-                                    GLOBAL.CallJS("sendFeed", ["wmitotem-construct", KEYS.Get("wmi_wave32streamtitle"), KEYS.Get("wmi_wave32streamdesc"), "wmitotemfeed6.png"]);
+                                    GLOBAL.CallJS("sendFeed", ["wmitotem-construct", getKEYS().Get("wmi_wave32streamtitle"), getKEYS().Get("wmi_wave32streamdesc"), "wmitotemfeed6.png"]);
                                     break;
                                 case 131:
                                     switch (this._lvl.Get()) {
                                         case 1:
-                                            GLOBAL.CallJS("sendFeed", ["wmi2totem-construct", KEYS.Get("wmi2_wave1streamtitle"), KEYS.Get("wmi2_wave1streamdesc"), "wmitotemfeed2_1.png"]);
+                                            GLOBAL.CallJS("sendFeed", ["wmi2totem-construct", getKEYS().Get("wmi2_wave1streamtitle"), getKEYS().Get("wmi2_wave1streamdesc"), "wmitotemfeed2_1.png"]);
                                             break;
                                         case 2:
-                                            GLOBAL.CallJS("sendFeed", ["wmi2totem-construct", KEYS.Get("wmi2_wave10streamtitle"), KEYS.Get("wmi2_wave10streamdesc"), "wmitotemfeed2_2.png"]);
+                                            GLOBAL.CallJS("sendFeed", ["wmi2totem-construct", getKEYS().Get("wmi2_wave10streamtitle"), getKEYS().Get("wmi2_wave10streamdesc"), "wmitotemfeed2_2.png"]);
                                             break;
                                         case 3:
-                                            GLOBAL.CallJS("sendFeed", ["wmi2totem-construct", KEYS.Get("wmi2_wave20streamtitle"), KEYS.Get("wmi2_wave20streamdesc"), "wmitotemfeed2_3.png"]);
+                                            GLOBAL.CallJS("sendFeed", ["wmi2totem-construct", getKEYS().Get("wmi2_wave20streamtitle"), getKEYS().Get("wmi2_wave20streamdesc"), "wmitotemfeed2_3.png"]);
                                             break;
                                         case 4:
-                                            GLOBAL.CallJS("sendFeed", ["wmi2totem-construct", KEYS.Get("wmi2_wave30streamtitle"), KEYS.Get("wmi2_wave30streamdesc"), "wmitotemfeed2_4.png"]);
+                                            GLOBAL.CallJS("sendFeed", ["wmi2totem-construct", getKEYS().Get("wmi2_wave30streamtitle"), getKEYS().Get("wmi2_wave30streamdesc"), "wmitotemfeed2_4.png"]);
                                             break;
                                         case 5:
-                                            GLOBAL.CallJS("sendFeed", ["wmi2totem-construct", KEYS.Get("wmi2_wave31streamtitle"), KEYS.Get("wmi2_wave31streamdesc"), "wmitotemfeed2_5.png"]);
+                                            GLOBAL.CallJS("sendFeed", ["wmi2totem-construct", getKEYS().Get("wmi2_wave31streamtitle"), getKEYS().Get("wmi2_wave31streamdesc"), "wmitotemfeed2_5.png"]);
                                             break;
                                         case 6:
-                                            GLOBAL.CallJS("sendFeed", ["wmi2totem-construct", KEYS.Get("wmi2_wave32streamtitle"), KEYS.Get("wmi2_wave32streamdesc"), "wmitotemfeed2_6.png"]);
+                                            GLOBAL.CallJS("sendFeed", ["wmi2totem-construct", getKEYS().Get("wmi2_wave32streamtitle"), getKEYS().Get("wmi2_wave32streamdesc"), "wmitotemfeed2_6.png"]);
                                     }
                             }
                             POPUPS.Next();
@@ -1678,8 +1681,8 @@ export class BFOUNDATION extends GameObject {
                     mc = new (window as any)["popup_biggulp"]();
                     if (BASE.is711Valid()) {
                         if (this._type == 120) {
-                            mc["tA"].htmlText = "<b>" + KEYS.Get("pop_biggulpbuilt_title") + "</b>";
-                            mc["tB"].htmlText = KEYS.Get("pop_biggulpbuilt_body");
+                            mc["tA"].htmlText = "<b>" + getKEYS().Get("pop_biggulpbuilt_title") + "</b>";
+                            mc["tB"].htmlText = getKEYS().Get("pop_biggulpbuilt_body");
                             mc["bPost"].SetupKey("btn_brag");
                             mc["bPost"].addEventListener(MouseEvent.CLICK, BragBiggulp);
                             mc["bPost"].Highlight = true;
@@ -1689,7 +1692,7 @@ export class BFOUNDATION extends GameObject {
 
                     totemImgUrl = "";
                     if (BTOTEM.IsTotem(this._type)) {
-                        mc["tA"].htmlText = "<b>" + KEYS.Get("wmi_totemwon") + "</b>";
+                        mc["tA"].htmlText = "<b>" + getKEYS().Get("wmi_totemwon") + "</b>";
                         mc["tB"].htmlText = "";
                         mc["bPost"].SetupKey("btn_brag");
                         mc["bPost"].addEventListener(MouseEvent.CLICK, BragTotem(this._type));
@@ -1705,7 +1708,7 @@ export class BFOUNDATION extends GameObject {
                         }
                         POPUPS.Push(mc, null, null, null, totemImgUrl);
                     } else if (BTOTEM.IsTotem2(this._type)) {
-                        mc["tA"].htmlText = "<b>" + KEYS.Get("wmi2_totemwon") + "</b>";
+                        mc["tA"].htmlText = "<b>" + getKEYS().Get("wmi2_totemwon") + "</b>";
                         mc["tB"].htmlText = "";
                         mc["bPost"].SetupKey("btn_brag");
                         mc["bPost"].addEventListener(MouseEvent.CLICK, BragTotem(this._type));
@@ -1728,7 +1731,7 @@ export class BFOUNDATION extends GameObject {
                 BASE.Save();
             }
             UPDATES.Create(["BP", this._type, this.Export()]);
-            LOGGER.Stat([5, this._type]);
+            getLOGGER().Stat([5, this._type]);
         }
         this.updateRasterData();
         this.onMove();
@@ -1810,15 +1813,15 @@ export class BFOUNDATION extends GameObject {
             if (this._repairing == 1) {
                 this._repairing = 0;
                 QUEUE.Remove("building" + this._id, true, this);
-                ATTACK.Log("b" + this._id, "<font color=\"#FF0000\">" + KEYS.Get("attack_log_downed_repaircancel", {
+                ATTACK.Log("b" + this._id, "<font color=\"#FF0000\">" + getKEYS().Get("attack_log_downed_repaircancel", {
                     "v1": this._lvl.Get(),
-                    "v2": KEYS.Get(this._buildingProps.name)
+                    "v2": getKEYS().Get(this._buildingProps.name)
                 }) + "</font>");
             } else if (this._countdownBuild.Get() > 0) {
                 ATTACK.Damage(this._mc.x, this._mc.y, this._buildingProps.hp[this._lvl.Get()]);
-                ATTACK.Log("b" + this._id, "<font color=\"#FF0000\">" + KEYS.Get("attack_log_downed_buildcancel", {
+                ATTACK.Log("b" + this._id, "<font color=\"#FF0000\">" + getKEYS().Get("attack_log_downed_buildcancel", {
                     "v1": this._lvl.Get(),
-                    "v2": KEYS.Get(this._buildingProps.name)
+                    "v2": getKEYS().Get(this._buildingProps.name)
                 }) + "</font>");
             } else if (this._countdownUpgrade.Get()) {
                 ATTACK.Damage(this._mc.x, this._mc.y, this._buildingProps.hp[this._lvl.Get()]);
@@ -1830,16 +1833,16 @@ export class BFOUNDATION extends GameObject {
                 if ((newTime = this._countdownUpgrade.Get() + halfTime) < 0) {
                     newTime = 0;
                 }
-                ATTACK.Log("b" + this._id, "<font color=\"#FF0000\">" + KEYS.Get("attack_log_downed_upgradecancel", {
+                ATTACK.Log("b" + this._id, "<font color=\"#FF0000\">" + getKEYS().Get("attack_log_downed_upgradecancel", {
                     "v1": this._lvl.Get(),
-                    "v2": KEYS.Get(this._buildingProps.name),
+                    "v2": getKEYS().Get(this._buildingProps.name),
                     "v3": this._lvl.Get() + 1
                 }) + "</font>");
                 this._countdownUpgrade.Set(newTime);
             } else {
-                ATTACK.Log("b" + this._id, "<font color=\"#FF0000\">" + KEYS.Get("attack_log_downed", {
+                ATTACK.Log("b" + this._id, "<font color=\"#FF0000\">" + getKEYS().Get("attack_log_downed", {
                     "v1": this._lvl.Get(),
-                    "v2": KEYS.Get(this._buildingProps.name)
+                    "v2": getKEYS().Get(this._buildingProps.name)
                 }) + "</font>");
             }
             this.Update(true);
@@ -1970,7 +1973,7 @@ export class BFOUNDATION extends GameObject {
         if (BASE._credits.Get() >= cost) {
             this.Upgraded();
             BASE.Purchase("IU", cost, "upgrade");
-            LOGGER.Stat([72, cost, this._type, this._lvl.Get()]);
+            getLOGGER().Stat([72, cost, this._type, this._lvl.Get()]);
             return true;
         }
         POPUPS.DisplayGetShiny();
@@ -2032,13 +2035,13 @@ export class BFOUNDATION extends GameObject {
                     this._hasWorker = true;
                 }
                 QUEUE.Add("building" + this._id, this);
-                LOGGER.Stat([64, this._type, this._fortification.Get() + 1]);
+                getLOGGER().Stat([64, this._type, this._fortification.Get() + 1]);
                 this._helpList = [];
                 this.Update();
 
                 if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && this._class == "tower") {
                     GLOBAL._selectedBuilding = this;
-                    GLOBAL.Message(KEYS.Get("msg_inactivefortify"), KEYS.Get("btn_speedup"), STORE.SpeedUp, ["SP4"]);
+                    GLOBAL.Message(getKEYS().Get("msg_inactivefortify"), getKEYS().Get("btn_speedup"), STORE.SpeedUp, ["SP4"]);
                 }
             } else if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
                 GLOBAL.Message(canFortify.errorMessage);
@@ -2047,7 +2050,7 @@ export class BFOUNDATION extends GameObject {
     }
 
     public FortifyCancel(): void {
-        GLOBAL.Message(KEYS.Get("msg_fortifycancelconfirm"), KEYS.Get("msg_stopfortifying_btn"), this.FortifyCancelB);
+        GLOBAL.Message(getKEYS().Get("msg_fortifycancelconfirm"), getKEYS().Get("msg_stopfortifying_btn"), this.FortifyCancelB);
     }
 
     public FortifyCancelB = (e: MouseEvent = null): void => {
@@ -2122,7 +2125,7 @@ export class BFOUNDATION extends GameObject {
                         };
                         GLOBAL._promptedInvite = true;
                         popupMC = new (window as any)["popup_helpme"]();
-                        popupMC.tB.text = KEYS.Get("pop_helpme");
+                        popupMC.tB.text = getKEYS().Get("pop_helpme");
                         popupMC.bAction.SetupKey("btn_invitefriends");
                         popupMC.bAction.addEventListener(MouseEvent.CLICK, GetFriends);
                         POPUPS.Push(popupMC);
@@ -2136,13 +2139,13 @@ export class BFOUNDATION extends GameObject {
                     this._hasWorker = true;
                 }
                 QUEUE.Add("building" + this._id, this);
-                LOGGER.Stat([7, this._type, this._lvl.Get() + 1]);
+                getLOGGER().Stat([7, this._type, this._lvl.Get() + 1]);
                 this._helpList = [];
                 this.Update();
 
                 if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && this._class == "tower") {
                     GLOBAL._selectedBuilding = this;
-                    GLOBAL.Message(KEYS.Get("msg_inactiveupgrade"), KEYS.Get("btn_speedup"), STORE.SpeedUp, ["SP4"]);
+                    GLOBAL.Message(getKEYS().Get("msg_inactiveupgrade"), getKEYS().Get("btn_speedup"), STORE.SpeedUp, ["SP4"]);
                 }
                 GLOBAL.eventDispatcher.dispatchEvent(new BuildingEvent(BuildingEvent.UPGRADED, this));
             } else if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
@@ -2158,12 +2161,12 @@ export class BFOUNDATION extends GameObject {
 
         if (this._countdownBuild.Get() + this._countdownUpgrade.Get() + this._countdownFortify.Get() > 0) {
             if (this._helpList.length > 4) {
-                GLOBAL.Message(KEYS.Get("base_5alreadyhelped"));
+                GLOBAL.Message(getKEYS().Get("base_5alreadyhelped"));
                 return false;
             }
             for (let id of this._helpList) {
                 if (id == LOGIN._playerID) {
-                    GLOBAL.Message(KEYS.Get("base_alreadyhelped"));
+                    GLOBAL.Message(getKEYS().Get("base_alreadyhelped"));
                     return false;
                 }
             }
@@ -2172,27 +2175,27 @@ export class BFOUNDATION extends GameObject {
             timeRemoved = this.HelpB();
 
             if (this._countdownBuild.Get() > 0) {
-                GLOBAL.Message(KEYS.Get("base_thankbuild", {
+                GLOBAL.Message(getKEYS().Get("base_thankbuild", {
                     "v1": GLOBAL.ToTime(timeRemoved, false, false),
-                    "v2": KEYS.Get(this._buildingProps.name)
+                    "v2": getKEYS().Get(this._buildingProps.name)
                 }));
-                LOGGER.Stat([14, this._type, 0, 0, timeRemoved]);
+                getLOGGER().Stat([14, this._type, 0, 0, timeRemoved]);
                 type = "build";
             }
             if (this._countdownUpgrade.Get() > 0) {
-                GLOBAL.Message(KEYS.Get("base_thankupgrade", {
+                GLOBAL.Message(getKEYS().Get("base_thankupgrade", {
                     "v1": GLOBAL.ToTime(timeRemoved, false, false),
-                    "v2": KEYS.Get(this._buildingProps.name)
+                    "v2": getKEYS().Get(this._buildingProps.name)
                 }));
-                LOGGER.Stat([15, this._type, this._lvl.Get() + 1, 0, timeRemoved]);
+                getLOGGER().Stat([15, this._type, this._lvl.Get() + 1, 0, timeRemoved]);
                 type = "upgrade";
             }
             if (this._countdownFortify.Get() > 0) {
-                GLOBAL.Message(KEYS.Get("base_thankfortify", {
+                GLOBAL.Message(getKEYS().Get("base_thankfortify", {
                     "v1": GLOBAL.ToTime(timeRemoved, false, false),
-                    "v2": KEYS.Get(this._buildingProps.name)
+                    "v2": getKEYS().Get(this._buildingProps.name)
                 }));
-                LOGGER.Stat([66, this._type, this._fortification.Get() + 1, 0, timeRemoved]);
+                getLOGGER().Stat([66, this._type, this._fortification.Get() + 1, 0, timeRemoved]);
                 type = "fortify";
             }
         }
@@ -2216,7 +2219,7 @@ export class BFOUNDATION extends GameObject {
     }
 
     public UpgradeCancel(): void {
-        GLOBAL.Message(KEYS.Get("msg_upgradecancelconfirm"), KEYS.Get("msg_stopupgrading_btn"), this.UpgradeCancelB);
+        GLOBAL.Message(getKEYS().Get("msg_upgradecancelconfirm"), getKEYS().Get("msg_stopupgrading_btn"), this.UpgradeCancelB);
     }
 
     public UpgradeCancelB = (e: MouseEvent = null): void => {
@@ -2253,7 +2256,7 @@ export class BFOUNDATION extends GameObject {
             this.maxHealthProperty.value = this._buildingProps.hp[this._lvl.Get() - 1];
             this.setHealth(this.maxHealth);
         } catch (e) {
-            LOGGER.Log("err", "Foundation.Upgraded: " + e.message + " | " + e.getStackTrace());
+            getLOGGER().Log("err", "Foundation.Upgraded: " + e.message + " | " + e.getStackTrace());
         }
         QUESTS.Check("blvl", this._lvl.Get());
         if (this._type < 5) {
@@ -2266,7 +2269,7 @@ export class BFOUNDATION extends GameObject {
         BASE.PointsAdd(a);
         this.Description();
         QUEUE.Remove("building" + this._id, true, this);
-        LOGGER.Stat([8, this._type, this._lvl.Get()]);
+        getLOGGER().Stat([8, this._type, this._lvl.Get()]);
     }
 
     public downgraded(): void {
@@ -2282,7 +2285,7 @@ export class BFOUNDATION extends GameObject {
             this.maxHealthProperty.value = this._buildingProps.hp[this._lvl.Get() - 1];
             this.setHealth(this.maxHealth);
         } catch (e) {
-            LOGGER.Log("err", "Foundation.Downgrade_TOTEM_DEBUG: " + e.message + " | " + e.getStackTrace());
+            getLOGGER().Log("err", "Foundation.Downgrade_TOTEM_DEBUG: " + e.message + " | " + e.getStackTrace());
         }
     }
 
@@ -2291,14 +2294,14 @@ export class BFOUNDATION extends GameObject {
         let a: number;
         try {
             if (Math.max(this._countdownFortify.Get(), 0)) {
-                LOGGER.Log("log", "bdg fort cnt > 0, probable hack");
+                getLOGGER().Log("log", "bdg fort cnt > 0, probable hack");
                 GLOBAL.ErrorMessage("BFOUNDATION fortify hack");
                 return;
             }
             this._countdownFortify.Set(0);
             this._fortification.Add(1);
         } catch (e) {
-            LOGGER.Log("err", "Foundation.Fortified: " + e.message + " | " + e.getStackTrace());
+            getLOGGER().Log("err", "Foundation.Fortified: " + e.message + " | " + e.getStackTrace());
         }
         BASE.CalcResources();
         c = this._buildingProps.fortify_costs[this._fortification.Get() - 1];
@@ -2306,7 +2309,7 @@ export class BFOUNDATION extends GameObject {
         BASE.PointsAdd(a);
         this.Description();
         QUEUE.Remove("building" + this._id, true, this);
-        LOGGER.Stat([65, this._type, this._fortification.Get()]);
+        getLOGGER().Stat([65, this._type, this._fortification.Get()]);
     }
 
     public Recycle(): void {
@@ -2314,29 +2317,29 @@ export class BFOUNDATION extends GameObject {
         if (this._countdownBuild.Get() > 0) {
             if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
                 if (BASE.isOutpostOrInfernoOutpost) {
-                    GLOBAL.Message(KEYS.Get("msg_stopconstructionoutpostbuilding"));
+                    GLOBAL.Message(getKEYS().Get("msg_stopconstructionoutpostbuilding"));
                 } else {
-                    GLOBAL.Message(KEYS.Get("msg_stopconstructionconfirm"), KEYS.Get("msg_destroybuilding_btn"), this.RecycleB);
+                    GLOBAL.Message(getKEYS().Get("msg_stopconstructionconfirm"), getKEYS().Get("msg_destroybuilding_btn"), this.RecycleB);
                 }
             }
         } else if (this._class == "taunt" || this._class == "gift") {
             if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
-                GLOBAL.Message(KEYS.Get("msg_recycleconfirm"), KEYS.Get("msg_recyclebuilding_btn"), this.RecycleC);
+                GLOBAL.Message(getKEYS().Get("msg_recycleconfirm"), getKEYS().Get("msg_recyclebuilding_btn"), this.RecycleC);
             }
         } else if (this._class == "decoration") {
             if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
-                GLOBAL.Message(KEYS.Get("ui_placeinstorage"), KEYS.Get("btn_addstorage"), this.RecycleB);
+                GLOBAL.Message(getKEYS().Get("ui_placeinstorage"), getKEYS().Get("btn_addstorage"), this.RecycleB);
             }
         } else if (!this._blockRecycle) {
             if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
                 msgKey = GLOBAL._buildingProps[this._type - 1]["recycleconfirmationoverride"] ? String(GLOBAL._buildingProps[this._type - 1]["recycleconfirmationoverride"]) : "msg_recycleconfirm";
-                GLOBAL.Message(KEYS.Get(msgKey), KEYS.Get("msg_recyclebuilding_btn"), this.RecycleB);
+                GLOBAL.Message(getKEYS().Get(msgKey), getKEYS().Get("msg_recyclebuilding_btn"), this.RecycleB);
             }
         } else if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
             if (BASE.isOutpostOrInfernoOutpost) {
-                GLOBAL.Message(KEYS.Get("msg_recycleoutpostbuilding"));
+                GLOBAL.Message(getKEYS().Get("msg_recycleoutpostbuilding"));
             } else {
-                GLOBAL.Message(KEYS.Get("msg_recycleunavailable"));
+                GLOBAL.Message(getKEYS().Get("msg_recycleunavailable"));
             }
         }
         GLOBAL.eventDispatcher.dispatchEvent(new BuildingEvent(BuildingEvent.ATTEMPT_RECYCLE, this));
@@ -2356,7 +2359,7 @@ export class BFOUNDATION extends GameObject {
                 if (cost.r3.Get()) BASE.Fund(3, Math.floor(cost.r3.Get()), false, null, isInferno);
                 if (cost.r4.Get()) BASE.Fund(4, Math.floor(cost.r4.Get()), false, null, isInferno);
                 this.RecycleC();
-                LOGGER.Stat([40, this._type, this._lvl.Get()]);
+                getLOGGER().Stat([40, this._type, this._lvl.Get()]);
             }
         } else if (!this._blockRecycle) {
             this.RecycleC();
@@ -2381,7 +2384,7 @@ export class BFOUNDATION extends GameObject {
             }
         } catch (e) { }
 
-        GRID.Clear();
+        getGRID().Clear();
         if (!BYMConfig.instance.RENDERER_ON) {
             MAP.SortDepth();
         }
@@ -2401,7 +2404,7 @@ export class BFOUNDATION extends GameObject {
         if (this._footprint) {
             for (let item of this._footprint) {
                 rect = item;
-                GRID.Block(new Rectangle(rect.x + this._mc.x, rect.y + this._mc.y, rect.width, rect.height), block);
+                getGRID().Block(new Rectangle(rect.x + this._mc.x, rect.y + this._mc.y, rect.width, rect.height), block);
             }
         }
     }
@@ -2555,7 +2558,7 @@ export class BFOUNDATION extends GameObject {
             this._oldPosition = new Point(this._mc.x, this._mc.y);
             this._mouseOffset = new Point(MAP._GROUND.mouseX - this._mc.x, MAP._GROUND.mouseY - this._mc.y);
         } catch (e) {
-            LOGGER.Log("err", "BFOUNDATION.StartMove: " + e.getStackTrace());
+            getLOGGER().Log("err", "BFOUNDATION.StartMove: " + e.getStackTrace());
             GLOBAL.ErrorMessage("BFOUNDATION.StartMove");
         }
     }
@@ -2602,7 +2605,7 @@ export class BFOUNDATION extends GameObject {
                 BASE.Save();
             }
         } catch (e) {
-            LOGGER.Log("err", "BFOUNDATION.StartMove: " + e.getStackTrace());
+            getLOGGER().Log("err", "BFOUNDATION.StartMove: " + e.getStackTrace());
             GLOBAL.ErrorMessage("BFOUNDATION.StartMove 2");
         }
         this.onMove();
@@ -2646,13 +2649,13 @@ export class BFOUNDATION extends GameObject {
                 index = this._lvl.Get() == 0 ? 0 : Math.floor(this._lvl.Get() - 1);
                 total = Math.ceil(this.maxHealth / Math.min(3600, this._buildingProps.repairTime[index]));
                 this._repairTime = Math.floor(this.maxHealth - this.health) / total;
-                QUEUE.Update("building" + this._id, KEYS.Get("ui_worker_stacktitle_repairing"), GLOBAL.ToTime(this._repairTime, true));
+                QUEUE.Update("building" + this._id, getKEYS().Get("ui_worker_stacktitle_repairing"), GLOBAL.ToTime(this._repairTime, true));
             } else if (this._countdownBuild.Get() > 0) {
-                QUEUE.Update("building" + this._id, KEYS.Get("ui_worker_stacktitle_building"), GLOBAL.ToTime(this._countdownBuild.Get(), true));
+                QUEUE.Update("building" + this._id, getKEYS().Get("ui_worker_stacktitle_building"), GLOBAL.ToTime(this._countdownBuild.Get(), true));
             } else if (this._countdownUpgrade.Get() > 0) {
-                QUEUE.Update("building" + this._id, KEYS.Get("ui_worker_stacktitle_upgrading"), GLOBAL.ToTime(this._countdownUpgrade.Get(), true));
+                QUEUE.Update("building" + this._id, getKEYS().Get("ui_worker_stacktitle_upgrading"), GLOBAL.ToTime(this._countdownUpgrade.Get(), true));
             } else if (this._countdownFortify.Get() > 0) {
-                QUEUE.Update("building" + this._id, KEYS.Get("ui_worker_stacktitle_fortifying"), GLOBAL.ToTime(this._countdownFortify.Get(), true));
+                QUEUE.Update("building" + this._id, getKEYS().Get("ui_worker_stacktitle_fortifying"), GLOBAL.ToTime(this._countdownFortify.Get(), true));
             }
 
             if (this._class && this._class != "mushroom") {
@@ -2704,7 +2707,7 @@ export class BFOUNDATION extends GameObject {
         BASE.PointsAdd(val);
         this.Description();
         QUEUE.Remove("building" + this._id, true, this);
-        LOGGER.Stat([6, this._type]);
+        getLOGGER().Stat([6, this._type]);
         this.Update();
     }
 
@@ -2730,7 +2733,7 @@ export class BFOUNDATION extends GameObject {
 
     public exportLite(): any {
         let obj: any = new Object();
-        let pos: Point = GRID.FromISO(this._mc.x, this._mc.y);
+        let pos: Point = getGRID().FromISO(this._mc.x, this._mc.y);
         obj.X = pos.x;
         obj.Y = pos.y;
         obj.id = this._id;
@@ -2755,7 +2758,7 @@ export class BFOUNDATION extends GameObject {
 
     public Export(): any {
         let obj: any = {};
-        let pos: Point = GRID.FromISO(this._mc.x, this._mc.y);
+        let pos: Point = getGRID().FromISO(this._mc.x, this._mc.y);
         obj.X = pos.x;
         obj.Y = pos.y;
         obj.id = this._id;
@@ -2828,7 +2831,7 @@ export class BFOUNDATION extends GameObject {
 
         this._type = building.t;
         this._id = building.id;
-        pos = GRID.ToISO(building.X, building.Y, 0);
+        pos = getGRID().ToISO(building.X, building.Y, 0);
 
         if (this._type == 112) {
             building.l = 1;
@@ -3216,7 +3219,7 @@ export class BFOUNDATION extends GameObject {
     }
 
     public get name(): string {
-        return KEYS.Get(this._buildingProps.name);
+        return getKEYS().Get(this._buildingProps.name);
     }
 
     public get isUpgrading(): boolean {
@@ -3240,7 +3243,7 @@ export class BFOUNDATION extends GameObject {
             if (monster._behaviour != MonsterBase.k_sBHVR_JUICE) {
                 building._creatures.push(monster);
                 monster._house = building;
-                monster._targetCenter = GRID.FromISO(building.x, building.y);
+                monster._targetCenter = getGRID().FromISO(building.x, building.y);
                 monster.changeModeHousing();
             }
             i++;
@@ -3255,7 +3258,7 @@ export class BFOUNDATION extends GameObject {
         while (i < len) {
             monster = this._creatures[i];
             if (!(monster._behaviour == MonsterBase.k_sBHVR_JUICE || monster._behaviour == MonsterBase.k_sBHVR_BUNKER && GLOBAL.InfernoMode() === false)) {
-                monster._targetCenter = GRID.FromISO(this.x, this.y);
+                monster._targetCenter = getGRID().FromISO(this.x, this.y);
                 monster.changeModeHousing();
             }
             i++;

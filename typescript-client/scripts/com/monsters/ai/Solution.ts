@@ -1,6 +1,9 @@
 import Point from "openfl/geom/Point";
 
-import { BFOUNDATION } from "../../../BFOUNDATION";
+// Lazy imports to break circular dependency chains
+function getBFOUNDATION(): any { return require("../../../BFOUNDATION").BFOUNDATION; }
+
+
 
 /**
  * Represents an attack solution computed by the AI.

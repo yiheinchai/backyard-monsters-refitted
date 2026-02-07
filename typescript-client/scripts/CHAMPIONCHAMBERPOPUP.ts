@@ -7,13 +7,16 @@ import { TweenLite, Circ } from './gs';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { ScrollSetH } from './com/monsters/display/ScrollSetH';
 import { GUARDIANCHAMBERPOPUP_CLIP } from './GUARDIANCHAMBERPOPUP_CLIP';
-import { CHAMPIONCHAMBER } from './CHAMPIONCHAMBER';
-import { CHAMPIONCAGE } from './CHAMPIONCAGE';
 import { CHAMPIONCAGEPOPUP } from './CHAMPIONCAGEPOPUP';
 import { ChampionChamberFrozen } from './ChampionChamberFrozen';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
 import { POPUPSETTINGS } from './POPUPSETTINGS';
+
+// Lazy imports to break circular dependency chains
+function getCHAMPIONCHAMBER(): any { return require("./CHAMPIONCHAMBER").CHAMPIONCHAMBER; }
+function getCHAMPIONCAGE(): any { return require("./CHAMPIONCAGE").CHAMPIONCAGE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+
 
 export class CHAMPIONCHAMBERPOPUP extends GUARDIANCHAMBERPOPUP_CLIP {
     private _guardChamber: CHAMPIONCHAMBER;
@@ -24,9 +27,9 @@ export class CHAMPIONCHAMBERPOPUP extends GUARDIANCHAMBERPOPUP_CLIP {
 
     constructor() {
         super();
-        this._guardChamber = GLOBAL._bChamber as CHAMPIONCHAMBER;
+        this._guardChamber = getGLOBAL()._bChamber as CHAMPIONCHAMBER;
         this._slots = [];
-        this.tTitle.htmlText = KEYS.Get("chamber_title");
+        this.tTitle.htmlText = getKEYS().Get("chamber_title");
         this.createScrollBar(this.createSlots());
     }
 
@@ -51,14 +54,14 @@ export class CHAMPIONCHAMBERPOPUP extends GUARDIANCHAMBERPOPUP_CLIP {
         _loc1_.y = this.mcMask.y;
         this.addChild(_loc1_);
         const _loc2_: number = 0;
-        for (const key in CHAMPIONCAGE.GetAllGuardianData()) {
-            _loc4_ = CHAMPIONCAGE.GetAllGuardianData()[key];
+        for (const key in getCHAMPIONCAGE().GetAllGuardianData()) {
+            _loc4_ = getCHAMPIONCAGE().GetAllGuardianData()[key];
             _loc5_ = new ChampionChamberFrozen();
             _loc6_ = Number(_loc4_.l.Get());
             _loc7_ = "G" + _loc4_.t;
-            _loc8_ = CHAMPIONCAGE._guardians[_loc7_];
+            _loc8_ = getCHAMPIONCAGE()._guardians[_loc7_];
             _loc5_.name = _loc4_.t.toString();
-            _loc5_.tName.htmlText = "<b>" + KEYS.Get(_loc8_.title) + "</b><br>" + KEYS.Get("chamber_level", { "v1": _loc6_ });
+            _loc5_.tName.htmlText = "<b>" + getKEYS().Get(_loc8_.title) + "</b><br>" + getKEYS().Get("chamber_level", { "v1": _loc6_ });
             ImageCache.GetImageWithCallBack("monsters/" + _loc7_ + "_L" + _loc6_ + "-150.png", this.onImageLoad.bind(this), true, 4, "", [_loc5_.mcImage]);
             _loc5_.addEventListener(MouseEvent.ROLL_OVER, this.rollOverChampion.bind(this));
             _loc5_.x = _loc3_;
@@ -74,17 +77,17 @@ export class CHAMPIONCHAMBERPOPUP extends GUARDIANCHAMBERPOPUP_CLIP {
     }
 
     private updateSlot(param1: ChampionChamberFrozen, param2: number): void {
-        const _loc3_: boolean = CHAMPIONCHAMBER.HasFrozen(param2);
-        const _loc4_: string = String(CHAMPIONCAGE._guardians["G" + param2].name);
+        const _loc3_: boolean = getCHAMPIONCHAMBER().HasFrozen(param2);
+        const _loc4_: string = String(getCHAMPIONCAGE()._guardians["G" + param2].name);
         if (_loc3_) {
             param1.gotoAndStop("frozen");
             param1.bFreeze.removeEventListener(MouseEvent.CLICK, this.clickedFreeze.bind(this));
-            param1.bFreeze.Setup(KEYS.Get("btn_thawname", { "v1": _loc4_ }), false, 0, 0);
+            param1.bFreeze.Setup(getKEYS().Get("btn_thawname", { "v1": _loc4_ }), false, 0, 0);
             param1.bFreeze.addEventListener(MouseEvent.CLICK, this.clickedThaw.bind(this));
         } else {
             param1.gotoAndStop("thaw");
             param1.bFreeze.removeEventListener(MouseEvent.CLICK, this.clickedThaw.bind(this));
-            param1.bFreeze.Setup(KEYS.Get("btn_freezename", { "v1": _loc4_ }), false, 0, 0);
+            param1.bFreeze.Setup(getKEYS().Get("btn_freezename", { "v1": _loc4_ }), false, 0, 0);
             param1.bFreeze.addEventListener(MouseEvent.CLICK, this.clickedFreeze.bind(this));
         }
     }
@@ -122,7 +125,7 @@ export class CHAMPIONCHAMBERPOPUP extends GUARDIANCHAMBERPOPUP_CLIP {
     }
 
     public SelectGuard(param1: number = 1): void {
-        this.UpdateStats(CHAMPIONCAGE.GetGuardianData(param1));
+        this.UpdateStats(getCHAMPIONCAGE().GetGuardianData(param1));
     }
 
     private UpdateStats(param1: any = null): void {
@@ -145,21 +148,21 @@ export class CHAMPIONCHAMBERPOPUP extends GUARDIANCHAMBERPOPUP_CLIP {
             if (_loc6_) {
                 ImageCache.GetImageWithCallBack(_loc6_, this.UpdateSelectImage.bind(this));
             }
-            this.damage_txt.htmlText = "<b>" + KEYS.Get("gcage_labelDamage") + "</b>";
-            this.health_txt.htmlText = "<b>" + KEYS.Get("gcage_labelHealth") + "</b>";
-            this.speed_txt.htmlText = "<b>" + KEYS.Get("gcage_labelSpeed") + "</b>";
-            this.buff_txt.htmlText = "<b>" + KEYS.Get("gcage_labelBuff") + "</b>";
-            this.tEvoStage.htmlText = "<b>" + CHAMPIONCAGE._guardians["G" + _loc2_].name + "</b> " + KEYS.Get("chamber_level", { "v1": _loc3_ });
-            this.tEvoDesc.htmlText = KEYS.Get(CHAMPIONCAGE._guardians["G" + _loc2_].description);
-            _loc7_ = CHAMPIONCAGE.GetGuardianProperty(_loc5_, _loc3_, "damage");
-            _loc8_ = CHAMPIONCAGE.GetGuardianProperty(_loc5_, _loc3_, "health");
-            _loc9_ = CHAMPIONCAGE.GetGuardianProperty(_loc5_, _loc3_, "speed");
-            _loc10_ = CHAMPIONCAGE.GetGuardianProperty(_loc5_, _loc3_, "buffs") * 100;
+            this.damage_txt.htmlText = "<b>" + getKEYS().Get("gcage_labelDamage") + "</b>";
+            this.health_txt.htmlText = "<b>" + getKEYS().Get("gcage_labelHealth") + "</b>";
+            this.speed_txt.htmlText = "<b>" + getKEYS().Get("gcage_labelSpeed") + "</b>";
+            this.buff_txt.htmlText = "<b>" + getKEYS().Get("gcage_labelBuff") + "</b>";
+            this.tEvoStage.htmlText = "<b>" + getCHAMPIONCAGE()._guardians["G" + _loc2_].name + "</b> " + getKEYS().Get("chamber_level", { "v1": _loc3_ });
+            this.tEvoDesc.htmlText = getKEYS().Get(getCHAMPIONCAGE()._guardians["G" + _loc2_].description);
+            _loc7_ = getCHAMPIONCAGE().GetGuardianProperty(_loc5_, _loc3_, "damage");
+            _loc8_ = getCHAMPIONCAGE().GetGuardianProperty(_loc5_, _loc3_, "health");
+            _loc9_ = getCHAMPIONCAGE().GetGuardianProperty(_loc5_, _loc3_, "speed");
+            _loc10_ = getCHAMPIONCAGE().GetGuardianProperty(_loc5_, _loc3_, "buffs") * 100;
             if (_loc4_ > 0) {
-                _loc7_ += CHAMPIONCAGE.GetGuardianProperty(_loc5_, _loc4_, "bonusDamage");
-                _loc8_ += CHAMPIONCAGE.GetGuardianProperty(_loc5_, _loc4_, "bonusHealth");
-                _loc9_ += CHAMPIONCAGE.GetGuardianProperty(_loc5_, _loc4_, "bonusSpeed");
-                _loc10_ += CHAMPIONCAGE.GetGuardianProperty(_loc5_, _loc4_, "bonusBuffs") * 100;
+                _loc7_ += getCHAMPIONCAGE().GetGuardianProperty(_loc5_, _loc4_, "bonusDamage");
+                _loc8_ += getCHAMPIONCAGE().GetGuardianProperty(_loc5_, _loc4_, "bonusHealth");
+                _loc9_ += getCHAMPIONCAGE().GetGuardianProperty(_loc5_, _loc4_, "bonusSpeed");
+                _loc10_ += getCHAMPIONCAGE().GetGuardianProperty(_loc5_, _loc4_, "bonusBuffs") * 100;
             }
             _loc11_ = Math.floor(_loc9_ * 10) / 10;
             this.tDamage.htmlText = _loc7_.toString();
@@ -195,7 +198,7 @@ export class CHAMPIONCHAMBERPOPUP extends GUARDIANCHAMBERPOPUP_CLIP {
     }
 
     public Hide(param1: MouseEvent = null): void {
-        CHAMPIONCHAMBER.Hide();
+        getCHAMPIONCHAMBER().Hide();
     }
 
     public Center(): void {

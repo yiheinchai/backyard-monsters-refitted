@@ -1,9 +1,12 @@
 import { KeywordMessage } from "../KeywordMessage";
 import { MarketingRecapture } from "../../../marketing/MarketingRecapture";
 
-import { GLOBAL } from "../../../../../GLOBAL";
-import { POPUPS } from "../../../../../POPUPS";
-import { CHAMPIONCAGE } from "../../../../../CHAMPIONCAGE";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+function getPOPUPS(): any { return require("../../../../../POPUPS").POPUPS; }
+function getCHAMPIONCAGE(): any { return require("../../../../../CHAMPIONCAGE").CHAMPIONCAGE; }
+
+
 
 /**
  * Promo 04 - Recaptured Drull promotional message.
@@ -36,9 +39,9 @@ export class Promo04RecapturedDrull extends KeywordMessage {
     }
 
     protected override onButtonClick(): void {
-        POPUPS.Next();
-        if (GLOBAL._bCage) {
-            CHAMPIONCAGE.Show();
+        getPOPUPS().Next();
+        if (getGLOBAL()._bCage) {
+            getCHAMPIONCAGE().Show();
         }
     }
 }

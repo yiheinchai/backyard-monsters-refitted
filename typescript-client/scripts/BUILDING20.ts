@@ -3,11 +3,14 @@ import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { IAttackable } from './com/monsters/interfaces/IAttackable';
 import { BTOWER } from './BTOWER';
-import { ATTACK } from './ATTACK';
-import { GLOBAL } from './GLOBAL';
 import { PROJECTILES } from './PROJECTILES';
-import { SOUNDS } from './SOUNDS';
-import { Targeting } from './Targeting';
+
+// Lazy imports to break circular dependency chains
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getTargeting(): any { return require("./Targeting").Targeting; }
+
 
 /**
  * BUILDING20 - Cannon Tower
@@ -30,29 +33,29 @@ export class BUILDING20 extends BTOWER {
 
     public override Fire(target: IAttackable): void {
         super.Fire(target);
-        SOUNDS.Play("splash1", !this.isJard ? 0.8 : 0.4);
+        getSOUNDS().Play("splash1", !this.isJard ? 0.8 : 0.4);
         const healthRatio: number = 0.5 + 0.5 / this.maxHealth * this.health;
         let overdrive: number = 1;
-        if (GLOBAL._towerOverdrive && GLOBAL._towerOverdrive.Get() >= GLOBAL.Timestamp()) {
+        if (getGLOBAL()._towerOverdrive && getGLOBAL()._towerOverdrive.Get() >= getGLOBAL().Timestamp()) {
             overdrive = 1.25;
         }
         if (this.isJard) {
             this._jarHealth!.Add(-Math.floor(this.damage * 6 * healthRatio * overdrive));
-            ATTACK.Damage(this._mc!.x, this._mc!.y + this._top, this.damage * 6 * healthRatio * overdrive);
+            getATTACK().Damage(this._mc!.x, this._mc!.y + this._top, this.damage * 6 * healthRatio * overdrive);
             if (this._jarHealth!.Get() <= 0) {
                 this.KillJar();
             }
         } else if (this._targetVacuum) {
             PROJECTILES.Spawn(
                 new Point(this._mc!.x, this._mc!.y + this._top),
-                GLOBAL.townHall._position!.add(new Point(0, -GLOBAL.townHall._mc!.height)),
+                getGLOBAL().townHall._position!.add(new Point(0, -getGLOBAL().townHall._mc!.height)),
                 null, this._speed, Math.floor(this.damage * overdrive * 3 * healthRatio), false, 0
             );
         } else {
             PROJECTILES.Spawn(
                 new Point(this._mc!.x, this._mc!.y + this._top),
                 null, target, this._speed, Math.floor(this.damage * healthRatio * overdrive),
-                false, this._splash, Targeting.getOldStyleTargets(-1)
+                false, this._splash, getTargeting().getOldStyleTargets(-1)
             );
         }
     }

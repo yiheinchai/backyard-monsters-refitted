@@ -5,9 +5,12 @@ import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BEXPIRABLE } from './BEXPIRABLE';
-import { CREEPS } from './CREEPS';
-import { GLOBAL } from './GLOBAL';
 import { SIGNS } from './SIGNS';
+
+// Lazy imports to break circular dependency chains
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+
 
 /**
  * BUILDING52 - Expirable Animated Building
@@ -24,7 +27,7 @@ export class BUILDING52 extends BEXPIRABLE {
         this._type = 52;
         this._footprint = [new Rectangle(0, 0, 40, 40)];
         this._gridCost = [[new Rectangle(0, 0, 40, 40), 20]];
-        this.imageData = GLOBAL._buildingProps[this._type - 1].imageData;
+        this.imageData = getGLOBAL()._buildingProps[this._type - 1].imageData;
         this.SetProps();
     }
 
@@ -37,7 +40,7 @@ export class BUILDING52 extends BEXPIRABLE {
 
     public override TickFast(event: Event | null = null): void {
         super.TickFast(event);
-        if (GLOBAL._render && this._frameNumber % 2 === 0 && CREEPS._creepCount === 0) {
+        if (getGLOBAL()._render && this._frameNumber % 2 === 0 && getCREEPS()._creepCount === 0) {
             this.AnimFrame();
         }
         ++this._frameNumber;

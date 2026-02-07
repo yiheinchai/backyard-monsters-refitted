@@ -4,7 +4,10 @@ import Rectangle from 'openfl/geom/Rectangle';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { ICoreBuilding } from './com/monsters/interfaces/ICoreBuilding';
 import { BFOUNDATION } from './BFOUNDATION';
-import { BASE } from './BASE';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+
 
 // Internal class ColorData
 class ColorData {
@@ -46,7 +49,7 @@ export class OutpostDefender extends BFOUNDATION implements ICoreBuilding {
 
     public override TickFast(param1: Event = null): void {
         if (this._animLoaded && !this.animContainer.visible) {
-            this.setLightFromRelationship(BASE.loadObject["relationship"]);
+            this.setLightFromRelationship(getBASE().loadObject["relationship"]);
         }
         super.TickFast(param1);
         this.AnimFrame();

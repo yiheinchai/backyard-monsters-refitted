@@ -5,9 +5,12 @@ import MouseEvent from "openfl/events/MouseEvent";
 import Rectangle from "openfl/geom/Rectangle";
 
 import { TweenLite } from "../../../gs/TweenLite";
-import { GLOBAL } from "../../../GLOBAL";
 import { Embed } from "../../../core/Embed";
 import { ScrollSet_CLIP } from "../../../ScrollSet_CLIP";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+
 
 /**
  * Scrollable container with scroll bar UI.
@@ -46,7 +49,7 @@ export class ScrollSet extends ScrollSet_CLIP {
         this._OffsetY = offsetY;
         this._BottomPadding = bottomPadding;
         
-        colorType = GLOBAL.InfernoMode() ? 1 : 0;
+        colorType = getGLOBAL().InfernoMode() ? 1 : 0;
         if (colorType < 0 || colorType >= ScrollSet.NUM_COLORS) {
             return;
         }
@@ -102,7 +105,7 @@ export class ScrollSet extends ScrollSet_CLIP {
             this.visible = this._ContainerHeight > this._Mask.height;
         }
         
-        const colorType = GLOBAL.InfernoMode() ? 1 : 0;
+        const colorType = getGLOBAL().InfernoMode() ? 1 : 0;
         if (colorType < 0 || colorType >= ScrollSet.NUM_COLORS) {
             return;
         }

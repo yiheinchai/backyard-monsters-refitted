@@ -1,10 +1,13 @@
 import Point from "openfl/geom/Point";
 
-import { MonsterBase } from "../../MonsterBase";
 import { AOEZergBonus } from "../../components/abilities/AOEZergBonus";
 import { CreepBase } from "../CreepBase";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+function getBFOUNDATION(): any { return require("../../../../../BFOUNDATION").BFOUNDATION; }
+
+
 
 /**
  * Pokeyv2 - rebalanced pokey creep with AOE zerg bonus ability.

@@ -6,13 +6,16 @@ import { icon_worker } from './icon_worker';
 import { icon_worker_inferno } from './icon_worker_inferno';
 import { bubblepopupRight } from './bubblepopupRight';
 import { bubblepopup } from './bubblepopup';
-import { GLOBAL } from './GLOBAL';
-import { BASE } from './BASE';
-import { KEYS } from './KEYS';
-import { QUEUE } from './QUEUE';
-import { STORE } from './STORE';
-import { TUTORIAL } from './TUTORIAL';
-import { UI2 } from './UI2';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getQUEUE(): any { return require("./QUEUE").QUEUE; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+function getUI2(): any { return require("./UI2").UI2; }
+
 
 export class UI_WORKERS {
     private static _do: DisplayObject;
@@ -36,14 +39,14 @@ export class UI_WORKERS {
         }
         UI_WORKERS._mc = new MovieClip();
         UI_WORKERS._workers = [];
-        if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD) {
             UI_WORKERS._maxWorkers = 5;
-            if (!BASE.isMainYard) {
+            if (!getBASE().isMainYard) {
                 UI_WORKERS._maxWorkers = 1;
             }
             for (let _loc1_ = 0; _loc1_ < UI_WORKERS._maxWorkers; _loc1_++) {
                 let _loc2_: MovieClip;
-                if (GLOBAL.InfernoMode()) {
+                if (getGLOBAL().InfernoMode()) {
                     _loc2_ = new icon_worker_inferno();
                 } else {
                     _loc2_ = new icon_worker();
@@ -63,10 +66,10 @@ export class UI_WORKERS {
                     "mc": _loc2_
                 });
             }
-            UI_WORKERS._do = GLOBAL._layerUI.addChild(UI_WORKERS._mc);
+            UI_WORKERS._do = getGLOBAL()._layerUI.addChild(UI_WORKERS._mc);
         }
         UI_WORKERS.Update();
-        if (!UI2._showBottom) {
+        if (!getUI2()._showBottom) {
             UI_WORKERS.Hide();
         }
     }
@@ -79,10 +82,10 @@ export class UI_WORKERS {
                 if (_loc2_.active) {
                     _loc3_ = _loc2_.message;
                 } else {
-                    _loc3_ = KEYS.Get("ui_worker_idle");
+                    _loc3_ = getKEYS().Get("ui_worker_idle");
                 }
             } else {
-                _loc3_ = KEYS.Get("ui_worker_hire");
+                _loc3_ = getKEYS().Get("ui_worker_hire");
             }
             UI_WORKERS.PopupShow(UI_WORKERS._mc.x - 5, UI_WORKERS._mc.y + UI_WORKERS._workerMCOffset / 2 + i * UI_WORKERS._workerMCOffset + UI_WORKERS._workerMCOffset * 0.5, _loc3_, i);
         };
@@ -96,9 +99,9 @@ export class UI_WORKERS {
         return (param1: MouseEvent = null): void => {
             if (UI_WORKERS._workers[i]) {
                 if (UI_WORKERS._workers[i].purchased) {
-                    QUEUE.JumpToWorker(i);
+                    getQUEUE().JumpToWorker(i);
                 } else {
-                    STORE.ShowB(1, 0, ["BEW"]);
+                    getSTORE().ShowB(1, 0, ["BEW"]);
                 }
             }
         };
@@ -108,8 +111,8 @@ export class UI_WORKERS {
         let _loc1_ = false;
         for (let _loc2_ = 0; _loc2_ < UI_WORKERS._workers.length; _loc2_++) {
             const _loc3_ = UI_WORKERS._workers[_loc2_];
-            if (QUEUE._stack && QUEUE._stack[_loc2_]) {
-                const _loc4_ = QUEUE._stack[_loc2_];
+            if (getQUEUE()._stack && getQUEUE()._stack[_loc2_]) {
+                const _loc4_ = getQUEUE()._stack[_loc2_];
                 if (_loc3_.id != _loc4_.id) {
                     _loc3_.id = _loc4_.id;
                 }
@@ -136,13 +139,13 @@ export class UI_WORKERS {
     public static Resize(): void {
         if (!Chat.flagsShouldChatDisplay() && UI_WORKERS._canUseHorizontal) {
             if (UI_WORKERS._mc) {
-                UI_WORKERS._mc.x = GLOBAL._SCREEN.x;
-                UI_WORKERS._mc.y = GLOBAL._SCREEN.bottom - 52;
+                UI_WORKERS._mc.x = getGLOBAL()._SCREEN.x;
+                UI_WORKERS._mc.y = getGLOBAL()._SCREEN.bottom - 52;
             }
         } else if (UI_WORKERS._mc) {
-            UI_WORKERS._mc.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - UI_WORKERS._workerMCOffset;
-            const _loc1_ = UI2._wildMonsterBar ? 20 : 0;
-            UI_WORKERS._mc.y = GLOBAL._SCREEN.top + 50 + _loc1_ + 30 * UI2.TimersVisible();
+            UI_WORKERS._mc.x = getGLOBAL()._SCREEN.x + getGLOBAL()._SCREEN.width - UI_WORKERS._workerMCOffset;
+            const _loc1_ = getUI2()._wildMonsterBar ? 20 : 0;
+            UI_WORKERS._mc.y = getGLOBAL()._SCREEN.top + 50 + _loc1_ + 30 * getUI2().TimersVisible();
         }
     }
 
@@ -155,14 +158,14 @@ export class UI_WORKERS {
                 } else {
                     _loc2_.mc.gotoAndStop(1);
                 }
-                if (STORE._storeData.BST) {
+                if (getSTORE()._storeData.BST) {
                     _loc2_.mc.mcIcon.gotoAndStop(2);
                 } else {
                     _loc2_.mc.mcIcon.gotoAndStop(1);
                 }
             } else {
                 _loc2_.mc.gotoAndStop(3);
-                _loc2_.mc.label_txt.htmlText = "<b>" + KEYS.Get("ui_worker_hireicon") + "</b>";
+                _loc2_.mc.label_txt.htmlText = "<b>" + getKEYS().Get("ui_worker_hireicon") + "</b>";
             }
         }
     }
@@ -173,7 +176,7 @@ export class UI_WORKERS {
         UI_WORKERS._popupmc = new bubblepopupRight();
         UI_WORKERS._popupmc.Setup(param1, param2, param3);
         UI_WORKERS._popupmc.Nudge("left");
-        UI_WORKERS._popupdo = GLOBAL._layerUI.addChild(UI_WORKERS._popupmc);
+        UI_WORKERS._popupdo = getGLOBAL()._layerUI.addChild(UI_WORKERS._popupmc);
     }
 
     public static PopupUpdate(param1: string): void {
@@ -186,15 +189,15 @@ export class UI_WORKERS {
 
     public static PopupHide(): void {
         if (UI_WORKERS._popupdo) {
-            if (UI_WORKERS._popupdo.parent == GLOBAL._layerUI) {
-                GLOBAL._layerUI.removeChild(UI_WORKERS._popupdo);
+            if (UI_WORKERS._popupdo.parent == getGLOBAL()._layerUI) {
+                getGLOBAL()._layerUI.removeChild(UI_WORKERS._popupdo);
             }
             UI_WORKERS._popupdo = null;
         }
     }
 
     public static Show(): void {
-        if (TUTORIAL._stage < 192) {
+        if (getTUTORIAL()._stage < 192) {
             UI_WORKERS._mc.visible = false;
         } else {
             UI_WORKERS._mc.visible = true;

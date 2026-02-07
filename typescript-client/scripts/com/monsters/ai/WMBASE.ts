@@ -4,22 +4,25 @@ import MovieClip from "openfl/display/MovieClip";
 import MouseEvent from "openfl/events/MouseEvent";
 
 import { SecNum } from "../../cc/utils/SecNum";
-import { InstanceManager } from "../managers/InstanceManager";
 import { TRIBES } from "./TRIBES";
 
-import { ATTACK } from "../../../ATTACK";
-import { BASE } from "../../../BASE";
-import { BFOUNDATION } from "../../../BFOUNDATION";
-import { BUILDING14 } from "../../../BUILDING14";
-import { BUILDING15 } from "../../../BUILDING15";
-import { CREATURELOCKER } from "../../../CREATURELOCKER";
-import { CREATURES } from "../../../CREATURES";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
 import { MAPROOM_DESCENT } from "../../../MAPROOM_DESCENT";
-import { QUESTS } from "../../../QUESTS";
 import { popup_aibase_success } from "../../../popup_aibase_success";
 import { popup_aibase_failure } from "../../../popup_aibase_failure";
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("../managers/InstanceManager").InstanceManager; }
+function getATTACK(): any { return require("../../../ATTACK").ATTACK; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getBFOUNDATION(): any { return require("../../../BFOUNDATION").BFOUNDATION; }
+function getBUILDING14(): any { return require("../../../BUILDING14").BUILDING14; }
+function getBUILDING15(): any { return require("../../../BUILDING15").BUILDING15; }
+function getCREATURELOCKER(): any { return require("../../../CREATURELOCKER").CREATURELOCKER; }
+function getCREATURES(): any { return require("../../../CREATURES").CREATURES; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getQUESTS(): any { return require("../../../QUESTS").QUESTS; }
+
 
 interface WMBaseData {
     baseid: number;
@@ -52,10 +55,10 @@ export class WMBASE {
     public static Setup(): void {
         WMBASE._mc = null;
         WMBASE._destroyed = false;
-        WMBASE._startTime = GLOBAL.Timestamp();
+        WMBASE._startTime = getGLOBAL().Timestamp();
         WMBASE.repairing = true;
         
-        const buildings = InstanceManager.getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
         for (const building of buildings) {
             if (building.health < building.maxHealth && (building as any)._repairing !== 1) {
                 WMBASE.repairing = false;
@@ -63,19 +66,19 @@ export class WMBASE {
         }
         
         for (let i = 0; i < 6; i++) {
-            GLOBAL._mapWidth *= 1.1;
-            GLOBAL._mapHeight *= 1.1;
-            GLOBAL._mapWidth = Math.ceil(GLOBAL._mapWidth / 20) * 20;
-            GLOBAL._mapHeight = Math.ceil(GLOBAL._mapHeight / 20) * 20;
+            getGLOBAL()._mapWidth *= 1.1;
+            getGLOBAL()._mapHeight *= 1.1;
+            getGLOBAL()._mapWidth = Math.ceil(getGLOBAL()._mapWidth / 20) * 20;
+            getGLOBAL()._mapHeight = Math.ceil(getGLOBAL()._mapHeight / 20) * 20;
         }
         
-        if (BASE.isInfernoMainYardOrOutpost && BASE._wmID || GLOBAL.InfernoMode(GLOBAL._loadmode)) {
+        if (getBASE().isInfernoMainYardOrOutpost && getBASE()._wmID || getGLOBAL().InfernoMode(getGLOBAL()._loadmode)) {
             return;
         }
         
-        const tribe = TRIBES.TribeForBaseID(BASE._wmID);
+        const tribe = TRIBES.TribeForBaseID(getBASE()._wmID);
         if (tribe && (tribe as any).behaviour === "juice") {
-            GLOBAL._hatcheryOverdrivePower = new SecNum(10);
+            getGLOBAL()._hatcheryOverdrivePower = new SecNum(10);
         }
     }
 
@@ -87,7 +90,7 @@ export class WMBASE {
 
     public static Data(data: any[]): void {
         WMBASE._descentMode = false;
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && data) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && data) {
             WMBASE._bases = [];
             for (const item of data) {
                 const baseData: WMBaseData = {
@@ -105,7 +108,7 @@ export class WMBASE {
 
     public static DescentData(data: any[]): void {
         WMBASE._descentMode = true;
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && data) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && data) {
             let level = 1;
             WMBASE._descentBases = [];
             for (const item of data) {
@@ -121,7 +124,7 @@ export class WMBASE {
                 }
             }
             WMBASE._descentBases.sort((a, b) => a.level - b.level);
-            GLOBAL.StatSet("descentLvl", level);
+            getGLOBAL().StatSet("descentLvl", level);
             MAPROOM_DESCENT._descentLvl = level;
         }
     }
@@ -144,8 +147,8 @@ export class WMBASE {
         let buildings: BFOUNDATION[] | null = null;
         
         if (!WMBASE.repairing) {
-            if (GLOBAL.Timestamp() > WMBASE._startTime + WMBASE._repairDelay) {
-                buildings = InstanceManager.getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+            if (getGLOBAL().Timestamp() > WMBASE._startTime + WMBASE._repairDelay) {
+                buildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
                 for (const building of buildings) {
                     if (building.health < building.maxHealth && (building as any)._repairing === 0) {
                         building.Repair();
@@ -155,15 +158,15 @@ export class WMBASE {
             }
         }
         
-        if (!GLOBAL._catchup && GLOBAL._bJuicer) {
-            const tribe = TRIBES.TribeForBaseID(BASE._wmID);
+        if (!getGLOBAL()._catchup && getGLOBAL()._bJuicer) {
+            const tribe = TRIBES.TribeForBaseID(getBASE()._wmID);
             if (WMBASE.tick % WMBASE.juiceQ === 0 && 
                 tribe && (tribe as any).behaviour === "juice" && 
-                GLOBAL._bJuicer.health > 0.5 * GLOBAL._bJuicer.maxHealth && 
-                GLOBAL.townHall.health > 0) {
+                getGLOBAL()._bJuicer.health > 0.5 * getGLOBAL()._bJuicer.maxHealth && 
+                getGLOBAL().townHall.health > 0) {
                 
                 if (!buildings) {
-                    buildings = InstanceManager.getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+                    buildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
                 }
                 for (const building of buildings) {
                     if ((building as any)._type === 13 && (building as any)._canFunction && (building as any)._inProduction !== "C1") {
@@ -193,22 +196,22 @@ export class WMBASE {
 
     public static JuiceOne(): void {
         const hatcheries: BFOUNDATION[] = [];
-        const buildings = InstanceManager.getInstancesByClass(BUILDING15) as BFOUNDATION[];
+        const buildings = getInstanceManager().getInstancesByClass(BUILDING15) as BFOUNDATION[];
         for (const building of buildings) {
             hatcheries.push(building);
         }
         
         let creatureId: string | null = null;
-        const monsterCount = GLOBAL.player.monsterList.length;
+        const monsterCount = getGLOBAL().player.monsterList.length;
         for (let i = 0; i < monsterCount; i++) {
-            if (GLOBAL.player.monsterList[i].numCreeps > 0) {
-                creatureId = GLOBAL.player.monsterList[i].m_creatureID;
+            if (getGLOBAL().player.monsterList[i].numCreeps > 0) {
+                creatureId = getGLOBAL().player.monsterList[i].m_creatureID;
             }
         }
         
-        if (creatureId && GLOBAL._bJuicer && GLOBAL._bJuicer.health > 0.5 * GLOBAL._bJuicer.maxHealth) {
-            GLOBAL.player.monsterListByID(creatureId).add(-1);
-            for (const creature of Object.values(CREATURES._creatures)) {
+        if (creatureId && getGLOBAL()._bJuicer && getGLOBAL()._bJuicer.health > 0.5 * getGLOBAL()._bJuicer.maxHealth) {
+            getGLOBAL().player.monsterListByID(creatureId).add(-1);
+            for (const creature of Object.values(getCREATURES()._creatures)) {
                 if ((creature as any)._creatureID === creatureId && (creature as any)._behaviour !== "juice") {
                     (creature as any).ModeJuice();
                     return;
@@ -221,12 +224,12 @@ export class WMBASE {
         const bases = WMBASE.ChooseBase();
         for (const base of bases) {
             if (base.destroyed === 1) {
-                if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+                if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
                     let index = 0;
                     if (base.tribe && base.tribe.id !== undefined) {
                         index = base.tribe.id;
                     }
-                    QUESTS.Check("destroy_tribe" + index, 1);
+                    getQUESTS().Check("destroy_tribe" + index, 1);
                 }
             }
         }
@@ -251,7 +254,7 @@ export class WMBASE {
     public static TownHallDestroyed(): void {
         // Simplified - would need popup implementation
         WMBASE._destroyed = true;
-        ATTACK.End();
+        getATTACK().End();
     }
 
     private static BaseForID(id: number): WMBaseData | { tribe?: any } {
@@ -269,14 +272,14 @@ export class WMBASE {
             WMBASE._mc.parent.removeChild(WMBASE._mc);
         }
         WMBASE._mc = null;
-        ATTACK.End();
+        getATTACK().End();
     }
 
     public static End(): void {
-        if (!GLOBAL._catchup && GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
-            const townHalls = InstanceManager.getInstancesByClass(BUILDING14) as BFOUNDATION[];
+        if (!getGLOBAL()._catchup && getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
+            const townHalls = getInstanceManager().getInstancesByClass(BUILDING14) as BFOUNDATION[];
             for (const th of townHalls) {
-                if (th.health === 0 && (th as any)._repairing === 0 && GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
+                if (th.health === 0 && (th as any)._repairing === 0 && getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
                     WMBASE.TownHallDestroyed();
                     return;
                 }
@@ -288,17 +291,17 @@ export class WMBASE {
     public static AttackFailed(): void {
         WMBASE._destroyed = false;
         // Simplified - full implementation would show popup
-        ATTACK.End();
+        getATTACK().End();
     }
 
     public static ShowMapAgain(): void {
-        ATTACK.EndB();
+        getATTACK().EndB();
     }
 
     private static ChooseBase(): WMBaseData[] {
         if (WMBASE._descentMode) {
             return WMBASE._descentBases;
-        } else if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+        } else if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
             return WMBASE._bases;
         } else {
             return WMBASE._bases;

@@ -25,12 +25,15 @@ import { MapRoom3Cell } from "./MapRoom3Cell";
 import { MapRoom3ResourcesDisplay } from "../../../MapRoom3ResourcesDisplay";
 import { Maproom3JumpPopup } from "./popups/Maproom3JumpPopup";
 
-import { BASE } from "../../../BASE";
 import { bubblepopup5 } from "../../../bubblepopup5";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { POPUPS } from "../../../POPUPS";
 import { StoneButton } from "../../../StoneButton";
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getPOPUPS(): any { return require("../../../POPUPS").POPUPS; }
+
 
 /**
  * MapRoom3WindowHUD - HUD for Map Room 3.
@@ -76,7 +79,7 @@ export class MapRoom3WindowHUD extends Sprite {
         this.m_ResourcesDisplay = new MapRoom3ResourcesDisplay();
         this.m_ResourcesDisplay.mouseEnabled = false;
         this.m_ResourcesDisplay.mouseChildren = false;
-        this.m_ResourcesDisplay.gotoAndStop(BASE.isInfernoMainYardOrOutpost ? 2 : 1);
+        this.m_ResourcesDisplay.gotoAndStop(getBASE().isInfernoMainYardOrOutpost ? 2 : 1);
         this.addChild(this.m_ResourcesDisplay);
         this.m_OptionButtonsBar = new Sprite();
         this.m_OptionButtonsBar.buttonMode = true;
@@ -173,13 +176,13 @@ export class MapRoom3WindowHUD extends Sprite {
         this.m_BookmarksBar = new Sprite();
         this.addChild(this.m_BookmarksBar);
         const resourceBookmarks = BookmarksManager.instance.GetBookmarksOfType(BookmarksManager.TYPE_PLAYER_RESOURCES);
-        const resourceHeader = KEYS.Get("mr3_resource_bookmarks_header", { "v1": resourceBookmarks.length });
+        const resourceHeader = getKEYS().Get("mr3_resource_bookmarks_header", { "v1": resourceBookmarks.length });
         this.m_ResourceBookmarksDisplayList = new BookmarksDisplayList(resourceBookmarks, this.CreateNewResourceBookmarkDisplay.bind(this), MapRoom3WindowHUD.MAX_BOOKMARKS_DISPLAY_LIST_LENGTH);
         this.m_ResourceBookmarksBar = new BookmarksExpandableFrame(this.m_ResourceBookmarksDisplayList, resourceHeader, this.m_ResourceBookmarksDisplayList.maxDisplayListHeight);
         this.m_ResourceBookmarksBar.frameHeader.addEventListener(MouseEvent.CLICK, this.m_ResourceBookmarksDisplayList.NavigateToNextBookmark.bind(this.m_ResourceBookmarksDisplayList), false, 0, true);
         this.m_BookmarksBar.addChild(this.m_ResourceBookmarksBar);
         const strongholdBookmarks = BookmarksManager.instance.GetBookmarksOfType(BookmarksManager.TYPE_PLAYER_STRONGHOLDS);
-        const strongholdHeader = KEYS.Get("mr3_stronghold_bookmarks_header", { "v1": strongholdBookmarks.length });
+        const strongholdHeader = getKEYS().Get("mr3_stronghold_bookmarks_header", { "v1": strongholdBookmarks.length });
         this.m_StrongholdBookmarksDisplayList = new BookmarksDisplayList(strongholdBookmarks, this.CreateNewStrongholdBookmarkDisplay.bind(this), MapRoom3WindowHUD.MAX_BOOKMARKS_DISPLAY_LIST_LENGTH);
         this.m_StrongholdBookmarksBar = new BookmarksExpandableFrame(this.m_StrongholdBookmarksDisplayList, strongholdHeader, this.m_StrongholdBookmarksDisplayList.maxDisplayListHeight);
         this.m_StrongholdBookmarksBar.frameHeader.addEventListener(MouseEvent.CLICK, this.m_StrongholdBookmarksDisplayList.NavigateToNextBookmark.bind(this.m_StrongholdBookmarksDisplayList), false, 0, true);
@@ -271,10 +274,10 @@ export class MapRoom3WindowHUD extends Sprite {
 
     private UpdateResourcesDisplay(): void {
         for (let i = 1; i <= 4; i++) {
-            const current = GLOBAL._resources["r" + i].Get();
-            const max = GLOBAL._resources["r" + i + "max"];
+            const current = getGLOBAL()._resources["r" + i].Get();
+            const max = getGLOBAL()._resources["r" + i + "max"];
             const ratio = Math.max(0, Math.min(1, current / max));
-            this.m_ResourcesDisplay!["resourceDisplay" + i].tR.htmlText = "<b>" + GLOBAL.FormatNumber(current) + "</b>";
+            this.m_ResourcesDisplay!["resourceDisplay" + i].tR.htmlText = "<b>" + getGLOBAL().FormatNumber(current) + "</b>";
             this.m_ResourcesDisplay!["resourceDisplay" + i].mcBar.width = MapRoom3WindowHUD.REOURCE_BAR_WIDTH * ratio;
         }
     }
@@ -288,32 +291,32 @@ export class MapRoom3WindowHUD extends Sprite {
     }
 
     private PositionResourcesDisplay(): void {
-        this.m_ResourcesDisplay!.x = GLOBAL._SCREEN.x;
-        this.m_ResourcesDisplay!.y = GLOBAL._SCREEN.y;
+        this.m_ResourcesDisplay!.x = getGLOBAL()._SCREEN.x;
+        this.m_ResourcesDisplay!.y = getGLOBAL()._SCREEN.y;
     }
 
     private PositionBookmarksBar(): void {
-        this.m_BookmarksBar!.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width * 0.5 - this.m_BookmarksBar!.width * 0.5;
-        this.m_BookmarksBar!.y = GLOBAL._SCREEN.y;
+        this.m_BookmarksBar!.x = getGLOBAL()._SCREEN.x + getGLOBAL()._SCREEN.width * 0.5 - this.m_BookmarksBar!.width * 0.5;
+        this.m_BookmarksBar!.y = getGLOBAL()._SCREEN.y;
         if (this.m_BookmarksBar!.x < this.m_ResourcesDisplay!.x + this.m_ResourcesDisplay!.width) {
             this.m_BookmarksBar!.x = this.m_ResourcesDisplay!.x + this.m_ResourcesDisplay!.width;
         }
     }
 
     private PositionOptionsButtonBar(): void {
-        this.m_OptionButtonsBar!.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - this.m_OptionButtonsBar!.width - MapRoom3WindowHUD.OPTION_BUTTONS_BAR_PADDING_RIGHT;
-        this.m_OptionButtonsBar!.y = GLOBAL._SCREEN.y + MapRoom3WindowHUD.OPTION_BUTTONS_BAR_PADDING_TOP;
+        this.m_OptionButtonsBar!.x = getGLOBAL()._SCREEN.x + getGLOBAL()._SCREEN.width - this.m_OptionButtonsBar!.width - MapRoom3WindowHUD.OPTION_BUTTONS_BAR_PADDING_RIGHT;
+        this.m_OptionButtonsBar!.y = getGLOBAL()._SCREEN.y + MapRoom3WindowHUD.OPTION_BUTTONS_BAR_PADDING_TOP;
     }
 
     public PositionLeftMenuButtonsBar(): void {
         if (this.m_LeftMenuButtonsContainerBackground === null) {
             return;
         }
-        this.m_LeftMenuButtonsBar!.x = GLOBAL._SCREEN.x;
+        this.m_LeftMenuButtonsBar!.x = getGLOBAL()._SCREEN.x;
         if (Chat._bymChat !== null && Chat._bymChat.chatBox !== null && Chat._bymChat.chatBox.background !== null) {
             this.m_LeftMenuButtonsBar!.y = Chat._bymChat.y + Chat._bymChat.chatBox.y + Chat._bymChat.chatBox.background.y - this.m_LeftMenuButtonsContainerBackground.height;
         } else {
-            this.m_LeftMenuButtonsBar!.y = GLOBAL._SCREEN.y + GLOBAL._SCREEN.height - this.m_LeftMenuButtonsContainerBackground.height;
+            this.m_LeftMenuButtonsBar!.y = getGLOBAL()._SCREEN.y + getGLOBAL()._SCREEN.height - this.m_LeftMenuButtonsContainerBackground.height;
         }
     }
 
@@ -321,7 +324,7 @@ export class MapRoom3WindowHUD extends Sprite {
         if (this.m_RightMenuButtonsContainerBackground === null) {
             return;
         }
-        this.m_RightMenuButtonsBar!.x = GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - this.m_RightMenuButtonsContainerBackground.width;
+        this.m_RightMenuButtonsBar!.x = getGLOBAL()._SCREEN.x + getGLOBAL()._SCREEN.width - this.m_RightMenuButtonsContainerBackground.width;
         if (UI_BOTTOM._missions !== null && UI_BOTTOM._missions.frame !== null) {
             this.m_RightMenuButtonsBar!.y = UI_BOTTOM._missions.y + UI_BOTTOM._missions.frame.y - this.m_RightMenuButtonsContainerBackground.height + 1;
         }
@@ -334,7 +337,7 @@ export class MapRoom3WindowHUD extends Sprite {
     protected OnJumpButtonClicked(event: MouseEvent): void {
         const popup = new Maproom3JumpPopup();
         popup.addEventListener(Maproom3JumpPopup.k_clickedJump, this.clickedJump.bind(this));
-        POPUPS.Push(popup);
+        getPOPUPS().Push(popup);
     }
 
     protected clickedJump(event: Event): void {
@@ -347,13 +350,13 @@ export class MapRoom3WindowHUD extends Sprite {
     }
 
     private OnFindBaseButtonClicked(event: MouseEvent): void {
-        if (GLOBAL._mapHome !== null) {
-            MapRoom3.mapRoom3Window.NavigateToIndex(GLOBAL._mapHome);
+        if (getGLOBAL()._mapHome !== null) {
+            MapRoom3.mapRoom3Window.NavigateToIndex(getGLOBAL()._mapHome);
         }
     }
 
     private OnEnterBaseButtonClicked(event: MouseEvent): void {
-        BASE.LoadBase(null, 0, GLOBAL._homeBaseID, GLOBAL.e_BASE_MODE.BUILD, false, EnumYardType.PLAYER);
+        getBASE().LoadBase(null, 0, getGLOBAL()._homeBaseID, getGLOBAL().e_BASE_MODE.BUILD, false, EnumYardType.PLAYER);
     }
 
     private OnZoomOutButtonClicked(event: MouseEvent): void {
@@ -369,7 +372,7 @@ export class MapRoom3WindowHUD extends Sprite {
     }
 
     private OnFullscreenButtonClicked(event: MouseEvent): void {
-        GLOBAL.goFullScreen();
+        getGLOBAL().goFullScreen();
     }
 
     private OnZoomOutButtonMouseOver(event: MouseEvent): void {
@@ -389,7 +392,7 @@ export class MapRoom3WindowHUD extends Sprite {
     }
 
     private OnFullscreenButtonMouseOver(event: MouseEvent): void {
-        const key = GLOBAL._ROOT.stage.displayState === StageDisplayState.FULL_SCREEN || GLOBAL._ROOT.stage.displayState === StageDisplayState.FULL_SCREEN_INTERACTIVE ? "settings_fullscreenexit" : "settings_fullscreenenter";
+        const key = getGLOBAL()._ROOT.stage.displayState === StageDisplayState.FULL_SCREEN || getGLOBAL()._ROOT.stage.displayState === StageDisplayState.FULL_SCREEN_INTERACTIVE ? "settings_fullscreenexit" : "settings_fullscreenenter";
         this.ShowOptionButtonToolTip(key, (event.target as Sprite).x, (event.target as Sprite).y);
     }
 
@@ -399,7 +402,7 @@ export class MapRoom3WindowHUD extends Sprite {
 
     private ShowOptionButtonToolTip(key: string, xPos: number, yPos: number): void {
         this.m_OptionButtonToolTip!.visible = true;
-        this.m_OptionButtonToolTip!.mcText.htmlText = "<b>" + KEYS.Get(key) + "</b>";
+        this.m_OptionButtonToolTip!.mcText.htmlText = "<b>" + getKEYS().Get(key) + "</b>";
         this.m_OptionButtonToolTip!.x = this.m_OptionButtonsBar!.x + xPos + 12;
         this.m_OptionButtonToolTip!.y = this.m_OptionButtonsBar!.y + yPos + 20;
         this.m_OptionButtonToolTip!.mcText.x = 10 - this.m_OptionButtonToolTip!.mcText.width;

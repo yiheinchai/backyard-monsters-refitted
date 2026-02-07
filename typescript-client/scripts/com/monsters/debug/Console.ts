@@ -3,7 +3,10 @@ import KeyboardEvent from "openfl/events/KeyboardEvent";
 
 import { ConsoleCommands } from "./ConsoleCommands";
 import { ConsoleView } from "./ConsoleView";
-import { GLOBAL } from "../../../GLOBAL";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+
 
 /**
  * Debug console for in-game command execution.
@@ -21,7 +24,7 @@ export class Console {
     constructor() {}
 
     public static initialize(stage: Stage): void {
-        if (!GLOBAL._aiDesignMode) return;
+        if (!getGLOBAL()._aiDesignMode) return;
         
         Console.view = new ConsoleView();
         Console._commands = new Map();
@@ -44,7 +47,7 @@ export class Console {
     }
 
     public static print(message: any, showSource: boolean = false, level: string = "print"): void {
-        if (!GLOBAL._aiDesignMode) return;
+        if (!getGLOBAL()._aiDesignMode) return;
         
         if (typeof message !== "string") {
             message = String(message);

@@ -3,8 +3,11 @@ import BitmapData from 'openfl/display/BitmapData';
 import MouseEvent from 'openfl/events/MouseEvent';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { WMIEXTENSIONPOPUP_CLIP } from './WMIEXTENSIONPOPUP_CLIP';
-import { KEYS } from './KEYS';
-import { POPUPS } from './POPUPS';
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+
 
 /**
  * This is the original WMIEXTENSIONPOPUP.as class for Wild Monster Invasion 1.
@@ -35,9 +38,9 @@ export class WMIEXTENSIONPOPUP_WM1 extends WMIEXTENSIONPOPUP_CLIP {
         ImageCache.GetImageWithCallBack("specialevent/monsterinvasionbannerred.jpg", bannerComplete);
         ImageCache.GetImageWithCallBack("specialevent/extension.png", imageComplete);
         this.mcFrame.Setup(true);
-        this.closeBtn.Setup(KEYS.Get("btn_close"), false, 0, 0);
+        this.closeBtn.Setup(getKEYS().Get("btn_close"), false, 0, 0);
         this.closeBtn.addEventListener(MouseEvent.CLICK, this.CloseButtonClicked.bind(this));
-        this.mcText.htmlText = KEYS.Get("wmi_extension");
+        this.mcText.htmlText = getKEYS().Get("wmi_extension");
         WMIEXTENSIONPOPUP_WM1._open = true;
     }
 
@@ -47,7 +50,7 @@ export class WMIEXTENSIONPOPUP_WM1 extends WMIEXTENSIONPOPUP_CLIP {
 
     public Hide(): void {
         WMIEXTENSIONPOPUP_WM1._open = false;
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 
     private CloseButtonClicked(param1: MouseEvent): void {

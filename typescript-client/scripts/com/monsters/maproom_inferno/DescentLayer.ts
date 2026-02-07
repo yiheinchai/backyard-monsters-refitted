@@ -18,11 +18,14 @@ import { Obstruction } from "./Obstruction";
 import { PlayerBase } from "./PlayerBase";
 import { WildMonsterBase } from "./WildMonsterBase";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGGER } from "../../../LOGGER";
 import { MAPROOM_DESCENT } from "../../../MAPROOM_DESCENT";
 import { MAPROOM_INFERNO } from "../../../MAPROOM_INFERNO";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+
 
 /**
  * DescentLayer - Inferno map room descent layer.
@@ -119,13 +122,13 @@ export class DescentLayer extends Sprite {
     }
 
     public Tick(): void {
-        if (this._lastUpdated > 0 && GLOBAL.Timestamp() - this._lastUpdated > 15 && !this._getting) {
+        if (this._lastUpdated > 0 && getGLOBAL().Timestamp() - this._lastUpdated > 15 && !this._getting) {
             this.Get();
         }
         if (this._frameNumber % 40 === 0) {
             let msg = "";
-            if (this._BRIDGE.GLOBAL._flags.attacking === 0) {
-                msg = KEYS.Get("map_msg_attackingdisabled");
+            if (this._BRIDGE.getGLOBAL()._flags.attacking === 0) {
+                msg = getKEYS().Get("map_msg_attackingdisabled");
             }
             if (msg) {
                 // Display message
@@ -143,10 +146,10 @@ export class DescentLayer extends Sprite {
         const obj: any = {
             "error": 0,
             "bases": [],
-            "currenttime": GLOBAL.Timestamp()
+            "currenttime": getGLOBAL().Timestamp()
         };
         try {
-            GLOBAL.WaitHide();
+            getGLOBAL().WaitHide();
             if (obj.error === 0) {
                 obj.wmbases = [];
                 const aib = this._BRIDGE.WMBASE._descentBases;
@@ -163,7 +166,7 @@ export class DescentLayer extends Sprite {
                                     _o.wm = 1;
                                     _o.friend = 0;
                                     _o.pic = aib[ai].tribe.profilepic;
-                                    _o.basename = KEYS.Get("ai_tribe", { "v1": aib[ai].tribe.name });
+                                    _o.basename = getKEYS().Get("ai_tribe", { "v1": aib[ai].tribe.name });
                                     _o.destroyed = aib[ai].destroyed;
                                     obj.wmbases.push(_o);
                                 }
@@ -171,26 +174,26 @@ export class DescentLayer extends Sprite {
                         }
                     }
                 } catch (e: any) {
-                    LOGGER.Log("err", "DescentLayer WM: " + e.message);
+                    getLOGGER().Log("err", "DescentLayer WM: " + e.message);
                 }
                 try {
                     const start = getTimer();
                     this.Create(obj);
                     this._getting = false;
-                    this._lastUpdated = GLOBAL.Timestamp() + Math.floor(Math.random() * 5);
+                    this._lastUpdated = getGLOBAL().Timestamp() + Math.floor(Math.random() * 5);
                     this.dispatchEvent(new Event(Event.COMPLETE));
                 } catch (e: any) {
-                    LOGGER.Log("err", "DescentLayer Create: " + e.message);
+                    getLOGGER().Log("err", "DescentLayer Create: " + e.message);
                 }
             } else {
-                LOGGER.Log("err", "MAPROOMPOPUP.Get: " + obj.error);
-                GLOBAL.ErrorMessage("MAPROOMPOPUP.Get 1");
+                getLOGGER().Log("err", "MAPROOMPOPUP.Get: " + obj.error);
+                getGLOBAL().ErrorMessage("MAPROOMPOPUP.Get 1");
             }
             if (MiniMap.getInstance()) {
                 MiniMap.getInstance().Update(this.basesForeign, this.basesWM);
             }
         } catch (e: any) {
-            LOGGER.Log("err", "DescentLayer: " + e.message);
+            getLOGGER().Log("err", "DescentLayer: " + e.message);
         }
     }
 
@@ -263,7 +266,7 @@ export class DescentLayer extends Sprite {
                     for (const bd of this.baseData) {
                         if (Math.floor(bd.baseid.Get()) === base.baseid) {
                             bd.Update(base);
-                            bd.online = base.saved >= GLOBAL.Timestamp() - 62;
+                            bd.online = base.saved >= getGLOBAL().Timestamp() - 62;
                             exists = true;
                             break;
                         }

@@ -1,17 +1,20 @@
 import Event from "openfl/events/Event";
 
-import { InstanceManager } from "../../managers/InstanceManager";
 import { ReplayableEvent } from "../ReplayableEvent";
 import { AttackDefend } from "../attackDefend/AttackDefend";
 
-import { BASE } from "../../../../BASE";
-import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { GLOBAL } from "../../../../GLOBAL";
-import { KEYS } from "../../../../KEYS";
-import { LOGGER } from "../../../../LOGGER";
-import { SOUNDS } from "../../../../SOUNDS";
-import { UI2 } from "../../../../UI2";
-import { WMATTACK } from "../../../../WMATTACK";
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("../../managers/InstanceManager").InstanceManager; }
+function getBASE(): any { return require("../../../../BASE").BASE; }
+function getBFOUNDATION(): any { return require("../../../../BFOUNDATION").BFOUNDATION; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../../LOGGER").LOGGER; }
+function getSOUNDS(): any { return require("../../../../SOUNDS").SOUNDS; }
+function getUI2(): any { return require("../../../../UI2").UI2; }
+function getWMATTACK(): any { return require("../../../../WMATTACK").WMATTACK; }
+
+
 
 /**
  * MonsterInvasion - base class for wave-based monster invasion events.
@@ -53,9 +56,9 @@ export class MonsterInvasion extends ReplayableEvent {
     protected endWave(): void {
         let totalHealth = 0;
         let totalMaxHealth = 0;
-        const buildings = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION);
         for (const bld of buildings) {
-            if (!((bld as BFOUNDATION)._class === "trap" && (bld as BFOUNDATION)._fired || (bld as BFOUNDATION)._type === 53 && (bld as BFOUNDATION)._expireTime < GLOBAL.Timestamp())) {
+            if (!((bld as BFOUNDATION)._class === "trap" && (bld as BFOUNDATION)._fired || (bld as BFOUNDATION)._type === 53 && (bld as BFOUNDATION)._expireTime < getGLOBAL().Timestamp())) {
                 if ((bld as BFOUNDATION)._class !== "wall") {
                     totalHealth += (bld as BFOUNDATION).health;
                     totalMaxHealth += (bld as BFOUNDATION).maxHealth;
@@ -64,7 +67,7 @@ export class MonsterInvasion extends ReplayableEvent {
         }
         const damagePercent = 100 - 100 / totalMaxHealth * totalHealth;
         if (damagePercent < 90) {
-            LOGGER.StatB({
+            getLOGGER().StatB({
                 "st1": "ERS",
                 "st2": this._name,
                 "st3": "Wave_Num_" + this._wavesDestroyed,
@@ -76,7 +79,7 @@ export class MonsterInvasion extends ReplayableEvent {
             this.score = this._score + 1;
             this._numAttempts = 0;
         } else {
-            LOGGER.StatB({
+            getLOGGER().StatB({
                 "st1": "ERS",
                 "st2": this._name,
                 "st3": "Wave_Num_" + this._wavesDestroyed,
@@ -84,7 +87,7 @@ export class MonsterInvasion extends ReplayableEvent {
             }, "Attack_Failed");
         }
         this.cleanupWave();
-        WMATTACK.CleanUpLite();
+        getWMATTACK().CleanUpLite();
     }
 
     public override exportData(): Record<string, any> {
@@ -106,7 +109,7 @@ export class MonsterInvasion extends ReplayableEvent {
         }
         ++this._saveTimer;
         if (!(this._saveTimer % 120)) {
-            BASE.Save(0, false, true);
+            getBASE().Save(0, false, true);
         }
         if (this._waitTimer) {
             --this._waitTimer;
@@ -116,7 +119,7 @@ export class MonsterInvasion extends ReplayableEvent {
     }
 
     protected setupNextWave(): void {
-        if (!WMATTACK._inProgress && this.progress < 1) {
+        if (!getWMATTACK()._inProgress && this.progress < 1) {
             this._isActive = true;
             const waveArray = this.getWaveArray();
             this._curSend = waveArray![this._wavesDestroyed % waveArray!.length];
@@ -133,7 +136,7 @@ export class MonsterInvasion extends ReplayableEvent {
         let spawned: Array<any> = [];
         while (this._internalWaveIndex < this._curSend.length && !this._waitTimer) {
             if (!(typeof this._curSend[this._internalWaveIndex] === "number")) {
-                spawned = spawned.concat(WMATTACK.SpawnWave(this._curSend[this._internalWaveIndex], this._randDir));
+                spawned = spawned.concat(getWMATTACK().SpawnWave(this._curSend[this._internalWaveIndex], this._randDir));
             } else {
                 this._waitTimer = this._curSend[this._internalWaveIndex] * 20;
             }
@@ -144,21 +147,21 @@ export class MonsterInvasion extends ReplayableEvent {
     }
 
     private postSend(): void {
-        if (BASE.isInfernoMainYardOrOutpost) {
-            SOUNDS.PlayMusic("musicipanic");
+        if (getBASE().isInfernoMainYardOrOutpost) {
+            getSOUNDS().PlayMusic("musicipanic");
         } else {
-            SOUNDS.PlayMusic("musicpanic");
+            getSOUNDS().PlayMusic("musicpanic");
         }
-        WMATTACK.AttackB();
-        WMATTACK.AttackC();
-        BASE._blockSave = false;
-        UI2.Show("surrender");
-        if (UI2._scareAway) {
-            UI2._scareAway.addEventListener("scareAway", this.Surrender.bind(this));
+        getWMATTACK().AttackB();
+        getWMATTACK().AttackC();
+        getBASE()._blockSave = false;
+        getUI2().Show("surrender");
+        if (getUI2()._scareAway) {
+            getUI2()._scareAway.addEventListener("scareAway", this.Surrender.bind(this));
         }
-        WMATTACK.setEnd(this.endWave.bind(this));
-        WMATTACK._isAI = false;
-        WMATTACK._inProgress = true;
+        getWMATTACK().setEnd(this.endWave.bind(this));
+        getWMATTACK()._isAI = false;
+        getWMATTACK()._inProgress = true;
     }
 
     private cleanupWave(): void {
@@ -166,7 +169,7 @@ export class MonsterInvasion extends ReplayableEvent {
         this._curSend = [];
         this._internalWaveIndex = 0;
         this._currentAttackers = [];
-        WMATTACK.setEnd();
+        getWMATTACK().setEnd();
     }
 
     public Surrender(event: Event): void {
@@ -177,8 +180,8 @@ export class MonsterInvasion extends ReplayableEvent {
             }
         }
         this.cleanupWave();
-        WMATTACK.CleanUpLite();
-        LOGGER.StatB({
+        getWMATTACK().CleanUpLite();
+        getLOGGER().StatB({
             "st1": "ERS",
             "st2": this._name,
             "st3": "Wave_Num_" + this._wavesDestroyed,
@@ -187,7 +190,7 @@ export class MonsterInvasion extends ReplayableEvent {
     }
 
     protected StartRepairs(): void {
-        const buildings = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION);
         for (const bld of buildings) {
             if ((bld as BFOUNDATION).health < (bld as BFOUNDATION).maxHealth && (bld as BFOUNDATION)._repairing === 0) {
                 (bld as BFOUNDATION).Repair();
@@ -200,10 +203,10 @@ export class MonsterInvasion extends ReplayableEvent {
         if (!(this instanceof AttackDefend)) {
             this.score = this._wavesDestroyed;
         }
-        WMATTACK.enabled = false;
+        getWMATTACK().enabled = false;
         this._isActive = false;
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && BASE.isMainYard) {
-            this._buttonCopy = KEYS.Get("btn_next");
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && getBASE().isMainYard) {
+            this._buttonCopy = getKEYS().Get("btn_next");
         } else {
             this._buttonCopy = null;
         }
@@ -216,7 +219,7 @@ export class MonsterInvasion extends ReplayableEvent {
     public override pressedActionButton(): void {
         this.setupNextWave();
         ++this._numAttempts;
-        LOGGER.StatB({
+        getLOGGER().StatB({
             "st1": "ERS",
             "st2": this._name,
             "st3": "Wave_Num_" + this._wavesDestroyed,

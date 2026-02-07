@@ -1,17 +1,20 @@
-import { MonsterBase } from './com/monsters/monsters/MonsterBase';
 import { CreepBase } from './com/monsters/monsters/creeps/CreepBase';
 import Point from 'openfl/geom/Point';
-import { BASE } from './BASE';
-import { BFOUNDATION } from './BFOUNDATION';
-import { BUILDING27 } from './BUILDING27';
-import { CREEPS } from './CREEPS';
-import { GLOBAL } from './GLOBAL';
-import { GRID } from './GRID';
-import { MAP } from './MAP';
 import { MONSTERBAITER } from './MONSTERBAITER';
-import { SOUNDS } from './SOUNDS';
-import { UI2 } from './UI2';
-import { WMATTACK } from './WMATTACK';
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBUILDING27(): any { return require("./BUILDING27").BUILDING27; }
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getGRID(): any { return require("./GRID").GRID; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getUI2(): any { return require("./UI2").UI2; }
+function getWMATTACK(): any { return require("./WMATTACK").WMATTACK; }
+
 
 /**
  * CUSTOMATTACKS - Custom Attack Management
@@ -39,71 +42,71 @@ export class CUSTOMATTACKS {
     }
 
     public static TrojanHorse(): void {
-        if (!BUILDING27._exists && !BASE.isInfernoMainYardOrOutpost) {
-            const mapHeight: number = GLOBAL._mapHeight;
+        if (!getBUILDING27()._exists && !getBASE().isInfernoMainYardOrOutpost) {
+            const mapHeight: number = getGLOBAL()._mapHeight;
             const yPos: number = -800 - (mapHeight - 800) / 2;
-            const isoPos: Point = GRID.ToISO(-70, yPos, 0);
-            const building: BFOUNDATION = BASE.addBuildingC(27);
-            ++BASE._buildingCount;
+            const isoPos: Point = getGRID().ToISO(-70, yPos, 0);
+            const building: BFOUNDATION = getBASE().addBuildingC(27);
+            ++getBASE()._buildingCount;
             building.Setup({
                 t: 27,
                 X: -70,
                 Y: yPos,
-                id: BASE._buildingCount
+                id: getBASE()._buildingCount
             });
-            MAP.FocusTo(isoPos.x, isoPos.y, 2);
-            BASE.Save(0, false, true);
+            getMAP().FocusTo(isoPos.x, isoPos.y, 2);
+            getBASE().Save(0, false, true);
         }
     }
 
     public static CustomAttack(attackData: any[], autoAttack: boolean = false): any[] {
         CUSTOMATTACKS._started = true;
-        WMATTACK._isAI = false;
-        WMATTACK.AttackB();
-        UI2.Show("scareAway");
-        if (UI2._scareAway) {
-            UI2._scareAway.addEventListener("scareAway", MONSTERBAITER.End);
+        getWMATTACK()._isAI = false;
+        getWMATTACK().AttackB();
+        getUI2().Show("scareAway");
+        if (getUI2()._scareAway) {
+            getUI2()._scareAway.addEventListener("scareAway", MONSTERBAITER.End);
         }
-        const spawned: any[] = WMATTACK.SpawnA(attackData);
+        const spawned: any[] = getWMATTACK().SpawnA(attackData);
         const firstMonster: MonsterBase = spawned[0][0];
-        MAP.FocusTo(firstMonster.x, firstMonster.y, 2);
+        getMAP().FocusTo(firstMonster.x, firstMonster.y, 2);
         return spawned;
     }
 
     public static WMIAttack(attackData: any[]): any[] {
         CUSTOMATTACKS._started = true;
-        WMATTACK._isAI = false;
-        WMATTACK.AttackB();
-        UI2.Show("scareAway");
-        if (UI2._scareAway) {
-            UI2._scareAway.addEventListener("scareAway", MONSTERBAITER.End);
+        getWMATTACK()._isAI = false;
+        getWMATTACK().AttackB();
+        getUI2().Show("scareAway");
+        if (getUI2()._scareAway) {
+            getUI2()._scareAway.addEventListener("scareAway", MONSTERBAITER.End);
         }
-        return WMATTACK.SpawnA(attackData);
+        return getWMATTACK().SpawnA(attackData);
     }
 
     public static TutorialAttack(): void {
         CUSTOMATTACKS._started = true;
-        let spawned: any[] = WMATTACK.SpawnA([["C2", "bounce", 1, 180, -10, 0, 1]]);
-        spawned = WMATTACK.SpawnA([["C2", "bounce", 2, 190, -5, 0, 1]]);
-        spawned = WMATTACK.SpawnA([["C2", "bounce", 2, 190, 10, 0, 1]]);
-        spawned = WMATTACK.SpawnA([["C2", "bounce", 1, 250, 5, 0, 1]]);
-        spawned = WMATTACK.SpawnA([["C2", "bounce", 2, 190, 0, 0, 1]]);
+        let spawned: any[] = getWMATTACK().SpawnA([["C2", "bounce", 1, 180, -10, 0, 1]]);
+        spawned = getWMATTACK().SpawnA([["C2", "bounce", 2, 190, -5, 0, 1]]);
+        spawned = getWMATTACK().SpawnA([["C2", "bounce", 2, 190, 10, 0, 1]]);
+        spawned = getWMATTACK().SpawnA([["C2", "bounce", 1, 250, 5, 0, 1]]);
+        spawned = getWMATTACK().SpawnA([["C2", "bounce", 2, 190, 0, 0, 1]]);
         const monster = spawned[0][0];
-        const distance: number = Point.distance(new Point(GLOBAL._bTower.x, GLOBAL._bTower.y), new Point(monster.x, monster.y));
-        if (BASE.isInfernoMainYardOrOutpost) {
-            SOUNDS.PlayMusic("musicipanic");
+        const distance: number = Point.distance(new Point(getGLOBAL()._bTower.x, getGLOBAL()._bTower.y), new Point(monster.x, monster.y));
+        if (getBASE().isInfernoMainYardOrOutpost) {
+            getSOUNDS().PlayMusic("musicipanic");
         } else {
-            SOUNDS.PlayMusic("musicpanic");
+            getSOUNDS().PlayMusic("musicpanic");
         }
-        WMATTACK.AttackB();
-        WMATTACK.AttackC();
-        MAP.FocusTo(GLOBAL._bTower.x, GLOBAL._bTower.y, Math.floor(distance / 100), 0, 0, false);
-        for (const creepId in CREEPS._creeps) {
-            const creep = CREEPS._creeps[creepId] as CreepBase;
+        getWMATTACK().AttackB();
+        getWMATTACK().AttackC();
+        getMAP().FocusTo(getGLOBAL()._bTower.x, getGLOBAL()._bTower.y, Math.floor(distance / 100), 0, 0, false);
+        for (const creepId in getCREEPS()._creeps) {
+            const creep = getCREEPS()._creeps[creepId] as CreepBase;
             creep.maxHealthProperty.value = 1;
             creep.setHealth(1);
         }
-        WMATTACK._isAI = false;
-        WMATTACK._inProgress = true;
+        getWMATTACK()._isAI = false;
+        getWMATTACK()._inProgress = true;
     }
 }

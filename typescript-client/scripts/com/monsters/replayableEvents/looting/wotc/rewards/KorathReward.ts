@@ -2,10 +2,13 @@ import { SecNum } from "../../../../../cc/utils/SecNum";
 import { ChampionBase } from "../../../../monsters/champions/ChampionBase";
 import { Reward } from "../../../../rewarding/Reward";
 
-import { GLOBAL } from "../../../../../../GLOBAL";
-import { BASE } from "../../../../../../BASE";
-import { CREATURES } from "../../../../../../CREATURES";
-import { CHAMPIONCAGE } from "../../../../../../CHAMPIONCAGE";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../../../GLOBAL").GLOBAL; }
+function getBASE(): any { return require("../../../../../../BASE").BASE; }
+function getCREATURES(): any { return require("../../../../../../CREATURES").CREATURES; }
+function getCHAMPIONCAGE(): any { return require("../../../../../../CHAMPIONCAGE").CHAMPIONCAGE; }
+
+
 
 /**
  * Korath reward - War of the Champs reward that grants Korath champion.
@@ -27,24 +30,24 @@ export class KorathReward extends Reward {
     }
 
     protected override onApplication(): void {
-        CHAMPIONCAGE._guardians[KorathReward.k_KORATH_TYPE].props.powerLevel = this._value;
-        const champion: ChampionBase = CREATURES.getGuardian(4);
+        getCHAMPIONCAGE()._guardians[KorathReward.k_KORATH_TYPE].props.powerLevel = this._value;
+        const champion: ChampionBase = getCREATURES().getGuardian(4);
         if (champion) {
             champion._powerLevel.Set(this._value);
         }
-        const guardianData: any = CHAMPIONCAGE.GetGuardianData(4);
+        const guardianData: any = getCHAMPIONCAGE().GetGuardianData(4);
         if (guardianData) {
             guardianData.pl = new SecNum(this._value);
         }
     }
 
     public override removed(): void {
-        CHAMPIONCAGE._guardians[KorathReward.k_KORATH_TYPE].props.powerLevel = 0;
-        const cage: CHAMPIONCAGE = GLOBAL._bCage;
-        if (Boolean(cage) && Boolean(CHAMPIONCAGE.GetGuardianData(4))) {
+        getCHAMPIONCAGE()._guardians[KorathReward.k_KORATH_TYPE].props.powerLevel = 0;
+        const cage: CHAMPIONCAGE = getGLOBAL()._bCage;
+        if (Boolean(cage) && Boolean(getCHAMPIONCAGE().GetGuardianData(4))) {
             cage.RemoveGuardian(4);
         }
-        const guardianData: any = CHAMPIONCAGE.GetGuardianData(4);
+        const guardianData: any = getCHAMPIONCAGE().GetGuardianData(4);
         if (guardianData) {
             guardianData.pl = new SecNum(0);
         }
@@ -55,7 +58,7 @@ export class KorathReward extends Reward {
     }
 
     public override canBeApplied(): boolean {
-        return !(GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD || BASE.isInfernoMainYardOrOutpost);
+        return !(getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD || getBASE().isInfernoMainYardOrOutpost);
     }
 
     public override importData(data: Record<string, any>): void {

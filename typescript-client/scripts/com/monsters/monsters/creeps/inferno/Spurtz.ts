@@ -1,10 +1,13 @@
 import Point from "openfl/geom/Point";
 
-import { MonsterBase } from "../../MonsterBase";
 import { CreepBase } from "../CreepBase";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
-import { EFFECTS } from "../../../../../EFFECTS";
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+function getBFOUNDATION(): any { return require("../../../../../BFOUNDATION").BFOUNDATION; }
+function getEFFECTS(): any { return require("../../../../../EFFECTS").EFFECTS; }
+
+
 
 /**
  * Spurtz - inferno creep that burns on death.
@@ -28,6 +31,6 @@ export class Spurtz extends CreepBase {
     }
 
     public override deathSplat(): void {
-        EFFECTS.Burn(this._tmpPoint.x, this._tmpPoint.y);
+        getEFFECTS().Burn(this._tmpPoint.x, this._tmpPoint.y);
     }
 }

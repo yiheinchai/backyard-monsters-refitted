@@ -6,18 +6,21 @@ import Event from "openfl/events/Event";
 import MouseEvent from "openfl/events/MouseEvent";
 import Rectangle from "openfl/geom/Rectangle";
 import { BFOUNDATION } from "./BFOUNDATION";
-import { GLOBAL } from "./GLOBAL";
-import { SOUNDS } from "./SOUNDS";
-import { BASE } from "./BASE";
-import { KEYS } from "./KEYS";
-import { POPUPS } from "./POPUPS";
-import { CREATURELOCKER } from "./CREATURELOCKER";
-import { CREEPS } from "./CREEPS";
-import { STORE } from "./STORE";
-import { LOGGER } from "./LOGGER";
 import { MONSTERLABPOPUP } from "./MONSTERLABPOPUP";
 import { popup_building } from "./popup_building";
 import { popup_monster } from "./popup_monster";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+
 
 export class MONSTERLAB extends BFOUNDATION {
     public static _open: boolean = false;
@@ -42,11 +45,11 @@ export class MONSTERLAB extends BFOUNDATION {
 
     public static Hide(param1: MouseEvent = null): void {
         if (MONSTERLAB._open) {
-            GLOBAL.BlockerRemove();
-            SOUNDS.Play("close");
-            BASE.BuildingDeselect();
+            getGLOBAL().BlockerRemove();
+            getSOUNDS().Play("close");
+            getBASE().BuildingDeselect();
             MONSTERLAB._open = false;
-            GLOBAL._layerWindows.removeChild(MONSTERLAB._mcPopup);
+            getGLOBAL()._layerWindows.removeChild(MONSTERLAB._mcPopup);
             MONSTERLAB._mcPopup = null;
         }
     }
@@ -70,7 +73,7 @@ export class MONSTERLAB extends BFOUNDATION {
     }
 
     public static GetShinyCost(param1: string, param2: number): number {
-        const _loc3_: number = STORE.GetTimeCost(MONSTERLAB.GetTimeCost(param1, param2), false);
+        const _loc3_: number = getSTORE().GetTimeCost(MONSTERLAB.GetTimeCost(param1, param2), false);
         const _loc4_: number = Math.ceil(Math.pow(Math.sqrt(MONSTERLAB.GetPuttyCost(param1, param2) / 2), 0.75));
         return _loc3_ + _loc4_;
     }
@@ -200,7 +203,7 @@ export class MONSTERLAB extends BFOUNDATION {
 
     override Tick(param1: number): void {
         super.Tick(param1);
-        if (Boolean(this._upgrading) && GLOBAL.Timestamp() >= this._upgradeFinishTime.Get()) {
+        if (Boolean(this._upgrading) && getGLOBAL().Timestamp() >= this._upgradeFinishTime.Get()) {
             this.FinishMonsterPowerup();
         }
         if (MONSTERLAB._open) {
@@ -210,8 +213,8 @@ export class MONSTERLAB extends BFOUNDATION {
 
     override TickFast(param1: Event = null): void {
         super.TickFast(param1);
-        if (this._upgrading && GLOBAL._render && this._countdownBuild.Get() + this._countdownUpgrade.Get() == 0) {
-            if ((GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode == "help" || GLOBAL.mode == "view") && this._frameNumber % 3 == 0 && CREEPS._creepCount == 0) {
+        if (this._upgrading && getGLOBAL()._render && this._countdownBuild.Get() + this._countdownUpgrade.Get() == 0) {
+            if ((getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode == "help" || getGLOBAL().mode == "view") && this._frameNumber % 3 == 0 && getCREEPS()._creepCount == 0) {
                 this.AnimFrame(true);
             } else if (this._frameNumber % 10 == 0) {
                 this.AnimFrame(true);
@@ -223,26 +226,26 @@ export class MONSTERLAB extends BFOUNDATION {
     override Constructed(): void {
         let mc: MovieClip = null;
         super.Constructed();
-        GLOBAL._bLab = this;
+        getGLOBAL()._bLab = this;
         
-        if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD && BASE.isMainYard) {
+        if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD && getBASE().isMainYard) {
             const Brag = (): void => {
-                GLOBAL.CallJS("sendFeed", ["monsterlab-construct", KEYS.Get("pop_labbuilt_streamtitle"), KEYS.Get("pop_labbuilt_streambody"), "build-monsterlab.png"]);
-                POPUPS.Next();
+                getGLOBAL().CallJS("sendFeed", ["monsterlab-construct", getKEYS().Get("pop_labbuilt_streamtitle"), getKEYS().Get("pop_labbuilt_streambody"), "build-monsterlab.png"]);
+                getPOPUPS().Next();
             };
             mc = new popup_building();
-            (mc as any).tA.htmlText = "<b>" + KEYS.Get("pop_labbuilt_title") + "</b>";
-            (mc as any).tB.htmlText = KEYS.Get("pop_labbuilt_body");
+            (mc as any).tA.htmlText = "<b>" + getKEYS().Get("pop_labbuilt_title") + "</b>";
+            (mc as any).tB.htmlText = getKEYS().Get("pop_labbuilt_body");
             (mc as any).bPost.SetupKey("btn_brag");
             (mc as any).bPost.addEventListener(MouseEvent.CLICK, Brag);
             (mc as any).bPost.Highlight = true;
-            POPUPS.Push(mc, null, null, null, "build.v2.png");
+            getPOPUPS().Push(mc, null, null, null, "build.v2.png");
         }
     }
 
     override Upgrade(): boolean {
         if (this._upgrading) {
-            GLOBAL.Message(KEYS.Get("lab_err_cantupgrade"));
+            getGLOBAL().Message(getKEYS().Get("lab_err_cantupgrade"));
             return false;
         }
         return super.Upgrade();
@@ -250,9 +253,9 @@ export class MONSTERLAB extends BFOUNDATION {
 
     override Recycle(): void {
         if (this._upgrading) {
-            GLOBAL.Message(KEYS.Get("lab_err_cantrecycle"));
+            getGLOBAL().Message(getKEYS().Get("lab_err_cantrecycle"));
         } else {
-            GLOBAL._bAcademy = null;
+            getGLOBAL()._bAcademy = null;
             super.Recycle();
         }
     }
@@ -260,34 +263,34 @@ export class MONSTERLAB extends BFOUNDATION {
     public Show(): void {
         if (!MONSTERLAB._open) {
             MONSTERLAB._open = true;
-            GLOBAL.BlockerAdd();
-            MONSTERLAB._mcPopup = GLOBAL._layerWindows.addChild(new MONSTERLABPOPUP()) as MONSTERLABPOPUP;
+            getGLOBAL().BlockerAdd();
+            MONSTERLAB._mcPopup = getGLOBAL()._layerWindows.addChild(new MONSTERLABPOPUP()) as MONSTERLABPOPUP;
             MONSTERLAB._mcPopup.Center();
             MONSTERLAB._mcPopup.ScaleUp();
         }
     }
 
     public CanPowerup(param1: string, param2: number): any {
-        if (GLOBAL.player.m_upgrades[param1] == null) {
+        if (getGLOBAL().player.m_upgrades[param1] == null) {
             return { "error": true, "errorString": "Not Unlocked" };
         }
-        if (Boolean(GLOBAL.player.m_upgrades[param1]) && GLOBAL.player.m_upgrades[param1].powerup == 3) {
+        if (Boolean(getGLOBAL().player.m_upgrades[param1]) && getGLOBAL().player.m_upgrades[param1].powerup == 3) {
             return { "error": true, "errorString": "Fully Powered Up" };
         }
         if (param2 > this._lvl.Get()) {
             return { "error": true, "errorString": "Upgrade Monster Lab" };
         }
-        if (CREATURELOCKER._lockerData[param1] == null) {
+        if (getCREATURELOCKER()._lockerData[param1] == null) {
             return { "error": true, "errorString": "Not Unlocked" };
         }
-        if (CREATURELOCKER._lockerData[param1].t < 2) {
+        if (getCREATURELOCKER()._lockerData[param1].t < 2) {
             return { "error": true, "errorString": "Not Unlocked" };
         }
-        if (GLOBAL.player.m_upgrades[param1].level < param2 + 1) {
+        if (getGLOBAL().player.m_upgrades[param1].level < param2 + 1) {
             return { "error": true, "errorString": "Needs Training" };
         }
-        if (!BASE.Charge(3, MONSTERLAB._powerupProps[param1].costs[param2 - 1][0], true)) {
-            return { "error": true, "errorString": KEYS.Get("acad_err_putty") };
+        if (!getBASE().Charge(3, MONSTERLAB._powerupProps[param1].costs[param2 - 1][0], true)) {
+            return { "error": true, "errorString": getKEYS().Get("acad_err_putty") };
         }
         return { "error": false };
     }
@@ -296,12 +299,12 @@ export class MONSTERLAB extends BFOUNDATION {
         if (this.CanPowerup(param1, param2).error) {
             return;
         }
-        BASE.Charge(3, MONSTERLAB.GetPuttyCost(param1, param2));
+        getBASE().Charge(3, MONSTERLAB.GetPuttyCost(param1, param2));
         this._upgrading = param1;
-        this._upgradeFinishTime = new SecNum(GLOBAL.Timestamp() + MONSTERLAB.GetTimeCost(param1, param2));
+        this._upgradeFinishTime = new SecNum(getGLOBAL().Timestamp() + MONSTERLAB.GetTimeCost(param1, param2));
         this._upgradeLevel = param2;
-        BASE.Save();
-        LOGGER.Stat([49, param1.substr(1), param2]);
+        getBASE().Save();
+        getLOGGER().Stat([49, param1.substr(1), param2]);
     }
 
     public FinishMonsterPowerup(): void {
@@ -311,24 +314,24 @@ export class MONSTERLAB extends BFOUNDATION {
         const wasUpgrading: string = this._upgrading;
         this._upgradeFinishTime = new SecNum(0);
         
-        if (GLOBAL.player && GLOBAL.player.m_upgrades && GLOBAL.player.m_upgrades[this._upgrading]) {
-            GLOBAL.player.m_upgrades[this._upgrading].powerup = this._upgradeLevel;
+        if (getGLOBAL().player && getGLOBAL().player.m_upgrades && getGLOBAL().player.m_upgrades[this._upgrading]) {
+            getGLOBAL().player.m_upgrades[this._upgrading].powerup = this._upgradeLevel;
         }
-        LOGGER.Stat([50, this._upgrading.substr(1), this._upgradeLevel]);
+        getLOGGER().Stat([50, this._upgrading.substr(1), this._upgradeLevel]);
         
-        if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD) {
             const Post = (): void => {
                 if (this._upgradeLevel == 1) {
-                    GLOBAL.CallJS("sendFeed", ["lab-powerup", KEYS.Get(MONSTERLAB._powerupProps[this._streamUpgradeCache].stream[0]), KEYS.Get(MONSTERLAB._powerupProps[this._streamUpgradeCache].stream[1], { "v1": powerName }), MONSTERLAB._powerupProps[this._streamUpgradeCache].streampic, 0]);
+                    getGLOBAL().CallJS("sendFeed", ["lab-powerup", getKEYS().Get(MONSTERLAB._powerupProps[this._streamUpgradeCache].stream[0]), getKEYS().Get(MONSTERLAB._powerupProps[this._streamUpgradeCache].stream[1], { "v1": powerName }), MONSTERLAB._powerupProps[this._streamUpgradeCache].streampic, 0]);
                 } else {
-                    GLOBAL.CallJS("sendFeed", ["lab-powerup", KEYS.Get(MONSTERLAB._powerupProps[this._streamUpgradeCache].stream[0]), KEYS.Get(MONSTERLAB._powerupProps[this._streamUpgradeCache].stream[2], { "v1": this._upgradeLevel }), MONSTERLAB._powerupProps[this._streamUpgradeCache].streampic, 0]);
+                    getGLOBAL().CallJS("sendFeed", ["lab-powerup", getKEYS().Get(MONSTERLAB._powerupProps[this._streamUpgradeCache].stream[0]), getKEYS().Get(MONSTERLAB._powerupProps[this._streamUpgradeCache].stream[2], { "v1": this._upgradeLevel }), MONSTERLAB._powerupProps[this._streamUpgradeCache].streampic, 0]);
                 }
-                POPUPS.Next();
+                getPOPUPS().Next();
             };
-            monsterName = KEYS.Get(CREATURELOCKER._creatures[this._upgrading].name);
-            powerName = KEYS.Get(MONSTERLAB._powerupProps[this._upgrading].name);
+            monsterName = getKEYS().Get(getCREATURELOCKER()._creatures[this._upgrading].name);
+            powerName = getKEYS().Get(MONSTERLAB._powerupProps[this._upgrading].name);
             popupMC = new popup_monster();
-            popupMC.tText.htmlText = "<b>" + KEYS.Get("lab_powerup_complete", {
+            popupMC.tText.htmlText = "<b>" + getKEYS().Get("lab_powerup_complete", {
                 "v1": powerName,
                 "v2": this._upgradeLevel
             }) + "</b>";
@@ -336,34 +339,34 @@ export class MONSTERLAB extends BFOUNDATION {
             popupMC.bAction.addEventListener(MouseEvent.CLICK, Post);
             popupMC.bAction.Highlight = true;
             popupMC.bSpeedup.visible = false;
-            POPUPS.Push(popupMC, null, null, null, "" + this._upgrading + "-LAB-150.png");
+            getPOPUPS().Push(popupMC, null, null, null, "" + this._upgrading + "-LAB-150.png");
             this._streamUpgradeCache = this._upgrading;
         }
         this._upgrading = null;
         if (MONSTERLAB._open) {
             (MONSTERLAB._mcPopup as MONSTERLABPOPUP).Setup(wasUpgrading);
         }
-        BASE.Save();
+        getBASE().Save();
     }
 
     public CancelMonsterPowerup(param1: MouseEvent): void {
         if (this._upgrading) {
-            GLOBAL.Message(KEYS.Get("lab_confirmcancel", {
-                "v1": KEYS.Get(CREATURELOCKER._creatures[this._upgrading].name),
-                "v2": KEYS.Get(MONSTERLAB._powerupProps[this._upgrading].name)
-            }), KEYS.Get("lab_confirmcancel_btn"), this.CancelMonsterPowerupB.bind(this));
+            getGLOBAL().Message(getKEYS().Get("lab_confirmcancel", {
+                "v1": getKEYS().Get(getCREATURELOCKER()._creatures[this._upgrading].name),
+                "v2": getKEYS().Get(MONSTERLAB._powerupProps[this._upgrading].name)
+            }), getKEYS().Get("lab_confirmcancel_btn"), this.CancelMonsterPowerupB.bind(this));
         }
     }
 
     public CancelMonsterPowerupB(): void {
-        POPUPS.Next();
-        BASE.Charge(3, MONSTERLAB.GetPuttyCost(this._upgrading, this._upgradeLevel) * -1);
+        getPOPUPS().Next();
+        getBASE().Charge(3, MONSTERLAB.GetPuttyCost(this._upgrading, this._upgradeLevel) * -1);
         const _loc1_: string = this._upgrading;
         this._upgrading = null;
         this._upgradeLevel = 0;
         this._upgradeFinishTime = new SecNum(0);
         MONSTERLAB._mcPopup.Setup(_loc1_);
-        BASE.Save();
+        getBASE().Save();
     }
 
     public InstantMonsterPowerup(param1: string, param2: number): void {
@@ -373,26 +376,26 @@ export class MONSTERLAB extends BFOUNDATION {
         const level: number = param2;
         const instantCost: number = MONSTERLAB.GetShinyCost(id, level);
         
-        if (BASE._credits.Get() < instantCost) {
-            POPUPS.DisplayGetShiny();
+        if (getBASE()._credits.Get() < instantCost) {
+            getPOPUPS().DisplayGetShiny();
             return;
         }
-        GLOBAL.player.m_upgrades[id].powerup = level;
+        getGLOBAL().player.m_upgrades[id].powerup = level;
         this._upgradeLevel = level;
-        LOGGER.Stat([48, id.substr(1), level]);
+        getLOGGER().Stat([48, id.substr(1), level]);
         
-        if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD) {
             const Post = (): void => {
                 if (this._upgradeLevel == 1) {
-                    GLOBAL.CallJS("sendFeed", ["lab-powerup", KEYS.Get(MONSTERLAB._powerupProps[this._streamUpgradeCache].stream[0]), KEYS.Get(MONSTERLAB._powerupProps[this._streamUpgradeCache].stream[1], { "v1": powerName }), MONSTERLAB._powerupProps[this._streamUpgradeCache].streampic, 0]);
+                    getGLOBAL().CallJS("sendFeed", ["lab-powerup", getKEYS().Get(MONSTERLAB._powerupProps[this._streamUpgradeCache].stream[0]), getKEYS().Get(MONSTERLAB._powerupProps[this._streamUpgradeCache].stream[1], { "v1": powerName }), MONSTERLAB._powerupProps[this._streamUpgradeCache].streampic, 0]);
                 } else {
-                    GLOBAL.CallJS("sendFeed", ["lab-powerup", KEYS.Get(MONSTERLAB._powerupProps[this._streamUpgradeCache].stream[0]), KEYS.Get(MONSTERLAB._powerupProps[this._streamUpgradeCache].stream[2], { "v1": this._upgradeLevel }), MONSTERLAB._powerupProps[this._streamUpgradeCache].streampic, 0]);
+                    getGLOBAL().CallJS("sendFeed", ["lab-powerup", getKEYS().Get(MONSTERLAB._powerupProps[this._streamUpgradeCache].stream[0]), getKEYS().Get(MONSTERLAB._powerupProps[this._streamUpgradeCache].stream[2], { "v1": this._upgradeLevel }), MONSTERLAB._powerupProps[this._streamUpgradeCache].streampic, 0]);
                 }
-                POPUPS.Next();
+                getPOPUPS().Next();
             };
-            powerName = KEYS.Get(MONSTERLAB._powerupProps[id].name);
+            powerName = getKEYS().Get(MONSTERLAB._powerupProps[id].name);
             popupMC = new popup_monster();
-            popupMC.tText.htmlText = "<b>" + KEYS.Get("lab_powerup_complete", {
+            popupMC.tText.htmlText = "<b>" + getKEYS().Get("lab_powerup_complete", {
                 "v1": powerName,
                 "v2": level
             }) + "</b>";
@@ -400,13 +403,13 @@ export class MONSTERLAB extends BFOUNDATION {
             popupMC.bAction.addEventListener(MouseEvent.CLICK, Post);
             popupMC.bAction.Highlight = true;
             popupMC.bSpeedup.visible = false;
-            POPUPS.Push(popupMC, null, null, null, "" + id + "-LAB-150.png");
+            getPOPUPS().Push(popupMC, null, null, null, "" + id + "-LAB-150.png");
             this._streamUpgradeCache = id;
         }
         if (this._upgrading) {
             this._upgrading = null;
         }
-        BASE.Purchase("IPU", instantCost, "monsterlab");
+        getBASE().Purchase("IPU", instantCost, "monsterlab");
     }
 
     override Setup(param1: any): void {
@@ -421,7 +424,7 @@ export class MONSTERLAB extends BFOUNDATION {
             this._upgradeLevel = param1.upl;
         }
         if (this._countdownBuild.Get() <= 0) {
-            GLOBAL._bLab = this;
+            getGLOBAL()._bLab = this;
         }
     }
 

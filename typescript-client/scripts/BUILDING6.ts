@@ -6,10 +6,13 @@ import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { BSTORAGE } from './BSTORAGE';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { POPUPS } from './POPUPS';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+
 
 /**
  * BUILDING6 - Resource Silo (Storage Building)
@@ -34,12 +37,12 @@ export class BUILDING6 extends BSTORAGE {
     }
 
     public override Update(force: boolean = false): void {
-        if (GLOBAL._render || force) {
+        if (getGLOBAL()._render || force) {
             let totalMax: number = 0;
             let totalCurrent: number = 0;
             for (let i = 1; i < 5; i++) {
-                totalMax += BASE._resources["r" + i + "max"];
-                totalCurrent += BASE._resources["r" + i].Get();
+                totalMax += getBASE()._resources["r" + i + "max"];
+                totalCurrent += getBASE()._resources["r" + i].Get();
             }
             this._animTickTarget = Math.floor(26 / totalMax * totalCurrent);
         }
@@ -77,11 +80,11 @@ export class BUILDING6 extends BSTORAGE {
 
     public override Description(): void {
         super.Description();
-        this._specialDescription = KEYS.Get("building_silo_upgrade_desc1", { v1: GLOBAL.FormatNumber(this._buildingProps.capacity[this._lvl.Get() - 1]) });
+        this._specialDescription = getKEYS().Get("building_silo_upgrade_desc1", { v1: getGLOBAL().FormatNumber(this._buildingProps.capacity[this._lvl.Get() - 1]) });
         this._buildingDescription = this._specialDescription;
         if (this._upgradeCosts !== "") {
-            this._upgradeDescription = KEYS.Get("building_silo_upgrade_desc2", { 
-                v1: GLOBAL.FormatNumber(this._buildingProps.capacity[this._lvl.Get()] - this._buildingProps.capacity[this._lvl.Get() - 1]) 
+            this._upgradeDescription = getKEYS().Get("building_silo_upgrade_desc2", { 
+                v1: getGLOBAL().FormatNumber(this._buildingProps.capacity[this._lvl.Get()] - this._buildingProps.capacity[this._lvl.Get() - 1]) 
             });
         }
     }

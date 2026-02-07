@@ -1,13 +1,16 @@
 import { ITargetable } from './com/monsters/interfaces/ITargetable';
 import { DummyTarget } from './com/monsters/monsters/DummyTarget';
-import { MonsterBase } from './com/monsters/monsters/MonsterBase';
-import { PATHING } from './com/monsters/pathing/PATHING';
 import Point from 'openfl/geom/Point';
-import { ATTACK } from './ATTACK';
-import { BASE } from './BASE';
-import { BFOUNDATION } from './BFOUNDATION';
-import { GLOBAL } from './GLOBAL';
-import { GRID } from './GRID';
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getPATHING(): any { return require("./com/monsters/pathing/PATHING").PATHING; }
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getGRID(): any { return require("./GRID").GRID; }
+
 
 /**
  * Targeting - Target Acquisition System
@@ -52,7 +55,7 @@ export class Targeting {
         
         let cartesian: Point = Targeting._cartesianCache[cacheKey];
         if (!cartesian) {
-            cartesian = GRID.FromISO(isoPoint.x, isoPoint.y);
+            cartesian = getGRID().FromISO(isoPoint.x, isoPoint.y);
             if (!cartesian) return null;
             Targeting._cartesianCache[cacheKey] = cartesian;
         }
@@ -131,11 +134,11 @@ export class Targeting {
         const results: any[] = [];
         if (!location) return [];
         const radiusSq: number = radius * radius;
-        for (const key in BASE._buildingsAll) {
-            const building: BFOUNDATION = BASE._buildingsAll[key];
+        for (const key in getBASE()._buildingsAll) {
+            const building: BFOUNDATION = getBASE()._buildingsAll[key];
             if (!building) continue;
             if (building.isTargetable && building !== ignoreBuilding) {
-                const distSq: number = GLOBAL.QuickDistanceSquared(location, new Point(building.x, building.y));
+                const distSq: number = getGLOBAL().QuickDistanceSquared(location, new Point(building.x, building.y));
                 if (distSq < radiusSq) {
                     results.push({ creep: building, dist: Math.sqrt(distSq) });
                 }
@@ -156,7 +159,7 @@ export class Targeting {
     public static getCreepsInRange(radius: number, location: Point, targetFlags: number = 0, 
                                     ignoreCreep: MonsterBase | null = null): any[] {
         if (!location) return [];
-        Targeting._currentFrame = GLOBAL._frameNumber;
+        Targeting._currentFrame = getGLOBAL()._frameNumber;
         const cacheKey: string = radius + "_" + Math.floor(location.x) + "_" + Math.floor(location.y) + "_" + targetFlags + "_" + (ignoreCreep ? ignoreCreep._id : "null");
         
         if (Targeting._rangeQueryCache[cacheKey] && Targeting._rangeQueryFrameStamp[cacheKey] === Targeting._currentFrame) {
@@ -167,7 +170,7 @@ export class Targeting {
             return [];
         }
         
-        location = PATHING.FromISO(location);
+        location = getPATHING().FromISO(location);
         if (!location) return [];
         
         const cellX: number = Math.floor(location.x / Targeting._CELLSIZE);
@@ -186,9 +189,9 @@ export class Targeting {
                     if (monster.health > 0 && monster.isTargetable && monster !== ignoreCreep && 
                         Targeting.canHitCreep(targetFlags, monster.defenseFlags)) {
                         const hp: number = monster.health;
-                        const pos: Point = PATHING.FromISO(monster._tmpPoint);
+                        const pos: Point = getPATHING().FromISO(monster._tmpPoint);
                         if (!pos) continue;
-                        const distSq: number = GLOBAL.QuickDistanceSquared(location, pos);
+                        const distSq: number = getGLOBAL().QuickDistanceSquared(location, pos);
                         if (distSq < radiusSq) {
                             results.push({ creep: monster, dist: Math.sqrt(distSq), pos: pos, hp: hp });
                         }
@@ -213,7 +216,7 @@ export class Targeting {
     public static getDeadCreeps(location: Point, radius: number, targetFlags: number = 0, 
                                  ignoreCreep: MonsterBase | null = null): any[] {
         if (!location) return [];
-        location = PATHING.FromISO(location);
+        location = getPATHING().FromISO(location);
         if (!location) return [];
         
         const cellX: number = Math.floor(location.x / Targeting._CELLSIZE);
@@ -232,9 +235,9 @@ export class Targeting {
                     if (monster.health <= 0 && monster._visible && monster.isTargetable && 
                         monster !== ignoreCreep && Targeting.canHitCreep(targetFlags, monster.defenseFlags)) {
                         const hp: number = monster.health;
-                        const pos: Point = PATHING.FromISO(monster._tmpPoint);
+                        const pos: Point = getPATHING().FromISO(monster._tmpPoint);
                         if (!pos) continue;
-                        const distSq: number = GLOBAL.QuickDistanceSquared(location, pos);
+                        const distSq: number = getGLOBAL().QuickDistanceSquared(location, pos);
                         if (distSq < radiusSq) {
                             results.push({ creep: monster, dist: Math.sqrt(distSq), pos: pos, hp: hp });
                         }
@@ -272,7 +275,7 @@ export class Targeting {
                 dist = target.dist;
                 entity = target.creep;
             } else {
-                dist = GLOBAL.QuickDistance(location, new Point(target.x, target.y));
+                dist = getGLOBAL().QuickDistance(location, new Point(target.x, target.y));
                 entity = target;
             }
             
@@ -286,7 +289,7 @@ export class Targeting {
                 if (actualDamage < damage / 5) {
                     actualDamage = damage / 5;
                 }
-                if (entity instanceof BFOUNDATION) {
+                if (entity instanceof getBFOUNDATION()) {
                     (entity as BFOUNDATION).modifyHealth(actualDamage, new DummyTarget(location.x, location.y));
                 } else {
                     actualDamage *= entity._damageMult;
@@ -295,7 +298,7 @@ export class Targeting {
                 totalDamage += actualDamage;
             }
         }
-        ATTACK.Damage(location.x, location.y, totalDamage);
+        getATTACK().Damage(location.x, location.y, totalDamage);
         return totalDamage;
     }
 

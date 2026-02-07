@@ -6,13 +6,16 @@ import { SecNum } from './com/cc/utils/SecNum';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { InfernoTransferPopup_CLIP } from './InfernoTransferPopup_CLIP';
 import { InfernoTransferMonster_CLIP } from './InfernoTransferMonster_CLIP';
-import { CREATURELOCKER } from './CREATURELOCKER';
-import { CREATURES } from './CREATURES';
-import { GLOBAL } from './GLOBAL';
-import { HOUSING } from './HOUSING';
-import { INFERNOPORTAL } from './INFERNOPORTAL';
-import { KEYS } from './KEYS';
 import { POPUPSETTINGS } from './POPUPSETTINGS';
+
+// Lazy imports to break circular dependency chains
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getHOUSING(): any { return require("./HOUSING").HOUSING; }
+function getINFERNOPORTAL(): any { return require("./INFERNOPORTAL").INFERNOPORTAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+
 
 export class INFERNO_ASCENSION_POPUP extends InfernoTransferPopup_CLIP {
     private readonly NUM_MONSTER_ENTRIES: number = 15;
@@ -28,10 +31,10 @@ export class INFERNO_ASCENSION_POPUP extends InfernoTransferPopup_CLIP {
         this._monsterUi = new Array(this.NUM_MONSTER_ENTRIES);
         this._monsterUiIds = new Array(this.NUM_MONSTER_ENTRIES);
         this._newHousingUsed = new SecNum(0);
-        this.title_txt.text = KEYS.Get("ascdlg_title");
-        this.capacity_desc_txt.text = KEYS.Get("ascdlg_capacity_desc");
-        this.transfer_action_txt.text = KEYS.Get("ascdlg_transfer_action");
-        this.transfer_desc_txt.text = KEYS.Get("ascdlg_transfer_desc");
+        this.title_txt.text = getKEYS().Get("ascdlg_title");
+        this.capacity_desc_txt.text = getKEYS().Get("ascdlg_capacity_desc");
+        this.transfer_action_txt.text = getKEYS().Get("ascdlg_transfer_action");
+        this.transfer_desc_txt.text = getKEYS().Get("ascdlg_transfer_desc");
         this.bTransfer.SetupKey("ascdlg_transfer_btn");
         this.bTransfer.addEventListener(MouseEvent.CLICK, () => {
             this.AscendQueuedMonsters();
@@ -62,11 +65,11 @@ export class INFERNO_ASCENSION_POPUP extends InfernoTransferPopup_CLIP {
         let queued: number;
         let index: number;
         const monsterOrder: string[] = [];
-        this._newHousingUsed.Set(HOUSING._housingUsed.Get());
-        for (id in INFERNOPORTAL._ascensionData) {
-            total = INFERNOPORTAL._ascensionData[id];
+        this._newHousingUsed.Set(getHOUSING()._housingUsed.Get());
+        for (id in getINFERNOPORTAL()._ascensionData) {
+            total = getINFERNOPORTAL()._ascensionData[id];
             if (total.Get() > 0) {
-                monsterSize = CREATURES.GetProperty(id, "cStorage", 0, true);
+                monsterSize = getCREATURES().GetProperty(id, "cStorage", 0, true);
                 queued = this._queuedForAscension[id] ? Number(this._queuedForAscension[id].Get()) : 0;
                 this._newHousingUsed.Add(queued * monsterSize);
                 monsterOrder.push(id);
@@ -79,20 +82,20 @@ export class INFERNO_ASCENSION_POPUP extends InfernoTransferPopup_CLIP {
         while (index < this.NUM_MONSTER_ENTRIES && index < monsterOrder.length) {
             id = String(monsterOrder[index]);
             queued = this._queuedForAscension[id] ? Number(this._queuedForAscension[id].Get()) : 0;
-            total = INFERNOPORTAL._ascensionData[id];
+            total = getINFERNOPORTAL()._ascensionData[id];
             if (this._monsterUiIds[index] != id) {
-                this._monsterUi[index].tName.text = KEYS.Get(CREATURELOCKER._creatures[id].name);
+                this._monsterUi[index].tName.text = getKEYS().Get(getCREATURELOCKER()._creatures[id].name);
                 this._monsterUiIds[index] = id;
                 ImageCache.GetImageWithCallBack("monsters/" + id + "-medium.jpg", this.IconLoaded.bind(this), true, 1, "", [this._monsterUi[index].mcIcon]);
             }
-            monsterSize = CREATURES.GetProperty(id, "cStorage", 0, true);
+            monsterSize = getCREATURES().GetProperty(id, "cStorage", 0, true);
             this._monsterUi[index].visible = true;
-            this._monsterUi[index].tAvailable.text = KEYS.Get("ascdlg_monsters_available", {
+            this._monsterUi[index].tAvailable.text = getKEYS().Get("ascdlg_monsters_available", {
                 "v1": queued,
                 "v2": total.Get()
             });
             this._monsterUi[index].tAvailable.text = queued + " / " + total.Get();
-            this._monsterUi[index].bAdd.Enabled = queued < total.Get() && this._newHousingUsed.Get() + monsterSize <= HOUSING._housingCapacity.Get();
+            this._monsterUi[index].bAdd.Enabled = queued < total.Get() && this._newHousingUsed.Get() + monsterSize <= getHOUSING()._housingCapacity.Get();
             this._monsterUi[index].bRemove.Enabled = queued > 0;
             index++;
         }
@@ -100,12 +103,12 @@ export class INFERNO_ASCENSION_POPUP extends InfernoTransferPopup_CLIP {
             this._monsterUi[index].visible = false;
             index++;
         }
-        const storedRatio = HOUSING._housingUsed.Get() / HOUSING._housingCapacity.Get();
-        const queuedRatio = this._newHousingUsed.Get() / HOUSING._housingCapacity.Get();
+        const storedRatio = getHOUSING()._housingUsed.Get() / getHOUSING()._housingCapacity.Get();
+        const queuedRatio = this._newHousingUsed.Get() / getHOUSING()._housingCapacity.Get();
         (this.mcStorage as any).mcBar.width = this._storageWidth * storedRatio;
         (this.mcStorage as any).mcBarB.x = this._storageWidth * storedRatio;
         (this.mcStorage as any).mcBarB.width = this._storageWidth * (queuedRatio - storedRatio);
-        this.tStorage.htmlText = "<b>" + GLOBAL.FormatNumber(this._newHousingUsed.Get()) + " / " + GLOBAL.FormatNumber(HOUSING._housingCapacity.Get()) + " (" + Math.floor(queuedRatio * 100) + "%)</b>";
+        this.tStorage.htmlText = "<b>" + getGLOBAL().FormatNumber(this._newHousingUsed.Get()) + " / " + getGLOBAL().FormatNumber(getHOUSING()._housingCapacity.Get()) + " (" + Math.floor(queuedRatio * 100) + "%)</b>";
     }
 
     public IconLoaded(param1: string, param2: BitmapData, param3: any[] = null): void {
@@ -115,14 +118,14 @@ export class INFERNO_ASCENSION_POPUP extends InfernoTransferPopup_CLIP {
     }
 
     public QueueMonster(param1: string): boolean {
-        const _loc2_ = CREATURES.GetProperty(param1, "cStorage", 0, true);
+        const _loc2_ = getCREATURES().GetProperty(param1, "cStorage", 0, true);
         if (!this._queuedForAscension[param1]) {
             this._queuedForAscension[param1] = new SecNum(0);
         }
-        if (this._newHousingUsed.Get() + _loc2_ > HOUSING._housingCapacity.Get()) {
+        if (this._newHousingUsed.Get() + _loc2_ > getHOUSING()._housingCapacity.Get()) {
             return false;
         }
-        if (this._queuedForAscension[param1].Get() < INFERNOPORTAL._ascensionData[param1].Get()) {
+        if (this._queuedForAscension[param1].Get() < getINFERNOPORTAL()._ascensionData[param1].Get()) {
             this._queuedForAscension[param1].Add(1);
             this.Update();
             return true;
@@ -142,27 +145,27 @@ export class INFERNO_ASCENSION_POPUP extends InfernoTransferPopup_CLIP {
     public AscendQueuedMonsters(): void {
         let _loc1_: SecNum;
         const _loc2_ = 1;
-        const _loc3_ = INFERNOPORTAL.building.x + 100;
-        const _loc4_ = INFERNOPORTAL.building.y + 100;
+        const _loc3_ = getINFERNOPORTAL().building.x + 100;
+        const _loc4_ = getINFERNOPORTAL().building.y + 100;
         const _loc5_ = new Point();
         let counter = 1;
         for (const _loc6_ in this._queuedForAscension) {
             _loc1_ = this._queuedForAscension[_loc6_];
             while (_loc1_.Get() > 0) {
                 _loc1_.Add(-1);
-                INFERNOPORTAL._ascensionData[_loc6_].Add(-1);
+                getINFERNOPORTAL()._ascensionData[_loc6_].Add(-1);
                 _loc5_.x = _loc3_ + Math.log(counter) * 16 * Math.cos(counter);
                 _loc5_.y = _loc4_ - Math.log(counter) * 16 * Math.sin(Math.log(counter) * 4);
-                HOUSING.HousingStore(_loc6_, _loc5_);
+                getHOUSING().HousingStore(_loc6_, _loc5_);
                 counter++;
             }
         }
-        INFERNOPORTAL.PageAscensionData();
+        getINFERNOPORTAL().PageAscensionData();
         this.Hide();
     }
 
     public Hide(): void {
-        INFERNOPORTAL.HideAscendMonstersDialog();
+        getINFERNOPORTAL().HideAscendMonstersDialog();
     }
 
     public Center(): void {

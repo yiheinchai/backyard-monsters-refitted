@@ -1,7 +1,6 @@
 import MouseEvent from "openfl/events/MouseEvent";
 
 import { AttackEvent } from "../events/AttackEvent";
-import { BuildingEvent } from "../events/BuildingEvent";
 import { FrontPageGraphic } from "../frontPage/FrontPageGraphic";
 import { Message } from "../frontPage/messages/Message";
 import { IHandler } from "../interfaces/IHandler";
@@ -20,15 +19,19 @@ import { Reward } from "../rewarding/Reward";
 import { RewardHandler } from "../rewarding/RewardHandler";
 import { RewardLibrary } from "../rewarding/RewardLibrary";
 
-import { BASE } from "../../../BASE";
-import { CHAMPIONCAGE } from "../../../CHAMPIONCAGE";
 import { CHAMPIONCAGEPOPUP } from "../../../CHAMPIONCAGEPOPUP";
-import { CREATURES } from "../../../CREATURES";
-import { GLOBAL } from "../../../GLOBAL";
-import { LOGGER } from "../../../LOGGER";
-import { POPUPS } from "../../../POPUPS";
-import { TUTORIAL } from "../../../TUTORIAL";
-import { UI2 } from "../../../UI2";
+
+// Lazy imports to break circular dependency chains
+function getBuildingEvent(): any { return require("../events/BuildingEvent").BuildingEvent; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getCHAMPIONCAGE(): any { return require("../../../CHAMPIONCAGE").CHAMPIONCAGE; }
+function getCREATURES(): any { return require("../../../CREATURES").CREATURES; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+function getPOPUPS(): any { return require("../../../POPUPS").POPUPS; }
+function getTUTORIAL(): any { return require("../../../TUTORIAL").TUTORIAL; }
+function getUI2(): any { return require("../../../UI2").UI2; }
+
 
 /**
  * KOTHHandler - King of the Hill event handler for Krallen champion.
@@ -65,7 +68,7 @@ export class KOTHHandler implements IHandler {
     }
 
     public initialize(data: Record<string, any> | null = null): void {
-        if (!GLOBAL._flags[this.name] || GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD || !BASE.isMainYard) {
+        if (!getGLOBAL()._flags[this.name] || getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD || !getBASE().isMainYard) {
             return;
         }
         if (data) {
@@ -74,7 +77,7 @@ export class KOTHHandler implements IHandler {
         if (this.doesQualify) {
             CHAMPIONCAGEPOPUP._kothEnabled = true;
         }
-        GLOBAL.eventDispatcher.addEventListener(AttackEvent.ATTACK_OVER, this.endedAttack.bind(this));
+        getGLOBAL().eventDispatcher.addEventListener(AttackEvent.ATTACK_OVER, this.endedAttack.bind(this));
         this.updtateEvent();
         this.checkWarnings();
         this.checkEventReset();
@@ -85,34 +88,34 @@ export class KOTHHandler implements IHandler {
 
     private checkEventReset(): void {
         let message: Message | null = null;
-        const lastScore = GLOBAL.StatGet(this._LAST_LOOT_SCORE_LABEL);
+        const lastScore = getGLOBAL().StatGet(this._LAST_LOOT_SCORE_LABEL);
         if (this._totalLoot < lastScore) {
             if (this._wins) {
                 if (!this.hasWonPermanantly) {
                     message = new KOTHRewardMessage(this._wins > 1);
                 }
             } else {
-                message = new KOTHEndMessage(GLOBAL.StatGet(this._LAST_TIER_LABEL) >= 1);
+                message = new KOTHEndMessage(getGLOBAL().StatGet(this._LAST_TIER_LABEL) >= 1);
             }
             if (message) {
-                POPUPS.Push(new FrontPageGraphic(message));
+                getPOPUPS().Push(new FrontPageGraphic(message));
             }
         }
     }
 
     private checkQuotaPopups(): void {
-        const lastTier = this.getTier(GLOBAL.StatGet(this._LAST_LOOT_SCORE_LABEL));
+        const lastTier = this.getTier(getGLOBAL().StatGet(this._LAST_LOOT_SCORE_LABEL));
         const currentTier = this.getTier(this._totalLoot);
         if (currentTier > lastTier && currentTier <= this._lootChangeMessages.length) {
             const message = new this._lootChangeMessages[currentTier - 1]();
-            POPUPS.Push(new FrontPageGraphic(message));
+            getPOPUPS().Push(new FrontPageGraphic(message));
         }
     }
 
     protected endedAttack(event: AttackEvent): void {
         const loot = event.loot;
         const totalLoot = loot.r1.Get() + loot.r2.Get() + loot.r3.Get() + loot.r4.Get();
-        LOGGER.StatB({ "st1": "KOTH", "value": totalLoot.toString() }, "Loot");
+        getLOGGER().StatB({ "st1": "KOTH", "value": totalLoot.toString() }, "Loot");
     }
 
     protected destroyedMaproom(event: BuildingEvent): void {
@@ -124,9 +127,9 @@ export class KOTHHandler implements IHandler {
     private checkWarnings(): void {
         if (this._timeToReset <= this._WARNING_DURATION) {
             if (this._tier && this._totalLoot < this.minimumLootRequiredToUnlockKrallen() && !this.hasWonPermanantly) {
-                POPUPS.Push(new FrontPageGraphic(new KrallenAtRiskMessage()));
+                getPOPUPS().Push(new FrontPageGraphic(new KrallenAtRiskMessage()));
             } else if (!this._tier && this._totalLoot >= this.minimumLootRequiredToUnlockKrallen() * 0.9) {
-                POPUPS.Push(new FrontPageGraphic(new KrallenWinSoonMessage()));
+                getPOPUPS().Push(new FrontPageGraphic(new KrallenWinSoonMessage()));
             }
         }
     }
@@ -150,13 +153,13 @@ export class KOTHHandler implements IHandler {
                 RewardHandler.instance.removeReward(reward);
                 reward = null!;
                 if (logChampion) {
-                    LOGGER.StatB({ "st1": "KOTH", "st2": "Champion", "st3": "Removed" }, this.tier + "_" + (this.wins - 1));
+                    getLOGGER().StatB({ "st1": "KOTH", "st2": "Champion", "st3": "Removed" }, this.tier + "_" + (this.wins - 1));
                 }
             }
         } else if (value) {
             reward = RewardLibrary.getRewardByID(rewardID);
             if (logChampion) {
-                LOGGER.StatB({ "st1": "KOTH", "st2": "Champion", "st3": "Awarded" }, this.tier + "_" + (this.wins - 1));
+                getLOGGER().StatB({ "st1": "KOTH", "st2": "Champion", "st3": "Awarded" }, this.tier + "_" + (this.wins - 1));
             }
         }
         if (reward) {
@@ -167,15 +170,15 @@ export class KOTHHandler implements IHandler {
     }
 
     private addHUDGraphic(): void {
-        if (!this.doesQualify || GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD || !BASE.isMainYard) {
+        if (!this.doesQualify || getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD || !getBASE().isMainYard) {
             return;
         }
         let krallenLevel = 0;
-        if (CREATURES._krallen) {
-            krallenLevel = CREATURES._krallen._level.Get();
+        if (getCREATURES()._krallen) {
+            krallenLevel = getCREATURES()._krallen._level.Get();
         }
         this._hudGraphic = new KOTHHUDGraphic(Boolean(this.tier), krallenLevel);
-        UI2._top.addIcon(this._hudGraphic);
+        getUI2()._top.addIcon(this._hudGraphic);
         this._hudGraphic.addEventListener(MouseEvent.CLICK, this.clickedHUDGraphic.bind(this));
     }
 
@@ -183,12 +186,12 @@ export class KOTHHandler implements IHandler {
         if (!this._hudGraphic) {
             return;
         }
-        UI2._top.removeIcon(this._hudGraphic);
+        getUI2()._top.removeIcon(this._hudGraphic);
         this._hudGraphic.removeEventListener(MouseEvent.CLICK, this.clickedHUDGraphic.bind(this));
     }
 
     protected clickedHUDGraphic(event: MouseEvent): void {
-        CHAMPIONCAGE.ShowKrallenTab();
+        getCHAMPIONCAGE().ShowKrallenTab();
     }
 
     public get name(): string {
@@ -201,13 +204,13 @@ export class KOTHHandler implements IHandler {
         this._totalLoot = data.loot;
         this._timeToReset = data.countdown;
         if (this.hasWonPermanantly) {
-            this._lootThresholds.push(GLOBAL._flags["krallen_special1_award_threshold"] - GLOBAL._flags["krallen_award_threshold"]);
+            this._lootThresholds.push(getGLOBAL()._flags["krallen_special1_award_threshold"] - getGLOBAL()._flags["krallen_award_threshold"]);
         } else {
-            this._lootThresholds.push(GLOBAL._flags["krallen_special1_award_threshold"]);
+            this._lootThresholds.push(getGLOBAL()._flags["krallen_special1_award_threshold"]);
         }
-        this._lootThresholds.push(GLOBAL._flags["krallen_award_threshold"]);
+        this._lootThresholds.push(getGLOBAL()._flags["krallen_award_threshold"]);
         this._lootThresholds.push(0);
-        this._lootingDuration = GLOBAL._flags["krallen_duration"] * 86400;
+        this._lootingDuration = getGLOBAL()._flags["krallen_duration"] * 86400;
     }
 
     public minimumLootRequiredToUnlockKrallen(): number {
@@ -235,12 +238,12 @@ export class KOTHHandler implements IHandler {
     }
 
     public get doesQualify(): boolean {
-        return TUTORIAL.hasFinished && Boolean(GLOBAL.townHall) && GLOBAL.townHall._lvl.Get() >= 6;
+        return getTUTORIAL().hasFinished && Boolean(getGLOBAL().townHall) && getGLOBAL().townHall._lvl.Get() >= 6;
     }
 
     public exportData(): Record<string, any> | null {
-        GLOBAL.StatSet(this._LAST_LOOT_SCORE_LABEL, this._totalLoot, false);
-        GLOBAL.StatSet(this._LAST_TIER_LABEL, this._tier, false);
+        getGLOBAL().StatSet(this._LAST_LOOT_SCORE_LABEL, this._totalLoot, false);
+        getGLOBAL().StatSet(this._LAST_TIER_LABEL, this._tier, false);
         return null;
     }
 

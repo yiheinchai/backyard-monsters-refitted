@@ -4,10 +4,13 @@ import { ITargetable } from "../../../interfaces/ITargetable";
 import { Component } from "../Component";
 import { ProjectileUtils } from "../../../projectiles/ProjectileUtils";
 import { Projectilev2 } from "../../../projectiles/Projectilev2";
-import { Targeting } from "../../../../../Targeting";
 
-import { GLOBAL } from "../../../../../GLOBAL";
 import { LoanShark } from "../../../../../org/kissmyas/utils/loanshark/LoanShark";
+
+// Lazy imports to break circular dependency chains
+function getTargeting(): any { return require("../../../../../Targeting").Targeting; }
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+
 
 /**
  * Ranged attack - fires projectiles at targets within range.
@@ -42,18 +45,18 @@ export class RangedAttack extends Component {
     }
 
     public override tick(delta: number = 1): void {
-        if (GLOBAL.Timestamp() >= this.m_timeRechargeIsComplete) {
+        if (getGLOBAL().Timestamp() >= this.m_timeRechargeIsComplete) {
             const targets: Array<ITargetable> | null = this.getValidTargetsInRange(this.m_range, new Point(this.owner.x, this.owner.y), this.m_targetFlags);
             if (Boolean(targets) && targets!.length > 0) {
                 this.fireAt(targets![0]);
-                this.m_timeRechargeIsComplete = GLOBAL.Timestamp() + this.m_rechargeDuration;
+                this.m_timeRechargeIsComplete = getGLOBAL().Timestamp() + this.m_rechargeDuration;
             }
         }
     }
 
     protected getValidTargetsInRange(range: number, position: Point, targetFlags: number): Array<ITargetable> | null {
         let validTargets: Array<ITargetable> | null = null;
-        const targets: Array<any> = Targeting.getTargetsInRange(range, position, targetFlags);
+        const targets: Array<any> = getTargeting().getTargetsInRange(range, position, targetFlags);
         for (let i = 0; i < targets.length; i++) {
             if (!validTargets) {
                 validTargets = [];

@@ -1,8 +1,6 @@
 import { AttackEvent } from "../../../events/AttackEvent";
 import { KeywordMessage } from "../../../frontPage/messages/KeywordMessage";
 import { Message } from "../../../frontPage/messages/Message";
-import { InstanceManager } from "../../../managers/InstanceManager";
-import { MapRoomManager } from "../../../maproom_manager/MapRoomManager";
 import { IReplayableEventUI } from "../../IReplayableEventUI";
 import { Maproom3EventHUD } from "../../Maproom3EventHUD";
 import { ReplayableEvent } from "../../ReplayableEvent";
@@ -10,10 +8,15 @@ import { HellRaisersPromoMessage } from "./messages/HellRaisersPromoMessage";
 import { HellRaisersStartMessage } from "./messages/HellRaisersStartMessage";
 import { HellRaisersBattleSummary } from "./popups/HellRaisersBattleSummary";
 
-import { GLOBAL } from "../../../../../GLOBAL";
-import { KEYS } from "../../../../../KEYS";
-import { POPUPS } from "../../../../../POPUPS";
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("../../../managers/InstanceManager").InstanceManager; }
+function getMapRoomManager(): any { return require("../../../maproom_manager/MapRoomManager").MapRoomManager; }
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../../KEYS").KEYS; }
+function getPOPUPS(): any { return require("../../../../../POPUPS").POPUPS; }
+function getBFOUNDATION(): any { return require("../../../../../BFOUNDATION").BFOUNDATION; }
+
+
 
 /**
  * Hell Raisers - attacking event with battle summaries.
@@ -28,7 +31,7 @@ export class HellRaisers extends ReplayableEvent {
         this._progress = -1;
         this._priority = 0;
         this._id = 7;
-        this._buttonCopy = KEYS.Get("btn_info");
+        this._buttonCopy = getKEYS().Get("btn_info");
         this._titleImage = "events/hellraisers/hellraisers_title.png";
         this._eventStoreTitleImage = "events/hellraisers/hellraisers_event_store_title.png";
         this._imageURL = "events/hellraisers/hellraisers_reward.png";
@@ -52,20 +55,20 @@ export class HellRaisers extends ReplayableEvent {
     }
 
     protected override onInitialize(): void {
-        GLOBAL.eventDispatcher.addEventListener(AttackEvent.ATTACK_OVER, this.onAttackEnd.bind(this));
+        getGLOBAL().eventDispatcher.addEventListener(AttackEvent.ATTACK_OVER, this.onAttackEnd.bind(this));
     }
 
     protected onAttackEnd(event: AttackEvent): void {
         if (event.attackType === HellRaisers.k_hellRaisersTribeID) {
             const xpWorth: number = this.getBasesWorthInXP();
-            POPUPS.Push(new HellRaisersBattleSummary(event.wasBaseDestroyed, xpWorth).graphic);
+            getPOPUPS().Push(new HellRaisersBattleSummary(event.wasBaseDestroyed, xpWorth).graphic);
             this.score += xpWorth;
         }
     }
 
     private getBasesWorthInXP(): number {
         let count: number = 0;
-        const buildings: Array<any> = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const buildings: Array<any> = getInstanceManager().getInstancesByClass(BFOUNDATION);
         for (const building of buildings) {
             count++;
         }
@@ -77,6 +80,6 @@ export class HellRaisers extends ReplayableEvent {
     }
 
     public override doesQualify(): boolean {
-        return MapRoomManager.instance.isInMapRoom3;
+        return getMapRoomManager().instance.isInMapRoom3;
     }
 }

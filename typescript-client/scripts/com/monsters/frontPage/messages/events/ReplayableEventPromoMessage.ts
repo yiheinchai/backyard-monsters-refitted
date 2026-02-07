@@ -5,12 +5,15 @@ import MouseEvent from "openfl/events/MouseEvent";
 import { KeywordMessage } from "../KeywordMessage";
 import { ReplayableEventHandler } from "../../../replayableEvents/ReplayableEventHandler";
 
-import { GLOBAL } from "../../../../../GLOBAL";
-import { POPUPS } from "../../../../../POPUPS";
-import { KEYS } from "../../../../../KEYS";
-import { LOGIN } from "../../../../../LOGIN";
 import { Button } from "../../../../../Button";
 import { frontpage_stonebtn } from "../../../../../frontpage_stonebtn";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+function getPOPUPS(): any { return require("../../../../../POPUPS").POPUPS; }
+function getKEYS(): any { return require("../../../../../KEYS").KEYS; }
+function getLOGIN(): any { return require("../../../../../LOGIN").LOGIN; }
+
 
 /**
  * Replayable event promo message - promotional message for replayable events.
@@ -19,7 +22,7 @@ export class ReplayableEventPromoMessage extends KeywordMessage {
     private _button: MovieClip | null = null;
 
     constructor(keyword: string, buttonCopy: string = "") {
-        if (!buttonCopy && !GLOBAL._flags.kongregate && !GLOBAL._flags.viximo) {
+        if (!buttonCopy && !getGLOBAL()._flags.kongregate && !getGLOBAL()._flags.viximo) {
             buttonCopy = "btn_keepposted";
         }
         super(keyword, buttonCopy);
@@ -50,7 +53,7 @@ export class ReplayableEventPromoMessage extends KeywordMessage {
             this._button.enabled = false;
             this._button.visible = false;
         }
-        POPUPS.Next();
-        GLOBAL.Message(KEYS.Get("msg_rsvpconfirmed", { "v1": LOGIN._email }));
+        getPOPUPS().Next();
+        getGLOBAL().Message(getKEYS().Get("msg_rsvpconfirmed", { "v1": getLOGIN()._email }));
     }
 }

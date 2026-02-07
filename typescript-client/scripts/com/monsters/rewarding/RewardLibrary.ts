@@ -1,10 +1,13 @@
-import { Console } from "../debug/Console";
 import { Reward } from "./Reward";
 import { UnlockVorgReward } from "./rewards/vorg/UnlockVorgReward";
 import { UnlockSlimeattikusReward } from "./rewards/slimeattikus/UnlockSlimeattikusReward";
 import { UnblockSlimeattikusReward } from "./rewards/slimeattikus/UnblockSlimeattikusReward";
 import { UnblockVorgReward } from "./rewards/vorg/UnblockVorgReward";
 import { UnlockRezghulReward } from "./rewards/rezghul/UnlockRezghulReward";
+
+// Lazy imports to break circular dependency chains
+function getConsole(): any { return require("../debug/Console").Console; }
+
 
 // Forward declarations for reward types that don't have files yet
 declare class UnlockMagmaTowerInOutposts extends Reward { static ID: string; }
@@ -60,7 +63,7 @@ export class RewardLibrary {
         }
         
         if (RewardLibrary.rewardTypes[rewardId]) {
-            Console.warning("You tried to add the reward(" + rewardId + ") that already exists");
+            getConsole().warning("You tried to add the reward(" + rewardId + ") that already exists");
         }
         RewardLibrary.rewardTypes[rewardId] = rewardClass;
     }

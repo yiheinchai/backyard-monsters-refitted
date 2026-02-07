@@ -1,20 +1,23 @@
 import { TRIBES } from './com/monsters/ai/TRIBES';
-import { InstanceManager } from './com/monsters/managers/InstanceManager';
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
 import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
-import { BASE } from './BASE';
-import { BFOUNDATION } from './BFOUNDATION';
-import { BUILDING15 } from './BUILDING15';
-import { CREATURES } from './CREATURES';
-import { GLOBAL } from './GLOBAL';
-import { GRID } from './GRID';
-import { HOUSINGBUNKER } from './HOUSINGBUNKER';
-import { MAP } from './MAP';
 import { MONSTERBUNKERPOPUP } from './MONSTERBUNKERPOPUP';
 import { PersistentMonsterBunker } from './PersistentMonsterBunker';
-import { SOUNDS } from './SOUNDS';
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBUILDING15(): any { return require("./BUILDING15").BUILDING15; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getGRID(): any { return require("./GRID").GRID; }
+function getHOUSINGBUNKER(): any { return require("./HOUSINGBUNKER").HOUSINGBUNKER; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+
 
 /**
  * MONSTERBUNKER - Monster Bunker Controller
@@ -44,13 +47,13 @@ export class MONSTERBUNKER {
     public static Show(event: MouseEvent | null = null): void {
         MONSTERBUNKER.Hide(event);
         MONSTERBUNKER._open = true;
-        GLOBAL.BlockerAdd();
-        if (MapRoomManager.instance.isInMapRoom3) {
-            MONSTERBUNKER.s_PersistantBunker = GLOBAL._layerWindows.addChild(new PersistentMonsterBunker()) as PersistentMonsterBunker;
+        getGLOBAL().BlockerAdd();
+        if (getMapRoomManager().instance.isInMapRoom3) {
+            MONSTERBUNKER.s_PersistantBunker = getGLOBAL()._layerWindows.addChild(new PersistentMonsterBunker()) as PersistentMonsterBunker;
             (MONSTERBUNKER.s_PersistantBunker as any).Center();
             (MONSTERBUNKER.s_PersistantBunker as any).ScaleUp();
         } else {
-            MONSTERBUNKER._mc = GLOBAL._layerWindows.addChild(new MONSTERBUNKERPOPUP()) as MONSTERBUNKERPOPUP;
+            MONSTERBUNKER._mc = getGLOBAL()._layerWindows.addChild(new MONSTERBUNKERPOPUP()) as MONSTERBUNKERPOPUP;
             MONSTERBUNKER._mc.Center();
             MONSTERBUNKER._mc.ScaleUp();
         }
@@ -58,13 +61,13 @@ export class MONSTERBUNKER {
 
     public static Hide(event: MouseEvent | null = null): void {
         if (MONSTERBUNKER._open) {
-            GLOBAL.BlockerRemove();
-            SOUNDS.Play("close");
+            getGLOBAL().BlockerRemove();
+            getSOUNDS().Play("close");
             if (MONSTERBUNKER._mc) {
-                GLOBAL._layerWindows.removeChild(MONSTERBUNKER._mc);
+                getGLOBAL()._layerWindows.removeChild(MONSTERBUNKER._mc);
             }
             if (MONSTERBUNKER.s_PersistantBunker) {
-                GLOBAL._layerWindows.removeChild(MONSTERBUNKER.s_PersistantBunker as any);
+                getGLOBAL()._layerWindows.removeChild(MONSTERBUNKER.s_PersistantBunker as any);
             }
             MONSTERBUNKER._open = false;
             MONSTERBUNKER._mc = null;
@@ -75,9 +78,9 @@ export class MONSTERBUNKER {
     public static BunkerStore(creatureId: string, bunker: any, skipSpawn: boolean = false): boolean {
         if (creatureId === "C100") creatureId = "C12";
         
-        const storage: number = CREATURES.GetProperty(creatureId, "cStorage");
-        const isJuiceMode: boolean = (GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMVIEW) && 
-                                     TRIBES.TribeForID(BASE._wmID).behaviour === "juice";
+        const storage: number = getCREATURES().GetProperty(creatureId, "cStorage");
+        const isJuiceMode: boolean = (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMVIEW) && 
+                                     TRIBES.TribeForID(getBASE()._wmID).behaviour === "juice";
         
         if (MONSTERBUNKER._bunkerSpace < storage && !isJuiceMode) return false;
         
@@ -88,14 +91,14 @@ export class MONSTERBUNKER {
                 bunker._monsters[creatureId] = 1;
             }
             
-            if (GLOBAL._render) {
+            if (getGLOBAL()._render) {
                 if (isJuiceMode) {
-                    const monster = CREATURES.Spawn(creatureId, MAP._BUILDINGTOPS!, "juice", new Point(bunker.x, bunker.y), 0);
+                    const monster = getCREATURES().Spawn(creatureId, getMAP()._BUILDINGTOPS!, "juice", new Point(bunker.x, bunker.y), 0);
                     if (monster) (monster as any).ModeJuice();
                 } else {
                     const houses: any[] = [];
-                    const housingClass = BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15;
-                    const buildings = InstanceManager.getInstancesByClass(housingClass);
+                    const housingClass = getBASE().isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15;
+                    const buildings = getInstanceManager().getInstancesByClass(housingClass);
                     
                     for (const building of buildings) {
                         const b = building as BFOUNDATION;
@@ -109,7 +112,7 @@ export class MONSTERBUNKER {
                     if (houses.length === 0) return false;
                     houses.sort((a, b) => a.dist - b.dist);
                     const closest: BFOUNDATION = houses[0].mc;
-                    CREATURES.Spawn(creatureId, MAP._BUILDINGTOPS!, "bunkering", new Point(bunker._mc.x, bunker._mc.y), 0, GRID.FromISO(closest._mc.x, closest._mc.y), closest);
+                    getCREATURES().Spawn(creatureId, getMAP()._BUILDINGTOPS!, "bunkering", new Point(bunker._mc.x, bunker._mc.y), 0, getGRID().FromISO(closest._mc.x, closest._mc.y), closest);
                 }
             }
         }
@@ -124,8 +127,8 @@ export class MONSTERBUNKER {
 
     public static Populate(): void {
         const houses: BFOUNDATION[] = [];
-        const housingClass = BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15;
-        const buildings = InstanceManager.getInstancesByClass(housingClass);
+        const housingClass = getBASE().isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15;
+        const buildings = getInstanceManager().getInstancesByClass(housingClass);
         
         for (const building of buildings) {
             const b = building as BFOUNDATION;
@@ -139,8 +142,8 @@ export class MONSTERBUNKER {
                 for (let i = 0; i < count; i++) {
                     const idx: number = Math.floor(Math.random() * houses.length);
                     const house: BFOUNDATION = houses[idx];
-                    const housePos: Point = GRID.FromISO(house.x, house.y);
-                    CREATURES.Spawn(creatureId, MAP._BUILDINGTOPS!, "pen", MONSTERBUNKER.PointInBunker(housePos), Math.random() * 360, housePos, house);
+                    const housePos: Point = getGRID().FromISO(house.x, house.y);
+                    getCREATURES().Spawn(creatureId, getMAP()._BUILDINGTOPS!, "pen", MONSTERBUNKER.PointInBunker(housePos), Math.random() * 360, housePos, house);
                 }
             }
         }
@@ -148,7 +151,7 @@ export class MONSTERBUNKER {
 
     public static PointInBunker(bunkerPos: Point): Point {
         const rect: Rectangle = new Rectangle(30, 40, 110, 80);
-        return GRID.ToISO(bunkerPos.x + (rect.x + Math.random() * rect.width), bunkerPos.y + (rect.y + Math.random() * rect.height), 0);
+        return getGRID().ToISO(bunkerPos.x + (rect.x + Math.random() * rect.width), bunkerPos.y + (rect.y + Math.random() * rect.height), 0);
     }
 
     public static Tick(): void {

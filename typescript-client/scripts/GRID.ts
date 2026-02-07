@@ -1,8 +1,11 @@
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
-import { BFOUNDATION } from './BFOUNDATION';
-import { GLOBAL } from './GLOBAL';
-import { LOGGER } from './LOGGER';
+
+// Lazy imports to break circular dependency chains
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+
 
 /**
  * GRID - Isometric Grid System
@@ -44,9 +47,9 @@ export class GRID {
         const footprint: Rectangle = building._footprint[0];
         for (let x = 0; x < 120; x++) {
             for (let y = 0; y < 100; y++) {
-                const isoPos: Point = GRID.ToISO(-(GLOBAL._mapWidth * 0.5) + x * 10, -(GLOBAL._mapHeight * 0.5) + y * 10, 0);
+                const isoPos: Point = GRID.ToISO(-(getGLOBAL()._mapWidth * 0.5) + x * 10, -(getGLOBAL()._mapHeight * 0.5) + y * 10, 0);
                 if (!GRID.FootprintBlocked(building._footprint, isoPos, true)) {
-                    LOGGER.Log("err", `GRID.FindSpace ${x}, ${y}, ${isoPos.x}, ${isoPos.y}`);
+                    getLOGGER().Log("err", `GRID.FindSpace ${x}, ${y}, ${isoPos.x}, ${isoPos.y}`);
                     building._mc!.x = isoPos.x;
                     building._mc!.y = isoPos.y;
                     building._mcBase!.x = isoPos.x;
@@ -79,8 +82,8 @@ export class GRID {
         if (localPos.x < 0 || localPos.y < 0 || localPos.x >= GRID._mapWidth / 5 || localPos.y >= GRID._mapHeight / 5) {
             return 3;
         }
-        const halfWidth: number = GLOBAL._mapWidth * 0.5;
-        const halfHeight: number = GLOBAL._mapHeight * 0.5;
+        const halfWidth: number = getGLOBAL()._mapWidth * 0.5;
+        const halfHeight: number = getGLOBAL()._mapHeight * 0.5;
         if (checkBounds && !ignoreEdge && (pos.x < -halfWidth || pos.x >= halfWidth || pos.y < -halfHeight || pos.y >= halfHeight)) {
             return 2;
         }

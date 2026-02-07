@@ -1,6 +1,9 @@
 import BitmapData from "openfl/display/BitmapData";
 
-import { SPRITES } from "../../../SPRITES";
+// Lazy imports to break circular dependency chains
+function getSPRITES(): any { return require("../../../SPRITES").SPRITES; }
+
+
 
 /**
  * Singleton lock for CreepSkinManager.
@@ -25,22 +28,22 @@ export class CreepSkinManager {
     }
 
     public SetupSkins(creepId: string): void {
-        SPRITES.SetupSprite(creepId);
+        getSPRITES().SetupSprite(creepId);
         const skinPair = this.m_CreepSkinPairs.get(creepId);
         if (skinPair != null) {
-            SPRITES.SetupSprite(skinPair);
+            getSPRITES().SetupSprite(skinPair);
         }
     }
 
     public SetSkin(creepId: string, skinId: string | null): void {
         if (skinId != null) {
-            SPRITES.SetupSprite(skinId);
+            getSPRITES().SetupSprite(skinId);
         }
         this.m_CreepSkinPairs.set(creepId, skinId);
     }
 
     public GetSprite(bmd: BitmapData, creepId: string, action: string, frame: number, row: number = 0, facing: number = -1, overrideSkin: string | null = null): number {
         const skinKey = overrideSkin ? overrideSkin : (this.m_CreepSkinPairs.get(creepId) || creepId);
-        return SPRITES.GetSprite(bmd, skinKey, action, frame, row, facing);
+        return getSPRITES().GetSprite(bmd, skinKey, action, frame, row, facing);
     }
 }

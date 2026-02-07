@@ -1,9 +1,12 @@
 import Point from "openfl/geom/Point";
 
-import { MonsterBase } from "../../MonsterBase";
 import { Component } from "../Component";
 import { Enrage } from "./Enrage";
-import { Targeting } from "../../../../../Targeting";
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+function getTargeting(): any { return require("../../../../../Targeting").Targeting; }
+
 
 /**
  * AOE Enrage - enrages nearby friendly units, boosting speed and armor.
@@ -28,7 +31,7 @@ export class AOEEnrage extends Component {
     }
 
     protected override onRegister(): void {
-        this.m_targetFlags = Targeting.getFriendlyFlag(this.owner) | Targeting.k_TARGETS_GROUND | Targeting.k_TARGETS_FLYING | Targeting.k_TARGETS_INVISIBLE;
+        this.m_targetFlags = getTargeting().getFriendlyFlag(this.owner) | getTargeting().k_TARGETS_GROUND | getTargeting().k_TARGETS_FLYING | getTargeting().k_TARGETS_INVISIBLE;
     }
 
     protected override onUnregister(): void {
@@ -36,11 +39,11 @@ export class AOEEnrage extends Component {
     }
 
     private getFriendliesInRange(): Array<MonsterBase> {
-        const targets: Array<any> = Targeting.getTargetsInRange(this.m_radius, new Point(this.owner.x, this.owner.y), this.m_targetFlags);
+        const targets: Array<any> = getTargeting().getTargetsInRange(this.m_radius, new Point(this.owner.x, this.owner.y), this.m_targetFlags);
         const friendlies: Array<MonsterBase> = [];
         for (let i = 0; i < targets.length; i++) {
             const creep = targets[i].creep;
-            if (creep instanceof MonsterBase && creep !== this.owner) {
+            if (creep instanceof getMonsterBase() && creep !== this.owner) {
                 friendlies.push(creep as MonsterBase);
             }
         }

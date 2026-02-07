@@ -1,8 +1,11 @@
 import { KeywordMessage } from "../KeywordMessage";
 import { MapRoom3ConfirmMigrationPopup } from "../../../maproom3/popups/MapRoom3ConfirmMigrationPopup";
-import { MapRoomManager } from "../../../maproom_manager/MapRoomManager";
 
-import { POPUPS } from "../../../../../POPUPS";
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../../../maproom_manager/MapRoomManager").MapRoomManager; }
+function getPOPUPS(): any { return require("../../../../../POPUPS").POPUPS; }
+
+
 
 /**
  * Map room 3 opt-in popup - promotional message for migrating to map room 3.
@@ -27,11 +30,11 @@ export class Maproom3OptInPopup extends KeywordMessage {
     }
 
     public override get areRequirementsMet(): boolean {
-        return !this.hasBeenSeen && !MapRoomManager.instance.isInMapRoom3;
+        return !this.hasBeenSeen && !getMapRoomManager().instance.isInMapRoom3;
     }
 
     protected override onButtonClick(): void {
-        POPUPS.Next();
+        getPOPUPS().Next();
         MapRoom3ConfirmMigrationPopup.instance.Show();
     }
 }

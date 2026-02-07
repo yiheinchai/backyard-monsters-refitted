@@ -11,7 +11,10 @@ import { Obstruction } from "./Obstruction";
 import { PlayerLayer } from "./PlayerLayer";
 import { PushPin } from "./PushPin";
 
-import { SOUNDS } from "../../../SOUNDS";
+// Lazy imports to break circular dependency chains
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+
+
 
 /**
  * MapRoom - main map room controller for Inferno mode.
@@ -94,7 +97,7 @@ export class MapRoom extends old_maproom {
 
     public setView(view: MovieClip): void {
         if (!this.firstRun) {
-            SOUNDS.Play("click1");
+            getSOUNDS().Play("click1");
         }
         if (Boolean(MapRoom.currentView) && Boolean(MapRoom.currentView!.parent)) {
             MapRoom.currentView!.parent.removeChild(MapRoom.currentView!);

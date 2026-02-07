@@ -4,8 +4,11 @@ import { IExportable } from "../interfaces/IExportable";
 import { RewardHandler } from "../rewarding/RewardHandler";
 import { RewardLibrary } from "../rewarding/RewardLibrary";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { POPUPS } from "../../../POPUPS";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getPOPUPS(): any { return require("../../../POPUPS").POPUPS; }
+
+
 
 /**
  * Replayable event quota - tracks progress towards event goals.
@@ -33,9 +36,9 @@ export class ReplayableEventQuota implements IExportable {
             RewardHandler.instance.addAndApplyReward(RewardLibrary.getRewardByID(this.rewardID));
         }
         if (this.message) {
-            POPUPS.Push(new FrontPageGraphic(this.message));
+            getPOPUPS().Push(new FrontPageGraphic(this.message));
         }
-        this._dateAwarded = GLOBAL.Timestamp();
+        this._dateAwarded = getGLOBAL().Timestamp();
     }
 
     public exportData(): Record<string, any> | null {

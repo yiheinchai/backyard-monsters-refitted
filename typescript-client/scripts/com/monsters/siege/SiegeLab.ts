@@ -1,14 +1,17 @@
 import { SecNum } from "../../cc/utils/SecNum";
 import { SiegeBuilding } from "./SiegeBuilding";
-import { SiegeWeapons } from "./SiegeWeapons";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGGER } from "../../../LOGGER";
-import { QUESTS } from "../../../QUESTS";
-import { STORE } from "../../../STORE";
 import { SiegeWeapon } from "./weapons/SiegeWeapon";
+
+// Lazy imports to break circular dependency chains
+function getSiegeWeapons(): any { return require("./SiegeWeapons").SiegeWeapons; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+function getQUESTS(): any { return require("../../../QUESTS").QUESTS; }
+function getSTORE(): any { return require("../../../STORE").STORE; }
+
 
 /**
  * Siege Lab building - upgrades siege weapons.
@@ -23,29 +26,29 @@ export class SiegeLab extends SiegeBuilding {
     }
 
     public static Show(): void {
-        if (GLOBAL._bSiegeLab.health >= GLOBAL._bSiegeLab.maxHealth * 0.5) {
+        if (getGLOBAL()._bSiegeLab.health >= getGLOBAL()._bSiegeLab.maxHealth * 0.5) {
             SiegeBuilding.Show("lab");
         } else {
-            GLOBAL.Message(KEYS.Get("msg_sworks_damaged"));
+            getGLOBAL().Message(getKEYS().Get("msg_sworks_damaged"));
         }
     }
 
     public Setup(data: any): void {
-        GLOBAL._bSiegeLab = this;
+        getGLOBAL()._bSiegeLab = this;
         super.Setup(data);
     }
 
     public Constructed(): void {
-        GLOBAL._bSiegeLab = this;
+        getGLOBAL()._bSiegeLab = this;
         super.Constructed();
     }
 
     public Upgrade(): boolean {
         if (this.upgradingWeapon) {
             if (this.upgradingWeapon.level > 0) {
-                GLOBAL.Message(KEYS.Get("msg_sworks_cantupgrade2"));
+                getGLOBAL().Message(getKEYS().Get("msg_sworks_cantupgrade2"));
             } else {
-                GLOBAL.Message(KEYS.Get("msg_sworks_cantupgrade1"));
+                getGLOBAL().Message(getKEYS().Get("msg_sworks_cantupgrade1"));
             }
             return false;
         }
@@ -55,9 +58,9 @@ export class SiegeLab extends SiegeBuilding {
     public Recycle(): void {
         if (this.upgradingWeapon) {
             if (this.upgradingWeapon.level > 0) {
-                GLOBAL.Message(KEYS.Get("msg_sworks_cantrecycle2"));
+                getGLOBAL().Message(getKEYS().Get("msg_sworks_cantrecycle2"));
             } else {
-                GLOBAL.Message(KEYS.Get("msg_sworks_cantrecycle1"));
+                getGLOBAL().Message(getKEYS().Get("msg_sworks_cantrecycle1"));
             }
             return;
         }
@@ -65,29 +68,29 @@ export class SiegeLab extends SiegeBuilding {
     }
 
     public RecycleC(): void {
-        GLOBAL._bSiegeLab = null;
+        getGLOBAL()._bSiegeLab = null;
         super.RecycleC();
     }
 
     protected UpgradeWeapon(weaponId: string): void {
-        SiegeWeapons.getWeapon(weaponId).level++;
-        QUESTS.Check("siege_" + weaponId + "_level", SiegeWeapons.getWeapon(weaponId).level);
+        getSiegeWeapons().getWeapon(weaponId).level++;
+        getQUESTS().Check("siege_" + weaponId + "_level", getSiegeWeapons().getWeapon(weaponId).level);
     }
 
     public StartUpgradingWeapon(weaponId: string): void {
-        const costs = SiegeWeapons.getWeapon(weaponId).upgradeCosts;
+        const costs = getSiegeWeapons().getWeapon(weaponId).upgradeCosts;
         this.unlockingWeapons[weaponId] = new SecNum(costs.time);
-        BASE.Charge(1, costs.r1, false, true);
-        BASE.Charge(2, costs.r2, false, true);
-        BASE.Charge(3, costs.r3, false, true);
-        BASE.Charge(4, costs.r4, false, true);
-        BASE.Save();
+        getBASE().Charge(1, costs.r1, false, true);
+        getBASE().Charge(2, costs.r2, false, true);
+        getBASE().Charge(3, costs.r3, false, true);
+        getBASE().Charge(4, costs.r4, false, true);
+        getBASE().Save();
         
-        const level = SiegeWeapons.getWeapon(weaponId).level;
+        const level = getSiegeWeapons().getWeapon(weaponId).level;
         if (level === 0) {
-            LOGGER.Stat([90, weaponId, level, "start"]);
+            getLOGGER().Stat([90, weaponId, level, "start"]);
         } else {
-            LOGGER.Stat([91, weaponId, level, "start"]);
+            getLOGGER().Stat([91, weaponId, level, "start"]);
         }
     }
 
@@ -98,18 +101,18 @@ export class SiegeLab extends SiegeBuilding {
             return;
         }
         delete this.unlockingWeapons[weaponId];
-        const costs = SiegeWeapons.getWeapon(weaponId).upgradeCosts;
-        BASE.Fund(1, costs.r1, false, null, true);
-        BASE.Fund(2, costs.r2, false, null, true);
-        BASE.Fund(3, costs.r3, false, null, true);
-        BASE.Fund(4, costs.r4, false, null, true);
-        BASE.Save();
+        const costs = getSiegeWeapons().getWeapon(weaponId).upgradeCosts;
+        getBASE().Fund(1, costs.r1, false, null, true);
+        getBASE().Fund(2, costs.r2, false, null, true);
+        getBASE().Fund(3, costs.r3, false, null, true);
+        getBASE().Fund(4, costs.r4, false, null, true);
+        getBASE().Save();
         
-        const level = SiegeWeapons.getWeapon(weaponId).level;
+        const level = getSiegeWeapons().getWeapon(weaponId).level;
         if (level === 0) {
-            LOGGER.Stat([90, weaponId, level, "cancel"]);
+            getLOGGER().Stat([90, weaponId, level, "cancel"]);
         } else {
-            LOGGER.Stat([91, weaponId, level, "cancel"]);
+            getLOGGER().Stat([91, weaponId, level, "cancel"]);
         }
     }
 
@@ -120,26 +123,26 @@ export class SiegeLab extends SiegeBuilding {
             return;
         }
         delete this.unlockingWeapons[weaponId];
-        BASE.Save();
+        getBASE().Save();
         
-        const level = SiegeWeapons.getWeapon(weaponId).level;
+        const level = getSiegeWeapons().getWeapon(weaponId).level;
         if (level === 0) {
-            LOGGER.Stat([90, weaponId, level, "finish"]);
+            getLOGGER().Stat([90, weaponId, level, "finish"]);
         } else {
-            LOGGER.Stat([91, weaponId, level, "finish"]);
+            getLOGGER().Stat([91, weaponId, level, "finish"]);
         }
     }
 
     public InstantUpgrade(weaponId: string): void {
         const cost = this.getInstantUpgradeCost(weaponId);
         this.CompleteUpgradingWeapon(weaponId);
-        BASE.Purchase("IBSW", cost, "building");
+        getBASE().Purchase("IBSW", cost, "building");
         
-        const level = SiegeWeapons.getWeapon(weaponId).level;
+        const level = getSiegeWeapons().getWeapon(weaponId).level;
         if (level === 0) {
-            LOGGER.Stat([90, weaponId, level, "instant", cost]);
+            getLOGGER().Stat([90, weaponId, level, "instant", cost]);
         } else {
-            LOGGER.Stat([91, weaponId, level, "instant", cost]);
+            getLOGGER().Stat([91, weaponId, level, "instant", cost]);
         }
     }
 
@@ -152,15 +155,15 @@ export class SiegeLab extends SiegeBuilding {
     }
 
     public getInstantUpgradeCost(weaponId: string): number {
-        const weapon = SiegeWeapons.getWeapon(weaponId);
+        const weapon = getSiegeWeapons().getWeapon(weaponId);
         if (this.upgradingWeapon && this.upgradingWeapon.weaponID === weaponId) {
-            return STORE.GetTimeCost(this.UpgradeTimeLeft(weapon));
+            return getSTORE().GetTimeCost(this.UpgradeTimeLeft(weapon));
         }
         return weapon.instantUpgradeCost;
     }
 
     public HasEnoughShinyToUpgrade(weapon: SiegeWeapon): boolean {
-        return BASE._credits.Get() >= this.getInstantUpgradeCost(weapon.weaponID);
+        return getBASE()._credits.Get() >= this.getInstantUpgradeCost(weapon.weaponID);
     }
 
     public UpgradeTimeTotal(weapon: SiegeWeapon): number {

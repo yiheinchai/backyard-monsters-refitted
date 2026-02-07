@@ -1,9 +1,12 @@
 import MovieClip from 'openfl/display/MovieClip';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { POPUPS } from './POPUPS';
 import { POPUPSETTINGS } from './POPUPSETTINGS';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+
 
 /**
  * PLEASEWAIT - Loading/Processing Dialog
@@ -29,7 +32,7 @@ export class PLEASEWAIT extends MovieClip {
 
     public static Show(message: string): void {
         if (!PLEASEWAIT._mc) {
-            PLEASEWAIT._mc = GLOBAL._layerTop.addChild(new (GLOBAL as any).PLEASEWAITMC());
+            PLEASEWAIT._mc = getGLOBAL()._layerTop.addChild(new (GLOBAL as any).PLEASEWAITMC());
             PLEASEWAIT._mc.tMessage.htmlText = "<b>" + message + "</b>";
             PLEASEWAIT._mc.mcFrame.Setup(false);
             POPUPSETTINGS.AlignToCenter(PLEASEWAIT._mc);
@@ -46,7 +49,7 @@ export class PLEASEWAIT extends MovieClip {
     public static Hide(): void {
         try {
             if (PLEASEWAIT._mc) {
-                GLOBAL._layerTop.removeChild(PLEASEWAIT._mc);
+                getGLOBAL()._layerTop.removeChild(PLEASEWAIT._mc);
                 PLEASEWAIT._mc.mcFrame = null;
                 PLEASEWAIT._mc = null;
             }
@@ -60,16 +63,16 @@ export class PLEASEWAIT extends MovieClip {
     }
 
     public static AddTips(): void {
-        if (GLOBAL._giveTips && KEYS._setup && PLEASEWAIT.HasTips()) {
-            if (BASE._catchupTime && BASE._catchupTime >= PLEASEWAIT.processThreshold && PLEASEWAIT.lastTipTime === 0 && 
-                GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && BASE.isMainYard && GLOBAL._whatsnewid === GLOBAL._lastWhatsNew) {
-                if (GLOBAL.StatGet("tipno")) {
-                    PLEASEWAIT.tipIndex = GLOBAL.StatGet("tipno");
+        if (getGLOBAL()._giveTips && getKEYS()._setup && PLEASEWAIT.HasTips()) {
+            if (getBASE()._catchupTime && getBASE()._catchupTime >= PLEASEWAIT.processThreshold && PLEASEWAIT.lastTipTime === 0 && 
+                getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && getBASE().isMainYard && getGLOBAL()._whatsnewid === getGLOBAL()._lastWhatsNew) {
+                if (getGLOBAL().StatGet("tipno")) {
+                    PLEASEWAIT.tipIndex = getGLOBAL().StatGet("tipno");
                 }
                 if (PLEASEWAIT.tipIndex < PLEASEWAIT.tips.length) {
                     PLEASEWAIT.ShowTips(PLEASEWAIT.tips[PLEASEWAIT.tipIndex]);
                 }
-                GLOBAL.StatSet("tipno", PLEASEWAIT.tipIndex + 1);
+                getGLOBAL().StatSet("tipno", PLEASEWAIT.tipIndex + 1);
             }
         }
     }
@@ -81,7 +84,7 @@ export class PLEASEWAIT extends MovieClip {
         let allLoaded: boolean = true;
         for (let i = 1; i <= PLEASEWAIT.tipsAvailable; i++) {
             const key: string = PLEASEWAIT.tipsLocalKey + i;
-            const tip: string = KEYS.Get(key);
+            const tip: string = getKEYS().Get(key);
             if (tip === "") allLoaded = false;
             PLEASEWAIT.tips.push(tip);
         }
@@ -90,13 +93,13 @@ export class PLEASEWAIT extends MovieClip {
     }
 
     public static ShowTips(tip: string): void {
-        GLOBAL._proTip = new (GLOBAL as any).PROTIP_CLIP();
-        GLOBAL._proTip.tTitle.htmlText = KEYS.Get("tips_title");
-        GLOBAL._proTip.tDesc.htmlText = "<b>" + tip + "</b>";
-        GLOBAL._proTip.x = 390;
-        GLOBAL._proTip.y = 240;
-        POPUPS.Push(GLOBAL._proTip, null, null, null, null, true, "tip");
-        POPUPS.Show("tip");
+        getGLOBAL()._proTip = new (GLOBAL as any).PROTIP_CLIP();
+        getGLOBAL()._proTip.tTitle.htmlText = getKEYS().Get("tips_title");
+        getGLOBAL()._proTip.tDesc.htmlText = "<b>" + tip + "</b>";
+        getGLOBAL()._proTip.x = 390;
+        getGLOBAL()._proTip.y = 240;
+        getPOPUPS().Push(getGLOBAL()._proTip, null, null, null, null, true, "tip");
+        getPOPUPS().Show("tip");
         PLEASEWAIT.lastTipTime = 1;
     }
 

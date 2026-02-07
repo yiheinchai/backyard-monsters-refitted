@@ -1,13 +1,16 @@
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { SpriteData } from './com/monsters/display/SpriteData';
 import { ResurrectProjectile } from './com/monsters/projectiles/ResurrectProjectile';
-import { Decoy } from './com/monsters/siege/weapons/Decoy';
-import { Jars } from './com/monsters/siege/weapons/Jars';
 import BitmapData from 'openfl/display/BitmapData';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { SpurtzCannon } from './SpurtzCannon';
-import { STORE } from './STORE';
+
+// Lazy imports to break circular dependency chains
+function getDecoy(): any { return require("./com/monsters/siege/weapons/Decoy").Decoy; }
+function getJars(): any { return require("./com/monsters/siege/weapons/Jars").Jars; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getSpurtzCannon(): any { return require("./SpurtzCannon").SpurtzCannon; }
+function getSTORE(): any { return require("./STORE").STORE; }
+
 
 /**
  * SPRITES - Sprite Data and Animation System
@@ -20,7 +23,7 @@ export class SPRITES {
 
     public static Setup(): void {
         SPRITES._sprites = {};
-        if (!BASE.isInfernoMainYardOrOutpost) {
+        if (!getBASE().isInfernoMainYardOrOutpost) {
             SPRITES._sprites.worker = new SpriteData("monsters/worker.png", 27, 27, 9, 19);
         } else {
             SPRITES._sprites.worker = new SpriteData("monsters/inferno_worker.v2.png", 64, 55, 32, 36);
@@ -90,11 +93,11 @@ export class SPRITES {
         SPRITES._sprites.flame = new SpriteData("effects/flame_icon.png", 16, 25, SpriteData.FUBAR_X, SpriteData.FUBAR_Y);
         SPRITES._sprites.venom = new SpriteData("effects/venom_icon.v2.png", 16, 26, SpriteData.FUBAR_X, SpriteData.FUBAR_Y);
         SPRITES._sprites.venomBal = new SpriteData("effects/venomBal_icon.png", 420, 332, SpriteData.FUBAR_X, SpriteData.FUBAR_Y);
-        SPRITES._sprites[SpurtzCannon.SPURTZ_PROJECTILE] = new SpriteData("buildings/ispurtz_cannon/spurtz_projectile.png", 34, 27, SpriteData.FUBAR_X, SpriteData.FUBAR_Y);
-        SPRITES._sprites[Jars.JAR_GRAPHIC] = new SpriteData(Jars.JAR_GRAPHIC_URL, Jars.JAR_GRAPHIC_WIDTH, Jars.JAR_GRAPHIC_HEIGHT, SpriteData.FUBAR_X, SpriteData.FUBAR_Y);
-        SPRITES._sprites[Decoy.DECOY_WAVE] = new SpriteData("siegeimages/decoy_wave_anim.png", 61, 70, SpriteData.FUBAR_X, SpriteData.FUBAR_Y);
-        SPRITES._sprites[Decoy.DECOY_FUSE] = new SpriteData("siegeimages/decoy_fuse_anim.png", 44, 49, SpriteData.FUBAR_X, SpriteData.FUBAR_Y);
-        SPRITES._sprites[Decoy.DECOY_EXPLOSION] = new SpriteData("siegeimages/decoy_explosion_anim.png", 184, 195, SpriteData.FUBAR_X, SpriteData.FUBAR_Y);
+        SPRITES._sprites[getSpurtzCannon().SPURTZ_PROJECTILE] = new SpriteData("buildings/ispurtz_cannon/spurtz_projectile.png", 34, 27, SpriteData.FUBAR_X, SpriteData.FUBAR_Y);
+        SPRITES._sprites[getJars().JAR_GRAPHIC] = new SpriteData(getJars().JAR_GRAPHIC_URL, getJars().JAR_GRAPHIC_WIDTH, getJars().JAR_GRAPHIC_HEIGHT, SpriteData.FUBAR_X, SpriteData.FUBAR_Y);
+        SPRITES._sprites[getDecoy().DECOY_WAVE] = new SpriteData("siegeimages/decoy_wave_anim.png", 61, 70, SpriteData.FUBAR_X, SpriteData.FUBAR_Y);
+        SPRITES._sprites[getDecoy().DECOY_FUSE] = new SpriteData("siegeimages/decoy_fuse_anim.png", 44, 49, SpriteData.FUBAR_X, SpriteData.FUBAR_Y);
+        SPRITES._sprites[getDecoy().DECOY_EXPLOSION] = new SpriteData("siegeimages/decoy_explosion_anim.png", 184, 195, SpriteData.FUBAR_X, SpriteData.FUBAR_Y);
         SPRITES._sprites[ResurrectProjectile.k_resurecctProjectile] = new SpriteData(ResurrectProjectile.k_projectileImageURL, 20, 20, 0, 0);
     }
 
@@ -120,11 +123,11 @@ export class SPRITES {
     }
 
     public static GetSprite(canvas: BitmapData, spriteId: string, state: string, angle: number, frame: number = 0, lastFrame: number = -1): number {
-        if (!GLOBAL._render) return -1;
+        if (!getGLOBAL()._render) return -1;
         if (angle < 0) angle = 360 + angle;
 
         if (spriteId === "worker") {
-            if (STORE._storeData.BST) {
+            if (getSTORE()._storeData.BST) {
                 if (lastFrame !== Math.floor(angle / 12)) {
                     SPRITES.GetFrame(canvas, SPRITES._sprites.worker, Math.floor(angle / 12), 1);
                 }
@@ -228,7 +231,7 @@ export class SPRITES {
                 if (level === 3) frames = 9;
                 else if (level > 3) frames = 10;
                 SPRITES.GetFrame(canvas, SPRITES._sprites[spriteId], Math.floor(angle / 22.5), Math.floor(frame / 8) % frames);
-            } else if (state === GLOBAL.e_BASE_MODE.ATTACK) {
+            } else if (state === getGLOBAL().e_BASE_MODE.ATTACK) {
                 const level = parseInt(spriteId.substr(3, 1));
                 SPRITES.GetFrame(canvas, SPRITES._sprites[spriteId], Math.floor(angle / 22.5), Math.floor(frame / 8) % 9 + 8);
             }

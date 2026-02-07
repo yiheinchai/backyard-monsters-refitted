@@ -15,7 +15,10 @@ import { MultiRewardEventsBar } from "../../../MultiRewardEventsBar";
 import { ReplayableEvent } from "./ReplayableEvent";
 import { ReplayableEventQuota } from "./ReplayableEventQuota";
 
-import { GLOBAL } from "../../../GLOBAL";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+
+
 
 /**
  * Multi-reward replayable event UI - displays progress bar with multiple reward tiers.
@@ -110,7 +113,7 @@ export class MultiRewardReplayableEventUI extends MultiRewardEventsBar implement
         if (timeRemaining <= 0) {
             this.timeLabel.htmlText = "<b>DATE NOT INITIALIZED!</b>";
         } else {
-            this.timeLabel.htmlText = "<b>" + GLOBAL.ToTime(timeRemaining, true) + "</b>";
+            this.timeLabel.htmlText = "<b>" + getGLOBAL().ToTime(timeRemaining, true) + "</b>";
         }
         if (this._event!.hasEventStarted) {
             this.m_progressBarFill!.graphics.clear();
@@ -126,8 +129,8 @@ export class MultiRewardReplayableEventUI extends MultiRewardEventsBar implement
     }
 
     private Resize(): void {
-        this.x = Math.floor(GLOBAL._SCREEN.x);
-        this.y = Math.floor(GLOBAL._SCREEN.y + (GLOBAL._SCREEN.height - this.mcBackground.height));
+        this.x = Math.floor(getGLOBAL()._SCREEN.x);
+        this.y = Math.floor(getGLOBAL()._SCREEN.y + (getGLOBAL()._SCREEN.height - this.mcBackground.height));
         if (Chat._bymChat && Chat._bymChat.chatBox && Boolean(Chat._bymChat.chatBox.background)) {
             this.y = Math.floor(Chat._bymChat.y + Chat._bymChat.chatBox.y + Chat._bymChat.chatBox.background.y - this.mcBackground.height);
         }

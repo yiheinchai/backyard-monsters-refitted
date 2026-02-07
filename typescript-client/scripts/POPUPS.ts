@@ -9,24 +9,27 @@ import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import TextFieldAutoSize from 'openfl/text/TextFieldAutoSize';
 import { ACADEMY } from './ACADEMY';
-import { BASE } from './BASE';
-import { BFOUNDATION } from './BFOUNDATION';
-import { BUILDINGINFO } from './BUILDINGINFO';
-import { BUILDINGOPTIONS } from './BUILDINGOPTIONS';
-import { BUILDINGS } from './BUILDINGS';
-import { BUY } from './BUY';
-import { CREATURELOCKER } from './CREATURELOCKER';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { LOGGER } from './LOGGER';
 import { MUSHROOMS } from './MUSHROOMS';
 import { NewPopupSystem } from './NewPopupSystem';
 import { POPUPSETTINGS } from './POPUPSETTINGS';
-import { QUEUE } from './QUEUE';
-import { SOUNDS } from './SOUNDS';
-import { STORE } from './STORE';
-import { TUTORIAL } from './TUTORIAL';
-import { UPDATES } from './UPDATES';
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("./BASE").BASE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBUILDINGINFO(): any { return require("./BUILDINGINFO").BUILDINGINFO; }
+function getBUILDINGOPTIONS(): any { return require("./BUILDINGOPTIONS").BUILDINGOPTIONS; }
+function getBUILDINGS(): any { return require("./BUILDINGS").BUILDINGS; }
+function getBUY(): any { return require("./BUY").BUY; }
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getQUEUE(): any { return require("./QUEUE").QUEUE; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+function getUPDATES(): any { return require("./UPDATES").UPDATES; }
+
 
 /**
  * POPUPS - Popup Management System
@@ -61,7 +64,7 @@ export class POPUPS {
         if (image) {
             ImageCache.GetImageWithCallBack("popups/" + image, null, true, 0);
         }
-        if (GLOBAL._catchup && group === "now" && !immediate) {
+        if (getGLOBAL()._catchup && group === "now" && !immediate) {
             group = "alerts";
         }
         if (group === "now" && POPUPS._lastGroup !== "now") {
@@ -76,10 +79,10 @@ export class POPUPS {
     }
 
     public static Next(event: MouseEvent | null = null): void {
-        if (GLOBAL._halt) {
-            GLOBAL.CallJS("reloadPage");
+        if (getGLOBAL()._halt) {
+            getGLOBAL().CallJS("reloadPage");
         }
-        if (!GLOBAL._catchup || POPUPS._lastGroup === "tip") {
+        if (!getGLOBAL()._catchup || POPUPS._lastGroup === "tip") {
             POPUPS.Hide();
         }
     }
@@ -110,9 +113,9 @@ export class POPUPS {
     }
 
     public static hasPopupsOpen(): boolean {
-        const isPlacing: boolean = GLOBAL._newBuilding && (GLOBAL._newBuilding as BFOUNDATION)._placing === true;
-        return BUILDINGS._open || STORE._open || BUILDINGOPTIONS._open || ACADEMY._open || 
-               CREATURELOCKER._open || isPlacing || !!POPUPS._mc || POPUPS._open;
+        const isPlacing: boolean = getGLOBAL()._newBuilding && (getGLOBAL()._newBuilding as BFOUNDATION)._placing === true;
+        return getBUILDINGS()._open || getSTORE()._open || getBUILDINGOPTIONS()._open || ACADEMY._open || 
+               getCREATURELOCKER()._open || isPlacing || !!POPUPS._mc || POPUPS._open;
     }
 
     private static NextDelayed(delay: number = 200): void {
@@ -132,7 +135,7 @@ export class POPUPS {
     }
 
     public static Add(displayObj: DisplayObject, alignment: number = 0): void {
-        GLOBAL._layerTop.addChild(displayObj);
+        getGLOBAL()._layerTop.addChild(displayObj);
         if (alignment === 1) {
             POPUPS.assignAlignToUpperLeft(displayObj);
         } else if (alignment === 2) {
@@ -169,17 +172,17 @@ export class POPUPS {
     }
 
     public static Show(group: string = "now"): void {
-        if (!GLOBAL._catchup || group === "tip") {
+        if (!getGLOBAL()._catchup || group === "tip") {
             POPUPS._lastGroup = group;
             const message: any[] = POPUPS._popups[group].shift();
             if (message && !POPUPS._open) {
                 POPUPS._open = true;
                 POPUPS.AddBG();
-                POPUPS._mc = GLOBAL._layerTop.addChild(message[0]) as MovieClip;
+                POPUPS._mc = getGLOBAL()._layerTop.addChild(message[0]) as MovieClip;
                 POPUPSETTINGS.AlignToCenter(POPUPS._mc);
                 POPUPSETTINGS.ScaleUp(POPUPS._mc);
                 if (message[3]) {
-                    SOUNDS.Play(message[3]);
+                    getSOUNDS().Play(message[3]);
                 }
                 if (message[1]) {
                     if (message[2]) {
@@ -227,12 +230,12 @@ export class POPUPS {
 
     public static AddBG(): void {
         POPUPS.RemoveBG();
-        GLOBAL.RefreshScreen();
-        POPUPS._mcBG = GLOBAL._layerTop.addChild(new (GLOBAL as any).popup_bg()) as MovieClip;
-        POPUPS._mcBG.width = GLOBAL._SCREEN.width;
-        POPUPS._mcBG.height = GLOBAL._SCREEN.height;
-        POPUPS._mcBG.x = GLOBAL._SCREEN.x;
-        POPUPS._mcBG.y = GLOBAL._SCREEN.y;
+        getGLOBAL().RefreshScreen();
+        POPUPS._mcBG = getGLOBAL()._layerTop.addChild(new (GLOBAL as any).popup_bg()) as MovieClip;
+        POPUPS._mcBG.width = getGLOBAL()._SCREEN.width;
+        POPUPS._mcBG.height = getGLOBAL()._SCREEN.height;
+        POPUPS._mcBG.x = getGLOBAL()._SCREEN.x;
+        POPUPS._mcBG.y = getGLOBAL()._SCREEN.y;
     }
 
     public static RemoveBG(mc: MovieClip | null = null): void {
@@ -245,41 +248,41 @@ export class POPUPS {
     public static Resize(): void {
         for (const group in POPUPS._popups) {
             for (let i = 0; i < POPUPS._popups[group].length; i++) {
-                POPUPS._popups[group][i].x = GLOBAL._SCREENCENTER.x;
-                POPUPS._popups[group][i].y = GLOBAL._SCREENCENTER.y;
+                POPUPS._popups[group][i].x = getGLOBAL()._SCREENCENTER.x;
+                POPUPS._popups[group][i].y = getGLOBAL()._SCREENCENTER.y;
             }
         }
     }
 
     public static NoConnection(): void {
-        SOUNDS.StopAll();
-        POPUPS._mcBG = GLOBAL._layerTop.addChild(new (GLOBAL as any).popup_bg2()) as MovieClip;
-        POPUPS._mcBG.x = GLOBAL._SCREEN.x;
-        POPUPS._mcBG.y = GLOBAL._SCREEN.y;
-        POPUPS._mcBG.width = GLOBAL._SCREEN.width;
-        POPUPS._mcBG.height = GLOBAL._SCREEN.height;
+        getSOUNDS().StopAll();
+        POPUPS._mcBG = getGLOBAL()._layerTop.addChild(new (GLOBAL as any).popup_bg2()) as MovieClip;
+        POPUPS._mcBG.x = getGLOBAL()._SCREEN.x;
+        POPUPS._mcBG.y = getGLOBAL()._SCREEN.y;
+        POPUPS._mcBG.width = getGLOBAL()._SCREEN.width;
+        POPUPS._mcBG.height = getGLOBAL()._SCREEN.height;
         const movie: any = new (GLOBAL as any).popup_timeout();
-        movie.tA.htmlText = "<b>" + KEYS.Get("pop_noconnect_title") + "</b>";
-        movie.tB.htmlText = KEYS.Get("pop_noconnect_body");
+        movie.tA.htmlText = "<b>" + getKEYS().Get("pop_noconnect_title") + "</b>";
+        movie.tB.htmlText = getKEYS().Get("pop_noconnect_body");
         movie.bGift.visible = false;
-        movie.x = GLOBAL._SCREENCENTER.x;
-        movie.y = GLOBAL._SCREENCENTER.y;
-        GLOBAL._layerTop.addChild(movie);
-        GLOBAL._halt = true;
+        movie.x = getGLOBAL()._SCREENCENTER.x;
+        movie.y = getGLOBAL()._SCREENCENTER.y;
+        getGLOBAL()._layerTop.addChild(movie);
+        getGLOBAL()._halt = true;
     }
 
     public static Timeout(): void {
-        SOUNDS.StopAll();
-        POPUPS._mcBG = GLOBAL._layerTop.addChild(new (GLOBAL as any).popup_bg2()) as MovieClip;
-        POPUPS._mcBG.x = GLOBAL._SCREEN.x;
-        POPUPS._mcBG.y = GLOBAL._SCREEN.y;
-        POPUPS._mcBG.width = GLOBAL._SCREEN.width;
-        POPUPS._mcBG.height = GLOBAL._SCREEN.height;
+        getSOUNDS().StopAll();
+        POPUPS._mcBG = getGLOBAL()._layerTop.addChild(new (GLOBAL as any).popup_bg2()) as MovieClip;
+        POPUPS._mcBG.x = getGLOBAL()._SCREEN.x;
+        POPUPS._mcBG.y = getGLOBAL()._SCREEN.y;
+        POPUPS._mcBG.width = getGLOBAL()._SCREEN.width;
+        POPUPS._mcBG.height = getGLOBAL()._SCREEN.height;
         const movie: any = new (GLOBAL as any).popup_timeout();
-        movie.tA.htmlText = "<b>" + KEYS.Get("pop_timeout_title") + "</b>";
-        movie.tB.htmlText = KEYS.Get("pop_timeout_body");
-        if (!GLOBAL._flags.kongregate) {
-            if (GLOBAL._canGift) {
+        movie.tA.htmlText = "<b>" + getKEYS().Get("pop_timeout_title") + "</b>";
+        movie.tB.htmlText = getKEYS().Get("pop_timeout_body");
+        if (!getGLOBAL()._flags.kongregate) {
+            if (getGLOBAL()._canGift) {
                 movie.bGift.SetupKey("btn_sendfreegifts");
                 movie.bGift.addEventListener(MouseEvent.CLICK, POPUPS.DisplayGiftSelect);
             } else {
@@ -290,30 +293,30 @@ export class POPUPS {
         } else {
             movie.bGift.visible = false;
         }
-        movie.x = GLOBAL._SCREENCENTER.x;
-        movie.y = GLOBAL._SCREENCENTER.y;
-        GLOBAL._layerTop.addChild(movie);
-        GLOBAL._halt = true;
+        movie.x = getGLOBAL()._SCREENCENTER.x;
+        movie.y = getGLOBAL()._SCREENCENTER.y;
+        getGLOBAL()._layerTop.addChild(movie);
+        getGLOBAL()._halt = true;
     }
 
     public static AFK(): void {
-        if (!GLOBAL._promptedAFK && TUTORIAL._stage > 200) {
-            if (GLOBAL._canGift || GLOBAL._flags.kongregate) {
+        if (!getGLOBAL()._promptedAFK && getTUTORIAL()._stage > 200) {
+            if (getGLOBAL()._canGift || getGLOBAL()._flags.kongregate) {
                 POPUPS.Gift(true);
             } else {
                 POPUPS.Invite(true);
             }
         }
-        GLOBAL._promptedAFK = true;
+        getGLOBAL()._promptedAFK = true;
     }
 
     public static Gift(showInGamePopup: boolean = false): void {
-        if (GLOBAL._canGift || GLOBAL._flags.kongregate) {
+        if (getGLOBAL()._canGift || getGLOBAL()._flags.kongregate) {
             if (showInGamePopup) {
                 const popupMC: any = new (GLOBAL as any).popup_afk_gift();
-                popupMC.tA.htmlText = "<b>" + KEYS.Get("pop_afk_title") + "</b>";
-                popupMC.tB.htmlText = KEYS.Get("pop_afk_body");
-                if (GLOBAL._canGift) {
+                popupMC.tA.htmlText = "<b>" + getKEYS().Get("pop_afk_title") + "</b>";
+                popupMC.tB.htmlText = getKEYS().Get("pop_afk_body");
+                if (getGLOBAL()._canGift) {
                     popupMC.bAction.SetupKey("btn_sendfreegifts");
                     popupMC.bAction.addEventListener(MouseEvent.CLICK, (e: MouseEvent) => {
                         POPUPS.Next(e);
@@ -329,12 +332,12 @@ export class POPUPS {
             }
         } else {
             const popupMC: any = new (GLOBAL as any).popup_invite_friends();
-            if (GLOBAL._friendCount > 0) {
-                popupMC.tA.htmlText = "<b>" + KEYS.Get("pop_invitefriends_title") + "</b>";
-                popupMC.tB.htmlText = KEYS.Get("pop_invitefriends_body");
+            if (getGLOBAL()._friendCount > 0) {
+                popupMC.tA.htmlText = "<b>" + getKEYS().Get("pop_invitefriends_title") + "</b>";
+                popupMC.tB.htmlText = getKEYS().Get("pop_invitefriends_body");
             } else {
-                popupMC.tA.htmlText = "<b>" + KEYS.Get("pop_invitenofriends_title") + "</b>";
-                popupMC.tB.htmlText = KEYS.Get("pop_invitenofriends_body");
+                popupMC.tA.htmlText = "<b>" + getKEYS().Get("pop_invitenofriends_title") + "</b>";
+                popupMC.tB.htmlText = getKEYS().Get("pop_invitenofriends_body");
             }
             popupMC.bAction.SetupKey("btn_invitefriends");
             popupMC.bAction.addEventListener(MouseEvent.CLICK, (e: MouseEvent) => {
@@ -344,14 +347,14 @@ export class POPUPS {
             popupMC.bAction.Highlight = true;
             POPUPS.Push(popupMC);
         }
-        GLOBAL.StatSet("pg", GLOBAL.Timestamp());
+        getGLOBAL().StatSet("pg", getGLOBAL().Timestamp());
     }
 
     public static Invite(showInGamePopup: boolean = false): void {
         if (showInGamePopup) {
             const popupMC: any = new (GLOBAL as any).popup_invite_friends();
-            popupMC.tA.htmlText = KEYS.Get("pop_invitefriends_title");
-            popupMC.tB.htmlText = KEYS.Get("pop_invitefriends_body");
+            popupMC.tA.htmlText = getKEYS().Get("pop_invitefriends_title");
+            popupMC.tB.htmlText = getKEYS().Get("pop_invitefriends_body");
             popupMC.bAction.SetupKey("btn_invitefriends");
             popupMC.bAction.addEventListener(MouseEvent.CLICK, (e: MouseEvent) => {
                 POPUPS.Next(e);
@@ -362,7 +365,7 @@ export class POPUPS {
         } else {
             POPUPS.DisplayInviteSelect();
         }
-        GLOBAL.StatSet("pi", GLOBAL.Timestamp());
+        getGLOBAL().StatSet("pi", getGLOBAL().Timestamp());
     }
 
     public static Done(): boolean {
@@ -371,28 +374,28 @@ export class POPUPS {
 
     public static DisplaySR(event: MouseEvent | null = null): void {
         POPUPS.AddBG();
-        GLOBAL.CallJS("cc.showSrOverlay", ["callbackshiny"]);
-        LOGGER.Stat([20, 1]);
+        getGLOBAL().CallJS("cc.showSrOverlay", ["callbackshiny"]);
+        getLOGGER().Stat([20, 1]);
     }
 
     public static DisplayGiftSelect(event: MouseEvent | null = null): void {
         POPUPS.AddBG();
         if (BYMDevConfig.instance.USE_CLIENT_WITH_CALLBACK) {
-            GLOBAL.CallJSWithClient("cc.showFeedDialog", "callbackgift", ["gift"]);
+            getGLOBAL().CallJSWithClient("cc.showFeedDialog", "callbackgift", ["gift"]);
         } else {
-            GLOBAL.CallJS("cc.showFeedDialog", ["gift", "callbackgift"]);
+            getGLOBAL().CallJS("cc.showFeedDialog", ["gift", "callbackgift"]);
         }
-        LOGGER.Stat([20, 1]);
+        getLOGGER().Stat([20, 1]);
     }
 
     public static DisplayInviteSelect(event: MouseEvent | null = null): void {
         POPUPS.AddBG();
         if (BYMDevConfig.instance.USE_CLIENT_WITH_CALLBACK) {
-            GLOBAL.CallJSWithClient("cc.showFeedDialog", "callbackgift", ["invite"]);
+            getGLOBAL().CallJSWithClient("cc.showFeedDialog", "callbackgift", ["invite"]);
         } else {
-            GLOBAL.CallJS("cc.showFeedDialog", ["invite", "callbackgift"]);
+            getGLOBAL().CallJS("cc.showFeedDialog", ["invite", "callbackgift"]);
         }
-        LOGGER.Stat([21, 1]);
+        getLOGGER().Stat([21, 1]);
     }
 
     public static DisplayGetShiny(event: MouseEvent | null = null): void {
@@ -401,38 +404,38 @@ export class POPUPS {
 
     public static GetShinyPopup(): MovieClip {
         const mc: any = new (GLOBAL as any).popup_noshiny();
-        mc.tA.htmlText = "<b>" + KEYS.Get("pop_noshiny_title") + "</b>";
-        mc.tB.htmlText = KEYS.Get("pop_noshiny_body");
+        mc.tA.htmlText = "<b>" + getKEYS().Get("pop_noshiny_title") + "</b>";
+        mc.tB.htmlText = getKEYS().Get("pop_noshiny_body");
         mc.bGet.SetupKey("str_getmore_btn");
-        mc.bGet.addEventListener(MouseEvent.CLICK, BUY.Show);
+        mc.bGet.addEventListener(MouseEvent.CLICK, getBUY().Show);
         mc.bGet.Highlight = true;
         return mc;
     }
 
     public static DisplayWorker(actionType: number, building: any): void {
-        const workerImage: string = BASE.isInfernoMainYardOrOutpost ? "BYM_WorkerGuy2.png" : "helpinghand.png";
+        const workerImage: string = getBASE().isInfernoMainYardOrOutpost ? "BYM_WorkerGuy2.png" : "helpinghand.png";
         const mc: any = new (GLOBAL as any).popup_noworker();
-        if (!BASE.isMainYard) {
-            mc.tA.htmlText = KEYS.Get("worker_busy");
-            mc.tB.htmlText = KEYS.Get("worker_speedupoutpost", { v1: QUEUE.GetFinishCost() });
+        if (!getBASE().isMainYard) {
+            mc.tA.htmlText = getKEYS().Get("worker_busy");
+            mc.tB.htmlText = getKEYS().Get("worker_speedupoutpost", { v1: getQUEUE().GetFinishCost() });
             mc.bGet.SetupKey("btn_speedup");
             mc.bGet.addEventListener(MouseEvent.CLICK, () => {
                 POPUPS.DisplayWorkerNext(actionType, building);
             });
             mc.bGet.Highlight = true;
         } else {
-            mc.tA.htmlText = "<b>" + KEYS.Get("pop_hireanother_title") + "</b>";
-            if (QUEUE.GetBuilding()) {
-                mc.tB.htmlText = KEYS.Get("worker_speedup", { v1: QUEUE.GetFinishCost() });
+            mc.tA.htmlText = "<b>" + getKEYS().Get("pop_hireanother_title") + "</b>";
+            if (getQUEUE().GetBuilding()) {
+                mc.tB.htmlText = getKEYS().Get("worker_speedup", { v1: getQUEUE().GetFinishCost() });
                 mc.bGet.SetupKey("btn_speedup");
                 mc.bGet.addEventListener(MouseEvent.CLICK, () => {
                     POPUPS.DisplayWorkerNext(actionType, building);
                 });
             } else {
                 mc.bGet.SetupKey("btn_hireanother");
-                mc.tB.htmlText = KEYS.Get("pop_hireanother_body");
+                mc.tB.htmlText = getKEYS().Get("pop_hireanother_body");
                 mc.bGet.addEventListener(MouseEvent.CLICK, () => {
-                    STORE.ShowB(1, 0, ["BEW"]);
+                    getSTORE().ShowB(1, 0, ["BEW"]);
                     POPUPS.Next();
                 });
             }
@@ -442,40 +445,40 @@ export class POPUPS {
     }
 
     private static DisplayWorkerNext(actionType: number, building: any): void {
-        const finishCost: number = QUEUE.GetFinishCost();
-        GLOBAL._selectedBuilding = QUEUE.GetBuilding();
-        if (finishCost > BASE._credits.Get()) {
+        const finishCost: number = getQUEUE().GetFinishCost();
+        getGLOBAL()._selectedBuilding = getQUEUE().GetBuilding();
+        if (finishCost > getBASE()._credits.Get()) {
             POPUPS.Next();
             POPUPS.DisplayGetShiny();
             return;
         }
-        if (GLOBAL._selectedBuilding) {
-            STORE._storeItems.SP4.c = [finishCost];
-            STORE.BuyB("SP4");
+        if (getGLOBAL()._selectedBuilding) {
+            getSTORE()._storeItems.SP4.c = [finishCost];
+            getSTORE().BuyB("SP4");
             POPUPS.Next();
         }
         if (actionType === 0) {
-            BUILDINGS.Hide();
-            BASE.addBuildingB(building as number);
+            getBUILDINGS().Hide();
+            getBASE().addBuildingB(building as number);
         } else {
             const bldg: BFOUNDATION = building as BFOUNDATION;
             if (actionType === 1 && bldg) {
-                if (Math.floor(bldg._buildingProps.costs[bldg._lvl.Get()].time.Get() * GLOBAL._buildTime) > 3600) {
-                    UPDATES.Create(["BU", bldg._id]);
+                if (Math.floor(bldg._buildingProps.costs[bldg._lvl.Get()].time.Get() * getGLOBAL()._buildTime) > 3600) {
+                    getUPDATES().Create(["BU", bldg._id]);
                 }
-                BUILDINGOPTIONS.Hide();
+                getBUILDINGOPTIONS().Hide();
                 bldg.UpgradeB();
-                BASE.Save();
+                getBASE().Save();
             } else if (actionType === 2 && bldg) {
-                BUILDINGINFO.Hide();
+                getBUILDINGINFO().Hide();
                 MUSHROOMS.PickWorker(bldg);
             } else if (actionType === 3 && bldg) {
-                if (Math.floor(bldg._buildingProps.fortify_costs[bldg._fortification.Get()].time.Get() * GLOBAL._buildTime) > 3600) {
-                    UPDATES.Create(["BF", bldg._id]);
+                if (Math.floor(bldg._buildingProps.fortify_costs[bldg._fortification.Get()].time.Get() * getGLOBAL()._buildTime) > 3600) {
+                    getUPDATES().Create(["BF", bldg._id]);
                 }
-                BUILDINGOPTIONS.Hide();
+                getBUILDINGOPTIONS().Hide();
                 bldg.FortifyB();
-                BASE.Save();
+                getBASE().Save();
             }
         }
         POPUPS.Next();
@@ -486,9 +489,9 @@ export class POPUPS {
         popupMC.bAction.SetupKey("str_getmore_btn");
         popupMC.bAction.addEventListener(MouseEvent.CLICK, () => {
             popupMC.bAction.Enabled = false;
-            BUY.Show();
+            getBUY().Show();
         });
-        popupMC.tMessage.htmlText = KEYS.Get("pop_marketing_getshiny");
+        popupMC.tMessage.htmlText = getKEYS().Get("pop_marketing_getshiny");
         POPUPS.Push(popupMC, null, null, "", "purchased.png");
     }
 
@@ -538,8 +541,8 @@ export class POPUPS {
      */
     public static CallbackGift(response: string): void {
         POPUPS.RemoveBG();
-        if (GLOBAL._halt) {
-            GLOBAL.CallJS("reloadPage");
+        if (getGLOBAL()._halt) {
+            getGLOBAL().CallJS("reloadPage");
         }
     }
 
@@ -552,15 +555,15 @@ export class POPUPS {
         try {
             if (response) {
                 const obj = JSON.parse(response);
-                BASE._credits.Set(parseInt(obj.credits));
-                BASE._hpCredits = parseInt(obj.credits);
-                GLOBAL._credits.Set(parseInt(obj.credits));
+                getBASE()._credits.Set(parseInt(obj.credits));
+                getBASE()._hpCredits = parseInt(obj.credits);
+                getGLOBAL()._credits.Set(parseInt(obj.credits));
             }
         } catch (e: any) {
-            LOGGER.Log("err", "POPUPS.CallbackShiny " + response + " | " + e.message);
+            getLOGGER().Log("err", "POPUPS.CallbackShiny " + response + " | " + e.message);
         }
-        if (GLOBAL._halt) {
-            GLOBAL.CallJS("reloadPage");
+        if (getGLOBAL()._halt) {
+            getGLOBAL().CallJS("reloadPage");
         }
     }
 }

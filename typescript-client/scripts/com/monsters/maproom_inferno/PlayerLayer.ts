@@ -15,13 +15,16 @@ import { Obstruction } from "./Obstruction";
 import { PlayerBase } from "./PlayerBase";
 import { WildMonsterBase } from "./WildMonsterBase";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGGER } from "../../../LOGGER";
 import { MAPROOM_DESCENT } from "../../../MAPROOM_DESCENT";
 import { MAPROOM_INFERNO } from "../../../MAPROOM_INFERNO";
-import { URLLoaderApi } from "../../../URLLoaderApi";
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+function getURLLoaderApi(): any { return require("../../../URLLoaderApi").URLLoaderApi; }
+
 
 /**
  * PlayerLayer - manages all player bases on the Inferno map room.
@@ -92,13 +95,13 @@ export class PlayerLayer extends Sprite {
     }
 
     public Tick(...args: any[]): void {
-        if (this._lastUpdated > 0 && GLOBAL.Timestamp() - this._lastUpdated > 15 && !this._getting) {
+        if (this._lastUpdated > 0 && getGLOBAL().Timestamp() - this._lastUpdated > 15 && !this._getting) {
             this.Get();
         }
         if (this._frameNumber % 40 === 0) {
             let msg = "";
-            if (this._BRIDGE.GLOBAL._flags.attacking === 0) {
-                msg = KEYS.Get("map_msg_attackingdisabled");
+            if (this._BRIDGE.getGLOBAL()._flags.attacking === 0) {
+                msg = getKEYS().Get("map_msg_attackingdisabled");
             }
             if (!msg) {
             }
@@ -109,7 +112,7 @@ export class PlayerLayer extends Sprite {
     public Get(): void {
         const handleLoadSuccessful = (serverData: Record<string, any>): void => {
             try {
-                GLOBAL.WaitHide();
+                getGLOBAL().WaitHide();
                 if (serverData.error === 0) {
                     serverData.wmbases = [];
                     const aib = this._BRIDGE.WMBASE._bases;
@@ -128,7 +131,7 @@ export class PlayerLayer extends Sprite {
                                             _o.friend = 0;
                                             _o.pic = aib[ai].tribe.profilepic;
                                             _o.basename = aib[ai].tribe.name;
-                                            if (_o.level >= BASE._baseLevel - 10) {
+                                            if (_o.level >= getBASE()._baseLevel - 10) {
                                                 serverData.wmbases.push(_o);
                                             }
                                         }
@@ -137,40 +140,40 @@ export class PlayerLayer extends Sprite {
                             }
                         }
                     } catch (e: any) {
-                        LOGGER.Log("err", "PlayerLayer WM: " + e.message);
+                        getLOGGER().Log("err", "PlayerLayer WM: " + e.message);
                     }
                     try {
                         const start = getTimer();
                         this.Create(serverData);
                         this._getting = false;
-                        this._lastUpdated = GLOBAL.Timestamp() + Math.floor(Math.random() * 5);
+                        this._lastUpdated = getGLOBAL().Timestamp() + Math.floor(Math.random() * 5);
                         this.dispatchEvent(new Event(Event.COMPLETE));
                     } catch (e: any) {
-                        LOGGER.Log("err", "PlayerLayer Create: " + e.message);
+                        getLOGGER().Log("err", "PlayerLayer Create: " + e.message);
                     }
                 } else {
-                    LOGGER.Log("err", "MAPROOMPOPUP.Get: " + serverData.error);
-                    GLOBAL.ErrorMessage("MAPROOMPOPUP.Get 1");
+                    getLOGGER().Log("err", "MAPROOMPOPUP.Get: " + serverData.error);
+                    getGLOBAL().ErrorMessage("MAPROOMPOPUP.Get 1");
                 }
                 if (MiniMap.getInstance()) {
                     MiniMap.getInstance().Update(this.basesForeign, this.basesWM);
                 }
             } catch (e: any) {
-                LOGGER.Log("err", "PlayerLayer: " + e.message);
+                getLOGGER().Log("err", "PlayerLayer: " + e.message);
             }
         };
         const handleLoadError = (event: IOErrorEvent): void => {
-            GLOBAL.WaitHide();
-            LOGGER.Log("err", "MAPROOMPOPUP.Get HTTP");
-            GLOBAL.ErrorMessage("MAPROOMPOPUP.Get 2");
+            getGLOBAL().WaitHide();
+            getLOGGER().Log("err", "MAPROOMPOPUP.Get HTTP");
+            getGLOBAL().ErrorMessage("MAPROOMPOPUP.Get 2");
         };
         this._getting = true;
         ++this._gets;
         if (this._gets > 12) {
         }
         const loadVars = [["baseid", 0], ["type", "inferno"]];
-        const r = new URLLoaderApi();
-        r.load(GLOBAL._apiURL + "bm/neighbours/get", loadVars, handleLoadSuccessful, handleLoadError);
+        const r = new (getURLLoaderApi())();
+        r.load(getGLOBAL()._apiURL + "bm/neighbours/get", loadVars, handleLoadSuccessful, handleLoadError);
     }
 
     public Create(serverData: Record<string, any>): void {
@@ -231,7 +234,7 @@ export class PlayerLayer extends Sprite {
                     for (const existingData of this.baseData) {
                         if (existingData.baseid.Get() === rawData.baseid) {
                             existingData.Update(rawData);
-                            existingData.online = rawData.saved >= GLOBAL.Timestamp() - 62;
+                            existingData.online = rawData.saved >= getGLOBAL().Timestamp() - 62;
                             baseExists = true;
                             break;
                         }

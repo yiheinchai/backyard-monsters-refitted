@@ -5,61 +5,28 @@ import { ALLIANCES } from './com/monsters/alliances/ALLIANCES';
 import { AutoBankManager } from './com/monsters/autobanking/AutoBankManager';
 import { BaseBuffHandler } from './com/monsters/baseBuffs/BaseBuffHandler';
 import { BYMConfig } from './com/monsters/configs/BYMConfig';
-import { BuildingOverlay } from './com/monsters/display/BuildingOverlay';
 import { ResourceBombs } from './com/monsters/effects/ResourceBombs';
 import { Fire } from './com/monsters/effects/fire/Fire';
 import { ParticleText } from './com/monsters/effects/particles/ParticleText';
-import { Smoke } from './com/monsters/effects/smoke/Smoke';
 import { EnumYardType } from './com/monsters/enums/EnumYardType';
-import { InstanceManager } from './com/monsters/managers/InstanceManager';
-import { InventoryManager } from './com/monsters/inventory/InventoryManager';
 import { MapRoom3 } from './com/monsters/maproom3/MapRoom3';
 import { MapRoom3Tutorial } from './com/monsters/maproom3/MapRoom3Tutorial';
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
 import { ChampionBase } from './com/monsters/monsters/champions/ChampionBase';
-import { PATHING } from './com/monsters/pathing/PATHING';
 import { Player } from './com/monsters/player/Player';
 import { RasterData } from './com/monsters/rendering/RasterData';
 import { RewardHandler } from './com/monsters/rewarding/RewardHandler';
-import { SiegeWeapons } from './com/monsters/siege/SiegeWeapons';
 import Point from 'openfl/geom/Point';
 
 import { ACADEMY } from './ACADEMY';
 import { ACHIEVEMENTS } from './ACHIEVEMENTS';
-import { ATTACK } from './ATTACK';
-import { BFOUNDATION } from './BFOUNDATION';
 import { BlackSpurtzCannon } from './BlackSpurtzCannon';
-import { BTOWER } from './BTOWER';
-import { BTRAP } from './BTRAP';
-import { BUILDINGINFO } from './BUILDINGINFO';
-import { BWALL } from './BWALL';
-import { Bunker } from './Bunker';
-import { BUILDING14 } from './BUILDING14';
-import { BUILDING15 } from './BUILDING15';
-import { BUILDING6 } from './BUILDING6';
 import { CHECKER } from './CHECKER';
 import { SiegeFactory } from './com/monsters/siege/SiegeFactory';
 import { SiegeLab } from './com/monsters/siege/SiegeLab';
-import { CREATURELOCKER } from './CREATURELOCKER';
-import { CREATURES } from './CREATURES';
-import { CREEPS } from './CREEPS';
 import { CUSTOMATTACKS } from './CUSTOMATTACKS';
-import { EFFECTS } from './EFFECTS';
-import { FIREBALLS } from './FIREBALLS';
 import { GAME } from './GAME';
-import { GIBLETS } from './GIBLETS';
 import { GIFTS } from './GIFTS';
-import { GLOBAL } from './GLOBAL';
-import { GRID } from './GRID';
-import { HOUSING } from './HOUSING';
-import { HOUSINGBUNKER } from './HOUSINGBUNKER';
 import { INFERNO_DESCENT_POPUPS } from './INFERNO_DESCENT_POPUPS';
-import { INFERNO_MAGMA_TOWER } from './INFERNO_MAGMA_TOWER';
-import { INFERNOQUAKETOWER } from './INFERNOQUAKETOWER';
-import { KEYS } from './KEYS';
-import { LOGGER } from './LOGGER';
-import { LOGIN } from './LOGIN';
-import { MAP } from './MAP';
 import { MAPROOM } from './MAPROOM';
 import { MAPROOM_DESCENT } from './MAPROOM_DESCENT';
 import { MAPROOM_INFERNO } from './MAPROOM_INFERNO';
@@ -68,28 +35,64 @@ import { MONSTERBAITER } from './MONSTERBAITER';
 import { MUSHROOMS } from './MUSHROOMS';
 import { NewPopupSystem } from './NewPopupSystem';
 import { PLEASEWAIT } from './PLEASEWAIT';
-import { POPUPS } from './POPUPS';
 import { POWERUPS } from './POWERUPS';
 import { PROJECTILES } from './PROJECTILES';
-import { QUEUE } from './QUEUE';
-import { QUESTS } from './QUESTS';
-import { ResourcePackages } from './ResourcePackages';
-import { SOUNDS } from './SOUNDS';
-import { SPECIALEVENT } from './SPECIALEVENT';
 import { SPECIALEVENT_WM1 } from './SPECIALEVENT_WM1';
-import { SPRITES } from './SPRITES';
-import { SpurtzCannon } from './SpurtzCannon';
-import { STORE } from './STORE';
-import { Targeting } from './Targeting';
-import { TUTORIAL } from './TUTORIAL';
-import { UI2 } from './UI2';
-import { UPDATES } from './UPDATES';
-import { URLLoaderApi } from './URLLoaderApi';
-import { WMATTACK } from './WMATTACK';
 import { WORKERS } from './WORKERS';
 import { BaseTemplate } from './com/monsters/baseplanner/BaseTemplate';
 import { BaseTemplateNode } from './com/monsters/baseplanner/BaseTemplateNode';
 import { PlannerTemplate } from './com/monsters/baseplanner/PlannerTemplate';
+
+// Lazy imports to break circular dependency chains
+function getBuildingOverlay(): any { return require("./com/monsters/display/BuildingOverlay").BuildingOverlay; }
+function getSmoke(): any { return require("./com/monsters/effects/smoke/Smoke").Smoke; }
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getInventoryManager(): any { return require("./com/monsters/inventory/InventoryManager").InventoryManager; }
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getPATHING(): any { return require("./com/monsters/pathing/PATHING").PATHING; }
+function getSiegeWeapons(): any { return require("./com/monsters/siege/SiegeWeapons").SiegeWeapons; }
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBTOWER(): any { return require("./BTOWER").BTOWER; }
+function getBTRAP(): any { return require("./BTRAP").BTRAP; }
+function getBUILDINGINFO(): any { return require("./BUILDINGINFO").BUILDINGINFO; }
+function getBWALL(): any { return require("./BWALL").BWALL; }
+function getBunker(): any { return require("./Bunker").Bunker; }
+function getBUILDING14(): any { return require("./BUILDING14").BUILDING14; }
+function getBUILDING15(): any { return require("./BUILDING15").BUILDING15; }
+function getBUILDING6(): any { return require("./BUILDING6").BUILDING6; }
+function getCREATURELOCKER(): any { return require("./CREATURELOCKER").CREATURELOCKER; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getEFFECTS(): any { return require("./EFFECTS").EFFECTS; }
+function getFIREBALLS(): any { return require("./FIREBALLS").FIREBALLS; }
+function getGIBLETS(): any { return require("./GIBLETS").GIBLETS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getGRID(): any { return require("./GRID").GRID; }
+function getHOUSING(): any { return require("./HOUSING").HOUSING; }
+function getHOUSINGBUNKER(): any { return require("./HOUSINGBUNKER").HOUSINGBUNKER; }
+function getINFERNO_MAGMA_TOWER(): any { return require("./INFERNO_MAGMA_TOWER").INFERNO_MAGMA_TOWER; }
+function getINFERNOQUAKETOWER(): any { return require("./INFERNOQUAKETOWER").INFERNOQUAKETOWER; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getLOGIN(): any { return require("./LOGIN").LOGIN; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getQUEUE(): any { return require("./QUEUE").QUEUE; }
+function getQUESTS(): any { return require("./QUESTS").QUESTS; }
+function getResourcePackages(): any { return require("./ResourcePackages").ResourcePackages; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getSPECIALEVENT(): any { return require("./SPECIALEVENT").SPECIALEVENT; }
+function getSPRITES(): any { return require("./SPRITES").SPRITES; }
+function getSpurtzCannon(): any { return require("./SpurtzCannon").SpurtzCannon; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getTargeting(): any { return require("./Targeting").Targeting; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+function getUI2(): any { return require("./UI2").UI2; }
+function getUPDATES(): any { return require("./UPDATES").UPDATES; }
+function getURLLoaderApi(): any { return require("./URLLoaderApi").URLLoaderApi; }
+function getWMATTACK(): any { return require("./WMATTACK").WMATTACK; }
+
 
 /**
  * BASE - Core game base management class
@@ -434,23 +437,23 @@ export class BASE {
         };
         
         BASE._loadBase = [];
-        GLOBAL.Clear();
+        getGLOBAL().Clear();
     }
     
     public static Cleanup(): void {
-        SPECIALEVENT.ClearWildMonsterPowerups();
+        getSPECIALEVENT().ClearWildMonsterPowerups();
         SPECIALEVENT_WM1.ClearWildMonsterPowerups();
         BaseBuffHandler.instance.clearBuffs();
         RewardHandler.instance.clear();
-        GLOBAL.player.clear();
+        getGLOBAL().player.clear();
         
-        if (GLOBAL.attackingPlayer) {
-            GLOBAL.attackingPlayer.clear();
+        if (getGLOBAL().attackingPlayer) {
+            getGLOBAL().attackingPlayer.clear();
         }
         
-        CREATURES.Clear();
-        CREEPS.Clear();
-        InstanceManager.clearAll();
+        getCREATURES().Clear();
+        getCREEPS().Clear();
+        getInstanceManager().clearAll();
         
         BASE.buildings = [];
         BASE._buildingsAll = {};
@@ -461,27 +464,27 @@ export class BASE {
         BASE._buildingsGifts = {};
         BASE._buildingsStored = {};
         
-        GLOBAL.setTownHall(null);
-        GLOBAL._bAcademy = null;
-        GLOBAL._bBaiter = null;
-        GLOBAL._bFlinger = null;
-        GLOBAL._bHatchery = null;
-        GLOBAL._bHatcheryCC = null;
-        GLOBAL._bHousing = null;
-        GLOBAL._bJuicer = null;
-        GLOBAL._bLocker = null;
-        GLOBAL._bMap = null;
-        GLOBAL._bStore = null;
+        getGLOBAL().setTownHall(null);
+        getGLOBAL()._bAcademy = null;
+        getGLOBAL()._bBaiter = null;
+        getGLOBAL()._bFlinger = null;
+        getGLOBAL()._bHatchery = null;
+        getGLOBAL()._bHatcheryCC = null;
+        getGLOBAL()._bHousing = null;
+        getGLOBAL()._bJuicer = null;
+        getGLOBAL()._bLocker = null;
+        getGLOBAL()._bMap = null;
+        getGLOBAL()._bStore = null;
         
-        UI2.Hide("warning");
-        UI2.Hide("scareAway");
-        WMATTACK._inProgress = false;
+        getUI2().Hide("warning");
+        getUI2().Hide("scareAway");
+        getWMATTACK()._inProgress = false;
         MONSTERBAITER._scaredAway = false;
         CUSTOMATTACKS._started = false;
-        WMATTACK._queued = null;
+        getWMATTACK()._queued = null;
         
-        GRID.Cleanup();
-        PATHING.Cleanup();
+        getGRID().Cleanup();
+        getPATHING().Cleanup();
         RasterData.clear();
         
         BASE._showingWhatsNew = false;
@@ -523,8 +526,8 @@ export class BASE {
         if (isNaN(baseId)) baseId = 0;
         if (isNaN(userId)) userId = 0;
         
-        if (MapRoomManager.instance.isInMapRoom2or3 && MapRoomManager.instance.isOpen) {
-            MapRoomManager.instance.Hide();
+        if (getMapRoomManager().instance.isInMapRoom2or3 && getMapRoomManager().instance.isOpen) {
+            getMapRoomManager().instance.Hide();
         }
         
         if (MAPROOM_INFERNO._open) {
@@ -535,38 +538,38 @@ export class BASE {
             MAPROOM.Hide();
         }
         
-        if (!MapRoomManager.instance.isInMapRoom2or3 && 
-            (baseMode === GLOBAL.e_BASE_MODE.ATTACK || baseMode === GLOBAL.e_BASE_MODE.IATTACK) && 
-            (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD && GLOBAL.mode !== GLOBAL.e_BASE_MODE.IBUILD)) {
+        if (!getMapRoomManager().instance.isInMapRoom2or3 && 
+            (baseMode === getGLOBAL().e_BASE_MODE.ATTACK || baseMode === getGLOBAL().e_BASE_MODE.IATTACK) && 
+            (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD && getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.IBUILD)) {
             return false;
         }
         
         if (!BASE._loading) {
-            GLOBAL._reloadonerror = isError;
+            getGLOBAL()._reloadonerror = isError;
             
             if (baseId === 0 && userId === 0) {
-                if (baseMode !== GLOBAL.e_BASE_MODE.IBUILD) {
-                    baseMode = GLOBAL.e_BASE_MODE.BUILD;
+                if (baseMode !== getGLOBAL().e_BASE_MODE.IBUILD) {
+                    baseMode = getGLOBAL().e_BASE_MODE.BUILD;
                 }
             }
             
-            if ((baseMode === GLOBAL.e_BASE_MODE.ATTACK || baseMode === GLOBAL.e_BASE_MODE.WMATTACK) && 
-                !MapRoomManager.instance.isInMapRoom2or3 && 
-                (!GLOBAL._bFlinger || !GLOBAL._bFlinger._canFunction) && 
+            if ((baseMode === getGLOBAL().e_BASE_MODE.ATTACK || baseMode === getGLOBAL().e_BASE_MODE.WMATTACK) && 
+                !getMapRoomManager().instance.isInMapRoom2or3 && 
+                (!getGLOBAL()._bFlinger || !getGLOBAL()._bFlinger._canFunction) && 
                 !BASE.isInfernoMainYardOrOutpost) {
-                LOGGER.Log("err", "Impossible fling");
-                GLOBAL.ErrorMessage("BASE.LoadBase impossible fling");
+                getLOGGER().Log("err", "Impossible fling");
+                getGLOBAL().ErrorMessage("BASE.LoadBase impossible fling");
                 return false;
             }
             
             BASE._loadBase = [url, userId, baseId, baseMode, baseType, cellId];
             
-            if (!MapRoomManager.instance.isInMapRoom2or3 && 
-                (baseMode === GLOBAL.e_BASE_MODE.ATTACK || 
-                 baseMode === GLOBAL.e_BASE_MODE.WMATTACK || 
-                 baseMode === GLOBAL.e_BASE_MODE.IATTACK || 
-                 baseMode === GLOBAL.e_BASE_MODE.IWMATTACK)) {
-                PLEASEWAIT.Show(KEYS.Get("msg_preparing"));
+            if (!getMapRoomManager().instance.isInMapRoom2or3 && 
+                (baseMode === getGLOBAL().e_BASE_MODE.ATTACK || 
+                 baseMode === getGLOBAL().e_BASE_MODE.WMATTACK || 
+                 baseMode === getGLOBAL().e_BASE_MODE.IATTACK || 
+                 baseMode === getGLOBAL().e_BASE_MODE.IWMATTACK)) {
+                PLEASEWAIT.Show(getKEYS().Get("msg_preparing"));
                 BASE.Save(0, false, true);
             } else if (!BASE._saving) {
                 if (keyValuePairs) {
@@ -583,7 +586,7 @@ export class BASE {
     public static LoadBaseB(): void {
         console.log("|BASE| - LoadBaseB() _loadBase:" + JSON.stringify(BASE._loadBase));
         
-        GLOBAL._baseURL2 = BASE._loadBase[0];
+        getGLOBAL()._baseURL2 = BASE._loadBase[0];
         const userId = Number(BASE._loadBase[1]);
         const baseId = Number(BASE._loadBase[2]);
         const baseMode = String(BASE._loadBase[3]);
@@ -591,8 +594,8 @@ export class BASE {
         const cellId = Number(BASE._loadBase[5]);
         
         BASE._loadBase = [];
-        GLOBAL.Setup(baseMode);
-        BASE.Load(GLOBAL._baseURL2, userId, baseId, baseType, cellId);
+        getGLOBAL().Setup(baseMode);
+        BASE.Load(getGLOBAL()._baseURL2, userId, baseId, baseType, cellId);
     }
     
     public static Load(
@@ -602,7 +605,7 @@ export class BASE {
         baseType: number = -1,
         cellId: number = 0
     ): void {
-        GLOBAL._baseLoads += 1;
+        getGLOBAL()._baseLoads += 1;
         BASE._loading = true;
         BASE._baseID = baseId;
         BASE._baseLevel = 0;
@@ -613,45 +616,45 @@ export class BASE {
         PLEASEWAIT.Hide();
         BASE.Cleanup();
         
-        if (MapRoomManager.instance.isInMapRoom3 && baseType !== -1) {
+        if (getMapRoomManager().instance.isInMapRoom3 && baseType !== -1) {
             BASE.m_yardType = baseType;
         } else if (baseType >= EnumYardType.MAIN_YARD) {
             BASE.m_yardType = baseType;
         }
         
         if (BASE.isMainYardOrInfernoMainYard) {
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === GLOBAL.e_BASE_MODE.IBUILD) {
-                GLOBAL.attackingPlayer = GLOBAL.player;
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.IBUILD) {
+                getGLOBAL().attackingPlayer = getGLOBAL().player;
             }
         }
         
-        GLOBAL.attackingPlayer.isAttacking = GLOBAL.attackingPlayer !== GLOBAL.player;
+        getGLOBAL().attackingPlayer.isAttacking = getGLOBAL().attackingPlayer !== getGLOBAL().player;
         
-        PLEASEWAIT.Show(KEYS.Get("msg_loading"));
-        GRID.CreateGrid();
-        POPUPS.Setup();
-        CREEPS.Clear();
-        GLOBAL.Clear();
-        MAP.Clear();
-        UI2.Clear();
+        PLEASEWAIT.Show(getKEYS().Get("msg_loading"));
+        getGRID().CreateGrid();
+        getPOPUPS().Setup();
+        getCREEPS().Clear();
+        getGLOBAL().Clear();
+        getMAP().Clear();
+        getUI2().Clear();
         ResourceBombs.Clear();
-        CREATURES.Clear();
+        getCREATURES().Clear();
         PROJECTILES.Clear();
-        ATTACK.Setup();
-        ResourcePackages.Clear();
-        GIBLETS.Clear();
-        CREATURELOCKER.Setup();
+        getATTACK().Setup();
+        getResourcePackages().Clear();
+        getGIBLETS().Clear();
+        getCREATURELOCKER().Setup();
         CUSTOMATTACKS.Setup();
-        UPDATES.Setup();
-        BuildingOverlay.Clear();
+        getUPDATES().Setup();
+        getBuildingOverlay().Clear();
         ParticleText.Clear();
-        SPRITES.Clear();
-        SPRITES.Setup();
+        getSPRITES().Clear();
+        getSPRITES().Setup();
         Fire.Clear();
         ResourceBombs.Data();
         ALLIANCES.Setup();
         
-        GLOBAL._catchup = true;
+        getGLOBAL()._catchup = true;
         BASE._mushroomList = [];
         BASE._lastSpawnedMushroom = 0;
         BASE._size = 400;
@@ -664,34 +667,34 @@ export class BASE {
         }
         requestData.push(["baseid", BASE._baseID]);
         
-        let loadMode = GLOBAL._loadmode;
-        if (MapRoomManager.instance.isInMapRoom2or3) {
-            if (loadMode === GLOBAL.e_BASE_MODE.WMATTACK) {
-                loadMode = GLOBAL.e_BASE_MODE.ATTACK;
+        let loadMode = getGLOBAL()._loadmode;
+        if (getMapRoomManager().instance.isInMapRoom2or3) {
+            if (loadMode === getGLOBAL().e_BASE_MODE.WMATTACK) {
+                loadMode = getGLOBAL().e_BASE_MODE.ATTACK;
             }
-            if (loadMode === GLOBAL.e_BASE_MODE.WMVIEW) {
-                loadMode = GLOBAL.e_BASE_MODE.VIEW;
+            if (loadMode === getGLOBAL().e_BASE_MODE.WMVIEW) {
+                loadMode = getGLOBAL().e_BASE_MODE.VIEW;
             }
         }
         
         requestData.push(["type", loadMode]);
         
-        if (loadMode === GLOBAL.e_BASE_MODE.ATTACK || 
-            loadMode === GLOBAL.e_BASE_MODE.WMATTACK || 
-            loadMode === GLOBAL.e_BASE_MODE.IATTACK || 
-            loadMode === GLOBAL.e_BASE_MODE.IWMATTACK) {
-            const attackData = JSON.stringify(ATTACK.AttackData());
+        if (loadMode === getGLOBAL().e_BASE_MODE.ATTACK || 
+            loadMode === getGLOBAL().e_BASE_MODE.WMATTACK || 
+            loadMode === getGLOBAL().e_BASE_MODE.IATTACK || 
+            loadMode === getGLOBAL().e_BASE_MODE.IWMATTACK) {
+            const attackData = JSON.stringify(getATTACK().AttackData());
             requestData.push(["attackData", attackData]);
         }
         
         // Load from appropriate URL
-        const loader = new URLLoaderApi();
+        const loader = new (getURLLoaderApi())();
         if (url) {
             loader.load(url + "load", requestData, BASE.handleBaseLoadSuccessful, BASE.handleBaseLoadError);
-        } else if (BASE.isInfernoMainYardOrOutpost || (BASE.isEventBaseId(BASE._baseID) && GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK)) {
-            loader.load(GLOBAL._infBaseURL + "load", requestData, BASE.handleBaseLoadSuccessful, BASE.handleBaseLoadError);
+        } else if (BASE.isInfernoMainYardOrOutpost || (BASE.isEventBaseId(BASE._baseID) && getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK)) {
+            loader.load(getGLOBAL()._infBaseURL + "load", requestData, BASE.handleBaseLoadSuccessful, BASE.handleBaseLoadError);
         } else {
-            loader.load(GLOBAL._baseURL + "load", requestData, BASE.handleBaseLoadSuccessful, BASE.handleBaseLoadError);
+            loader.load(getGLOBAL()._baseURL + "load", requestData, BASE.handleBaseLoadSuccessful, BASE.handleBaseLoadError);
         }
     }
     
@@ -702,27 +705,27 @@ export class BASE {
                 // Process server data and build base
                 BASE.Build();
             } else {
-                GLOBAL.ErrorMessage(serverData.error, GLOBAL.ERROR_ORANGE_BOX_ONLY);
+                getGLOBAL().ErrorMessage(serverData.error, getGLOBAL().ERROR_ORANGE_BOX_ONLY);
                 PLEASEWAIT.Hide();
             }
         } catch (error: any) {
-            GLOBAL.Message(KEYS.Get("err_loading_base"));
-            LOGGER.Log("err", "Failed to load user base with error: " + error.message);
+            getGLOBAL().Message(getKEYS().Get("err_loading_base"));
+            getLOGGER().Log("err", "Failed to load user base with error: " + error.message);
         }
     }
     
     private static handleBaseLoadError(event: any): void {
-        if (GLOBAL._reloadonerror) {
-            GLOBAL.CallJS("reloadPage");
+        if (getGLOBAL()._reloadonerror) {
+            getGLOBAL().CallJS("reloadPage");
         } else {
-            LOGGER.Log("err", "BASE.Load HTTP");
+            getLOGGER().Log("err", "BASE.Load HTTP");
             PLEASEWAIT.Hide();
-            GLOBAL.ErrorMessage("BASE.Load HTTP");
+            getGLOBAL().ErrorMessage("BASE.Load HTTP");
         }
     }
     
     public static Build(): void {
-        PLEASEWAIT.Update(KEYS.Get("msg_building"));
+        PLEASEWAIT.Update(getKEYS().Get("msg_building"));
         
         if (MAPROOM_INFERNO._open) {
             MAPROOM_INFERNO.Hide();
@@ -731,44 +734,44 @@ export class BASE {
             MAPROOM.Hide();
         }
         
-        UI2.Setup();
-        GLOBAL.ResizeGame(null);
-        GLOBAL._render = false;
-        PATHING.Setup();
+        getUI2().Setup();
+        getGLOBAL().ResizeGame(null);
+        getGLOBAL()._render = false;
+        getPATHING().Setup();
         
         let terrainType = "grass";
         if (BASE.isInfernoMainYardOrOutpost) {
             terrainType = "lava";
         }
         
-        const map = new MAP(terrainType);
-        const targeting = new Targeting();
-        QUEUE.Spawn(0);
-        Smoke.Setup();
+        const map = new (getMAP())(terrainType);
+        const targeting = new (getTargeting())();
+        getQUEUE().Spawn(0);
+        getSmoke().Setup();
         
         // Process building data 
         // ... (building creation logic would go here)
         
-        BFOUNDATION.redrawAllShadowData();
+        getBFOUNDATION().redrawAllShadowData();
         
-        GRID.Clear();
-        MAP.SortDepth();
-        HOUSING.HousingSpace();
+        getGRID().Clear();
+        getMAP().SortDepth();
+        getHOUSING().HousingSpace();
         MONSTERBAITER.Update();
         
         BASE.Process();
     }
     
     public static Process(): void {
-        PLEASEWAIT.Update(KEYS.Get("msg_processing"));
+        PLEASEWAIT.Update(getKEYS().Get("msg_processing"));
         BASE._tmpPercent = 0;
         
-        HOUSING.Cull();
+        getHOUSING().Cull();
         BASE.CalcResources();
         
         BASE._baseLevel = BASE.BaseLevel().level;
         BASE._bankedValue = 0;
-        GLOBAL.t = BASE._lastProcessed;
+        getGLOBAL().t = BASE._lastProcessed;
         BASE._lastProcessedB = BASE._lastProcessed;
         BASE._catchupTime = BASE._currentTime - BASE._lastProcessed;
         
@@ -782,97 +785,97 @@ export class BASE {
     public static ProcessD(): void {
         BASE.s_processing = true;
         
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
-            ATTACK.Setup();
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
+            getATTACK().Setup();
         }
         
-        EFFECTS.Process(BASE._catchupTime);
+        getEFFECTS().Process(BASE._catchupTime);
         
         if (BASE.isMainYard) {
-            CREATURELOCKER.Tick();
+            getCREATURELOCKER().Tick();
         }
         
         if (BASE._tempGifts) {
             GIFTS.Process(BASE._tempGifts);
         }
         
-        UPDATES.Catchup();
-        HOUSING.Cull();
-        HOUSING.Populate();
-        SOUNDS.Setup();
+        getUPDATES().Catchup();
+        getHOUSING().Cull();
+        getHOUSING().Populate();
+        getSOUNDS().Setup();
         
-        GLOBAL._render = true;
-        GLOBAL._catchup = false;
+        getGLOBAL()._render = true;
+        getGLOBAL()._catchup = false;
         
-        UI2.Update();
+        getUI2().Update();
         PLEASEWAIT.Hide();
         BASE.CalcResources();
-        UI2._scrollMap = true;
+        getUI2()._scrollMap = true;
         
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-            if (!WMATTACK._inProgress) {
-                UI2.Show("top");
-                UI2.Show("bottom");
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+            if (!getWMATTACK()._inProgress) {
+                getUI2().Show("top");
+                getUI2().Show("bottom");
             }
-        } else if (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
-            UI2.Show("top");
+        } else if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
+            getUI2().Show("top");
         }
         
         BASE._baseLevel = BASE.BaseLevel().level;
-        BASE._loadTime = GLOBAL.Timestamp();
-        BASE._lastSaved = GLOBAL.Timestamp();
+        BASE._loadTime = getGLOBAL().Timestamp();
+        BASE._lastSaved = getGLOBAL().Timestamp();
         BASE.Save();
         
-        QUESTS.TutorialCheck();
-        QUESTS.Check();
-        PATHING.ResetCosts();
-        TUTORIAL.Process();
+        getQUESTS().TutorialCheck();
+        getQUESTS().Check();
+        getPATHING().ResetCosts();
+        getTUTORIAL().Process();
         MUSHROOMS.Setup();
         NewPopupSystem.instance.CheckAll(true);
         
-        LOGGER.Stat([29, GLOBAL.mode]);
+        getLOGGER().Stat([29, getGLOBAL().mode]);
         BASE._loading = false;
         
-        GLOBAL.CallJS("cc.injectFriendsSwf", null, false);
+        getGLOBAL().CallJS("cc.injectFriendsSwf", null, false);
         BASE.s_processing = false;
         BASE.HideFootprints();
     }
     
     public static Tick(): void {
         let saveDelay = 2;
-        if (GLOBAL._flags.savedelay) {
-            saveDelay = GLOBAL._flags.savedelay;
+        if (getGLOBAL()._flags.savedelay) {
+            saveDelay = getGLOBAL()._flags.savedelay;
         }
         
         if (BASE._saveCounterA !== BASE._saveCounterB) {
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK && BASE._saveOver !== 1) {
-                if (GLOBAL.Timestamp() - BASE._lastSaveRequest > saveDelay * 2 || GLOBAL.Timestamp() - BASE._lastSaved > 15) {
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK && BASE._saveOver !== 1) {
+                if (getGLOBAL().Timestamp() - BASE._lastSaveRequest > saveDelay * 2 || getGLOBAL().Timestamp() - BASE._lastSaved > 15) {
                     BASE.SaveB();
                 }
-            } else if (GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK && BASE._saveOver !== 1) {
-                if (GLOBAL.Timestamp() - BASE._lastSaveRequest > saveDelay * 2 || GLOBAL.Timestamp() - BASE._lastSaved > 20) {
+            } else if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK && BASE._saveOver !== 1) {
+                if (getGLOBAL().Timestamp() - BASE._lastSaveRequest > saveDelay * 2 || getGLOBAL().Timestamp() - BASE._lastSaved > 20) {
                     BASE.SaveB();
                 }
-            } else if (GLOBAL.Timestamp() - BASE._lastSaveRequest >= saveDelay || 
+            } else if (getGLOBAL().Timestamp() - BASE._lastSaveRequest >= saveDelay || 
                        BASE._pendingPurchase.length > 0 || 
                        (BASE._loadBase.length > 0 && BASE._saveOver !== 1)) {
                 BASE.SaveB();
             }
             
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
-                UI2._top.mcSave.gotoAndStop(4);
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
+                getUI2()._top.mcSave.gotoAndStop(4);
             } else {
-                UI2._top.mcSave.gotoAndStop(2);
+                getUI2()._top.mcSave.gotoAndStop(2);
             }
         } else {
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
-                UI2._top.mcSave.gotoAndStop(3);
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
+                getUI2()._top.mcSave.gotoAndStop(3);
             } else {
-                UI2._top.mcSave.gotoAndStop(1);
+                getUI2()._top.mcSave.gotoAndStop(1);
             }
         }
         
-        if (GLOBAL.Timestamp() % 10 === 0) {
+        if (getGLOBAL().Timestamp() % 10 === 0) {
             CHECKER.Check();
             if (!BASE.isInfernoMainYardOrOutpost) {
                 AutoBankManager.autobank();
@@ -885,20 +888,20 @@ export class BASE {
     
     public static Purchase(itemId: string, quantity: number, source: string, param4: boolean = false): boolean {
         if (BASE._pendingPurchase.length > 0) {
-            GLOBAL.ErrorMessage(KEYS.Get("msg_err_purchase"), GLOBAL.ERROR_ORANGE_BOX_ONLY);
+            getGLOBAL().ErrorMessage(getKEYS().Get("msg_err_purchase"), getGLOBAL().ERROR_ORANGE_BOX_ONLY);
             return false;
         }
         
         if (!quantity || quantity <= 0) {
-            GLOBAL.ErrorMessage("BASE.Purchase zero quantity");
-            LOGGER.Log("err", `BASE.Purchase Id ${itemId}, illegal quantity ${quantity}, possible hack`);
+            getGLOBAL().ErrorMessage("BASE.Purchase zero quantity");
+            getLOGGER().Log("err", `BASE.Purchase Id ${itemId}, illegal quantity ${quantity}, possible hack`);
             return false;
         }
         
         BASE._pendingPurchase = [itemId, quantity, BASE._saveCounterA + 1, source, param4];
         
         if (source !== "store") {
-            LOGGER.Stat([61, itemId, quantity]);
+            getLOGGER().Stat([61, itemId, quantity]);
         }
         
         BASE.Save();
@@ -906,11 +909,11 @@ export class BASE {
     }
     
     public static Save(saveOver: number = 0, returnHome: boolean = false, immediate: boolean = false, infernoSave: boolean = false): void {
-        if (UI2._top && UI2._top.mcSave) {
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
-                UI2._top.mcSave.gotoAndStop(4);
+        if (getUI2()._top && getUI2()._top.mcSave) {
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
+                getUI2()._top.mcSave.gotoAndStop(4);
             } else {
-                UI2._top.mcSave.gotoAndStop(2);
+                getUI2()._top.mcSave.gotoAndStop(2);
             }
         }
         
@@ -922,14 +925,14 @@ export class BASE {
             BASE._returnHome = true;
         }
         
-        BASE._lastSaveRequest = GLOBAL.Timestamp();
+        BASE._lastSaveRequest = getGLOBAL().Timestamp();
         ++BASE._saveCounterA;
         
         if (immediate || BASE._pendingPurchase.length > 0) {
             BASE.SaveB();
         }
         
-        if (BASE.isInfernoMainYardOrOutpost || infernoSave || GLOBAL._loadmode !== GLOBAL.mode) {
+        if (BASE.isInfernoMainYardOrOutpost || infernoSave || getGLOBAL()._loadmode !== getGLOBAL().mode) {
             BASE._infernoSaveLoad = true;
         }
     }
@@ -937,7 +940,7 @@ export class BASE {
     public static SaveB(): void {
         // Implementation for saving to server
         BASE._saving = true;
-        BASE._lastSaved = GLOBAL.Timestamp();
+        BASE._lastSaved = getGLOBAL().Timestamp();
         BASE._saveCounterB = BASE._saveCounterA;
         
         // Save logic would go here
@@ -952,12 +955,12 @@ export class BASE {
         }
         
         const deltaResources = useInferno ? BASE._ideltaResources : BASE._deltaResources;
-        const resources = (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === "ibuild") 
+        const resources = (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode === "ibuild") 
             ? (useInferno ? BASE._iresources : BASE._resources) 
-            : GLOBAL._attackersResources;
-        const hpResources = (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === "ibuild") 
+            : getGLOBAL()._attackersResources;
+        const hpResources = (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode === "ibuild") 
             ? BASE._hpResources 
-            : GLOBAL._hpAttackersResources;
+            : getGLOBAL()._hpAttackersResources;
         const resourceKey = "r" + resourceType;
         
         if (amount <= resources[resourceKey].Get()) {
@@ -966,7 +969,7 @@ export class BASE {
                 if (!useInferno) {
                     hpResources[resourceKey] -= amount;
                 }
-                if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === "ibuild") {
+                if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode === "ibuild") {
                     if (useInferno) {
                         if (deltaResources[resourceKey]) {
                             deltaResources[resourceKey].Add(Math.floor(-amount));
@@ -974,8 +977,8 @@ export class BASE {
                             deltaResources[resourceKey] = new SecNum(Math.floor(-amount));
                         }
                         deltaResources.dirty = true;
-                        GLOBAL._resources[resourceKey].Add(-amount);
-                        GLOBAL._hpResources[resourceKey] -= amount;
+                        getGLOBAL()._resources[resourceKey].Add(-amount);
+                        getGLOBAL()._hpResources[resourceKey] -= amount;
                     } else {
                         if (deltaResources[resourceKey]) {
                             deltaResources[resourceKey].Add(Math.floor(-amount));
@@ -986,16 +989,16 @@ export class BASE {
                         }
                         deltaResources.dirty = true;
                         BASE._hpDeltaResources.dirty = true;
-                        GLOBAL._resources[resourceKey].Add(-amount);
-                        GLOBAL._hpResources[resourceKey] -= amount;
+                        getGLOBAL()._resources[resourceKey].Add(-amount);
+                        getGLOBAL()._hpResources[resourceKey] -= amount;
                     }
                 } else {
-                    if (GLOBAL._attackersDeltaResources[resourceKey]) {
-                        GLOBAL._attackersDeltaResources[resourceKey].Add(Math.floor(-amount));
+                    if (getGLOBAL()._attackersDeltaResources[resourceKey]) {
+                        getGLOBAL()._attackersDeltaResources[resourceKey].Add(Math.floor(-amount));
                     } else {
-                        GLOBAL._attackersDeltaResources[resourceKey] = new SecNum(Math.floor(-amount));
+                        getGLOBAL()._attackersDeltaResources[resourceKey] = new SecNum(Math.floor(-amount));
                     }
-                    GLOBAL._attackersDeltaResources.dirty = true;
+                    getGLOBAL()._attackersDeltaResources.dirty = true;
                 }
                 BASE.CalcResources();
             }
@@ -1015,11 +1018,11 @@ export class BASE {
         }
         
         // Get storage silo buildings (BUILDING6)
-        const silos = InstanceManager.getInstancesByClass(BUILDING6) as BFOUNDATION[];
+        const silos = getInstanceManager().getInstancesByClass(BUILDING6) as BFOUNDATION[];
         for (const silo of silos) {
             if (silo._lvl.Get() >= 1 && BASE.isMainYardOrInfernoMainYard) {
                 const type = silo._type;
-                const capacity = GLOBAL._buildingProps[type - 1].capacity[silo._lvl.Get() - 1];
+                const capacity = getGLOBAL()._buildingProps[type - 1].capacity[silo._lvl.Get() - 1];
                 BASE._resources.r1max += capacity;
                 BASE._resources.r2max += capacity;
                 BASE._resources.r3max += capacity;
@@ -1080,9 +1083,9 @@ export class BASE {
             BASE._shakeCountdown--;
             const offsetX: number = Math.floor(BASE._shakeCountdown / 10 - Math.random() * (BASE._shakeCountdown / 5));
             const offsetY: number = Math.floor(BASE._shakeCountdown / 10 - Math.random() * (BASE._shakeCountdown / 5));
-            if (MAP._GROUND) {
-                MAP._GROUND.x += offsetX;
-                MAP._GROUND.y += offsetY;
+            if (getMAP()._GROUND) {
+                getMAP()._GROUND.x += offsetX;
+                getMAP()._GROUND.y += offsetY;
             }
         }
     }
@@ -1127,7 +1130,7 @@ export class BASE {
     
     public static repairAllBuildingsToMinimumPercentage(percentage: number): void {
         percentage = Math.max(0, Math.min(1, percentage));
-        const buildings = InstanceManager.getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
         
         for (const building of buildings) {
             const minHealth = building.maxHealth * percentage;
@@ -1144,9 +1147,9 @@ export class BASE {
     
     public static healShinyNowHelper(): void {
         // Helper for instant heal with shiny
-        const cost = STORE.GetHealAllShinyCost();
-        STORE.ShowB(3, 1, ["HAMS"], true);
-        POPUPS.Next();
+        const cost = getSTORE().GetHealAllShinyCost();
+        getSTORE().ShowB(3, 1, ["HAMS"], true);
+        getPOPUPS().Next();
     }
 
     /**
@@ -1156,7 +1159,7 @@ export class BASE {
      * @returns Empty string if no blockers, "overlap" if blocked
      */
     public static BuildBlockers(building: BFOUNDATION, allowTraps: boolean = false): string {
-        if (GRID.FootprintBlocked(building._footprint, new Point(building._mc.x, building._mc.y), true, allowTraps)) {
+        if (getGRID().FootprintBlocked(building._footprint, new Point(building._mc.x, building._mc.y), true, allowTraps)) {
             return "overlap";
         }
         return "";
@@ -1207,9 +1210,9 @@ export class BASE {
                         deltaResources[resourceKey] = new SecNum(amount);
                         hpDeltaResources[resourceKey] = amount;
                     }
-                    if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === GLOBAL.e_BASE_MODE.IBUILD) {
-                        GLOBAL._resources[resourceKey].Add(amount);
-                        GLOBAL._hpResources[resourceKey] += amount;
+                    if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.IBUILD) {
+                        getGLOBAL()._resources[resourceKey].Add(amount);
+                        getGLOBAL()._hpResources[resourceKey] += amount;
                     }
                     deltaResources.dirty = true;
                     hpDeltaResources.dirty = true;
@@ -1227,19 +1230,19 @@ export class BASE {
                         deltaResources[resourceKey] = new SecNum(Math.floor(actualGain));
                         hpDeltaResources[resourceKey] = Math.floor(actualGain);
                     }
-                    if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === GLOBAL.e_BASE_MODE.IBUILD) {
-                        GLOBAL._resources[resourceKey].Add(Math.floor(actualGain));
-                        GLOBAL._hpResources[resourceKey] += Math.floor(actualGain);
+                    if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.IBUILD) {
+                        getGLOBAL()._resources[resourceKey].Add(Math.floor(actualGain));
+                        getGLOBAL()._hpResources[resourceKey] += Math.floor(actualGain);
                     }
                     deltaResources.dirty = true;
                     hpDeltaResources.dirty = true;
                 }
                 
                 BASE._bankedValue += actualGain;
-                BASE._bankedTime = GLOBAL.Timestamp();
-            } else if ((GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === GLOBAL.e_BASE_MODE.IBUILD) && 
-                       !useInferno && !WMATTACK._inProgress && triggerSave) {
-                UI2._top.OverchargeShow(resourceType);
+                BASE._bankedTime = getGLOBAL().Timestamp();
+            } else if ((getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.IBUILD) && 
+                       !useInferno && !getWMATTACK()._inProgress && triggerSave) {
+                getUI2()._top.OverchargeShow(resourceType);
             }
             
             if (building) {
@@ -1250,15 +1253,15 @@ export class BASE {
                 building.Update();
             }
             
-            if (actualGain > 0 && (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === GLOBAL.e_BASE_MODE.IBUILD) && triggerSave) {
+            if (actualGain > 0 && (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.IBUILD) && triggerSave) {
                 BASE.Save();
             }
             
-            UI2.Update();
+            getUI2().Update();
             return actualGain;
         }
         
-        UI2.Update();
+        getUI2().Update();
         return 0;
     }
 
@@ -1268,33 +1271,33 @@ export class BASE {
      * @param suppressPopup Whether to suppress the building info popup
      */
     public static BuildingSelect(building: BFOUNDATION, suppressPopup: boolean = false): void {
-        if (GLOBAL._selectedBuilding) {
+        if (getGLOBAL()._selectedBuilding) {
             BASE.BuildingDeselect();
         }
         
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === "ibuild") {
-            if (UI2._showBottom || TUTORIAL._stage === 3 || TUTORIAL._stage === 4 || 
-                TUTORIAL._stage === 20 || TUTORIAL._stage === 21 || TUTORIAL._stage === 23) {
-                GLOBAL._selectedBuilding = building;
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode === "ibuild") {
+            if (getUI2()._showBottom || getTUTORIAL()._stage === 3 || getTUTORIAL()._stage === 4 || 
+                getTUTORIAL()._stage === 20 || getTUTORIAL()._stage === 21 || getTUTORIAL()._stage === 23) {
+                getGLOBAL()._selectedBuilding = building;
                 if (building._class !== "mushroom") {
-                    GLOBAL._selectedBuilding.showFootprint(false, true);
+                    getGLOBAL()._selectedBuilding.showFootprint(false, true);
                 }
                 building.Update();
                 if (!suppressPopup) {
-                    if (building._type === 127 && GLOBAL.StatGet("p_id") !== 1 && 
+                    if (building._type === 127 && getGLOBAL().StatGet("p_id") !== 1 && 
                         !MAPROOM_DESCENT.DescentPassed && !BASE.isInfernoMainYardOrOutpost) {
                         INFERNO_DESCENT_POPUPS.ShowEnticePopup();
                     } else {
-                        BUILDINGINFO.Show(building);
+                        getBUILDINGINFO().Show(building);
                     }
                 }
             }
-        } else if (GLOBAL.mode === "help" || GLOBAL.mode === "ihelp" || LOGIN._playerID === building._senderid) {
-            GLOBAL._selectedBuilding = building;
-            GLOBAL._selectedBuilding.showFootprint(false);
+        } else if (getGLOBAL().mode === "help" || getGLOBAL().mode === "ihelp" || getLOGIN()._playerID === building._senderid) {
+            getGLOBAL()._selectedBuilding = building;
+            getGLOBAL()._selectedBuilding.showFootprint(false);
             building.Update();
             if (!suppressPopup) {
-                BUILDINGINFO.Show(building);
+                getBUILDINGINFO().Show(building);
             }
         }
     }
@@ -1310,16 +1313,16 @@ export class BASE {
         let hasError = false;
         let errorMessage = "";
         
-        if (GLOBAL._aiDesignMode) {
+        if (getGLOBAL()._aiDesignMode) {
             return { error: false };
         }
         
-        for (const key in GLOBAL._buildingProps) {
-            if (GLOBAL._buildingProps[key].id === buildingType) {
-                if (GLOBAL._buildingProps[key].rewarded) {
+        for (const key in getGLOBAL()._buildingProps) {
+            if (getGLOBAL()._buildingProps[key].id === buildingType) {
+                if (getGLOBAL()._buildingProps[key].rewarded) {
                     return { error: false };
                 }
-                buildingProps = GLOBAL._buildingProps[key];
+                buildingProps = getGLOBAL()._buildingProps[key];
                 break;
             }
         }
@@ -1328,15 +1331,15 @@ export class BASE {
             return { error: true, errorMessage: "Building not found" };
         }
         
-        if (TUTORIAL._stage < 200 && buildingProps.tutstage > TUTORIAL._stage) {
+        if (getTUTORIAL()._stage < 200 && buildingProps.tutstage > getTUTORIAL()._stage) {
             hasError = true;
-            errorMessage = KEYS.Get("base_builderr_locked");
-        } else if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && (buildingProps.type === "taunt" || buildingProps.type === "gift")) {
+            errorMessage = getKEYS().Get("base_builderr_locked");
+        } else if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && (buildingProps.type === "taunt" || buildingProps.type === "gift")) {
             hasError = true;
-            errorMessage = KEYS.Get("base_builderr_ownyard1");
-        } else if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD && buildingProps.type !== "taunt" && buildingProps.type !== "gift") {
+            errorMessage = getKEYS().Get("base_builderr_ownyard1");
+        } else if (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD && buildingProps.type !== "taunt" && buildingProps.type !== "gift") {
             hasError = true;
-            errorMessage = KEYS.Get("base_builderr_ownyard2");
+            errorMessage = getKEYS().Get("base_builderr_ownyard2");
         }
         
         return { error: hasError, errorMessage: errorMessage };
@@ -1353,14 +1356,14 @@ export class BASE {
             return { error: true, errorMessage: "Cannot fortify this building" };
         }
         
-        const buildingProps = GLOBAL._buildingProps[building._type - 1];
+        const buildingProps = getGLOBAL()._buildingProps[building._type - 1];
         if (!buildingProps || !buildingProps.fortify_costs) {
             return { error: true, errorMessage: "No fortify data" };
         }
         
         const currentFortifyLevel = building._fortification.Get();
         if (currentFortifyLevel >= buildingProps.fortify_costs.length) {
-            return { error: true, errorMessage: KEYS.Get("base_forterr_maxlvl") };
+            return { error: true, errorMessage: getKEYS().Get("base_forterr_maxlvl") };
         }
         
         return { error: false };
@@ -1377,22 +1380,22 @@ export class BASE {
             return { error: true, errorMessage: "Cannot upgrade this building" };
         }
         
-        const buildingProps = GLOBAL._buildingProps[building._type - 1];
+        const buildingProps = getGLOBAL()._buildingProps[building._type - 1];
         if (!buildingProps || !buildingProps.costs) {
             return { error: true, errorMessage: "No upgrade data" };
         }
         
         const currentLevel = building._lvl.Get();
         if (currentLevel >= buildingProps.costs.length) {
-            return { error: true, errorMessage: KEYS.Get("base_upgraderr_maxlvl") };
+            return { error: true, errorMessage: getKEYS().Get("base_upgraderr_maxlvl") };
         }
         
         if (building._countdownBuild && building._countdownBuild.Get() > 0) {
-            return { error: true, errorMessage: KEYS.Get("base_upgraderr_building") };
+            return { error: true, errorMessage: getKEYS().Get("base_upgraderr_building") };
         }
         
         if (building._countdownUpgrade && building._countdownUpgrade.Get() > 0) {
-            return { error: true, errorMessage: KEYS.Get("base_upgraderr_upgrading") };
+            return { error: true, errorMessage: getKEYS().Get("base_upgraderr_upgrading") };
         }
         
         return { error: false };
@@ -1404,11 +1407,11 @@ export class BASE {
      * @returns True if it's an inferno building in a non-inferno yard
      */
     public static isInfernoBuilding(buildingType: number): boolean {
-        return (buildingType === INFERNOQUAKETOWER.TYPE || 
-                buildingType === INFERNO_MAGMA_TOWER.ID || 
+        return (buildingType === getINFERNOQUAKETOWER().TYPE || 
+                buildingType === getINFERNO_MAGMA_TOWER().ID || 
                 buildingType === SiegeFactory.ID || 
                 buildingType === SiegeLab.ID || 
-                buildingType === SpurtzCannon.TYPE || 
+                buildingType === getSpurtzCannon().TYPE || 
                 buildingType === BlackSpurtzCannon.TYPE) && 
                !BASE.isInfernoMainYardOrOutpost;
     }
@@ -1419,7 +1422,7 @@ export class BASE {
      */
     public static is711Valid(): boolean {
         // 711 promo event check - typically checks for specific flags
-        return GLOBAL._flags && GLOBAL._flags.is711 === true;
+        return getGLOBAL()._flags && getGLOBAL()._flags.is711 === true;
     }
 
     /**
@@ -1430,8 +1433,8 @@ export class BASE {
      * @returns Number of buildings found
      */
     public static hasNumBuildings(buildingType: number, minLevel: number = 0, countOne: boolean = false): number {
-        const buildingProps = GLOBAL._buildingProps[buildingType - 1];
-        const buildings = InstanceManager.getInstancesByClass(buildingProps?.cls || BFOUNDATION) as BFOUNDATION[];
+        const buildingProps = getGLOBAL()._buildingProps[buildingType - 1];
+        const buildings = getInstanceManager().getInstancesByClass(buildingProps?.cls || BFOUNDATION) as BFOUNDATION[];
         let count = 0;
         
         for (const building of buildings) {
@@ -1452,8 +1455,8 @@ export class BASE {
      * @returns The first building of that type, or null
      */
     public static findBuilding(buildingType: number): BFOUNDATION | null {
-        const buildingProps = GLOBAL._buildingProps[buildingType];
-        const buildings = InstanceManager.getInstancesByClass(buildingProps?.cls || BFOUNDATION) as BFOUNDATION[];
+        const buildingProps = getGLOBAL()._buildingProps[buildingType];
+        const buildings = getInstanceManager().getInstancesByClass(buildingProps?.cls || BFOUNDATION) as BFOUNDATION[];
         
         for (const building of buildings) {
             if (building._type === buildingType) {
@@ -1485,7 +1488,7 @@ export class BASE {
     public static FindClosestHousingToPoint(x: number, y: number, exclude: BFOUNDATION | null = null, isLvl: boolean = true, isFlyer: boolean = true): BFOUNDATION | null {
         const distances: Array<{house: BFOUNDATION, dist: number}> = [];
         const buildingClass = BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15;
-        const buildings = InstanceManager.getInstancesByClass(buildingClass) as BFOUNDATION[];
+        const buildings = getInstanceManager().getInstancesByClass(buildingClass) as BFOUNDATION[];
         
         for (const building of buildings) {
             if (building !== exclude) {
@@ -1525,14 +1528,14 @@ export class BASE {
         for (const req of buildingProps.re) {
             let count = 0;
             
-            if (req[0] === INFERNOQUAKETOWER.UNDERHALL_ID) {
+            if (req[0] === getINFERNOQUAKETOWER().UNDERHALL_ID) {
                 // Check Underhall level requirement
-                if (GLOBAL.StatGet(BUILDING14.UNDERHALL_LEVEL) >= req[2] && MAPROOM_DESCENT.DescentPassed) {
+                if (getGLOBAL().StatGet(getBUILDING14().UNDERHALL_LEVEL) >= req[2] && MAPROOM_DESCENT.DescentPassed) {
                     count = 1;
                 }
             } else {
                 // Check other building requirements
-                const buildings = InstanceManager.getInstancesByClass(BFOUNDATION);
+                const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION);
                 for (const building of buildings) {
                     if (building._type === req[0] && building._lvl.Get() >= req[2]) {
                         count++;
@@ -1559,14 +1562,14 @@ export class BASE {
         BASE.BuildingDeselect();
         
         // Check if building is instant (no build time) or queue is available
-        canBuildNow = GLOBAL._buildingProps[buildingType - 1].costs[0].time.Get() === 0;
+        canBuildNow = getGLOBAL()._buildingProps[buildingType - 1].costs[0].time.Get() === 0;
         if (!canBuildNow) {
-            const queueResult = QUEUE.CanDo();
+            const queueResult = getQUEUE().CanDo();
             canBuildNow = queueResult.error === false;
         }
         
         // Check if building is in inventory
-        if (InventoryManager.buildingStorageCount(buildingType) > 0) {
+        if (getInventoryManager().buildingStorageCount(buildingType) > 0) {
             canBuildNow = true;
         }
         
@@ -1575,18 +1578,18 @@ export class BASE {
             if (!canBuildResult.error) {
                 BASE.BuildingDeselect();
                 BASE.ShowFootprints();
-                GLOBAL._newBuilding = BASE.addBuildingC(buildingType);
-                if (GLOBAL._newBuilding) {
-                    GLOBAL._newBuilding._mc.alpha = 0.5;
-                    GLOBAL._newBuilding.FollowMouse();
+                getGLOBAL()._newBuilding = BASE.addBuildingC(buildingType);
+                if (getGLOBAL()._newBuilding) {
+                    getGLOBAL()._newBuilding._mc.alpha = 0.5;
+                    getGLOBAL()._newBuilding.FollowMouse();
                 } else {
                     BASE.BuildingDeselect();
                 }
-                return GLOBAL._newBuilding;
+                return getGLOBAL()._newBuilding;
             }
-            GLOBAL.Message(canBuildResult.errorMessage);
+            getGLOBAL().Message(canBuildResult.errorMessage);
         } else {
-            POPUPS.DisplayWorker(0, buildingType);
+            getPOPUPS().DisplayWorker(0, buildingType);
         }
         return null;
     }
@@ -1598,7 +1601,7 @@ export class BASE {
     public static applyTemplate(template: BaseTemplate): void {
         for (let i = 0; i < template.nodes.length; i++) {
             const node = template.nodes[i];
-            const pos = GRID.ToISO(node.x, node.y, 0);
+            const pos = getGRID().ToISO(node.x, node.y, 0);
             const building = BASE.getBuildingFromNode(node);
             if (building) {
                 building.moveTo(pos.x, pos.y);
@@ -1613,7 +1616,7 @@ export class BASE {
      * @returns The building foundation or null
      */
     private static getBuildingFromNode(node: BaseTemplateNode): BFOUNDATION | null {
-        const pos = GRID.ToISO(node.x, node.y, 0);
+        const pos = getGRID().ToISO(node.x, node.y, 0);
         if (node.id === PlannerTemplate._DECORATION_ID) {
             const buildingType = node.type;
             const building = BASE.addBuildingC(buildingType);
@@ -1648,7 +1651,7 @@ export class BASE {
         template.name = BASE._baseName;
         const buildings = BASE.getYardPlannerBuildings();
         for (const building of buildings) {
-            const gridPos = GRID.FromISO(building.x, building.y);
+            const gridPos = getGRID().FromISO(building.x, building.y);
             template.addNode(new BaseTemplateNode(gridPos.x, gridPos.y, building._id, building._type));
         }
         return template;
@@ -1659,7 +1662,7 @@ export class BASE {
      * @returns Array of building foundations
      */
     public static getYardPlannerBuildings(): BFOUNDATION[] {
-        const allBuildings = InstanceManager.getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const allBuildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
         const plannerBuildings: BFOUNDATION[] = [];
         for (const building of allBuildings) {
             if (building._type !== 7) { // Exclude town hall marker or similar
@@ -1675,7 +1678,7 @@ export class BASE {
      * @returns The building foundation or null
      */
     public static getBuildingByID(buildingId: number): BFOUNDATION | null {
-        const buildings = InstanceManager.getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
+        const buildings = getInstanceManager().getInstancesByClass(BFOUNDATION) as BFOUNDATION[];
         for (const building of buildings) {
             if (building._id === buildingId) {
                 return building;
@@ -1749,7 +1752,7 @@ export class BASE {
      * @returns True if there is an overlap
      */
     public static BuildingOverlap(position: Point, size: number, ignoreTraps: boolean, ignoreDestroyed: boolean = false, ignoreDecorations: boolean = false, ignoreImmovableAndEnemy: boolean = false): boolean {
-        const buildings: Object[] = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const buildings: Object[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
         for (const building of buildings) {
             const bf = building as BFOUNDATION;
             // Skip mushrooms
@@ -1798,7 +1801,7 @@ export class BASE {
      */
     public static GetBuildingOverlap(x: number, y: number, size: number, outBuildings: BFOUNDATION[]): void {
         const position: Point = new Point(x, y);
-        const buildings: Object[] = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const buildings: Object[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
         for (const building of buildings) {
             const bf = building as BFOUNDATION;
             // Skip mushrooms
@@ -1845,36 +1848,36 @@ export class BASE {
      */
     public static LoadNext(event: MouseEvent | null = null): void {
         if (BASE._saving || BASE._loading || BASE._saveCounterA !== BASE._saveCounterB) {
-            GLOBAL._nextOutpostWaiting = 1;
+            getGLOBAL()._nextOutpostWaiting = 1;
             return;
         }
-        if (MapRoomManager.instance.isInMapRoom2) {
-            if (BASE.isMainYard && !GLOBAL._bMap._canFunction) {
-                GLOBAL.Message(KEYS.Get("map_msg_damaged"));
+        if (getMapRoomManager().instance.isInMapRoom2) {
+            if (BASE.isMainYard && !getGLOBAL()._bMap._canFunction) {
+                getGLOBAL().Message(getKEYS().Get("map_msg_damaged"));
                 return;
             }
-            if (GLOBAL._mapOutpostIDs && GLOBAL._mapOutpostIDs.length > 0) {
-                if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD || GLOBAL.mode === "ibuild") {
+            if (getGLOBAL()._mapOutpostIDs && getGLOBAL()._mapOutpostIDs.length > 0) {
+                if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD || getGLOBAL().mode === "ibuild") {
                     if (BASE.isMainYardOrInfernoMainYard) {
-                        BASE._currentCellLoc = GLOBAL._mapOutpost[0];
-                        GLOBAL._currentCell = null;
+                        BASE._currentCellLoc = getGLOBAL()._mapOutpost[0];
+                        getGLOBAL()._currentCell = null;
                         BASE._needCurrentCell = true;
-                        MapRoomManager.instance.LoadCell(GLOBAL._mapOutpost[0].x, GLOBAL._mapOutpost[0].y, true);
-                        PLEASEWAIT.Show(KEYS.Get("process_outpost"));
+                        getMapRoomManager().instance.LoadCell(getGLOBAL()._mapOutpost[0].x, getGLOBAL()._mapOutpost[0].y, true);
+                        PLEASEWAIT.Show(getKEYS().Get("process_outpost"));
                     } else {
-                        for (let i = 0; i < GLOBAL._mapOutpostIDs.length; i++) {
-                            if (GLOBAL._mapOutpostIDs[i] === BASE._loadedBaseID) {
-                                if (i < GLOBAL._mapOutpostIDs.length - 1) {
-                                    BASE._currentCellLoc = GLOBAL._mapOutpost[i + 1];
-                                    GLOBAL._currentCell = null;
+                        for (let i = 0; i < getGLOBAL()._mapOutpostIDs.length; i++) {
+                            if (getGLOBAL()._mapOutpostIDs[i] === BASE._loadedBaseID) {
+                                if (i < getGLOBAL()._mapOutpostIDs.length - 1) {
+                                    BASE._currentCellLoc = getGLOBAL()._mapOutpost[i + 1];
+                                    getGLOBAL()._currentCell = null;
                                     BASE._needCurrentCell = true;
-                                    MapRoomManager.instance.LoadCell(GLOBAL._mapOutpost[i + 1].x, GLOBAL._mapOutpost[i + 1].y, true);
-                                    PLEASEWAIT.Show(KEYS.Get("process_outpost"));
+                                    getMapRoomManager().instance.LoadCell(getGLOBAL()._mapOutpost[i + 1].x, getGLOBAL()._mapOutpost[i + 1].y, true);
+                                    PLEASEWAIT.Show(getKEYS().Get("process_outpost"));
                                     break;
                                 }
                                 BASE._needCurrentCell = false;
-                                GLOBAL._currentCell = null;
-                                BASE.LoadBase(null, 0, GLOBAL._homeBaseID, GLOBAL.e_BASE_MODE.BUILD, false, EnumYardType.MAIN_YARD);
+                                getGLOBAL()._currentCell = null;
+                                BASE.LoadBase(null, 0, getGLOBAL()._homeBaseID, getGLOBAL().e_BASE_MODE.BUILD, false, EnumYardType.MAIN_YARD);
                                 break;
                             }
                         }
@@ -1891,8 +1894,8 @@ export class BASE {
      */
     public static getEmpireResources(resourceType: number): number {
         let multiplier: number = 1;
-        if (GLOBAL._harvesterOverdrive >= GLOBAL.Timestamp() && GLOBAL._harvesterOverdrivePower.Get() > 0) {
-            multiplier = GLOBAL._harvesterOverdrivePower.Get();
+        if (getGLOBAL()._harvesterOverdrive >= getGLOBAL().Timestamp() && getGLOBAL()._harvesterOverdrivePower.Get() > 0) {
+            multiplier = getGLOBAL()._harvesterOverdrivePower.Get();
         }
         return (BASE._GIP as any)["r" + resourceType].Get() * 360 * multiplier;
     }
@@ -1903,7 +1906,7 @@ export class BASE {
      */
     public static getNumHousingHealsPerTick(): number {
         let count: number = 0;
-        const buildings: Object[] = InstanceManager.getInstancesByClass(BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15);
+        const buildings: Object[] = getInstanceManager().getInstancesByClass(BASE.isInfernoMainYardOrOutpost ? HOUSINGBUNKER : BUILDING15);
         if (BASE.isInfernoMainYardOrOutpost) {
             if (buildings[0]) {
                 count = Math.min(4, (buildings[0] as BFOUNDATION)._lvl.Get());

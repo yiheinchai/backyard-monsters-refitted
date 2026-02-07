@@ -1,7 +1,10 @@
 import { KeywordMessage } from "../../KeywordMessage";
 import { ReplayableEventHandler } from "../../../../replayableEvents/ReplayableEventHandler";
 
-import { POPUPS } from "../../../../../../POPUPS";
+// Lazy imports to break circular dependency chains
+function getPOPUPS(): any { return require("../../../../../../POPUPS").POPUPS; }
+
+
 
 /**
  * Monster Blitzkrieg start message - shown when Monster Blitzkrieg event starts.
@@ -14,6 +17,6 @@ export class MonsterBlitzkriegStartMessage extends KeywordMessage {
 
     protected override onButtonClick(): void {
         ReplayableEventHandler.activeEvent.pressedActionButton();
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 }

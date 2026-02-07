@@ -3,14 +3,17 @@ import IOErrorEvent from "openfl/events/IOErrorEvent";
 import { AllyInfo } from "./AllyInfo";
 
 import { ACHIEVEMENTS } from "../../../ACHIEVEMENTS";
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGIN } from "../../../LOGIN";
 import { PLEASEWAIT } from "../../../PLEASEWAIT";
-import { POPUPS } from "../../../POPUPS";
-import { URLLoaderApi } from "../../../URLLoaderApi";
 import { MapRoomCell } from "../maproom_advanced/MapRoomCell";
+
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGIN(): any { return require("../../../LOGIN").LOGIN; }
+function getPOPUPS(): any { return require("../../../POPUPS").POPUPS; }
+function getURLLoaderApi(): any { return require("../../../URLLoaderApi").URLLoaderApi; }
+
 
 /**
  * Alliance management system - handles player alliances and relationships.
@@ -26,7 +29,7 @@ export class ALLIANCES {
     public static Setup(allianceId: number = 0): void {
         ALLIANCES._alliances = {};
         if (allianceId > 0) {
-            if (GLOBAL.mode === (GLOBAL as any).e_BASE_MODE.BUILD) {
+            if (getGLOBAL().mode === (GLOBAL as any).e_BASE_MODE.BUILD) {
                 ALLIANCES._allianceID = allianceId;
                 ACHIEVEMENTS.Check("alliance", 1, true);
             }
@@ -88,41 +91,41 @@ export class ALLIANCES {
         const onAllianceInviteSuccess = (response: any): void => {
             PLEASEWAIT.Hide();
             if (response.response === "success") {
-                GLOBAL.Message(KEYS.Get("msg_allianceinvitesent"));
+                getGLOBAL().Message(getKEYS().Get("msg_allianceinvitesent"));
                 return;
             }
             if (response.error) {
-                GLOBAL.Message(KEYS.Get("msg_err_processinginvite_long") + " - " + response.error + ": " + response.error_code);
+                getGLOBAL().Message(getKEYS().Get("msg_err_processinginvite_long") + " - " + response.error + ": " + response.error_code);
             } else {
-                GLOBAL.Message(KEYS.Get("msg_err_processinginvite_short"));
+                getGLOBAL().Message(getKEYS().Get("msg_err_processinginvite_short"));
             }
         };
         
         const onAllianceInviteFail = (event: IOErrorEvent): void => {
-            GLOBAL.Message(KEYS.Get("msg_err_sendinginvite"));
+            getGLOBAL().Message(getKEYS().Get("msg_err_sendinginvite"));
         };
         
         if (!ALLIANCES._myAlliance) {
-            GLOBAL.Message(KEYS.Get("msg_notinalliance"));
+            getGLOBAL().Message(getKEYS().Get("msg_notinalliance"));
             return;
         }
         
-        const r = new URLLoaderApi();
+        const r = new (getURLLoaderApi())();
         const alliancevars = [["user_id", userId]];
-        r.load(GLOBAL._allianceURL + "inviteuserclient", alliancevars, onAllianceInviteSuccess, onAllianceInviteFail);
+        r.load(getGLOBAL()._allianceURL + "inviteuserclient", alliancevars, onAllianceInviteSuccess, onAllianceInviteFail);
     }
 
     public static AlliancesServerUpdate(data: string): void {
         if (ALLIANCES._open) {
-            if (!GLOBAL._local) {
-                POPUPS.RemoveBG();
+            if (!getGLOBAL()._local) {
+                getPOPUPS().RemoveBG();
             }
             ALLIANCES._open = false;
         }
-        if (BASE._userID === LOGIN._playerID) {
-            BASE.Page();
+        if (getBASE()._userID === getLOGIN()._playerID) {
+            getBASE().Page();
         } else {
-            BASE.Page();
+            getBASE().Page();
         }
     }
 

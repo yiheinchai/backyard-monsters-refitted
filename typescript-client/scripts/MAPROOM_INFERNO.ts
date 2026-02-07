@@ -5,22 +5,25 @@ import { MapRoom as InfernoMapRoom } from "./com/monsters/maproom_inferno/MapRoo
 import MovieClip from "openfl/display/MovieClip";
 import MouseEvent from "openfl/events/MouseEvent";
 import ProgressEvent from "openfl/events/ProgressEvent";
-import { GLOBAL } from "./GLOBAL";
-import { BASE } from "./BASE";
-import { KEYS } from "./KEYS";
-import { LOGGER } from "./LOGGER";
-import { URLLoaderApi } from "./URLLoaderApi";
-import { LOGIN } from "./LOGIN";
-import { HOUSING } from "./HOUSING";
-import { SOUNDS } from "./SOUNDS";
-import { TUTORIAL } from "./TUTORIAL";
 import { PLEASEWAIT } from "./PLEASEWAIT";
-import { POPUPS } from "./POPUPS";
 import { MAPROOM } from "./MAPROOM";
 import { popup_truce } from "./popup_truce";
 import { popup_truce_accept } from "./popup_truce_accept";
 import { popup_truce_sent } from "./popup_truce_sent";
 import { JSON } from "./JSON";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getURLLoaderApi(): any { return require("./URLLoaderApi").URLLoaderApi; }
+function getLOGIN(): any { return require("./LOGIN").LOGIN; }
+function getHOUSING(): any { return require("./HOUSING").HOUSING; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+
 
 export class MAPROOM_INFERNO {
     public static _mc: InfernoMapRoom;
@@ -42,23 +45,23 @@ export class MAPROOM_INFERNO {
         MAPROOM_INFERNO._mc = null;
         MAPROOM_INFERNO.loadState = 0;
         MAPROOM_INFERNO._open = false;
-        if (GLOBAL.mode == GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode == getGLOBAL().e_BASE_MODE.BUILD) {
             MAPROOM_INFERNO._visitingFriend = false;
             MAPROOM_INFERNO.bridge_obj = {
-                "Timestamp": GLOBAL.Timestamp,
+                "Timestamp": getGLOBAL().Timestamp,
                 "GLOBAL": GLOBAL,
                 "BASE": BASE,
                 "readyFunction": MAPROOM_INFERNO.onMapRoomReady,
-                "ErrorMessage": GLOBAL.ErrorMessage,
-                "Log": LOGGER.Log,
+                "ErrorMessage": getGLOBAL().ErrorMessage,
+                "Log": getLOGGER().Log,
                 "URLLoaderApi": URLLoaderApi,
                 "Hide": MAPROOM_INFERNO.Hide,
                 "truceShareHandler": MAPROOM_INFERNO.TruceSent,
-                "playerBaseID": BASE._loadedBaseID,
-                "playerBaseSeed": BASE._baseSeed,
-                "_playerName": LOGIN._playerName,
-                "_playerPic": LOGIN._playerPic,
-                "LoadBase": BASE.LoadBase,
+                "playerBaseID": getBASE()._loadedBaseID,
+                "playerBaseSeed": getBASE()._baseSeed,
+                "_playerName": getLOGIN()._playerName,
+                "_playerPic": getLOGIN()._playerPic,
+                "LoadBase": getBASE().LoadBase,
                 "MessageUI": Message,
                 "HOUSING": HOUSING,
                 "RequestTruce": MAPROOM_INFERNO.RequestTruce,
@@ -68,7 +71,7 @@ export class MAPROOM_INFERNO {
                 "setLastSortReversed": MAPROOM_INFERNO.setLastSortReversed,
                 "setVisitingFriend": MAPROOM_INFERNO.setVisitingFriend,
                 "SOUNDS": SOUNDS,
-                "BaseLevel": BASE.BaseLevel,
+                "BaseLevel": getBASE().BaseLevel,
                 "scrollToBaseID": 0,
                 "TUTORIAL": TUTORIAL,
                 "WMBASE": WMBASE,
@@ -81,43 +84,43 @@ export class MAPROOM_INFERNO {
     }
 
     public static Show(param1: MouseEvent = null): void {
-        if (GLOBAL._otherStats["mrlsr"] != undefined) {
-            MAPROOM_INFERNO._lastSortReversed = GLOBAL.StatGet("mrlsr");
+        if (getGLOBAL()._otherStats["mrlsr"] != undefined) {
+            MAPROOM_INFERNO._lastSortReversed = getGLOBAL().StatGet("mrlsr");
         }
-        if (GLOBAL._otherStats["mrls"] != undefined) {
-            MAPROOM_INFERNO._lastSort = GLOBAL.StatGet("mrls");
+        if (getGLOBAL()._otherStats["mrls"] != undefined) {
+            MAPROOM_INFERNO._lastSort = getGLOBAL().StatGet("mrls");
         }
-        if (GLOBAL._otherStats["mrlv"] != undefined) {
-            MAPROOM_INFERNO._lastView = GLOBAL.StatGet("mrlv");
+        if (getGLOBAL()._otherStats["mrlv"] != undefined) {
+            MAPROOM_INFERNO._lastView = getGLOBAL().StatGet("mrlv");
         }
         MAPROOM_INFERNO.bridge_obj._lastView = MAPROOM_INFERNO._lastView;
         MAPROOM_INFERNO.bridge_obj._lastSort = MAPROOM_INFERNO._lastSort;
         MAPROOM_INFERNO.bridge_obj._lastSortReversed = MAPROOM_INFERNO._lastSortReversed;
         MAPROOM_INFERNO.andShow = true;
-        if (GLOBAL._flags.infernoMapBlocked == 0) {
-            GLOBAL.Message(KEYS.Get("map_msg_disabled"));
+        if (getGLOBAL()._flags.infernoMapBlocked == 0) {
+            getGLOBAL().Message(getKEYS().Get("map_msg_disabled"));
             return;
         }
-        if (GLOBAL._flags.maproom == 1) {
-            GLOBAL.BlockerAdd();
-            SOUNDS.Play("click1");
+        if (getGLOBAL()._flags.maproom == 1) {
+            getGLOBAL().BlockerAdd();
+            getSOUNDS().Play("click1");
             MAPROOM_INFERNO._open = true;
             if (MAPROOM_INFERNO.loadState != 2 && MAPROOM_INFERNO.loadState != 1) {
                 MAPROOM_INFERNO._mc = new InfernoMapRoom();
                 MAPROOM_INFERNO._mc.init(MAPROOM_INFERNO.bridge_obj);
-                GLOBAL._layerTop.addChild(MAPROOM_INFERNO._mc);
+                getGLOBAL()._layerTop.addChild(MAPROOM_INFERNO._mc);
             } else if (MAPROOM_INFERNO.loadState == 2) {
                 MAPROOM_INFERNO.ShowB();
             }
         } else {
-            GLOBAL.Message(KEYS.Get("map_msg_disabled"));
+            getGLOBAL().Message(getKEYS().Get("map_msg_disabled"));
         }
     }
 
     private static ShowB(): void {
         MAPROOM_INFERNO.andShow = false;
-        GLOBAL._layerWindows.addChild(MAPROOM_INFERNO._mc);
-        GLOBAL.WaitHide();
+        getGLOBAL()._layerWindows.addChild(MAPROOM_INFERNO._mc);
+        getGLOBAL().WaitHide();
     }
 
     private static mapRoomProgress(param1: ProgressEvent): void {
@@ -134,9 +137,9 @@ export class MAPROOM_INFERNO {
 
     public static Hide(param1: MouseEvent = null): void {
         try {
-            GLOBAL.BlockerRemove();
-            SOUNDS.Play("close");
-            GLOBAL._layerWindows.removeChild(MAPROOM_INFERNO._mc);
+            getGLOBAL().BlockerRemove();
+            getSOUNDS().Play("close");
+            getGLOBAL()._layerWindows.removeChild(MAPROOM_INFERNO._mc);
             MAPROOM_INFERNO._open = false;
             MAPROOM_INFERNO._mc.Hide();
             MAPROOM_INFERNO._mc = null;
@@ -164,21 +167,21 @@ export class MAPROOM_INFERNO {
                         MAPROOM_INFERNO._mc.Get();
                     }
                 } else {
-                    LOGGER.Log("err", "MAPROOM.RequestTruce: " + JSON.encode(param1));
+                    getLOGGER().Log("err", "MAPROOM.RequestTruce: " + JSON.encode(param1));
                 }
             };
-            new URLLoaderApi().load(GLOBAL._apiURL + "player/requesttruce", [["baseid", baseid], ["duration", 1209600], ["message", (mc as any).bMessage.text]], handleLoadSuccessful);
-            POPUPS.Next();
+            new (getURLLoaderApi())().load(getGLOBAL()._apiURL + "player/requesttruce", [["baseid", baseid], ["duration", 1209600], ["message", (mc as any).bMessage.text]], handleLoadSuccessful);
+            getPOPUPS().Next();
             MAPROOM_INFERNO.TruceSent(name, (mc as any).bMessage.text);
         };
         
         mc = new popup_truce();
-        (mc as any).tA.htmlText = "<b>" + KEYS.Get("map_trucerequest") + " " + name + ".</b>";
-        (mc as any).tB.htmlText = KEYS.Get("map_trucerequest_desc");
+        (mc as any).tA.htmlText = "<b>" + getKEYS().Get("map_trucerequest") + " " + name + ".</b>";
+        (mc as any).tB.htmlText = getKEYS().Get("map_trucerequest_desc");
         (mc as any).bSend.SetupKey("map_trucereq_btn");
         (mc as any).bSend.addEventListener(MouseEvent.CLICK, Truce);
         (mc as any).bMessage.htmlText = "";
-        POPUPS.Push(mc);
+        getPOPUPS().Push(mc);
     }
 
     public static TruceAccepted(param1: string, param2: string): void {
@@ -189,8 +192,8 @@ export class MAPROOM_INFERNO {
         const message: string = param2;
         
         const Share = function(param1: MouseEvent = null): void {
-            GLOBAL.CallJS("sendFeed", ["Truce", KEYS.Get("map_truceaccept_streamtitle", { "v1": name }), KEYS.Get("map_truceaccept_streambody"), "truceaccept" + imgNumber + ".png", 0]);
-            POPUPS.Next();
+            getGLOBAL().CallJS("sendFeed", ["Truce", getKEYS().Get("map_truceaccept_streamtitle", { "v1": name }), getKEYS().Get("map_truceaccept_streambody"), "truceaccept" + imgNumber + ".png", 0]);
+            getPOPUPS().Next();
         };
         
         const Switch = function(param1: number): Function {
@@ -214,7 +217,7 @@ export class MAPROOM_INFERNO {
         (mc as any).bShare.SetupKey("btn_share");
         (mc as any).bShare.addEventListener(MouseEvent.CLICK, Share);
         (mc as any).bShare.Highlight = true;
-        (mc as any).tTitle.htmlText = KEYS.Get("popup_desc_truceaccept");
+        (mc as any).tTitle.htmlText = getKEYS().Get("popup_desc_truceaccept");
         i = 1;
         while (i < 4) {
             mc["mcIcon" + i].buttonMode = true;
@@ -222,7 +225,7 @@ export class MAPROOM_INFERNO {
             mc["mcIcon" + i].addEventListener(MouseEvent.CLICK, Switch(i));
             i++;
         }
-        POPUPS.Push(mc);
+        getPOPUPS().Push(mc);
         SwitchB(1);
     }
 
@@ -234,8 +237,8 @@ export class MAPROOM_INFERNO {
         const message: string = param2;
         
         const Share = function(param1: MouseEvent = null): void {
-            GLOBAL.CallJS("sendFeed", ["Truce", KEYS.Get("map_truceproposed_streamtitle", { "v1": name }), KEYS.Get("map_truceproposed_streambody"), "truceaccept" + imgNumber + ".png", 0]);
-            POPUPS.Next();
+            getGLOBAL().CallJS("sendFeed", ["Truce", getKEYS().Get("map_truceproposed_streamtitle", { "v1": name }), getKEYS().Get("map_truceproposed_streambody"), "truceaccept" + imgNumber + ".png", 0]);
+            getPOPUPS().Next();
         };
         
         const Switch = function(param1: number): Function {
@@ -259,7 +262,7 @@ export class MAPROOM_INFERNO {
         (mc as any).bShare.SetupKey("btn_share");
         (mc as any).bShare.addEventListener(MouseEvent.CLICK, Share);
         (mc as any).bShare.Highlight = true;
-        (mc as any).tTitle.htmlText = KEYS.Get("popup_desc_trucesent");
+        (mc as any).tTitle.htmlText = getKEYS().Get("popup_desc_trucesent");
         i = 1;
         while (i < 4) {
             mc["mcIcon" + i].buttonMode = true;
@@ -267,7 +270,7 @@ export class MAPROOM_INFERNO {
             mc["mcIcon" + i].addEventListener(MouseEvent.CLICK, Switch(i));
             i++;
         }
-        POPUPS.Push(mc);
+        getPOPUPS().Push(mc);
         SwitchB(1);
     }
 
@@ -279,8 +282,8 @@ export class MAPROOM_INFERNO {
         const message: string = param2;
         
         const Share = function(param1: MouseEvent = null): void {
-            GLOBAL.CallJS("sendFeed", ["Truce", KEYS.Get("map_trucerejected_streamtitle", { "v1": name }), KEYS.Get("map_trucerejected_streambody"), "taunt" + imgNumber + ".png", 0]);
-            POPUPS.Next();
+            getGLOBAL().CallJS("sendFeed", ["Truce", getKEYS().Get("map_trucerejected_streamtitle", { "v1": name }), getKEYS().Get("map_trucerejected_streambody"), "taunt" + imgNumber + ".png", 0]);
+            getPOPUPS().Next();
         };
         
         const Switch = function(param1: number): Function {
@@ -304,7 +307,7 @@ export class MAPROOM_INFERNO {
         (mc as any).bShare.SetupKey("btn_share");
         (mc as any).bShare.addEventListener(MouseEvent.CLICK, Share);
         (mc as any).bShare.Highlight = true;
-        (mc as any).tTitle.htmlText = KEYS.Get("popup_desc_trucesent");
+        (mc as any).tTitle.htmlText = getKEYS().Get("popup_desc_trucesent");
         i = 1;
         while (i < 4) {
             mc["mcIcon" + i].buttonMode = true;
@@ -312,7 +315,7 @@ export class MAPROOM_INFERNO {
             mc["mcIcon" + i].addEventListener(MouseEvent.CLICK, Switch(i));
             i++;
         }
-        POPUPS.Push(mc);
+        getPOPUPS().Push(mc);
         SwitchB(1);
     }
 
@@ -322,16 +325,16 @@ export class MAPROOM_INFERNO {
 
     private static setLastSort(param1: number): void {
         MAPROOM_INFERNO._lastSort = param1;
-        GLOBAL.StatSet("mrls", MAPROOM._lastSort);
+        getGLOBAL().StatSet("mrls", MAPROOM._lastSort);
     }
 
     private static setLastView(param1: number): void {
         MAPROOM_INFERNO._lastView = param1;
-        GLOBAL.StatSet("mrlv", MAPROOM_INFERNO._lastView);
+        getGLOBAL().StatSet("mrlv", MAPROOM_INFERNO._lastView);
     }
 
     private static setLastSortReversed(param1: number): void {
         MAPROOM_INFERNO._lastSortReversed = param1;
-        GLOBAL.StatSet("mrlsr", MAPROOM._lastSortReversed);
+        getGLOBAL().StatSet("mrlsr", MAPROOM._lastSortReversed);
     }
 }

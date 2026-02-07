@@ -1,4 +1,3 @@
-import { LOGGER } from "../../../../LOGGER";
 import Bitmap from "openfl/display/Bitmap";
 import BitmapData from "openfl/display/BitmapData";
 import DisplayObject from "openfl/display/DisplayObject";
@@ -10,43 +9,47 @@ import { BYMConfig } from "../../configs/BYMConfig";
 import { CreepSkinManager } from "../../display/CreepSkinManager";
 import { IAttackable } from "../../interfaces/IAttackable";
 import { ITargetable } from "../../interfaces/ITargetable";
-import { MapRoomManager } from "../../maproom_manager/MapRoomManager";
 import { MonsterBase } from "../MonsterBase";
 import { Component } from "../components/Component";
 import { IAttackingComponent } from "../components/IAttackingComponent";
 import { CModifiableProperty } from "../components/CModifiableProperty";
 import { AdditionPropertyModifier } from "../components/modifiers/AdditionPropertyModifier";
-import { PATHING } from "../../pathing/PATHING";
 import { RasterData } from "../../rendering/RasterData";
-import { SiegeWeapons } from "../../siege/SiegeWeapons";
-import { Decoy } from "../../siege/weapons/Decoy";
 import { SiegeWeapon } from "../../siege/weapons/SiegeWeapon";
 
-import { ATTACK } from "../../../../ATTACK";
-import { BASE } from "../../../../BASE";
-import { BFOUNDATION } from "../../../../BFOUNDATION";
-import { BTOWER } from "../../../../BTOWER";
-import { CREATURELOCKER } from "../../../../CREATURELOCKER";
-import { CREATURES } from "../../../../CREATURES";
-import { CREEPS } from "../../../../CREEPS";
-import { EFFECTS } from "../../../../EFFECTS";
-import { GIBLETS } from "../../../../GIBLETS";
-import { GLOBAL } from "../../../../GLOBAL";
-import { GRID } from "../../../../GRID";
-import { HOUSING } from "../../../../HOUSING";
-import { KEYS } from "../../../../KEYS";
-import { MAP } from "../../../../MAP";
-import { MONSTERBUNKER } from "../../../../MONSTERBUNKER";
-import { SOUNDS } from "../../../../SOUNDS";
-import { SPECIALEVENT } from "../../../../SPECIALEVENT";
-import { SPRITES } from "../../../../SPRITES";
-import { Targeting } from "../../../../Targeting";
-import { TUTORIAL } from "../../../../TUTORIAL";
 
 // TweenLite imports (gs library)
 import { TweenLite } from "gs/TweenLite";
 import { Bounce } from "gs/easing/Bounce";
 import { Sine } from "gs/easing/Sine";
+
+// Lazy imports to break circular dependency chains
+function getLOGGER(): any { return require("../../../../LOGGER").LOGGER; }
+function getMapRoomManager(): any { return require("../../maproom_manager/MapRoomManager").MapRoomManager; }
+function getPATHING(): any { return require("../../pathing/PATHING").PATHING; }
+function getSiegeWeapons(): any { return require("../../siege/SiegeWeapons").SiegeWeapons; }
+function getDecoy(): any { return require("../../siege/weapons/Decoy").Decoy; }
+function getATTACK(): any { return require("../../../../ATTACK").ATTACK; }
+function getBASE(): any { return require("../../../../BASE").BASE; }
+function getBFOUNDATION(): any { return require("../../../../BFOUNDATION").BFOUNDATION; }
+function getBTOWER(): any { return require("../../../../BTOWER").BTOWER; }
+function getCREATURELOCKER(): any { return require("../../../../CREATURELOCKER").CREATURELOCKER; }
+function getCREATURES(): any { return require("../../../../CREATURES").CREATURES; }
+function getCREEPS(): any { return require("../../../../CREEPS").CREEPS; }
+function getEFFECTS(): any { return require("../../../../EFFECTS").EFFECTS; }
+function getGIBLETS(): any { return require("../../../../GIBLETS").GIBLETS; }
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getGRID(): any { return require("../../../../GRID").GRID; }
+function getHOUSING(): any { return require("../../../../HOUSING").HOUSING; }
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+function getMAP(): any { return require("../../../../MAP").MAP; }
+function getMONSTERBUNKER(): any { return require("../../../../MONSTERBUNKER").MONSTERBUNKER; }
+function getSOUNDS(): any { return require("../../../../SOUNDS").SOUNDS; }
+function getSPECIALEVENT(): any { return require("../../../../SPECIALEVENT").SPECIALEVENT; }
+function getSPRITES(): any { return require("../../../../SPRITES").SPRITES; }
+function getTargeting(): any { return require("../../../../Targeting").Targeting; }
+function getTUTORIAL(): any { return require("../../../../TUTORIAL").TUTORIAL; }
+
 
 /**
  * Base class for all creep (monster) entities in the game.
@@ -93,7 +96,7 @@ export class CreepBase extends MonsterBase {
         param12: MonsterBase | null = null
     ) {
         super();
-        const activeEvent: any = SPECIALEVENT.getActiveSpecialEvent();
+        const activeEvent: any = getSPECIALEVENT().getActiveSpecialEvent();
         
         this._friendly = param8;
         this.setInitialFriendlyFlags(this._friendly);
@@ -103,18 +106,18 @@ export class CreepBase extends MonsterBase {
         this._hits = 0;
         this._spawnPoint = new Point(Math.floor(param3.x / 100) * 100, Math.floor(param3.y / 100) * 100);
         this._goeasy = activeEvent.active ? false : Boolean(param9);
-        this._movement = CREATURELOCKER._creatures[param1].movement;
-        this.m_bInfernoCreep = BASE.isInfernoCreep(this._creatureID);
-        this._pathing = CREATURELOCKER._creatures[param1].pathing;
+        this._movement = getCREATURELOCKER()._creatures[param1].movement;
+        this.m_bInfernoCreep = getBASE().isInfernoCreep(this._creatureID);
+        this._pathing = getCREATURELOCKER()._creatures[param1].pathing;
         
         if (this._house) {
             this._house._creatures.push(this);
         }
         
         this._behaviour = param2;
-        this._targetGroup = CREATURES.GetProperty(param1, "targetGroup");
-        this._explode = CREATURES.GetProperty(param1, "explode");
-        this._spawnTime = GLOBAL.Timestamp();
+        this._targetGroup = getCREATURES().GetProperty(param1, "targetGroup");
+        this._explode = getCREATURES().GetProperty(param1, "explode");
+        this._spawnTime = getGLOBAL().Timestamp();
         this._waypoints = [];
         this._targetCreeps = [];
         this._targetCreep = null;
@@ -126,19 +129,19 @@ export class CreepBase extends MonsterBase {
         // Randomize initial counter to spread load
         this.m_findTargetsCounter = Math.floor(Math.random() * 200);
 
-        this.moveSpeedProperty.value = CREATURES.GetProperty(this._creatureID, "speed", param5, this._friendly) / 2;
-        if (TUTORIAL._stage < 200) {
+        this.moveSpeedProperty.value = getCREATURES().GetProperty(this._creatureID, "speed", param5, this._friendly) / 2;
+        if (getTUTORIAL()._stage < 200) {
             this.moveSpeedProperty.value *= 2;
         }
         
-        this.setHealth(Math.floor(CREATURES.GetProperty(this._creatureID, "health", param5, this._friendly) * param10));
+        this.setHealth(Math.floor(getCREATURES().GetProperty(this._creatureID, "health", param5, this._friendly) * param10));
         this.maxHealthProperty.value = this.health;
         if (this.health > param6) {
             this.setHealth(param6);
         }
         
-        this.damageProperty.set(Math.floor(CREATURES.GetProperty(this._creatureID, "damage", param5, this._friendly) * param10));
-        this._goo = CREATURES.GetProperty(this._creatureID, "cResource", param5, this._friendly);
+        this.damageProperty.set(Math.floor(getCREATURES().GetProperty(this._creatureID, "damage", param5, this._friendly) * param10));
+        this._goo = getCREATURES().GetProperty(this._creatureID, "cResource", param5, this._friendly);
         this._targetPosition = param3;
         this._targetCenter = param7;
         this.graphic.x = this._targetPosition.x;
@@ -149,12 +152,12 @@ export class CreepBase extends MonsterBase {
         this._targetRotation = param4 || 0;
         this.m_rotation = this._targetRotation;
         
-        this.attackDelayProperty.value = CREATURES.GetProperty(this._creatureID, "attackDelay", param5, this._friendly);
+        this.attackDelayProperty.value = getCREATURES().GetProperty(this._creatureID, "attackDelay", param5, this._friendly);
         if (!this.attackDelay) {
             this.attackDelayProperty.value = 60;
         }
         
-        this.m_range = CREATURES.GetProperty(this._creatureID, "range", param5, this._friendly);
+        this.m_range = getCREATURES().GetProperty(this._creatureID, "range", param5, this._friendly);
         if (!this.m_range) {
             this.m_range = 1;
         }
@@ -164,15 +167,15 @@ export class CreepBase extends MonsterBase {
         CreepSkinManager.instance.SetupSkins(this._creatureID);
         
         if (this._movement === "fly") {
-            SPRITES.SetupSprite("shadow");
+            getSPRITES().SetupSprite("shadow");
             this._shadow = new BitmapData(52, 50, true, 0xFFFFFF);
             this._shadowMC = BYMConfig.instance.RENDERER_ON ? new Bitmap(this._shadow) : this.graphic.addChild(new Bitmap(this._shadow));
             this._shadowMC.x = -21;
             this._shadowMC.y = -16;
             this._frameNumber = Math.floor(Math.random() * 1000);
-            this.defenseFlags |= Targeting.k_TARGETS_FLYING;
+            this.defenseFlags |= getTargeting().k_TARGETS_FLYING;
         } else {
-            this.defenseFlags |= Targeting.k_TARGETS_GROUND;
+            this.defenseFlags |= getTargeting().k_TARGETS_GROUND;
         }
         
         if (!this._graphic) {
@@ -185,7 +188,7 @@ export class CreepBase extends MonsterBase {
         if (BYMConfig.instance.RENDERER_ON) {
             this._rasterData = new RasterData(this._graphic, this._rasterPt, Number.MAX_VALUE);
             if (this._movement === "fly") {
-                this._shadowData = new RasterData(this._shadow, this._shadowPt, MAP.DEPTH_SHADOW);
+                this._shadowData = new RasterData(this._shadow, this._shadowPt, getMAP().DEPTH_SHADOW);
             }
         }
         
@@ -195,8 +198,8 @@ export class CreepBase extends MonsterBase {
             this.m_altitudeMax = 40;
             this.m_altitudeMin = 35;
         } else {
-            this.m_altitudeMax = CREATURES.GetProperty(this._creatureID, "altitude", param5, this._friendly) 
-                ? Math.floor(CREATURES.GetProperty(this._creatureID, "altitude", param5, this._friendly)) 
+            this.m_altitudeMax = getCREATURES().GetProperty(this._creatureID, "altitude", param5, this._friendly) 
+                ? Math.floor(getCREATURES().GetProperty(this._creatureID, "altitude", param5, this._friendly)) 
                 : 108;
             this.m_altitudeMin = 60;
         }
@@ -206,15 +209,15 @@ export class CreepBase extends MonsterBase {
 
     private initBehavior(behaviour: string, strengthMult: number): void {
         if (behaviour === MonsterBase.k_sBHVR_HOUSING) {
-            const loc13: Point = GRID.ToISO(this._targetCenter!.x + 100, this._targetCenter!.y + 100, 0);
+            const loc13: Point = getGRID().ToISO(this._targetCenter!.x + 100, this._targetCenter!.y + 100, 0);
             if (this._movement === "fly") {
                 this._graphicMC.y -= this._altitude;
             } else {
                 this._altitude = 0;
             }
-            PATHING.GetPath(this._tmpPoint, new Rectangle(loc13.x, loc13.y, 10, 10), this.setWaypoints.bind(this), true);
+            getPATHING().GetPath(this._tmpPoint, new Rectangle(loc13.x, loc13.y, 10, 10), this.setWaypoints.bind(this), true);
         } else if (this._behaviour === MonsterBase.k_sBHVR_BOUNCE) {
-            if (GLOBAL._render && this._movement !== "fly") {
+            if (getGLOBAL()._render && this._movement !== "fly") {
                 if (!this.m_bInfernoCreep) {
                     this._graphicMC.y -= 90;
                     TweenLite.to(this._graphicMC, 0.6, {
@@ -223,7 +226,7 @@ export class CreepBase extends MonsterBase {
                         onComplete: this.changeModeAttack.bind(this)
                     });
                 } else {
-                    EFFECTS.Dig(Math.floor(this._tmpPoint.x), Math.floor(this._tmpPoint.y));
+                    getEFFECTS().Dig(Math.floor(this._tmpPoint.x), Math.floor(this._tmpPoint.y));
                     TweenLite.to(this._graphicMC, 0.4, {
                         y: this._graphicMC.y - 20,
                         ease: Sine.easeOut,
@@ -258,8 +261,8 @@ export class CreepBase extends MonsterBase {
         }
         
         if (strengthMult > 1) {
-            LOGGER.Log("log", "MONSTER Strength");
-            GLOBAL.ErrorMessage("CREEP");
+            getLOGGER().Log("log", "MONSTER Strength");
+            getGLOBAL().ErrorMessage("CREEP");
         }
         
         if (this._behaviour === MonsterBase.k_sBHVR_JUICE) {
@@ -345,7 +348,7 @@ export class CreepBase extends MonsterBase {
                                 onComplete: this.flyerLanded.bind(this)
                             });
                         }
-                        this._waypoints[0] = HOUSING.PointInHouse(this._targetCenter!);
+                        this._waypoints[0] = getHOUSING().PointInHouse(this._targetCenter!);
                     }
                 } else if (this.tickBHousing()) {
                     return true;
@@ -354,8 +357,8 @@ export class CreepBase extends MonsterBase {
             case MonsterBase.k_sBHVR_PEN:
                 if (this.m_bInfernoCreep) {
                     if (this.health <= 0) return true;
-                    if (this._frameNumber > 240 && Math.floor(Math.random() * 200) === 1 && GLOBAL._fps > 25) {
-                        this._targetPosition = HOUSING.PointInHouse(this._targetCenter!);
+                    if (this._frameNumber > 240 && Math.floor(Math.random() * 200) === 1 && getGLOBAL()._fps > 25) {
+                        this._targetPosition = getHOUSING().PointInHouse(this._targetCenter!);
                         this._hasPath = true;
                     }
                     break;
@@ -400,7 +403,7 @@ export class CreepBase extends MonsterBase {
             if (!this._lastGridPosition || 
                 this._lastGridPosition.x !== currentGridX || 
                 this._lastGridPosition.y !== currentGridY) {
-                const newNode = Targeting.CreepCellMove(this._tmpPoint, this._id, this, this.node);
+                const newNode = getTargeting().CreepCellMove(this._tmpPoint, this._id, this, this.node);
                 if (newNode) {
                     this.node = newNode;
                 }
@@ -418,7 +421,7 @@ export class CreepBase extends MonsterBase {
     public override changeModeJuice(): void {
         this._behaviour = MonsterBase.k_sBHVR_JUICE;
         this.changeMode();
-        this._targetBuilding = GLOBAL._bJuicer;
+        this._targetBuilding = getGLOBAL()._bJuicer;
         if (this._movement === "fly" && this._altitude < 60) {
             TweenLite.to(this._graphicMC, 2, {
                 y: this._graphicMC.y - (this.m_altitudeMax - this._altitude),
@@ -426,8 +429,8 @@ export class CreepBase extends MonsterBase {
                 onComplete: this.flyerTakeOff.bind(this)
             });
         }
-        PATHING.GetPath(this._tmpPoint, new Rectangle(this._targetBuilding._mc.x, this._targetBuilding._mc.y, 80, 80), this.setWaypoints.bind(this), true);
-        GLOBAL._bJuicer.Prep(this._creatureID);
+        getPATHING().GetPath(this._tmpPoint, new Rectangle(this._targetBuilding._mc.x, this._targetBuilding._mc.y, 80, 80), this.setWaypoints.bind(this), true);
+        getGLOBAL()._bJuicer.Prep(this._creatureID);
     }
 
     public changeModeHeal(): void {
@@ -462,10 +465,10 @@ export class CreepBase extends MonsterBase {
         
         if (!this._homeBunker) {
             let minDistSq: number = 9999999 * 9999999;
-            const buildings: any = BASE._buildingsAll;
+            const buildings: any = getBASE()._buildingsAll;
             for (const key in buildings) {
                 const building = buildings[key];
-                if (MONSTERBUNKER.isBunkerBuilding(building._type) && 
+                if (getMONSTERBUNKER().isBunkerBuilding(building._type) && 
                     building._countdownBuild.Get() <= 0 && 
                     building.health > 0) {
                     const foundation = building as BFOUNDATION;
@@ -480,9 +483,9 @@ export class CreepBase extends MonsterBase {
         
         if (this._homeBunker) {
             let offsetX: number, offsetY: number;
-            if (BASE.isInfernoMainYardOrOutpost) {
-                this._targetCenter = GRID.FromISO(this._homeBunker._mc.x, this._homeBunker._mc.y);
-                this._targetPosition = GRID.FromISO(this._homeBunker._mc.x, this._homeBunker._mc.y);
+            if (getBASE().isInfernoMainYardOrOutpost) {
+                this._targetCenter = getGRID().FromISO(this._homeBunker._mc.x, this._homeBunker._mc.y);
+                this._targetPosition = getGRID().FromISO(this._homeBunker._mc.x, this._homeBunker._mc.y);
                 offsetX = 100;
                 offsetY = 60;
             } else {
@@ -498,21 +501,21 @@ export class CreepBase extends MonsterBase {
                     offsetY = footH / 2;
                     offsetX = dx <= 0 ? footW / -4 : footW / 2;
                 }
-                this._targetCenter = GRID.FromISO(this._homeBunker._position.x + offsetX, this._homeBunker._position.y + offsetY);
+                this._targetCenter = getGRID().FromISO(this._homeBunker._position.x + offsetX, this._homeBunker._position.y + offsetY);
                 this._targetPosition = new Point(this._homeBunker._mc.x, this._homeBunker._mc.y);
             }
             
             this._jumpingUp = false;
-            const loc1: Point = BASE.isInfernoMainYardOrOutpost 
-                ? GRID.ToISO(this._targetCenter!.x + offsetX, this._targetCenter!.y + offsetY, 0)
-                : GRID.ToISO(this._targetCenter!.x, this._targetCenter!.y, 0);
-            PATHING.GetPath(this._tmpPoint, new Rectangle(loc1.x, loc1.y, 10, 10), this.setWaypoints.bind(this), true);
+            const loc1: Point = getBASE().isInfernoMainYardOrOutpost 
+                ? getGRID().ToISO(this._targetCenter!.x + offsetX, this._targetCenter!.y + offsetY, 0)
+                : getGRID().ToISO(this._targetCenter!.x, this._targetCenter!.y, 0);
+            getPATHING().GetPath(this._tmpPoint, new Rectangle(loc1.x, loc1.y, 10, 10), this.setWaypoints.bind(this), true);
         }
     }
 
     public changeModeDecoy(): void {
-        const activeWeapon: SiegeWeapon | null = SiegeWeapons.activeWeapon;
-        if (activeWeapon && activeWeapon instanceof Decoy) {
+        const activeWeapon: SiegeWeapon | null = getSiegeWeapons().activeWeapon;
+        if (activeWeapon && activeWeapon instanceof getDecoy()) {
             this._behaviour = "decoy";
             this.changeMode();
             this._attacking = false;
@@ -525,7 +528,7 @@ export class CreepBase extends MonsterBase {
             if (this._movement === "burrow") {
                 this._hasTarget = true;
                 this._hasPath = true;
-                const loc9 = GRID.FromISO(rect.x, rect.y);
+                const loc9 = getGRID().FromISO(rect.x, rect.y);
                 const side = Math.floor(Math.random() * 4);
                 
                 if (side === 0) {
@@ -541,7 +544,7 @@ export class CreepBase extends MonsterBase {
                     loc9.x -= rect.height / 4;
                     loc9.y += rect.width - Math.random() * rect.width / 2;
                 }
-                this._waypoints = [GRID.ToISO(loc9.x, loc9.y, 0)];
+                this._waypoints = [getGRID().ToISO(loc9.x, loc9.y, 0)];
                 this._targetPosition = this._waypoints[0];
             } else if (this._movement === "fly") {
                 this._hasTarget = true;
@@ -610,7 +613,7 @@ export class CreepBase extends MonsterBase {
 
     public findHealingTargets(): void {
         let hasBuilding: boolean = false;
-        for (const building of Object.values(BASE._buildingsMain) as BFOUNDATION[]) {
+        for (const building of Object.values(getBASE()._buildingsMain) as BFOUNDATION[]) {
             if (building._class !== "decoration" && building._class !== "immovable" && building.health > 0 && building._class !== "enemy") {
                 hasBuilding = true;
                 break;
@@ -622,13 +625,13 @@ export class CreepBase extends MonsterBase {
             return;
         }
         
-        this._targetCreeps = Targeting.getCreepsInRange(600, this._tmpPoint, this.attackFlags, this);
+        this._targetCreeps = getTargeting().getCreepsInRange(600, this._tmpPoint, this.attackFlags, this);
         if (this._targetCreeps.length > 0) {
             this._targetCreeps.sort((a: any, b: any) => a.dist - b.dist);
             if (!(this._targetCreep && this._targetCreep.health > 0 && this._targetCreep.health < this._targetCreep.maxHealth)) {
                 while (this._targetCreeps.length > 0 && 
                        (this._targetCreeps[0].creep._creatureID.substring(0, 1) === "C" && 
-                        CREATURELOCKER._creatures[this._targetCreeps[0].creep._creatureID].antiHeal)) {
+                        getCREATURELOCKER()._creatures[this._targetCreeps[0].creep._creatureID].antiHeal)) {
                     this._targetCreeps.shift();
                 }
                 if (this._targetCreeps.length > 0) {
@@ -639,7 +642,7 @@ export class CreepBase extends MonsterBase {
             while (this._targetCreeps.length > 0 && 
                    (this._targetCreeps[0].creep._behaviour === MonsterBase.k_sBHVR_RETREAT || 
                     (this._targetCreeps[0].creep._creatureID.substring(0, 1) === "C" && 
-                     CREATURELOCKER._creatures[this._targetCreeps[0].creep._creatureID].antiHeal) || 
+                     getCREATURELOCKER()._creatures[this._targetCreeps[0].creep._creatureID].antiHeal) || 
                     this._targetCreeps[0].creep.health === this._targetCreeps[0].creep.maxHealth)) {
                 this._targetCreeps.shift();
             }
@@ -657,7 +660,7 @@ export class CreepBase extends MonsterBase {
         } else if (this._healerGiveUpTimer > 0) {
             --this._healerGiveUpTimer;
         } else if (this._behaviour !== "retreat") {
-            const activeEvent: any = SPECIALEVENT.getActiveSpecialEvent();
+            const activeEvent: any = getSPECIALEVENT().getActiveSpecialEvent();
             if (activeEvent.active && !this._friendly) {
                 this.setHealth(0);
                 return;
@@ -673,7 +676,7 @@ export class CreepBase extends MonsterBase {
     }
 
     public findDefenseTargets(): void {
-        this._targetCreeps = Targeting.getCreepsInRange(200, this._tmpPoint, Targeting.getOldStyleTargets(this.targetMode));
+        this._targetCreeps = getTargeting().getCreepsInRange(200, this._tmpPoint, getTargeting().getOldStyleTargets(this.targetMode));
         if (this._targetCreeps.length) {
             this._targetCreeps.sort((a: any, b: any) => a.dist - b.dist);
             while (this._targetCreeps.length > 0 && this._targetCreeps[0].creep._behaviour === MonsterBase.k_sBHVR_RETREAT) {
@@ -710,7 +713,7 @@ export class CreepBase extends MonsterBase {
 
     public click(event: MouseEvent): void {
         if (this._waypoints.length > 0) {
-            PATHING.RenderPath(this._waypoints, true);
+            getPATHING().RenderPath(this._waypoints, true);
         }
         this._clicked = !this._clicked;
     }
@@ -732,7 +735,7 @@ export class CreepBase extends MonsterBase {
         if (distSq > this.range * this.range) {
             return false;
         }
-        return PATHING.LineOfSight(this._tmpPoint.x, this._tmpPoint.y, this._targetCreep._tmpPoint.x, this._targetCreep._tmpPoint.y);
+        return getPATHING().LineOfSight(this._tmpPoint.x, this._tmpPoint.y, this._targetCreep._tmpPoint.x, this._targetCreep._tmpPoint.y);
     }
 
     protected canShootBuilding(): boolean {
@@ -744,7 +747,7 @@ export class CreepBase extends MonsterBase {
         if (distSq > this.range * this.range) {
             return false;
         }
-        return PATHING.LineOfSight(this._tmpPoint.x, this._tmpPoint.y, this._targetBuilding._position.x, this._targetBuilding._position.y, this._targetBuilding);
+        return getPATHING().LineOfSight(this._tmpPoint.x, this._tmpPoint.y, this._targetBuilding._position.x, this._targetBuilding._position.y, this._targetBuilding);
     }
 
     protected attacked(target: IAttackable, damage: number, source: ITargetable | null = null): void {
@@ -770,9 +773,9 @@ export class CreepBase extends MonsterBase {
     protected tickBDefend(): boolean {
         if (this.health <= 0) {
             if (this._creatureID === "C12") {
-                SOUNDS.Play("monsterlanddave");
+                getSOUNDS().Play("monsterlanddave");
             } else {
-                SOUNDS.Play("monsterland" + (1 + Math.floor(Math.random() * 3)));
+                getSOUNDS().Play("monsterland" + (1 + Math.floor(Math.random() * 3)));
             }
             // Handle bunker removal logic
             return true;
@@ -830,8 +833,8 @@ export class CreepBase extends MonsterBase {
     }
 
     private applyInfernoVenom(): void {
-        if (!this.m_bInfernoCreep && BASE.isInfernoMainYardOrOutpost && 
-            (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === "wmattack")) {
+        if (!this.m_bInfernoCreep && getBASE().isInfernoMainYardOrOutpost && 
+            (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === "wmattack")) {
             this._damagePerSecond.Add(10);
         }
     }

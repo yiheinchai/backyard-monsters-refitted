@@ -4,11 +4,14 @@ import Sprite from 'openfl/display/Sprite';
 import Rectangle from 'openfl/geom/Rectangle';
 import { ScaleBitmap } from './org/bytearray/display/ScaleBitmap';
 import { ImageCache } from './com/monsters/display/ImageCache';
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
 import { UI_BOTTOM } from './com/monsters/ui/UI_BOTTOM';
 import { StoneButton } from './StoneButton';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+
 
 export class UI_MENU extends Sprite {
     public woodmargin: number = 10;
@@ -29,7 +32,7 @@ export class UI_MENU extends Sprite {
         this.bQuests = new StoneButton();
         this.bStore = new StoneButton();
         this.bMap = new StoneButton();
-        if (BASE.isOutpostMapRoom2Only) {
+        if (getBASE().isOutpostMapRoom2Only) {
             this.bKits = new StoneButton();
         }
     }
@@ -41,15 +44,15 @@ export class UI_MENU extends Sprite {
                 this.wood.scale9Grid = new Rectangle(15, 15, 10, 10);
                 this.addChild(this.wood);
                 this.addChild(this.bBuild);
-                if (MapRoomManager.instance.isInMapRoom3 && !BASE.isMainYardOrInfernoMainYard) {
+                if (getMapRoomManager().instance.isInMapRoom3 && !getBASE().isMainYardOrInfernoMainYard) {
                     this.bBuild.Enabled = false;
                 }
-                if (GLOBAL._loadmode == GLOBAL.mode) {
+                if (getGLOBAL()._loadmode == getGLOBAL().mode) {
                     this.addChild(this.bQuests);
                 }
                 this.addChild(this.bStore);
                 this.addChild(this.bMap);
-                if (BASE.isOutpostMapRoom2Only) {
+                if (getBASE().isOutpostMapRoom2Only) {
                     this.addChild(this.bKits);
                 }
                 this.sortAll();
@@ -58,21 +61,21 @@ export class UI_MENU extends Sprite {
                 UI_BOTTOM.Update();
             };
             this.bBuild.SetupKey("ui_topbuildings", 12);
-            if (GLOBAL._loadmode == GLOBAL.mode) {
+            if (getGLOBAL()._loadmode == getGLOBAL().mode) {
                 this.bQuests.SetupKey("ui_topquests", 12);
             }
             this.bStore.SetupKey("ui_topstore", 12);
             this.bMap.SetupKey("ui_topmap", 12);
-            if (BASE.isOutpostMapRoom2Only) {
+            if (getBASE().isOutpostMapRoom2Only) {
                 this.bKits.SetupKey("btn_kits", 12);
             }
-            if (GLOBAL.InfernoMode()) {
+            if (getGLOBAL().InfernoMode()) {
                 ImageCache.GetImageWithCallBack("ui/stonemenu2.png", cbf2);
             } else {
                 ImageCache.GetImageWithCallBack("ui/wood1.png", cbf2);
             }
         };
-        if (GLOBAL.InfernoMode()) {
+        if (getGLOBAL().InfernoMode()) {
             ImageCache.GetImageGroupWithCallBack("bottom_ui_inferno", ["ui/lava1.png", "ui/lava2.png", "ui/lava3.png", "ui/stonemenu2.png"], cbf1, true, 1);
         } else {
             ImageCache.GetImageGroupWithCallBack("bottom_ui", ["ui/wood1.png", "ui/stone1.png", "ui/stone2.png", "ui/stone3.png"], cbf1, true, 1);
@@ -82,9 +85,9 @@ export class UI_MENU extends Sprite {
     public sortAll(): boolean {
         let _loc1_: StoneButton[];
         let _loc2_: StoneButton = null;
-        if (BASE.isOutpostMapRoom2Only) {
+        if (getBASE().isOutpostMapRoom2Only) {
             _loc1_ = [this.bKits, this.bBuild, this.bQuests, this.bStore, this.bMap];
-        } else if (GLOBAL.mode != GLOBAL._loadmode) {
+        } else if (getGLOBAL().mode != getGLOBAL()._loadmode) {
             _loc1_ = [this.bBuild, this.bStore, this.bMap];
         } else {
             _loc1_ = [this.bBuild, this.bQuests, this.bStore, this.bMap];
@@ -109,8 +112,8 @@ export class UI_MENU extends Sprite {
 
     public Resize(): void {
         if (this._loaded) {
-            this.x = Math.floor(GLOBAL._SCREEN.x + GLOBAL._SCREEN.width - (this.wood.width + 10));
-            this.y = Math.floor(GLOBAL._SCREEN.y + GLOBAL._SCREEN.height - this.wood.height - 10);
+            this.x = Math.floor(getGLOBAL()._SCREEN.x + getGLOBAL()._SCREEN.width - (this.wood.width + 10));
+            this.y = Math.floor(getGLOBAL()._SCREEN.y + getGLOBAL()._SCREEN.height - this.wood.height - 10);
             if (UI_BOTTOM._missions && UI_BOTTOM._missions.frame) {
                 this.y = Math.floor(UI_BOTTOM._missions.y + UI_BOTTOM._missions.frame.y - this.wood.height);
             }

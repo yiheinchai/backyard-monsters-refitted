@@ -2,9 +2,12 @@ import { IHandler } from "../interfaces/IHandler";
 import { Reward } from "./Reward";
 import { RewardLibrary } from "./RewardLibrary";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { UPDATES } from "../../../UPDATES";
+// Lazy imports to break circular dependency chains
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getUPDATES(): any { return require("../../../UPDATES").UPDATES; }
+
+
 
 /**
  * Reward handler - manages player rewards and their application.
@@ -90,11 +93,11 @@ export class RewardHandler implements IHandler {
     }
 
     public initialize(data: any = null): void {
-        if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD || BASE.isInfernoMainYardOrOutpost) {
+        if (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD || getBASE().isInfernoMainYardOrOutpost) {
             return;
         }
         
-        UPDATES.addAction(this.processUpdate.bind(this), this.name);
+        getUPDATES().addAction(this.processUpdate.bind(this), this.name);
         
         if (!RewardLibrary.rewardTypes) {
             RewardLibrary.initialize();
@@ -108,7 +111,7 @@ export class RewardHandler implements IHandler {
     }
 
     public exportData(): any {
-        if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD || BASE.isInfernoMainYardOrOutpost) {
+        if (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD || getBASE().isInfernoMainYardOrOutpost) {
             return null;
         }
         
@@ -165,7 +168,7 @@ export class RewardHandler implements IHandler {
                     reward.value = updateData.data[3];
                     RewardHandler.instance.addAndApplyReward(reward, true);
                 }
-                BASE.Save(0, false, true);
+                getBASE().Save(0, false, true);
                 break;
         }
         

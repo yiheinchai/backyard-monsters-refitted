@@ -11,7 +11,10 @@ import { Obstruction } from "./Obstruction";
 import { PlayerLayer } from "./PlayerLayer";
 import { PushPin } from "./PushPin";
 
-import { TUTORIAL } from "../../../TUTORIAL";
+// Lazy imports to break circular dependency chains
+function getTUTORIAL(): any { return require("../../../TUTORIAL").TUTORIAL; }
+
+
 
 /**
  * MapRoom - main map room controller for normal mode.
@@ -47,7 +50,7 @@ export class MapRoom extends old_maproom {
         MapRoom.top.addChild(this.lvBtn);
         this.addChild(MapRoom.top);
         this.players = new PlayerLayer();
-        if (MapRoom.BRIDGE.TUTORIAL._stage < this._tutorialModeThresh) {
+        if (MapRoom.BRIDGE.getTUTORIAL()._stage < this._tutorialModeThresh) {
             this.players._wmbToDisplay = 1;
             this.players._playersLimit = 0;
         }
@@ -74,7 +77,7 @@ export class MapRoom extends old_maproom {
             this.mvBtnDown();
             this.mv!.scrollToBaseId(MapRoom.BRIDGE.scrollToBaseID);
         } else {
-            const viewIndex = MapRoom.BRIDGE.TUTORIAL._stage <= this._tutorialModeThresh ? 0 : MapRoom.BRIDGE._lastView;
+            const viewIndex = MapRoom.BRIDGE.getTUTORIAL()._stage <= this._tutorialModeThresh ? 0 : MapRoom.BRIDGE._lastView;
             const viewFuncs = [this.mvBtnDown.bind(this), this.lvBtnDown.bind(this)];
             viewFuncs[viewIndex]();
         }
@@ -87,7 +90,7 @@ export class MapRoom extends old_maproom {
     }
 
     private lvBtnDown(event: MouseEvent | null = null): void {
-        if (TUTORIAL._stage < 110) {
+        if (getTUTORIAL()._stage < 110) {
             return;
         }
         this.setView(this.lv!);

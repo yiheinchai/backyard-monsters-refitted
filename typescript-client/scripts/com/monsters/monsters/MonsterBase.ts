@@ -22,30 +22,33 @@ import { BeastMode } from "./components/modifiers/BeastMode";
 import { HyperSpeed } from "./components/modifiers/HyperSpeed";
 import { MonsterDust } from "./components/modifiers/MonsterDust";
 import { CStatusEffect } from "./components/statusEffects/CStatusEffect";
-import { PATHING } from "../pathing/PATHING";
 import { RasterData } from "../rendering/RasterData";
 
-import { ATTACK } from "../../../ATTACK";
-import { BASE } from "../../../BASE";
-import { BFOUNDATION } from "../../../BFOUNDATION";
-import { BTOWER } from "../../../BTOWER";
-import { Bunker } from "../../../Bunker";
-import { CREEPS } from "../../../CREEPS";
-import { CREATURES } from "../../../CREATURES";
-import { EFFECTS } from "../../../EFFECTS";
-import { GLOBAL } from "../../../GLOBAL";
-import { GRID } from "../../../GRID";
-import { HOUSING } from "../../../HOUSING";
-import { MAP } from "../../../MAP";
-import { MONSTERBUNKER } from "../../../MONSTERBUNKER";
-import { QUESTS } from "../../../QUESTS";
-import { SOUNDS } from "../../../SOUNDS";
-import { SPECIALEVENT } from "../../../SPECIALEVENT";
-import { Targeting } from "../../../Targeting";
 
 import { TweenLite } from "gs/TweenLite";
 import { Bounce } from "gs/easing/Bounce";
 import { Sine } from "gs/easing/Sine";
+
+// Lazy imports to break circular dependency chains
+function getPATHING(): any { return require("../pathing/PATHING").PATHING; }
+function getATTACK(): any { return require("../../../ATTACK").ATTACK; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getBFOUNDATION(): any { return require("../../../BFOUNDATION").BFOUNDATION; }
+function getBTOWER(): any { return require("../../../BTOWER").BTOWER; }
+function getBunker(): any { return require("../../../Bunker").Bunker; }
+function getCREEPS(): any { return require("../../../CREEPS").CREEPS; }
+function getCREATURES(): any { return require("../../../CREATURES").CREATURES; }
+function getEFFECTS(): any { return require("../../../EFFECTS").EFFECTS; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getGRID(): any { return require("../../../GRID").GRID; }
+function getHOUSING(): any { return require("../../../HOUSING").HOUSING; }
+function getMAP(): any { return require("../../../MAP").MAP; }
+function getMONSTERBUNKER(): any { return require("../../../MONSTERBUNKER").MONSTERBUNKER; }
+function getQUESTS(): any { return require("../../../QUESTS").QUESTS; }
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+function getSPECIALEVENT(): any { return require("../../../SPECIALEVENT").SPECIALEVENT; }
+function getTargeting(): any { return require("../../../Targeting").Targeting; }
+
 
 /**
  * Base class for all monsters in the game.
@@ -173,7 +176,7 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
         this._damagePerSecond = new SecNum(0);
         this._tmpPoint = new Point(0, 0);
         this._componentTickCounter = 0;
-        this._id = GLOBAL.NextCreepID().toString();
+        this._id = getGLOBAL().NextCreepID().toString();
         this._rasterPt = new Point();
         this._shadowPt = new Point();
         this.m_filters = [];
@@ -184,7 +187,7 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
         this.addComponent(this.damageProperty, MonsterBase.k_DAMAGE_PROPERTY);
         this.attackDelayProperty = new CModifiableProperty(Number.MAX_VALUE, 0);
         this.addComponent(this.attackDelayProperty, MonsterBase.k_ATTACK_DELAY_PROPERTY);
-        this.node = Targeting.CreepCellAdd(this._tmpPoint, this._id, this);
+        this.node = getTargeting().CreepCellAdd(this._tmpPoint, this._id, this);
     }
 
     public set currentSkinOverride(value: string) {
@@ -213,11 +216,11 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
 
     protected setInitialFriendlyFlags(friendly: boolean): void {
         if (friendly) {
-            this.attackFlags = Targeting.k_TARGETS_ATTACKERS;
-            this.defenseFlags = Targeting.k_TARGETS_DEFENDERS;
+            this.attackFlags = getTargeting().k_TARGETS_ATTACKERS;
+            this.defenseFlags = getTargeting().k_TARGETS_DEFENDERS;
         } else {
-            this.attackFlags = Targeting.k_TARGETS_DEFENDERS;
-            this.defenseFlags = Targeting.k_TARGETS_ATTACKERS;
+            this.attackFlags = getTargeting().k_TARGETS_DEFENDERS;
+            this.defenseFlags = getTargeting().k_TARGETS_ATTACKERS;
         }
     }
 
@@ -260,9 +263,9 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
     public set invisible(value: boolean) {
         this.m_isInvisible = value;
         if (this.m_isInvisible) {
-            this.defenseFlags |= Targeting.k_TARGETS_INVISIBLE;
+            this.defenseFlags |= getTargeting().k_TARGETS_INVISIBLE;
         } else {
-            this.defenseFlags &= ~Targeting.k_TARGETS_INVISIBLE;
+            this.defenseFlags &= ~getTargeting().k_TARGETS_INVISIBLE;
         }
     }
 
@@ -314,7 +317,7 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
             this.healed(delta);
         }
         
-        ATTACK.damage(-delta, this, delta < 0 ? delta - originalDelta : 0);
+        getATTACK().damage(-delta, this, delta < 0 ? delta - originalDelta : 0);
         this.setHealth(this.health + delta);
         return delta;
     }
@@ -449,7 +452,7 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
     protected move(): void {}
 
     protected render(): void {
-        if (GLOBAL._catchup) return;
+        if (getGLOBAL()._catchup) return;
         
         // Rotation calculation with caching
         if (!this._lockRotation) {
@@ -495,7 +498,7 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
         // Health bar
         if (this.health < this.maxHealth) {
             const barIndex = 11 - Math.floor(11 / this.maxHealth * this.health);
-            this._graphic!.copyPixels(CREEPS._bmdHPbar, new Rectangle(0, 5 * barIndex, 17, 5), new Point(-this._graphicMC.x - CREEPS._bmdHPbar.width / 2, 6));
+            this._graphic!.copyPixels(getCREEPS()._bmdHPbar, new Rectangle(0, 5 * barIndex, 17, 5), new Point(-this._graphicMC.x - getCREEPS()._bmdHPbar.width / 2, 6));
         }
         
         this.updateRasterData();
@@ -513,10 +516,10 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
                 if (BYMConfig.instance.RENDERER_ON) {
                     this._rasterData!.visible = false;
                 }
-                EFFECTS.Dig(this.x, this.y);
-                SOUNDS.Play("dig", 0.5);
+                getEFFECTS().Dig(this.x, this.y);
+                getSOUNDS().Play("dig", 0.5);
             } else if (this._frameNumber % 5 === 0) {
-                EFFECTS.Burrow(this.x, this.y);
+                getEFFECTS().Burrow(this.x, this.y);
             }
         } else if (this._phase === 1) {
             this._phase = 0;
@@ -528,9 +531,9 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
                 this._rasterData!.visible = true;
             }
             if (this._behaviour === MonsterBase.k_sBHVR_ATTACK || this._doDefenseBurrow) {
-                EFFECTS.Dig(this.x, this.y);
+                getEFFECTS().Dig(this.x, this.y);
             }
-            SOUNDS.Play("arise", 0.5);
+            getSOUNDS().Play("arise", 0.5);
         }
     }
 
@@ -572,8 +575,8 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
         this.changeMode();
         this._attacking = false;
         if (this._movement === "burrow") {
-            EFFECTS.Dig(this.x, this.y);
-            SOUNDS.Play("dig");
+            getEFFECTS().Dig(this.x, this.y);
+            getSOUNDS().Play("dig");
         }
         this.WaypointTo(this._spawnPoint);
     }
@@ -581,15 +584,15 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
     public changeModeFeed(): void {
         this._behaviour = MonsterBase.k_sBHVR_FEED;
         this.changeMode();
-        this._targetBuilding = GLOBAL._bCage;
-        this.WaypointTo(CREATURES._guardian!._tmpPoint, null);
+        this._targetBuilding = getGLOBAL()._bCage;
+        this.WaypointTo(getCREATURES()._guardian!._tmpPoint, null);
     }
 
     public changeModeHousing(): void {
         this._behaviour = MonsterBase.k_sBHVR_HOUSING;
         this.changeMode();
-        const loc1 = GRID.ToISO(this._targetCenter!.x + Math.random() * 100 + 30, this._targetCenter!.y + Math.random() * 60 + 30, 0);
-        PATHING.GetPath(this._tmpPoint, new Rectangle(loc1.x, loc1.y, 10, 10), this.setWaypoints.bind(this), true);
+        const loc1 = getGRID().ToISO(this._targetCenter!.x + Math.random() * 100 + 30, this._targetCenter!.y + Math.random() * 60 + 30, 0);
+        getPATHING().GetPath(this._tmpPoint, new Rectangle(loc1.x, loc1.y, 10, 10), this.setWaypoints.bind(this), true);
     }
 
     public addFilter(filter: BitmapFilter): void {
@@ -612,19 +615,19 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
         
         if (this._friendly) {
             // Check friendly monster overdrives
-            if (GLOBAL._monsterOverdrive && GLOBAL._monsterOverdrive.Get() >= GLOBAL.Timestamp()) {
+            if (getGLOBAL()._monsterOverdrive && getGLOBAL()._monsterOverdrive.Get() >= getGLOBAL().Timestamp()) {
                 if (!this.damageProperty.getModifier(MonsterDust.k_damageModifier)) {
                     this.damageProperty.addModifier(MonsterDust.k_damageModifier);
                 }
                 glowColor |= MonsterDust.k_color;
             }
-            if (GLOBAL._monsterDefenseOverdrive && GLOBAL._monsterDefenseOverdrive.Get() >= GLOBAL.Timestamp()) {
+            if (getGLOBAL()._monsterDefenseOverdrive && getGLOBAL()._monsterDefenseOverdrive.Get() >= getGLOBAL().Timestamp()) {
                 if (!this.armorProperty.getModifier(BeastMode.k_armorModifier)) {
                     this.armorProperty.addModifier(BeastMode.k_armorModifier);
                 }
                 glowColor |= BeastMode.k_color;
             }
-            if (GLOBAL._monsterSpeedOverdrive && GLOBAL._monsterSpeedOverdrive.Get() >= GLOBAL.Timestamp()) {
+            if (getGLOBAL()._monsterSpeedOverdrive && getGLOBAL()._monsterSpeedOverdrive.Get() >= getGLOBAL().Timestamp()) {
                 if (!this.moveSpeedProperty.getModifier(HyperSpeed.k_moveSpeedModifier)) {
                     this.moveSpeedProperty.addModifier(HyperSpeed.k_moveSpeedModifier);
                 }
@@ -635,7 +638,7 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
             }
         } else {
             // Check attacker monster overdrives
-            if (GLOBAL._attackerMonsterOverdrive && GLOBAL._attackerMonsterOverdrive.Get() >= GLOBAL.Timestamp()) {
+            if (getGLOBAL()._attackerMonsterOverdrive && getGLOBAL()._attackerMonsterOverdrive.Get() >= getGLOBAL().Timestamp()) {
                 if (!this.damageProperty.getModifier(MonsterDust.k_damageModifier)) {
                     this.damageProperty.addModifier(MonsterDust.k_damageModifier);
                 }
@@ -660,14 +663,14 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
         if (this.isDisposable) return false;
         
         if (!this._friendly) {
-            const activeEvent: any = SPECIALEVENT.getActiveSpecialEvent();
-            if (activeEvent.active || GLOBAL._wmCreaturePowerups[this._creatureID]) {
-                if (GLOBAL._wmCreaturePowerups[this._creatureID]) return true;
-            } else if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD && 
-                       GLOBAL.attackingPlayer.m_upgrades[this._creatureID]?.powerup) {
+            const activeEvent: any = getSPECIALEVENT().getActiveSpecialEvent();
+            if (activeEvent.active || getGLOBAL()._wmCreaturePowerups[this._creatureID]) {
+                if (getGLOBAL()._wmCreaturePowerups[this._creatureID]) return true;
+            } else if (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD && 
+                       getGLOBAL().attackingPlayer.m_upgrades[this._creatureID]?.powerup) {
                 return true;
             }
-        } else if (GLOBAL.player.m_upgrades[this._creatureID]?.powerup) {
+        } else if (getGLOBAL().player.m_upgrades[this._creatureID]?.powerup) {
             return true;
         }
         return false;
@@ -677,15 +680,15 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
         if (!this.poweredUp()) return 0;
         
         if (!this._friendly) {
-            if (SPECIALEVENT.active || GLOBAL._wmCreaturePowerups[this._creatureID]) {
-                if (GLOBAL._wmCreaturePowerups[this._creatureID]) {
-                    return GLOBAL._wmCreaturePowerups[this._creatureID];
+            if (getSPECIALEVENT().active || getGLOBAL()._wmCreaturePowerups[this._creatureID]) {
+                if (getGLOBAL()._wmCreaturePowerups[this._creatureID]) {
+                    return getGLOBAL()._wmCreaturePowerups[this._creatureID];
                 }
-            } else if (GLOBAL.attackingPlayer.m_upgrades[this._creatureID]?.powerup) {
-                return GLOBAL.attackingPlayer.m_upgrades[this._creatureID].powerup;
+            } else if (getGLOBAL().attackingPlayer.m_upgrades[this._creatureID]?.powerup) {
+                return getGLOBAL().attackingPlayer.m_upgrades[this._creatureID].powerup;
             }
-        } else if (GLOBAL.player.m_upgrades[this._creatureID]?.powerup) {
-            return GLOBAL.player.m_upgrades[this._creatureID].powerup;
+        } else if (getGLOBAL().player.m_upgrades[this._creatureID]?.powerup) {
+            return getGLOBAL().player.m_upgrades[this._creatureID].powerup;
         }
         return 0;
     }
@@ -715,23 +718,23 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
 
     public findHuntingTargets(): void {
         const targets: any[] = [];
-        const allMonsters = CREATURES._creatures;
+        const allMonsters = getCREATURES()._creatures;
         
         for (const id in allMonsters) {
             const monster = allMonsters[id] as MonsterBase;
             if (monster._behaviour === MonsterBase.k_sBHVR_DEFEND || monster._behaviour === MonsterBase.k_sBHVR_BUNKER) {
                 targets.push({
                     creep: monster,
-                    dist: GLOBAL.QuickDistance(monster._tmpPoint, this._tmpPoint)
+                    dist: getGLOBAL().QuickDistance(monster._tmpPoint, this._tmpPoint)
                 });
                 if (targets.length >= 10) break;
             }
         }
         
-        if (CREATURES._guardian && CREATURES._guardian.health > 0) {
+        if (getCREATURES()._guardian && getCREATURES()._guardian.health > 0) {
             targets.push({
-                creep: CREATURES._guardian,
-                dist: GLOBAL.QuickDistance(CREATURES._guardian._tmpPoint, this._tmpPoint)
+                creep: getCREATURES()._guardian,
+                dist: getGLOBAL().QuickDistance(getCREATURES()._guardian._tmpPoint, this._tmpPoint)
             });
         }
         
@@ -759,7 +762,7 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
         const buildings: any[] = [];
         this._looking = true;
         
-        const loc8 = PATHING.FromISO(this._tmpPoint);
+        const loc8 = getPATHING().FromISO(this._tmpPoint);
         
         // Build target list based on target group
         // ... implementation follows AS3 logic for different target groups
@@ -785,15 +788,15 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
         }
         
         if (building) {
-            PATHING.GetPath(this._tmpPoint, new Rectangle(Math.floor(target.x), Math.floor(target.y), building._footprint[0].width, building._footprint[0].height), this.setWaypoints.bind(this), ignorePath, building);
+            getPATHING().GetPath(this._tmpPoint, new Rectangle(Math.floor(target.x), Math.floor(target.y), building._footprint[0].width, building._footprint[0].height), this.setWaypoints.bind(this), ignorePath, building);
         } else {
-            PATHING.GetPath(this._tmpPoint, new Rectangle(Math.floor(target.x), Math.floor(target.y), 10, 10), this.setWaypoints.bind(this), ignorePath);
+            getPATHING().GetPath(this._tmpPoint, new Rectangle(Math.floor(target.x), Math.floor(target.y), 10, 10), this.setWaypoints.bind(this), ignorePath);
         }
     }
 
     public die(): void {
         if (this.dead) return;
-        Targeting.CreepCellDelete(this._id, this.node, false);
+        getTargeting().CreepCellDelete(this._id, this.node, false);
         this._dying = true;
         
         if (!this.juiceReady && (this._movement === "fly" || this._movement === "fly_low")) {
@@ -808,10 +811,10 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
     }
 
     private dieFinish(): void {
-        SOUNDS.Play("monsterland" + (1 + Math.floor(Math.random() * 3)));
+        getSOUNDS().Play("monsterland" + (1 + Math.floor(Math.random() * 3)));
         if (this.health <= 0) {
             this.dispatchEvent(new Event(MonsterBase.k_DEATH_EVENT));
-            ++QUESTS._global.kills;
+            ++getQUESTS()._global.kills;
             this.deathSplat();
         }
         this.removeAllComponents();
@@ -819,12 +822,12 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
         this._dead = true;
         
         if (!this.isDisposable && this._creatureID.substr(0, 1) !== "G") {
-            this.node = Targeting.CreepCellAdd(this._tmpPoint, this._id, this);
+            this.node = getTargeting().CreepCellAdd(this._tmpPoint, this._id, this);
         }
     }
 
     public corpseDeath(): void {
-        Targeting.CreepCellDelete(this._id, this.node, true);
+        getTargeting().CreepCellDelete(this._id, this.node, true);
     }
 
     private removeAllComponents(): void {
@@ -837,8 +840,8 @@ export class MonsterBase extends GameObject implements IAttackable, IComponentOw
     }
 
     public deathSplat(): void {
-        SOUNDS.Play("splat" + (Math.floor(Math.random() * 3) + 1));
-        EFFECTS.CreepSplat(this._creatureID, this._tmpPoint.x, this._tmpPoint.y);
+        getSOUNDS().Play("splat" + (Math.floor(Math.random() * 3) + 1));
+        getEFFECTS().CreepSplat(this._creatureID, this._tmpPoint.x, this._tmpPoint.y);
     }
 
     protected flyerJuice(): void {

@@ -2,7 +2,10 @@ import Bitmap from 'openfl/display/Bitmap';
 import BitmapData from 'openfl/display/BitmapData';
 import { ImageCache } from './com/monsters/display/ImageCache';
 import { SpecialInfo_CLIP } from './SpecialInfo_CLIP';
-import { GLOBAL } from './GLOBAL';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+
 
 export class SpecialRewardInfo extends SpecialInfo_CLIP {
     constructor() {
@@ -17,7 +20,7 @@ export class SpecialRewardInfo extends SpecialInfo_CLIP {
         };
 
         if (quantity) {
-            this.tName.htmlText = "<b>" + name + ": " + GLOBAL.FormatNumber(quantity) + "</b>";
+            this.tName.htmlText = "<b>" + name + ": " + getGLOBAL().FormatNumber(quantity) + "</b>";
         } else {
             this.tName.htmlText = "<b>" + name + "</b>";
         }

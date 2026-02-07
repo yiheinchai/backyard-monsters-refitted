@@ -1,8 +1,11 @@
 import { Reward } from "../Reward";
 
-import { GLOBAL } from "../../../../GLOBAL";
-import { BASE } from "../../../../BASE";
-import { CREATURELOCKER } from "../../../../CREATURELOCKER";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../GLOBAL").GLOBAL; }
+function getBASE(): any { return require("../../../../BASE").BASE; }
+function getCREATURELOCKER(): any { return require("../../../../CREATURELOCKER").CREATURELOCKER; }
+
+
 
 /**
  * Unblock monster award - reward that unblocks a specific monster.
@@ -16,14 +19,14 @@ export class UnblockMonsterAward extends Reward {
     }
 
     public override canBeApplied(): boolean {
-        return GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && !BASE.isInfernoMainYardOrOutpost;
+        return getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && !getBASE().isInfernoMainYardOrOutpost;
     }
 
     protected override onApplication(): void {
-        CREATURELOCKER._creatures[this._monsterID].blocked = false;
+        getCREATURELOCKER()._creatures[this._monsterID].blocked = false;
     }
 
     public override reset(): void {
-        CREATURELOCKER._creatures[this._monsterID].blocked = true;
+        getCREATURELOCKER()._creatures[this._monsterID].blocked = true;
     }
 }

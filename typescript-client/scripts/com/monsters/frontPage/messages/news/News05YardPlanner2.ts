@@ -2,10 +2,13 @@ import MouseEvent from "openfl/events/MouseEvent";
 
 import { KeywordMessage } from "../KeywordMessage";
 
-import { GLOBAL } from "../../../../../GLOBAL";
-import { POPUPS } from "../../../../../POPUPS";
-import { PLANNER } from "../../../../../PLANNER";
 import { Button } from "../../../../../Button";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+function getPOPUPS(): any { return require("../../../../../POPUPS").POPUPS; }
+function getPLANNER(): any { return require("../../../../../PLANNER").PLANNER; }
+
 
 /**
  * News 05 - Yard Planner 2 news message.
@@ -17,7 +20,7 @@ export class News05YardPlanner2 extends KeywordMessage {
 
     public override setupButton(button: Button): Button {
         button.Highlight = true;
-        if (GLOBAL._bYardPlanner) {
+        if (getGLOBAL()._bYardPlanner) {
             button.SetupKey("btn_open");
             button.addEventListener(MouseEvent.CLICK, this.openYardPlanner.bind(this), false, 0, true);
         } else {
@@ -28,16 +31,16 @@ export class News05YardPlanner2 extends KeywordMessage {
     }
 
     protected buildYardPlanner(event: MouseEvent): void {
-        this.buyBuilding(PLANNER.TYPE);
+        this.buyBuilding(getPLANNER().TYPE);
     }
 
     protected openYardPlanner(event: MouseEvent): void {
-        POPUPS.Next();
-        PLANNER.Show();
+        getPOPUPS().Next();
+        getPLANNER().Show();
     }
 
     public override get areRequirementsMet(): boolean {
-        if (GLOBAL._flags.yp_version === 2) {
+        if (getGLOBAL()._flags.yp_version === 2) {
             return true;
         }
         return false;

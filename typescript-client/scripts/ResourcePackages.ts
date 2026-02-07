@@ -1,10 +1,13 @@
 import Point from 'openfl/geom/Point';
 import { TweenLite, Circ } from './gs/TweenLite';
-import { BFOUNDATION } from './BFOUNDATION';
-import { GLOBAL } from './GLOBAL';
-import { MAP } from './MAP';
 import { ResourcePackage } from './ResourcePackage';
-import { TUTORIAL } from './TUTORIAL';
+
+// Lazy imports to break circular dependency chains
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+
 
 /**
  * ResourcePackages - Resource package animation manager
@@ -19,8 +22,8 @@ export class ResourcePackages {
     }
 
     public static Clear(): void {
-        while (Boolean(MAP._RESOURCES) && MAP._RESOURCES.numChildren > 0) {
-            MAP._RESOURCES.removeChildAt(0);
+        while (Boolean(getMAP()._RESOURCES) && getMAP()._RESOURCES.numChildren > 0) {
+            getMAP()._RESOURCES.removeChildAt(0);
         }
         ResourcePackages._packages = {};
         ResourcePackages._packageCount = 0;
@@ -32,11 +35,11 @@ export class ResourcePackages {
         let _loc6_: BFOUNDATION | null = null;
         let _loc7_: number = 0;
         
-        if (GLOBAL._render) {
+        if (getGLOBAL()._render) {
             _loc7_ = 0;
             if (param4) {
-                if (GLOBAL.townHall) {
-                    _loc5_ = GLOBAL.townHall;
+                if (getGLOBAL().townHall) {
+                    _loc5_ = getGLOBAL().townHall;
                     if (_loc6_ == _loc5_) {
                         _loc7_ = 50;
                     }
@@ -47,10 +50,10 @@ export class ResourcePackages {
                 _loc6_ = param2;
             } else {
                 _loc5_ = param2;
-                if (!GLOBAL.townHall) {
+                if (!getGLOBAL().townHall) {
                     return;
                 }
-                _loc6_ = GLOBAL.townHall;
+                _loc6_ = getGLOBAL().townHall;
             }
             
             let _loc12_: number = 1;
@@ -90,7 +93,7 @@ export class ResourcePackages {
                 _loc12_ = 1;
             }
             
-            if (TUTORIAL._stage < 200) {
+            if (getTUTORIAL()._stage < 200) {
                 _loc12_ = 10;
             }
             
@@ -118,14 +121,14 @@ export class ResourcePackages {
         
         const _loc9_: Point = new Point(param1._mc.x + _loc5_.x, param1._mc.y + _loc5_.y);
         const _loc10_: Point = new Point(param2._mc.x + _loc7_.x, param2._mc.y + _loc7_.y);
-        const _loc11_: ResourcePackage = MAP._RESOURCES.addChild(new ResourcePackage(_loc9_, _loc10_, _loc6_, _loc8_, param3, ResourcePackages._packageCount, param2, param4 / 6)) as ResourcePackage;
+        const _loc11_: ResourcePackage = getMAP()._RESOURCES.addChild(new ResourcePackage(_loc9_, _loc10_, _loc6_, _loc8_, param3, ResourcePackages._packageCount, param2, param4 / 6)) as ResourcePackage;
         ResourcePackages._packages["p" + ResourcePackages._packageCount] = _loc11_;
         ++ResourcePackages._packageCount;
     }
 
     public static Remove(param1: any): void {
         if (Boolean(ResourcePackages._packages["p" + param1]) && Boolean(ResourcePackages._packages["p" + param1].parent)) {
-            MAP._RESOURCES.removeChild(ResourcePackages._packages["p" + param1]);
+            getMAP()._RESOURCES.removeChild(ResourcePackages._packages["p" + param1]);
             delete ResourcePackages._packages["p" + param1];
         }
     }

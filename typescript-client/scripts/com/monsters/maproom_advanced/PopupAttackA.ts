@@ -14,9 +14,7 @@ import { ImageCache } from "../display/ImageCache";
 import { ScrollSet } from "../display/ScrollSet";
 import { ResourceBombs } from "../effects/ResourceBombs";
 import { EnumYardType } from "../enums/EnumYardType";
-import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { ChampionBase } from "../monsters/champions/ChampionBase";
-import { SiegeWeapons } from "../siege/SiegeWeapons";
 import { SiegeWeapon } from "../siege/weapons/SiegeWeapon";
 import { CellData } from "./CellData";
 import { MapRoom } from "./MapRoom";
@@ -24,15 +22,20 @@ import { MapRoomCell } from "./MapRoomCell";
 import { PopupAttackA_CLIP } from "../../../PopupAttackA_CLIP";
 import { PopupInfoMonster } from "./PopupInfoMonster";
 
-import { ATTACK } from "../../../ATTACK";
-import { BASE } from "../../../BASE";
 import { bubblepopup3 } from "../../../bubblepopup3";
 import { CATAPULTITEM } from "../../../CATAPULTITEM";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGGER } from "../../../LOGGER";
-import { POPUPS } from "../../../POPUPS";
 import { POWERUPS } from "../../../POWERUPS";
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../maproom_manager/MapRoomManager").MapRoomManager; }
+function getSiegeWeapons(): any { return require("../siege/SiegeWeapons").SiegeWeapons; }
+function getATTACK(): any { return require("../../../ATTACK").ATTACK; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+function getPOPUPS(): any { return require("../../../POPUPS").POPUPS; }
+
 
 /**
  * PopupAttackA - attack popup for map room.
@@ -67,8 +70,8 @@ export class PopupAttackA extends PopupAttackA_CLIP {
         this.bCancel.SetupKey("btn_cancel");
         this.bCancel.addEventListener(MouseEvent.CLICK, this.Hide.bind(this));
         this.bCancel.buttonMode = true;
-        this.tCatapult.htmlText = "<b>" + KEYS.Get("newmap_catapultrange") + "</b>";
-        this.tMonsters.htmlText = "<b>" + KEYS.Get("newmap_monstersrange") + "</b>";
+        this.tCatapult.htmlText = "<b>" + getKEYS().Get("newmap_catapultrange") + "</b>";
+        this.tMonsters.htmlText = "<b>" + getKEYS().Get("newmap_monstersrange") + "</b>";
     }
 
     public Hide(event: MouseEvent | null = null): void {
@@ -82,13 +85,13 @@ export class PopupAttackA extends PopupAttackA_CLIP {
     public Setup(cell: MapRoomCell): void {
         this._cell = cell;
         if (this._cell._base === 3) {
-            this.tAttackText.htmlText = "<b>" + KEYS.Get("newmap_att1", { "v1": this._cell._name }) + "</b>";
+            this.tAttackText.htmlText = "<b>" + getKEYS().Get("newmap_att1", { "v1": this._cell._name }) + "</b>";
         } else if (this._cell._base === 2) {
-            this.tAttackText.htmlText = "<b>" + KEYS.Get("newmap_att2", { "v1": this._cell._name }) + "</b>";
+            this.tAttackText.htmlText = "<b>" + getKEYS().Get("newmap_att2", { "v1": this._cell._name }) + "</b>";
         } else if (this._cell._base === 1) {
-            this.tAttackText.htmlText = "<b>" + KEYS.Get("newmap_att3", { "v1": this._cell._name }) + "</b>";
+            this.tAttackText.htmlText = "<b>" + getKEYS().Get("newmap_att3", { "v1": this._cell._name }) + "</b>";
         } else {
-            LOGGER.Log("err", "Cell at (" + this._cell.X + "," + this._cell.Y + ") has invalid base type " + this._cell._base + " when being attacked");
+            getLOGGER().Log("err", "Cell at (" + this._cell.X + "," + this._cell.Y + ") has invalid base type " + this._cell._base + " when being attacked");
             this.tAttackText.htmlText = "<b>Attack</b>";
         }
         this._enabled = false;
@@ -113,42 +116,42 @@ export class PopupAttackA extends PopupAttackA_CLIP {
             return;
         }
         MapRoom._mc.HideAttack();
-        if (!this._cell!._protected && !(this._cell!._truce && this._cell!._truce > GLOBAL.Timestamp()) && this._monstersInRange) {
+        if (!this._cell!._protected && !(this._cell!._truce && this._cell!._truce > getGLOBAL().Timestamp()) && this._monstersInRange) {
             if (this._protectedInRange) {
-                GLOBAL.Message(KEYS.Get("newmap_attack"), KEYS.Get("confirm_btn"), this.DoAttack.bind(this));
+                getGLOBAL().Message(getKEYS().Get("newmap_attack"), getKEYS().Get("confirm_btn"), this.DoAttack.bind(this));
                 return;
             }
-            GLOBAL._attackerMapResources = this._attackResources;
-            GLOBAL._attackerCellsInRange = this._cellsInRange;
-            MapRoomManager.instance.Hide();
+            getGLOBAL()._attackerMapResources = this._attackResources;
+            getGLOBAL()._attackerCellsInRange = this._cellsInRange;
+            getMapRoomManager().instance.Hide();
             MapRoom.ClearCells();
-            GLOBAL._currentCell = this._cell;
+            getGLOBAL()._currentCell = this._cell;
             if (this._cell!._base === 1) {
-                BASE.LoadBase(null, 0, this._cell!._baseID, "wmattack", false, EnumYardType.MAIN_YARD);
+                getBASE().LoadBase(null, 0, this._cell!._baseID, "wmattack", false, EnumYardType.MAIN_YARD);
             } else {
                 const baseType = this._cell!._base === 3 ? EnumYardType.OUTPOST : EnumYardType.MAIN_YARD;
-                BASE.LoadBase(null, 0, this._cell!._baseID, GLOBAL.e_BASE_MODE.ATTACK, false, baseType);
+                getBASE().LoadBase(null, 0, this._cell!._baseID, getGLOBAL().e_BASE_MODE.ATTACK, false, baseType);
             }
         } else if (this._cell!._protected) {
             if (!MapRoom._open) {
-                POPUPS.Next();
+                getPOPUPS().Next();
             }
-            GLOBAL.Message(KEYS.Get("newmap_dp"));
-        } else if (Boolean(this._cell!._truce) && this._cell!._truce > GLOBAL.Timestamp()) {
+            getGLOBAL().Message(getKEYS().Get("newmap_dp"));
+        } else if (Boolean(this._cell!._truce) && this._cell!._truce > getGLOBAL().Timestamp()) {
             if (!MapRoom._open) {
-                POPUPS.Next();
+                getPOPUPS().Next();
             }
-            GLOBAL.Message(KEYS.Get("newmap_truce"));
+            getGLOBAL().Message(getKEYS().Get("newmap_truce"));
         } else if (!MapRoom._flingerInRange) {
             if (!MapRoom._open) {
-                POPUPS.Next();
+                getPOPUPS().Next();
             }
-            GLOBAL.Message(KEYS.Get("newmap_range"));
+            getGLOBAL().Message(getKEYS().Get("newmap_range"));
         } else {
             if (!MapRoom._open) {
-                POPUPS.Next();
+                getPOPUPS().Next();
             }
-            GLOBAL.Message(KEYS.Get("newmap_nomonsters"));
+            getGLOBAL().Message(getKEYS().Get("newmap_nomonsters"));
         }
     }
 
@@ -171,22 +174,22 @@ export class PopupAttackA extends PopupAttackA_CLIP {
                 }
             }
         } else {
-            this._cellsInRange = GLOBAL._attackerCellsInRange;
+            this._cellsInRange = getGLOBAL()._attackerCellsInRange;
         }
         if (!this._enabled) {
             this._monstersInRange = false;
             this._protectedInRange = false;
             MapRoom._flingerInRange = false;
             this._attackResources = {
-                "r1": GLOBAL._resources.r1.Get(),
-                "r2": GLOBAL._resources.r2.Get(),
-                "r3": GLOBAL._resources.r3.Get(),
+                "r1": getGLOBAL()._resources.r1.Get(),
+                "r2": getGLOBAL()._resources.r2.Get(),
+                "r3": getGLOBAL()._resources.r3.Get(),
                 "catapult": new SecNum(0),
                 "flinger": new SecNum(0)
             };
             let mapRoomCell: MapRoomCell | null = null;
-            if (!MapRoomManager.instance.isInMapRoom3) {
-                ATTACK._curCreaturesAvailable = {} as any;
+            if (!getMapRoomManager().instance.isInMapRoom3) {
+                getATTACK()._curCreaturesAvailable = {} as any;
                 for (const cellData of this._cellsInRange) {
                     mapRoomCell = cellData["cell"] as MapRoomCell;
                     const cellRange = cellData["range"] as number;
@@ -198,10 +201,10 @@ export class PopupAttackA extends PopupAttackA_CLIP {
                                 if (monsterQuantity > 0 && Boolean(mapRoomCell._protected)) {
                                     this._protectedInRange = true;
                                 }
-                                if (ATTACK._curCreaturesAvailable[monsterType]) {
-                                    ATTACK._curCreaturesAvailable[monsterType] += monsterQuantity;
+                                if (getATTACK()._curCreaturesAvailable[monsterType]) {
+                                    getATTACK()._curCreaturesAvailable[monsterType] += monsterQuantity;
                                 } else {
-                                    ATTACK._curCreaturesAvailable[monsterType] = monsterQuantity;
+                                    getATTACK()._curCreaturesAvailable[monsterType] = monsterQuantity;
                                 }
                             }
                             MapRoom._flingerInRange = true;
@@ -218,11 +221,11 @@ export class PopupAttackA extends PopupAttackA_CLIP {
                 }
             }
             if (MapRoom._flingerInRange) {
-                if (GLOBAL._playerCatapultLevel) {
-                    this._attackResources.catapult.Set(GLOBAL._playerCatapultLevel.Get());
+                if (getGLOBAL()._playerCatapultLevel) {
+                    this._attackResources.catapult.Set(getGLOBAL()._playerCatapultLevel.Get());
                 }
-                for (let guardianIndex = 0; guardianIndex < GLOBAL._playerGuardianData.length; guardianIndex++) {
-                    if (GLOBAL._playerGuardianData[guardianIndex] && GLOBAL._playerGuardianData[guardianIndex].hp.Get() > 0 && GLOBAL._playerGuardianData[guardianIndex].status === ChampionBase.k_CHAMPION_STATUS_NORMAL) {
+                for (let guardianIndex = 0; guardianIndex < getGLOBAL()._playerGuardianData.length; guardianIndex++) {
+                    if (getGLOBAL()._playerGuardianData[guardianIndex] && getGLOBAL()._playerGuardianData[guardianIndex].hp.Get() > 0 && getGLOBAL()._playerGuardianData[guardianIndex].status === ChampionBase.k_CHAMPION_STATUS_NORMAL) {
                         this._monstersInRange = true;
                     }
                 }
@@ -234,14 +237,14 @@ export class PopupAttackA extends PopupAttackA_CLIP {
                 let xPos = 0;
                 let yPos = 0;
                 let isNormalChampion = false;
-                for (let guardianDataIndex = 0; guardianDataIndex < GLOBAL._playerGuardianData.length; guardianDataIndex++) {
-                    const guardianData = GLOBAL._playerGuardianData[guardianDataIndex];
+                for (let guardianDataIndex = 0; guardianDataIndex < getGLOBAL()._playerGuardianData.length; guardianDataIndex++) {
+                    const guardianData = getGLOBAL()._playerGuardianData[guardianDataIndex];
                     if (guardianData && guardianData.hp.Get() > 0 && guardianData.status === ChampionBase.k_CHAMPION_STATUS_NORMAL && (!isNormalChampion || guardianData.t === 5)) {
                         if (guardianData.t !== 5) {
                             isNormalChampion = true;
                         }
                         const attackingMonsterInfo = new PopupInfoMonster();
-                        attackingMonsterInfo.Setup(xPos * 125, yPos * 30, "G" + GLOBAL._playerGuardianData[guardianDataIndex].t + "_L" + GLOBAL._playerGuardianData[guardianDataIndex].l.Get(), 1);
+                        attackingMonsterInfo.Setup(xPos * 125, yPos * 30, "G" + getGLOBAL()._playerGuardianData[guardianDataIndex].t + "_L" + getGLOBAL()._playerGuardianData[guardianDataIndex].l.Get(), 1);
                         this.mMonsters.addChild(attackingMonsterInfo);
                         xPos += 1;
                         if (xPos === 3) {
@@ -249,13 +252,13 @@ export class PopupAttackA extends PopupAttackA_CLIP {
                             yPos += 1;
                         }
                     } else if (guardianData && guardianData.hp.Get() > 0 && guardianData.status === ChampionBase.k_CHAMPION_STATUS_NORMAL && isNormalChampion && guardianData.t !== 5) {
-                        LOGGER.Log("log", "User has capacity to initialize combat with more than one normal champ.");
+                        getLOGGER().Log("log", "User has capacity to initialize combat with more than one normal champ.");
                     }
                 }
-                if (!MapRoomManager.instance.isInMapRoom3) {
-                    for (const creepType in ATTACK._curCreaturesAvailable) {
+                if (!getMapRoomManager().instance.isInMapRoom3) {
+                    for (const creepType in getATTACK()._curCreaturesAvailable) {
                         const popupInfoMonster = new PopupInfoMonster();
-                        popupInfoMonster.Setup(xPos * 125, yPos * 30, creepType, ATTACK._curCreaturesAvailable[creepType]);
+                        popupInfoMonster.Setup(xPos * 125, yPos * 30, creepType, getATTACK()._curCreaturesAvailable[creepType]);
                         xPos += 1;
                         this.mMonsters.addChild(popupInfoMonster);
                         if (xPos === 3) {
@@ -264,12 +267,12 @@ export class PopupAttackA extends PopupAttackA_CLIP {
                         }
                     }
                 } else {
-                    const attackingPlayerMonsterCount = GLOBAL.attackingPlayer.monsterList.length;
+                    const attackingPlayerMonsterCount = getGLOBAL().attackingPlayer.monsterList.length;
                     for (let i = 0; i < attackingPlayerMonsterCount; i++) {
-                        const healthyCreepCount = GLOBAL.attackingPlayer.monsterList[i].numHealthyHousedCreeps;
+                        const healthyCreepCount = getGLOBAL().attackingPlayer.monsterList[i].numHealthyHousedCreeps;
                         if (healthyCreepCount) {
                             const popupInfoMonster = new PopupInfoMonster();
-                            popupInfoMonster.Setup(xPos * 125, yPos * 30, GLOBAL.attackingPlayer.monsterList[i].m_creatureID, healthyCreepCount);
+                            popupInfoMonster.Setup(xPos * 125, yPos * 30, getGLOBAL().attackingPlayer.monsterList[i].m_creatureID, healthyCreepCount);
                             xPos += 1;
                             this.mMonsters.addChild(popupInfoMonster);
                             if (xPos === 3) {
@@ -342,7 +345,7 @@ export class PopupAttackA extends PopupAttackA_CLIP {
             catapultItem.x = 130;
             catapultItem.y = 0;
             this._mcResources.addChild(catapultItem);
-            const siegeWeapon = SiegeWeapons.availableWeapon;
+            const siegeWeapon = getSiegeWeapons().availableWeapon;
             if (Boolean(siegeWeapon) && MapRoom._flingerInRange) {
                 catapultItem = new CATAPULTITEM();
                 catapultItem._props = siegeWeapon;
@@ -413,7 +416,7 @@ export class PopupAttackA extends PopupAttackA_CLIP {
             this._profilePic = new Loader();
             this._profilePic.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, LoadImageError, false, 0, true);
             this._profilePic.contentLoaderInfo.addEventListener(Event.COMPLETE, onImageLoad);
-            if (Boolean(!GLOBAL._flags.viximo) && Boolean(this._cell!._pic_square)) {
+            if (Boolean(!getGLOBAL()._flags.viximo) && Boolean(this._cell!._pic_square)) {
                 this._profilePic.load(new URLRequest(this._cell!._pic_square));
             } else {
                 this._profilePic.load(new URLRequest("http://graph.facebook.com/" + this._cell!._facebookID + "/picture"));

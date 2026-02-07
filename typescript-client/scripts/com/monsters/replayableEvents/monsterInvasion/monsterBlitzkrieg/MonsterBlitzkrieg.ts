@@ -12,7 +12,10 @@ import { RewardLibrary } from "../../../rewarding/RewardLibrary";
 import { UnblockSlimeattikusReward } from "../../../rewarding/rewards/slimeattikus/UnblockSlimeattikusReward";
 import { UnlockSlimeattikusReward } from "../../../rewarding/rewards/slimeattikus/UnlockSlimeattikusReward";
 
-import { GLOBAL } from "../../../../../GLOBAL";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+
+
 
 /**
  * Monster Blitzkrieg - monster invasion event with wave-based defense.
@@ -59,7 +62,7 @@ export class MonsterBlitzkrieg extends MonsterInvasion {
     }
 
     public override doesQualify(): boolean {
-        const townHallLevel: number = GLOBAL.townHall._lvl.Get();
+        const townHallLevel: number = getGLOBAL().townHall._lvl.Get();
         return townHallLevel >= 3 && townHallLevel <= 4;
     }
 
@@ -68,7 +71,7 @@ export class MonsterBlitzkrieg extends MonsterInvasion {
     }
 
     public doesAutomaticalyGetReward(): boolean {
-        return Boolean(GLOBAL.townHall) && GLOBAL.townHall._lvl.Get() >= 5 && !this.startDate;
+        return Boolean(getGLOBAL().townHall) && getGLOBAL().townHall._lvl.Get() >= 5 && !this.startDate;
     }
 
     protected override onImport(): void {

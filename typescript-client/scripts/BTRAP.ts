@@ -1,15 +1,18 @@
 import Point from 'openfl/geom/Point';
 import { BYMConfig } from './com/monsters/configs/BYMConfig';
-import { MonsterBase } from './com/monsters/monsters/MonsterBase';
 import { RasterData } from './com/monsters/rendering/RasterData';
 import { BFOUNDATION } from './BFOUNDATION';
-import { ATTACK } from './ATTACK';
-import { EFFECTS } from './EFFECTS';
-import { GIBLETS } from './GIBLETS';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { SOUNDS } from './SOUNDS';
-import { Targeting } from './Targeting';
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getEFFECTS(): any { return require("./EFFECTS").EFFECTS; }
+function getGIBLETS(): any { return require("./GIBLETS").GIBLETS; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getTargeting(): any { return require("./Targeting").Targeting; }
+
 
 /**
  * BTRAP - Trap building class
@@ -28,20 +31,20 @@ export class BTRAP extends BFOUNDATION {
         this._fired = false;
         this._retarget = 0;
         this._range = 20;
-        this.attackFlags = Targeting.getOldStyleTargets(-1);
+        this.attackFlags = getTargeting().getOldStyleTargets(-1);
     }
 
     public override SetProps(): void {
         super.SetProps();
         this.damageProperty.value = this._buildingProps.damage[0];
-        if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD) {
             this._mc!.visible = false;
             this._mcBase!.visible = false;
         }
     }
 
     protected override updateRasterData(): void {
-        if (GLOBAL.mode !== GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode !== getGLOBAL().e_BASE_MODE.BUILD) {
             this._mc!.visible = false;
             this._mcBase!.visible = false;
         }
@@ -63,7 +66,7 @@ export class BTRAP extends BFOUNDATION {
     }
 
     public FindTargets(): void {
-        this.creeps = Targeting.getCreepsInRange(this._range, this._position!, this.attackFlags);
+        this.creeps = getTargeting().getCreepsInRange(this._range, this._position!, this.attackFlags);
         this._hasTargets = false;
         this._targetCreeps = [];
         
@@ -83,7 +86,7 @@ export class BTRAP extends BFOUNDATION {
     }
 
     public Explode(): void {
-        const targets: any[] = Targeting.getCreepsInRange(
+        const targets: any[] = getTargeting().getCreepsInRange(
             this._size!,
             new Point(this._mc!.x, this._mc!.y),
             this.attackFlags
@@ -101,7 +104,7 @@ export class BTRAP extends BFOUNDATION {
                 creep.modifyHealth(-(this.damage / this._buildingProps.size * (this._buildingProps.size - dist * 0.5)));
                 if (creep.health <= 0) {
                     killCount++;
-                    GIBLETS.Create(new Point(this._mc!.x, this._mc!.y + 3), 0.8, 75, 2);
+                    getGIBLETS().Create(new Point(this._mc!.x, this._mc!.y + 3), 0.8, 75, 2);
                 }
             }
         }
@@ -109,23 +112,23 @@ export class BTRAP extends BFOUNDATION {
         if (hitCount > 0) {
             this._fired = true;
             if (killCount === hitCount) {
-                ATTACK.Log("trap" + this._id, `<font color="#FF0000">${KEYS.Get("attack_log_trapkilled", {
-                    v1: KEYS.Get(this._buildingProps.name),
+                getATTACK().Log("trap" + this._id, `<font color="#FF0000">${getKEYS().Get("attack_log_trapkilled", {
+                    v1: getKEYS().Get(this._buildingProps.name),
                     v2: killCount
                 })}</font>`);
             } else if (killCount > 0) {
-                ATTACK.Log("trap" + this._id, `<font color="#FF0000">${KEYS.Get("attack_log_trapdamagedkilled", {
-                    v1: KEYS.Get(this._buildingProps.name),
+                getATTACK().Log("trap" + this._id, `<font color="#FF0000">${getKEYS().Get("attack_log_trapdamagedkilled", {
+                    v1: getKEYS().Get(this._buildingProps.name),
                     v2: hitCount,
                     v3: killCount
                 })}</font>`);
             } else {
-                ATTACK.Log("trap" + this._id, `<font color="#FF0000">${KEYS.Get("attack_log_trapdamaged", {
-                    v1: KEYS.Get(this._buildingProps.name),
+                getATTACK().Log("trap" + this._id, `<font color="#FF0000">${getKEYS().Get("attack_log_trapdamaged", {
+                    v1: getKEYS().Get(this._buildingProps.name),
                     v2: hitCount
                 })}</font>`);
             }
-            EFFECTS.Scorch(new Point(this._mc!.x, this._mc!.y + 5));
+            getEFFECTS().Scorch(new Point(this._mc!.x, this._mc!.y + 5));
         }
         
         this._hasTargets = false;
@@ -141,9 +144,9 @@ export class BTRAP extends BFOUNDATION {
         }
         
         this.setHealth(0);
-        SOUNDS.Play("trap");
+        getSOUNDS().Play("trap");
         
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
             this.RecycleC();
         }
     }

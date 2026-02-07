@@ -1,6 +1,9 @@
 import Event from "openfl/events/Event";
 
-import { MonsterBase } from "../monsters/MonsterBase";
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../monsters/MonsterBase").MonsterBase; }
+
+
 
 /**
  * Event dispatched when a creep/monster is spawned.

@@ -7,7 +7,10 @@ import { MapRoom3AssetCache } from "../MapRoom3AssetCache";
 import { Bookmark } from "./Bookmark";
 import { MapRoom3BookmarkDisplay } from "../../../../MapRoom3BookmarkDisplay";
 
-import { KEYS } from "../../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+
+
 
 /**
  * Bookmark display - displays a single bookmark in the map room 3.
@@ -29,7 +32,7 @@ export class BookmarkDisplay extends MapRoom3BookmarkDisplay {
         this.m_DamageBarIcon.y = this.m_ThumbnailIcon.height - damageBarData.height;
         this.imageHolder.addChild(this.m_DamageBarIcon);
         this.nameText.htmlText = "<b>" + this.m_BookmarkToDisplay.displayName + "</b>";
-        this.descriptionText.htmlText = KEYS.Get("mr3_bookmark_coordinates_info", {
+        this.descriptionText.htmlText = getKEYS().Get("mr3_bookmark_coordinates_info", {
             "v1": bookmark.cellX,
             "v2": bookmark.cellY
         });

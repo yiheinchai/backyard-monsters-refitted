@@ -1,8 +1,11 @@
 import { KeywordMessage } from "../../KeywordMessage";
 
-import { GLOBAL } from "../../../../../../GLOBAL";
-import { KEYS } from "../../../../../../KEYS";
-import { POPUPS } from "../../../../../../POPUPS";
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../../../../KEYS").KEYS; }
+function getPOPUPS(): any { return require("../../../../../../POPUPS").POPUPS; }
+
+
 
 /**
  * Monster Blitzkrieg reward message - shown when player gets reward.
@@ -18,12 +21,12 @@ export class MonsterBlitzkriegRewardMessage extends KeywordMessage {
     }
 
     protected override onButtonClick(): void {
-        GLOBAL.CallJS("sendFeed", [
+        getGLOBAL().CallJS("sendFeed", [
             "event2-reward",
-            KEYS.Get("event2reward_streamtitle"),
-            KEYS.Get("event2reward_streambody"),
+            getKEYS().Get("event2reward_streamtitle"),
+            getKEYS().Get("event2reward_streambody"),
             "event2reward_stream.v2.png"
         ]);
-        POPUPS.Next();
+        getPOPUPS().Next();
     }
 }

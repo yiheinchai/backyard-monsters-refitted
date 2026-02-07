@@ -6,7 +6,10 @@ import { Bookmark } from "./Bookmark";
 import { BookmarksManager } from "./BookmarksManager";
 import { MapRoom3BookmarksPopupItemDisplay } from "../../../../MapRoom3BookmarksPopupItemDisplay";
 
-import { KEYS } from "../../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../KEYS").KEYS; }
+
+
 
 /**
  * Bookmarks popup menu item - displays a single bookmark in the popup.
@@ -31,7 +34,7 @@ export class BookmarksPopupMenuItem extends MapRoom3BookmarksPopupItemDisplay {
         this.removeButton.buttonMode = true;
         if (bookmark.mapCell!.isDataLoaded === false) {
             this.addEventListener(Event.ENTER_FRAME, this.WaitForDataToLoad.bind(this), false, 0, true);
-            this.nameText.htmlText = KEYS.Get("msg_loading");
+            this.nameText.htmlText = getKEYS().Get("msg_loading");
         }
     }
 

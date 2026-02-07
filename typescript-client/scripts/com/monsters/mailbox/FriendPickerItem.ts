@@ -8,8 +8,11 @@ import LoaderContext from "openfl/system/LoaderContext";
 
 import { Contact } from "./model/Contact";
 
-import { KEYS } from "../../../KEYS";
 import { FriendPickerItem_CLIP } from "../../../FriendPickerItem_CLIP";
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+
 
 /**
  * Friend picker item - represents a single friend in the friend picker list.
@@ -29,7 +32,7 @@ export class FriendPickerItem extends FriendPickerItem_CLIP {
         this.name_str = contact.firstname.toUpperCase() + lastName;
         
         this.name_txt.htmlText = "<b>" + this.name_str;
-        this.userid_txt.text = KEYS.Get("label_userid", { v1: contact.userid });
+        this.userid_txt.text = getKEYS().Get("label_userid", { v1: contact.userid });
         
         this.idleFrameLabel = contact.friend ? "green" : "gray";
         this.background.gotoAndStop(this.idleFrameLabel);

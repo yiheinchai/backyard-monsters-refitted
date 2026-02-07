@@ -10,7 +10,10 @@ import { SubscriptionHandler } from "../../../subscriptions/SubscriptionHandler"
 import { BasePlannerTransferPopup } from "./BasePlannerTransferPopup";
 import { BasePlannerTransferRow_CLIP } from "../../../../../BasePlannerTransferRow_CLIP";
 
-import { KEYS } from "../../../../../KEYS";
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("../../../../../KEYS").KEYS; }
+
+
 
 /**
  * Base planner transfer row - individual slot row in save/load popup.
@@ -25,7 +28,7 @@ export class BasePlannerTransferRow extends BasePlannerTransferRow_CLIP {
         super();
         this.template = template;
         this.slot = slotIndex;
-        this.tSlotName.htmlText = KEYS.Get("basePlanner_slot_label", { "v1": String(slotIndex + 1) });
+        this.tSlotName.htmlText = getKEYS().Get("basePlanner_slot_label", { "v1": String(slotIndex + 1) });
         this.tTemplateName.multiline = false;
         this.mcLock.visible = false;
         this.bTransfer.addEventListener(MouseEvent.CLICK, this.clickedTransfer.bind(this), false, 0, true);
@@ -38,7 +41,7 @@ export class BasePlannerTransferRow extends BasePlannerTransferRow_CLIP {
         if (template) {
             this.tTemplateName.htmlText = template.name;
         } else {
-            this.tTemplateName.htmlText = KEYS.Get("basePlanner_layoutname", { "v1": (slotIndex + 1).toString() });
+            this.tTemplateName.htmlText = getKEYS().Get("basePlanner_layoutname", { "v1": (slotIndex + 1).toString() });
         }
         this.mcEdit.visible = false;
     }
@@ -80,8 +83,8 @@ export class BasePlannerTransferRow extends BasePlannerTransferRow_CLIP {
     public disable(showLock: boolean = true): void {
         this.mouseChildren = false;
         this.bTransfer.visible = false;
-        this.tTemplateName.htmlText = "<font color=\"#333333\">" + KEYS.Get("basePlanner_layoutname", { "v1": (this.slot + 1).toString() }) + "</font>";
-        this.tSlotName.htmlText = "<font color=\"#AAAAAA\">" + KEYS.Get("basePlanner_slot_label", { "v1": String(this.slot + 1) }) + "</font>";
+        this.tTemplateName.htmlText = "<font color=\"#333333\">" + getKEYS().Get("basePlanner_layoutname", { "v1": (this.slot + 1).toString() }) + "</font>";
+        this.tSlotName.htmlText = "<font color=\"#AAAAAA\">" + getKEYS().Get("basePlanner_slot_label", { "v1": String(this.slot + 1) }) + "</font>";
         this.mcBackground.transform.colorTransform = new ColorTransform(0.75, 0.75, 0.75);
         if (showLock) {
             this.mcLock.visible = true;

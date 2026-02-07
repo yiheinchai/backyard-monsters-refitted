@@ -1,6 +1,9 @@
 import MouseEvent from 'openfl/events/MouseEvent';
 import { BFOUNDATION } from './BFOUNDATION';
-import { GLOBAL } from './GLOBAL';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+
 
 /**
  * BEXPIRABLE - Expirable building class
@@ -17,7 +20,7 @@ export class BEXPIRABLE extends BFOUNDATION {
     public override Tick(seconds: number): void {
         super.Tick(seconds);
         if (this._buildingProps.lifespan !== 0) {
-            if (GLOBAL.Timestamp() > this._createTime + this._buildingProps.lifespan) {
+            if (getGLOBAL().Timestamp() > this._createTime + this._buildingProps.lifespan) {
                 this.RecycleC();
             }
         }
@@ -25,7 +28,7 @@ export class BEXPIRABLE extends BFOUNDATION {
 
     public override Place(event: MouseEvent | null = null): void {
         if (!this._createTime) {
-            this._createTime = GLOBAL.Timestamp();
+            this._createTime = getGLOBAL().Timestamp();
         }
         super.Place(event);
     }

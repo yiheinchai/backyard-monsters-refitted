@@ -4,18 +4,21 @@ import { IHandler } from "../interfaces/IHandler";
 import { IPlayerHandler } from "../interfaces/IPlayerHandler";
 import { ITickable } from "../interfaces/ITickable";
 import { KOTHHandler } from "../kingOfTheHill/KOTHHandler";
-import { MapRoomManager } from "../maproom_manager/MapRoomManager";
-import { MonsterBase } from "../monsters/MonsterBase";
 import { ReplayableEventHandler } from "../replayableEvents/ReplayableEventHandler";
 import { RewardHandler } from "../rewarding/RewardHandler";
 import { SubscriptionHandler } from "../subscriptions/SubscriptionHandler";
 import { CreepInfo } from "./CreepInfo";
 import { MonsterData } from "./MonsterData";
 
-import { BASE } from "../../../BASE";
-import { CREATURES } from "../../../CREATURES";
-import { GLOBAL } from "../../../GLOBAL";
 import { MAPROOM_DESCENT } from "../../../MAPROOM_DESCENT";
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../maproom_manager/MapRoomManager").MapRoomManager; }
+function getMonsterBase(): any { return require("../monsters/MonsterBase").MonsterBase; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getCREATURES(): any { return require("../../../CREATURES").CREATURES; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+
 
 /**
  * Player class managing player data, monster lists, upgrades, and handlers.
@@ -69,7 +72,7 @@ export class Player {
     }
 
     public set monsterList(value: MonsterData[]) {
-        if (BASE.isInfernoMainYardOrOutpost && !MAPROOM_DESCENT._inDescent) {
+        if (getBASE().isInfernoMainYardOrOutpost && !MAPROOM_DESCENT._inDescent) {
             this.m_iMonsterList = value;
         } else {
             this.m_monsterList = value;
@@ -77,14 +80,14 @@ export class Player {
     }
 
     public get monsterList(): MonsterData[] {
-        if (BASE.isInfernoMainYardOrOutpost && !MAPROOM_DESCENT._inDescent) {
+        if (getBASE().isInfernoMainYardOrOutpost && !MAPROOM_DESCENT._inDescent) {
             return this.m_iMonsterList;
         }
         return this.m_monsterList;
     }
 
     public get healQueue(): string[] {
-        if (BASE.isInfernoMainYardOrOutpost) {
+        if (getBASE().isInfernoMainYardOrOutpost) {
             return this.m_iHealQueue;
         }
         return this.m_healQueue;
@@ -141,7 +144,7 @@ export class Player {
         if (id.substr(0, 1) === "B") {
             return this.getBunkerStorage(parseInt(id.substr(1)));
         }
-        return this.numCreepsByID(id) * CREATURES.GetProperty(id, "cStorage");
+        return this.numCreepsByID(id) * getCREATURES().GetProperty(id, "cStorage");
     }
 
     public importAcademyData(data: any): void {
@@ -151,7 +154,7 @@ export class Player {
                 this.m_upgrades[key] = {};
                 if (data[key].time) {
                     if (data[key].time <= 60 * 60 * 162) {
-                        this.m_upgrades[key].time = new SecNum(data[key].time + GLOBAL.Timestamp());
+                        this.m_upgrades[key].time = new SecNum(data[key].time + getGLOBAL().Timestamp());
                     } else {
                         this.m_upgrades[key].time = new SecNum(data[key].time);
                     }
@@ -196,7 +199,7 @@ export class Player {
         if (!monsterData) return;
         
         const creeps = monsterData.m_creeps;
-        const healthDiff = CREATURES.GetProperty(id, "health", this.m_upgrades[id].level) - monsterData.maxHealth;
+        const healthDiff = getCREATURES().GetProperty(id, "health", this.m_upgrades[id].level) - monsterData.maxHealth;
         monsterData.level = this.m_upgrades[id].level;
         
         for (const creep of creeps) {
@@ -280,7 +283,7 @@ export class Player {
         const queue = this.healQueue;
         const result: any = {};
         
-        if (MapRoomManager.instance.isInMapRoom3) {
+        if (getMapRoomManager().instance.isInMapRoom3) {
             for (const monsterData of list) {
                 const count = monsterData.numCreeps;
                 const arr: any[] = [];
@@ -352,7 +355,7 @@ export class Player {
         
         this.setQueueByID(id, false);
         queue.splice(idx, 1);
-        BASE.SaveB();
+        getBASE().SaveB();
     }
 
     private setQueueByID(id: string, queued: boolean, amount: number = 0): void {
@@ -403,9 +406,9 @@ export class Player {
     }
 
     public refundResources(id: string, includeQueued: boolean = false): void {
-        const cost = GLOBAL.player.getResourceCostByID(id, includeQueued);
+        const cost = getGLOBAL().player.getResourceCostByID(id, includeQueued);
         const isInferno = id.substr(0, 1) === "I";
-        BASE.Fund(4, cost, true, null, isInferno, true);
+        getBASE().Fund(4, cost, true, null, isInferno, true);
     }
 
     public tickHeal(ticks: number): void {
@@ -470,15 +473,15 @@ export class Player {
                 const count = data.numCreepsByHouse(bunkerID, !includeQueued);
                 if (count) {
                     const creatureID = data.m_creatureID;
-                    const healTime = CREATURES.GetProperty(creatureID, "hTime");
-                    const maxHealth = CREATURES.GetProperty(creatureID, "health");
+                    const healTime = getCREATURES().GetProperty(creatureID, "hTime");
+                    const maxHealth = getCREATURES().GetProperty(creatureID, "health");
                     time += (count * maxHealth - data.curHealth(bunkerID)) / (maxHealth / healTime);
                 }
             }
         } else {
-            const healTime = CREATURES.GetProperty(id, "hTime");
-            const maxHealth = CREATURES.GetProperty(id, "health");
-            const data = GLOBAL.player.monsterListByID(id);
+            const healTime = getCREATURES().GetProperty(id, "hTime");
+            const maxHealth = getCREATURES().GetProperty(id, "health");
+            const data = getGLOBAL().player.monsterListByID(id);
             if (data) {
                 const count = data.numCreepsByHouse(0, !includeQueued);
                 time = (count * maxHealth - data.curHealth(0, !includeQueued)) / (maxHealth / healTime);
@@ -522,19 +525,19 @@ export class Player {
                 const creatureID = data.m_creatureID;
                 const count = data.numCreepsByHouse(bunkerID, includeQueued);
                 if (count) {
-                    const maxHealth = CREATURES.GetProperty(creatureID, "health");
+                    const maxHealth = getCREATURES().GetProperty(creatureID, "health");
                     const damagedRatio = count - count * (data.curHealth(bunkerID, includeQueued) / (maxHealth * count));
-                    cost += CREATURES.GetProperty(creatureID, "hResource") * damagedRatio;
+                    cost += getCREATURES().GetProperty(creatureID, "hResource") * damagedRatio;
                 }
             }
         } else {
-            const maxHealth = CREATURES.GetProperty(id, "health");
-            const data = GLOBAL.player.monsterListByID(id);
+            const maxHealth = getCREATURES().GetProperty(id, "health");
+            const data = getGLOBAL().player.monsterListByID(id);
             if (data) {
                 const count = data.numCreepsByHouse(0, includeQueued);
                 const curHealth = data.curHealth(0, includeQueued);
                 const damagedRatio = count - count * (curHealth / (maxHealth * count));
-                cost = CREATURES.GetProperty(id, "hResource") * damagedRatio;
+                cost = getCREATURES().GetProperty(id, "hResource") * damagedRatio;
             }
         }
         return cost;
@@ -542,7 +545,7 @@ export class Player {
 
     public getResourceCostInShinyByID(id: string): number {
         const resoCost = this.getResourceCostByID(id);
-        return GLOBAL.getShinyCostFromResourceAmt(resoCost);
+        return getGLOBAL().getShinyCostFromResourceAmt(resoCost);
     }
 
     public numCreepsInBunker(bunkerID: number): number {
@@ -558,7 +561,7 @@ export class Player {
         const list = this.monsterList;
         let storage = 0;
         for (const data of list) {
-            storage += data.numCreepsByHouse(bunkerID) * CREATURES.GetProperty(data.m_creatureID, "cStorage");
+            storage += data.numCreepsByHouse(bunkerID) * getCREATURES().GetProperty(data.m_creatureID, "cStorage");
         }
         return storage;
     }

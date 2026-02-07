@@ -3,16 +3,19 @@ import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
 import { WMBASE } from './com/monsters/ai/WMBASE';
 import { ICoreBuilding } from './com/monsters/interfaces/ICoreBuilding';
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
 import { BSTORAGE } from './BSTORAGE';
 import { ACHIEVEMENTS } from './ACHIEVEMENTS';
-import { BASE } from './BASE';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { LOGGER } from './LOGGER';
-import { MAP } from './MAP';
-import { POPUPS } from './POPUPS';
-import { UI2 } from './UI2';
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getUI2(): any { return require("./UI2").UI2; }
+
 
 /**
  * BUILDING14 - Town Hall (Core Building)
@@ -25,8 +28,8 @@ export class BUILDING14 extends BSTORAGE implements ICoreBuilding {
     constructor() {
         super();
         this._type = 14;
-        this._footprint = BASE.isInfernoMainYardOrOutpost ? [new Rectangle(0, 0, 160, 160)] : [new Rectangle(0, 0, 130, 130)];
-        this._gridCost = BASE.isInfernoMainYardOrOutpost 
+        this._footprint = getBASE().isInfernoMainYardOrOutpost ? [new Rectangle(0, 0, 160, 160)] : [new Rectangle(0, 0, 130, 130)];
+        this._gridCost = getBASE().isInfernoMainYardOrOutpost 
             ? [[new Rectangle(0, 0, 160, 160), 10], [new Rectangle(10, 10, 140, 140), 200]]
             : [[new Rectangle(0, 0, 130, 130), 10], [new Rectangle(10, 10, 110, 110), 200]];
         this._spoutPoint = new Point(1, -67);
@@ -39,48 +42,48 @@ export class BUILDING14 extends BSTORAGE implements ICoreBuilding {
     }
 
     public override Place(event: MouseEvent | null = null): void {
-        if (!MAP._dragged) {
+        if (!getMAP()._dragged) {
             super.Place(event);
             this._hasResources = true;
         }
     }
 
     public override Cancel(): void {
-        GLOBAL.setTownHall(null);
+        getGLOBAL().setTownHall(null);
         super.Cancel();
     }
 
     public override Recycle(): void {
-        GLOBAL.Message(KEYS.Get("msg_cantrecycleth", { v1: GLOBAL.townHall._buildingProps.name }));
+        getGLOBAL().Message(getKEYS().Get("msg_cantrecycleth", { v1: getGLOBAL().townHall._buildingProps.name }));
     }
 
     public override RecycleB(event: MouseEvent | null = null): void {
-        GLOBAL.Message(KEYS.Get("msg_cantrecycleth", { v1: GLOBAL.townHall._buildingProps.name }));
+        getGLOBAL().Message(getKEYS().Get("msg_cantrecycleth", { v1: getGLOBAL().townHall._buildingProps.name }));
     }
 
     public override RecycleC(): void {
-        GLOBAL.Message(KEYS.Get("msg_cantrecycleth", { v1: GLOBAL.townHall._buildingProps.name }));
+        getGLOBAL().Message(getKEYS().Get("msg_cantrecycleth", { v1: getGLOBAL().townHall._buildingProps.name }));
     }
 
     public override Destroyed(byAttacker: boolean = true): void {
         super.Destroyed(byAttacker);
-        if (!MapRoomManager.instance.isInMapRoom2or3 && GLOBAL.mode === "wmattack") {
+        if (!getMapRoomManager().instance.isInMapRoom2or3 && getGLOBAL().mode === "wmattack") {
             WMBASE._destroyed = true;
         }
     }
 
     public override Description(): void {
         super.Description();
-        this._buildingDescription = KEYS.Get("th_upgradedesc");
+        this._buildingDescription = getKEYS().Get("th_upgradedesc");
         if (this._lvl.Get() === 1) {
-            this._recycleDescription = KEYS.Get("th_recycledesc");
+            this._recycleDescription = getKEYS().Get("th_recycledesc");
         }
         if (this._lvl.Get() > 0 && this._lvl.Get() < this._buildingProps.costs.length) {
             const newBuildings: any[] = [];
             const moreBuildings: any[] = [];
             const upgradeBuildings: any[] = [];
             
-            for (const buildingProps of GLOBAL._buildingProps) {
+            for (const buildingProps of getGLOBAL()._buildingProps) {
                 if (buildingProps.id !== 14) {
                     const maxIdx: number = buildingProps.quantity.length - 1;
                     const currentLevel: number = this._lvl.Get();
@@ -89,24 +92,24 @@ export class BUILDING14 extends BSTORAGE implements ICoreBuilding {
                     const diff: number = nextQuantity - currentQuantity;
                     
                     if (currentQuantity === 0 && nextQuantity > 0 && !buildingProps.block) {
-                        newBuildings.push([0, KEYS.Get(buildingProps.name)]);
+                        newBuildings.push([0, getKEYS().Get(buildingProps.name)]);
                     } else if (diff > 0 && !buildingProps.block) {
-                        moreBuildings.push([0, KEYS.Get(buildingProps.name) + "s"]);
+                        moreBuildings.push([0, getKEYS().Get(buildingProps.name) + "s"]);
                     }
                 }
             }
             
             if (newBuildings.length > 0) {
-                this._upgradeDescription += KEYS.Get("th_willunlockthe", { v1: GLOBAL.Array2StringB(newBuildings) }) + "<br><br>";
+                this._upgradeDescription += getKEYS().Get("th_willunlockthe", { v1: getGLOBAL().Array2StringB(newBuildings) }) + "<br><br>";
             }
             if (moreBuildings.length > 0) {
-                this._upgradeDescription += `<b>${KEYS.Get("th_willbuildmore")}</b><br>${GLOBAL.Array2StringB(moreBuildings)}<br><br>`;
+                this._upgradeDescription += `<b>${getKEYS().Get("th_willbuildmore")}</b><br>${getGLOBAL().Array2StringB(moreBuildings)}<br><br>`;
             }
             if (upgradeBuildings.length > 0) {
-                this._upgradeDescription += `<b>${KEYS.Get("th_willupgrade")}</b><br>${GLOBAL.Array2StringB(upgradeBuildings)}`;
+                this._upgradeDescription += `<b>${getKEYS().Get("th_willupgrade")}</b><br>${getGLOBAL().Array2StringB(upgradeBuildings)}`;
             }
-            if (GLOBAL._buildingProps[this._type - 1].additionalUpgradeInfo?.[this._lvl.Get() - 1]) {
-                this._upgradeDescription += `<br><br><b>${KEYS.Get(GLOBAL._buildingProps[this._type - 1].additionalUpgradeInfo[this._lvl.Get() - 1])}</b>`;
+            if (getGLOBAL()._buildingProps[this._type - 1].additionalUpgradeInfo?.[this._lvl.Get() - 1]) {
+                this._upgradeDescription += `<br><br><b>${getKEYS().Get(getGLOBAL()._buildingProps[this._type - 1].additionalUpgradeInfo[this._lvl.Get() - 1])}</b>`;
             }
         }
     }
@@ -116,7 +119,7 @@ export class BUILDING14 extends BSTORAGE implements ICoreBuilding {
     }
 
     public override Constructed(): void {
-        GLOBAL.setTownHall(this);
+        getGLOBAL().setTownHall(this);
         ACHIEVEMENTS.Check("thlevel", this._lvl.Get());
         ACHIEVEMENTS.Check(ACHIEVEMENTS.UNDERHALL_LEVEL, this._lvl.Get());
         super.Constructed();
@@ -125,13 +128,13 @@ export class BUILDING14 extends BSTORAGE implements ICoreBuilding {
     public override UpgradeB(): void {
         super.UpgradeB();
         if (this._lvl.Get() >= 2 && this._countdownUpgrade.Get() > 0 && 
-            this._countdownUpgrade.Get() * (20 / 60 / 60) > BASE._credits.Get()) {
-            POPUPS.DisplayPleaseBuy("TH");
+            this._countdownUpgrade.Get() * (20 / 60 / 60) > getBASE()._credits.Get()) {
+            getPOPUPS().DisplayPleaseBuy("TH");
         }
     }
 
     public override Upgraded(): void {
-        LOGGER.KongStat([2, this._lvl.Get()]);
+        getLOGGER().KongStat([2, this._lvl.Get()]);
         ACHIEVEMENTS.Check("thlevel", this._lvl.Get());
         ACHIEVEMENTS.Check(ACHIEVEMENTS.UNDERHALL_LEVEL, this._lvl.Get());
         super.Upgraded();
@@ -139,21 +142,21 @@ export class BUILDING14 extends BSTORAGE implements ICoreBuilding {
     }
 
     private UnlockBuildings(): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
             const level: number = this._lvl.Get();
-            if (BASE.isInfernoMainYardOrOutpost) {
-                GLOBAL.StatSet(BUILDING14.UNDERHALL_LEVEL, level);
+            if (getBASE().isInfernoMainYardOrOutpost) {
+                getGLOBAL().StatSet(BUILDING14.UNDERHALL_LEVEL, level);
             } else {
-                GLOBAL.attackingPlayer.townHallLevel = level;
+                getGLOBAL().attackingPlayer.townHallLevel = level;
             }
         }
     }
 
     public override Setup(building: any): void {
         super.Setup(building);
-        GLOBAL.setTownHall(this);
-        if (this._destroyed && UI2._top) {
-            UI2._top.validateSiegeWeapon();
+        getGLOBAL().setTownHall(this);
+        if (this._destroyed && getUI2()._top) {
+            getUI2()._top.validateSiegeWeapon();
         }
         this.UnlockBuildings();
         ACHIEVEMENTS.Check("thlevel", this._lvl.Get());

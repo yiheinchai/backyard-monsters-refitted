@@ -7,11 +7,8 @@ import getTimer from "openfl/utils/getTimer";
 
 import { Rndm } from "./com/gskinner/utils/Rndm";
 import { ImageCache } from "./com/monsters/display/ImageCache";
-import { InstanceManager } from "./com/monsters/managers/InstanceManager";
-import { MonsterBase } from "./com/monsters/monsters/MonsterBase";
 import { Enrage } from "./com/monsters/monsters/components/abilities/Enrage";
 import { TemporaryComponent } from "./com/monsters/monsters/components/abilities/TemporaryComponent";
-import { PATHING } from "./com/monsters/pathing/PATHING";
 import { WaveObj } from "./com/monsters/replayableEvents/monsterInvasion/WaveObj";
 import { Solution } from "./com/monsters/ai/Solution";
 import { IPROCESS } from "./com/monsters/ai/IPROCESS";
@@ -24,33 +21,39 @@ import { INFERNO_EMERGENCE_PROCESS } from "./com/monsters/ai/INFERNO_EMERGENCE_P
 import { AIATTACKPOPUP } from "./com/monsters/ai/AIATTACKPOPUP";
 import { popup_attacksettings } from "./popup_attacksettings";
 import { frame } from "./frame";
-import { GLOBAL } from "./GLOBAL";
-import { KEYS } from "./KEYS";
-import { BASE } from "./BASE";
-import { BFOUNDATION } from "./BFOUNDATION";
-import { BTOWER } from "./BTOWER";
-import { BTRAP } from "./BTRAP";
-import { GRID } from "./GRID";
-import { MAP } from "./MAP";
-import { UI2 } from "./UI2";
-import { SOUNDS } from "./SOUNDS";
-import { ATTACK } from "./ATTACK";
-import { CREEPS } from "./CREEPS";
-import { POPUPS } from "./POPUPS";
-import { SPRITES } from "./SPRITES";
 import { TRIBES } from "./com/monsters/ai/TRIBES";
 import { WMBASE } from "./com/monsters/ai/WMBASE";
-import { PLANNER } from "./PLANNER";
-import { STORE } from "./STORE";
 import { HATCHERY } from "./HATCHERY";
 import { HATCHERYCC } from "./HATCHERYCC";
-import { QUESTS } from "./QUESTS";
-import { TUTORIAL } from "./TUTORIAL";
-import { LOGGER } from "./LOGGER";
-import { SPECIALEVENT } from "./SPECIALEVENT";
 import { INFERNO_EMERGENCE_EVENT } from "./INFERNO_EMERGENCE_EVENT";
 import { CUSTOMATTACKS } from "./CUSTOMATTACKS";
 import { MONSTERBAITER } from "./MONSTERBAITER";
+
+// Lazy imports to break circular dependency chains
+function getInstanceManager(): any { return require("./com/monsters/managers/InstanceManager").InstanceManager; }
+function getMonsterBase(): any { return require("./com/monsters/monsters/MonsterBase").MonsterBase; }
+function getPATHING(): any { return require("./com/monsters/pathing/PATHING").PATHING; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getBFOUNDATION(): any { return require("./BFOUNDATION").BFOUNDATION; }
+function getBTOWER(): any { return require("./BTOWER").BTOWER; }
+function getBTRAP(): any { return require("./BTRAP").BTRAP; }
+function getGRID(): any { return require("./GRID").GRID; }
+function getMAP(): any { return require("./MAP").MAP; }
+function getUI2(): any { return require("./UI2").UI2; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getATTACK(): any { return require("./ATTACK").ATTACK; }
+function getCREEPS(): any { return require("./CREEPS").CREEPS; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+function getSPRITES(): any { return require("./SPRITES").SPRITES; }
+function getPLANNER(): any { return require("./PLANNER").PLANNER; }
+function getSTORE(): any { return require("./STORE").STORE; }
+function getQUESTS(): any { return require("./QUESTS").QUESTS; }
+function getTUTORIAL(): any { return require("./TUTORIAL").TUTORIAL; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getSPECIALEVENT(): any { return require("./SPECIALEVENT").SPECIALEVENT; }
+
 
 export class WMATTACK {
     public static _history: any;
@@ -117,7 +120,7 @@ export class WMATTACK {
     constructor() {}
 
     public static Setup(data: any): void {
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
             WMATTACK._enabled = true;
             if (data == null) {
                 data = {};
@@ -139,7 +142,7 @@ export class WMATTACK {
             
             WMATTACK._history.sessionsSinceLastAttack += 1;
             
-            if (GLOBAL._aiDesignMode) {
+            if (getGLOBAL()._aiDesignMode) {
                 WMATTACK._sessionsBetweenAttacks = 1;
             }
             
@@ -178,7 +181,7 @@ export class WMATTACK {
                 }
             }
             
-            if (GLOBAL.Timestamp() - WMATTACK._history.lastattack > 345600) {
+            if (getGLOBAL().Timestamp() - WMATTACK._history.lastattack > 345600) {
                 if (WMATTACK._history["s1"]) {
                     if (WMATTACK._history["s1"][0] !== 1) {
                         WMATTACK._history.nextAttack = new Date().getTime() / 1000 + 60;
@@ -189,7 +192,7 @@ export class WMATTACK {
             } else if (WMATTACK._history.nextAttack === undefined) {
                 WMATTACK._attackPreference = WMATTACK._history.attackPreference;
             }
-        } else if (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.VIEW || GLOBAL.mode === GLOBAL.e_BASE_MODE.HELP) {
+        } else if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.VIEW || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.HELP) {
             WMATTACK._history = data;
         }
     }
@@ -203,7 +206,7 @@ export class WMATTACK {
                 WMATTACK._history.lastattack = 20;
                 WMATTACK._history.queued = {
                     "attack": { "C1": 10 },
-                    "attackTime": GLOBAL.Timestamp() + 10,
+                    "attackTime": getGLOBAL().Timestamp() + 10,
                     "degrees": 0,
                     "distances": { "C1": 300 }
                 };
@@ -224,18 +227,18 @@ export class WMATTACK {
     }
 
     public static Tick(): void {
-        const activeEvent = SPECIALEVENT.getActiveSpecialEvent();
+        const activeEvent = getSPECIALEVENT().getActiveSpecialEvent();
         
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
             activeEvent.Tick();
             
             if (WMATTACK.t % 10 === 0) {
                 let towerCount = 0;
                 WMATTACK.baseIsRepairing = false;
-                const buildings: BFOUNDATION[] = InstanceManager.getInstancesByClass(BFOUNDATION);
+                const buildings: BFOUNDATION[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
                 
                 for (const building of buildings) {
-                    if (!(building instanceof BTRAP) && !(building instanceof BTOWER)) {
+                    if (!(building instanceof getBTRAP()) && !(building instanceof getBTOWER())) {
                         continue;
                     }
                     towerCount++;
@@ -244,7 +247,7 @@ export class WMATTACK {
                     }
                 }
                 
-                if (!BASE.isMainYard && towerCount < 10) {
+                if (!getBASE().isMainYard && towerCount < 10) {
                     WMATTACK.baseIsRepairing = true;
                 }
             }
@@ -252,52 +255,52 @@ export class WMATTACK {
             WMATTACK.t += 1;
             
             if (WMATTACK._queued != null && !WMATTACK._inProgress) {
-                if (!GLOBAL._catchup && !WMATTACK.warningPopup && !WMATTACK._trojan && 
+                if (!getGLOBAL()._catchup && !WMATTACK.warningPopup && !WMATTACK._trojan && 
                     WMATTACK._queued.warned === 0 && !WMATTACK.baseIsRepairing && 
-                    BASE._isSanctuary <= GLOBAL.Timestamp() && WMATTACK._enabled && 
+                    getBASE()._isSanctuary <= getGLOBAL().Timestamp() && WMATTACK._enabled && 
                     !activeEvent.EventActive() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent() && 
-                    !PLANNER.isOpen()) {
+                    !getPLANNER().isOpen()) {
                     WMATTACK.ShowWarning();
                 }
                 
-                if (!GLOBAL._catchup && !WMATTACK._trojan && WMATTACK._queued.warned === 1 && 
-                    !UI2._wildMonsterBar && !WMATTACK._inProgress && !WMATTACK.baseIsRepairing && 
-                    BASE._isSanctuary <= GLOBAL.Timestamp() && WMATTACK._enabled && 
+                if (!getGLOBAL()._catchup && !WMATTACK._trojan && WMATTACK._queued.warned === 1 && 
+                    !getUI2()._wildMonsterBar && !WMATTACK._inProgress && !WMATTACK.baseIsRepairing && 
+                    getBASE()._isSanctuary <= getGLOBAL().Timestamp() && WMATTACK._enabled && 
                     !activeEvent.EventActive() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent()) {
-                    UI2.Show("wmbar");
-                } else if (WMATTACK.baseIsRepairing && !GLOBAL._catchup) {
+                    getUI2().Show("wmbar");
+                } else if (WMATTACK.baseIsRepairing && !getGLOBAL()._catchup) {
                     WMATTACK._queued = null;
                     delete WMATTACK._history.queued;
-                    if (UI2._wildMonsterBar) {
-                        UI2.Hide("wmbar");
+                    if (getUI2()._wildMonsterBar) {
+                        getUI2().Hide("wmbar");
                     }
                 }
                 
-                if (!WMATTACK.baseIsRepairing && WMATTACK._queued.attackTime <= GLOBAL.Timestamp() && 
-                    WMATTACK._enabled && !PLANNER.isOpen() && BASE._isSanctuary <= GLOBAL.Timestamp()) {
+                if (!WMATTACK.baseIsRepairing && WMATTACK._queued.attackTime <= getGLOBAL().Timestamp() && 
+                    WMATTACK._enabled && !getPLANNER().isOpen() && getBASE()._isSanctuary <= getGLOBAL().Timestamp()) {
                     if (!WMATTACK._inProgress && !CUSTOMATTACKS._started && !WMATTACK.baseIsRepairing) {
                         WMATTACK.LaunchQueuedAttack();
                     }
-                } else if (UI2._wildMonsterBar && !WMATTACK.baseIsRepairing) {
-                    UI2._wildMonsterBar.eta_txt.htmlText = KEYS.Get("ai_eta", { "v1": GLOBAL.ToTime(WMATTACK._queued.attackTime - GLOBAL.Timestamp()) });
+                } else if (getUI2()._wildMonsterBar && !WMATTACK.baseIsRepairing) {
+                    getUI2()._wildMonsterBar.eta_txt.htmlText = getKEYS().Get("ai_eta", { "v1": getGLOBAL().ToTime(WMATTACK._queued.attackTime - getGLOBAL().Timestamp()) });
                 }
             } else if (!WMATTACK._inProgress) {
-                if (!GLOBAL._catchup && WMATTACK._history.sessionsSinceLastAttack >= WMATTACK._sessionsBetweenAttacks && 
+                if (!getGLOBAL()._catchup && WMATTACK._history.sessionsSinceLastAttack >= WMATTACK._sessionsBetweenAttacks && 
                     !WMATTACK.baseIsRepairing && !WMATTACK._processing && 
-                    GLOBAL.Timestamp() > WMATTACK._history.nextAttack && BASE._baseLevel >= 9 && 
-                    !WMATTACK._trojan && BASE._isSanctuary <= GLOBAL.Timestamp() && WMATTACK._enabled && 
-                    !PLANNER.isOpen() && !activeEvent.EventActive() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent()) {
+                    getGLOBAL().Timestamp() > WMATTACK._history.nextAttack && getBASE()._baseLevel >= 9 && 
+                    !WMATTACK._trojan && getBASE()._isSanctuary <= getGLOBAL().Timestamp() && WMATTACK._enabled && 
+                    !getPLANNER().isOpen() && !activeEvent.EventActive() && !INFERNO_EMERGENCE_EVENT.ShouldRunEvent()) {
                     WMATTACK._processing = true;
                     WMATTACK.Trigger();
                 }
             } else if (WMATTACK._inProgress) {
-                if (CREEPS._creepCount === 0 && (!activeEvent.active || activeEvent.AllWavesSpawned())) {
+                if (getCREEPS()._creepCount === 0 && (!activeEvent.active || activeEvent.AllWavesSpawned())) {
                     WMATTACK._cleanUpFunc();
-                } else if (GLOBAL.Timestamp() % 10 === 0) {
+                } else if (getGLOBAL().Timestamp() % 10 === 0) {
                     let activeCreeps = 0;
-                    for (const key in CREEPS._creeps) {
-                        const creep = CREEPS._creeps[key];
-                        if (creep._behaviour === GLOBAL.e_BASE_MODE.ATTACK || creep._behaviour === "bounce" || 
+                    for (const key in getCREEPS()._creeps) {
+                        const creep = getCREEPS()._creeps[key];
+                        if (creep._behaviour === getGLOBAL().e_BASE_MODE.ATTACK || creep._behaviour === "bounce" || 
                             creep._behaviour === "loot" || creep._behaviour === "heal" || 
                             creep._behaviour === "buff" || creep._behaviour === "hunt") {
                             activeCreeps++;
@@ -314,16 +317,16 @@ export class WMATTACK {
     public static ShowWarning(): void {
         if (!WMATTACK.warningPopup) {
             WMATTACK.warningPopup = new AIATTACKPOPUP(WMATTACK._queued.type);
-            GLOBAL._layerWindows.addChild(WMATTACK.warningPopup);
+            getGLOBAL()._layerWindows.addChild(WMATTACK.warningPopup);
             WMATTACK.PreloadAttackers();
-            BASE.Save();
+            getBASE().Save();
         }
     }
 
     public static PreloadAttackers(): void {
         for (const key in WMATTACK._queued.attack) {
             if (WMATTACK._queued.attack[key] > 0) {
-                ImageCache.GetImageWithCallBack(SPRITES._sprites[key].key);
+                ImageCache.GetImageWithCallBack(getSPRITES()._sprites[key].key);
             }
         }
     }
@@ -339,36 +342,36 @@ export class WMATTACK {
 
     public static ShowAttackSettings(): void {
         const asp = new popup_attacksettings();
-        asp.title_txt.htmlText = KEYS.Get("ai_settings_title");
+        asp.title_txt.htmlText = getKEYS().Get("ai_settings_title");
         asp.bMore.SetupKey("ai_settings_more_btn");
         asp.bSame.SetupKey("ai_settings_same_btn");
         asp.bLess.SetupKey("ai_settings_less_btn");
         
         asp.bMore.addEventListener(MouseEvent.CLICK, (e: MouseEvent): void => {
-            SOUNDS.Play("click1");
+            getSOUNDS().Play("click1");
             WMATTACK._attackPreference = 1;
-            POPUPS.Next();
-            BASE.Save();
+            getPOPUPS().Next();
+            getBASE().Save();
         });
         
         asp.bLess.addEventListener(MouseEvent.CLICK, (e: MouseEvent): void => {
-            SOUNDS.Play("click1");
+            getSOUNDS().Play("click1");
             WMATTACK._attackPreference = -1;
-            POPUPS.Next();
-            BASE.Save();
+            getPOPUPS().Next();
+            getBASE().Save();
         });
         
         asp.bSame.addEventListener(MouseEvent.CLICK, (e: MouseEvent): void => {
-            SOUNDS.Play("click1");
+            getSOUNDS().Play("click1");
             WMATTACK._attackPreference = 0;
-            POPUPS.Next();
-            BASE.Save();
+            getPOPUPS().Next();
+            getBASE().Save();
         });
         
         (asp.mcFrame as frame).Setup(true, (e: MouseEvent = null): void => {
-            SOUNDS.Play("close");
-            POPUPS.Next();
-            BASE.Save();
+            getSOUNDS().Play("close");
+            getPOPUPS().Next();
+            getBASE().Save();
         });
         
         asp.taunt_txt.htmlText = "<b>" + TRIBES.TribeForBaseID(WMATTACK._attackersBaseID).taunt + "</b>";
@@ -377,7 +380,7 @@ export class WMATTACK {
             asp.mcImage.addChild(bitmap);
         });
         
-        POPUPS.Push(asp);
+        getPOPUPS().Push(asp);
     }
 
     public static Export(): any {
@@ -418,15 +421,15 @@ export class WMATTACK {
     public static Trigger(quick: boolean = false, intelligence: number = 1): void {
         let processClass: any = null;
         
-        if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && GLOBAL._render && POPUPS.Done()) {
+        if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && getGLOBAL()._render && getPOPUPS().Done()) {
             WMATTACK.intelligence = intelligence;
             WMATTACK.quickly = quick;
             
             if (WMBASE._bases && WMBASE._bases.length > 0) {
                 for (const base of WMBASE._bases) {
-                    if (base.destroyed === 0 && base.level >= BASE._baseLevel - 10) {
+                    if (base.destroyed === 0 && base.level >= getBASE()._baseLevel - 10) {
                         WMATTACK._attackersBaseID = base.baseid;
-                        if (BASE.isInfernoMainYardOrOutpost) {
+                        if (getBASE().isInfernoMainYardOrOutpost) {
                             WMATTACK._type = WMATTACK.TYPE_SWARM;
                             processClass = PROCESS_INFERNO1;
                         } else {
@@ -479,47 +482,47 @@ export class WMATTACK {
             delay = 5;
         }
         
-        const baseValue = BASE._basePoints + BASE._baseValue;
+        const baseValue = getBASE()._basePoints + getBASE()._baseValue;
         WMATTACK._queued = {
             "type": WMATTACK._type,
             "attack": solution.attack,
-            "attackTime": GLOBAL.Timestamp() + delay,
+            "attackTime": getGLOBAL().Timestamp() + delay,
             "degrees": solution.degrees,
             "distances": solution.distances,
             "warned": 0,
             "t": WMATTACK._attackersBaseID
         };
         
-        if (baseValue > WMATTACK._trojanThreshold && !WMATTACK._history["s1"] && !BASE.isMainYard) {
+        if (baseValue > WMATTACK._trojanThreshold && !WMATTACK._history["s1"] && !getBASE().isMainYard) {
             WMATTACK._trojan = true;
-            WMATTACK._history["s1"] = [1, GLOBAL.Timestamp(), 0];
-            WMATTACK._queued.attackTime = GLOBAL.Timestamp();
+            WMATTACK._history["s1"] = [1, getGLOBAL().Timestamp(), 0];
+            WMATTACK._queued.attackTime = getGLOBAL().Timestamp();
         } else {
             WMATTACK._history.queued = WMATTACK._queued;
         }
         
         WMATTACK._processing = false;
-        BASE.Save();
+        getBASE().Save();
     }
 
     public static PreemptQueue(): void {
-        WMATTACK._queued.attackTime = GLOBAL.Timestamp();
+        WMATTACK._queued.attackTime = getGLOBAL().Timestamp();
         WMATTACK._type = WMATTACK._queued.type ? WMATTACK._queued.type : 1;
-        BASE.Save(0, false, true);
+        getBASE().Save(0, false, true);
         WMATTACK.Tick();
     }
 
     public static LaunchQueuedAttack(): void {
-        PATHING.ResetCosts();
+        getPATHING().ResetCosts();
         WMATTACK.SendAttack(WMATTACK._queued.attack, WMATTACK._queued.degrees, WMATTACK._queued.distances);
     }
 
     public static SendAttack(attack: any, degrees: number, distances: any): void {
         if (WMATTACK._history) {
             if (WMATTACK._history["s1"] && WMATTACK._history["s1"][0] === 1 && 
-                WMATTACK._history["s1"][2] === 0 && !BASE.isInfernoMainYardOrOutpost) {
+                WMATTACK._history["s1"][2] === 0 && !getBASE().isInfernoMainYardOrOutpost) {
                 WMATTACK._history["s1"][2] = 1;
-                WMATTACK._history.lastattack = GLOBAL.Timestamp();
+                WMATTACK._history.lastattack = getGLOBAL().Timestamp();
                 WMATTACK._trojan = true;
                 WMATTACK._queued = null;
                 delete WMATTACK._history.queued;
@@ -530,13 +533,13 @@ export class WMATTACK {
         
         WMATTACK.AttackB();
         WMATTACK.AttackC();
-        WMATTACK._history.lastattack = GLOBAL.Timestamp();
+        WMATTACK._history.lastattack = getGLOBAL().Timestamp();
         WMATTACK._isAI = true;
         
-        if (BASE.isInfernoMainYardOrOutpost) {
-            SOUNDS.PlayMusic("musicipanic");
+        if (getBASE().isInfernoMainYardOrOutpost) {
+            getSOUNDS().PlayMusic("musicipanic");
         } else {
-            SOUNDS.PlayMusic("musicpanic");
+            getSOUNDS().PlayMusic("musicpanic");
         }
         
         const spawnData: any[] = [];
@@ -552,7 +555,7 @@ export class WMATTACK {
         }
         
         if (spawned.length > 0 && spawned[0].length > 0) {
-            MAP.FocusTo(spawned[0][0].x, spawned[0][0].y, 1);
+            getMAP().FocusTo(spawned[0][0].x, spawned[0][0].y, 1);
         }
     }
 
@@ -565,26 +568,26 @@ export class WMATTACK {
         const direction = wave.direction + offsetDegrees;
         const spread = 250;
         
-        const pos = GRID.ToISO(
+        const pos = getGRID().ToISO(
             Math.cos(direction * 0.0174532925) * (800 + spread / 2),
             Math.sin(direction * 0.0174532925) * (800 + spread / 2),
             0
         );
-        const focusPos = GRID.ToISO(
+        const focusPos = getGRID().ToISO(
             Math.cos(direction * 0.0174532925) * 900,
             Math.sin(direction * 0.0174532925) * 900,
             0
         );
         
         if (wave.powerLevel) {
-            GLOBAL._wmCreaturePowerups[wave.creatureID] = wave.powerLevel;
+            getGLOBAL()._wmCreaturePowerups[wave.creatureID] = wave.powerLevel;
         }
         
         const creeps = WMATTACK.SpawnCreep(pos, spread, wave.creatureID, wave.numCreep, wave.behavior, wave.level);
         result.push(creeps);
         
         if (wave.cameraFocus) {
-            MAP.FocusTo(focusPos.x, focusPos.y, 1, 0, 0, true);
+            getMAP().FocusTo(focusPos.x, focusPos.y, 1, 0, 0, true);
         }
         
         return result;
@@ -592,7 +595,7 @@ export class WMATTACK {
 
     public static SpawnCreep(pos: Point, spread: number, creatureID: string, count: number, behavior: string, level: number = 0): any[] {
         const rng = new Rndm(Math.floor(pos.x + pos.y));
-        const gridPos = GRID.FromISO(pos.x, pos.y);
+        const gridPos = getGRID().FromISO(pos.x, pos.y);
         const result: any[] = [];
         
         for (let i = 0; i < count; i++) {
@@ -602,9 +605,9 @@ export class WMATTACK {
             
             let creep: MonsterBase;
             if (creatureID.substr(0, 1) === "G") {
-                creep = CREEPS.SpawnGuardian(parseInt(creatureID.substr(1)), MAP._BUILDINGTOPS, "bounce", level, GRID.ToISO(spawnPos.x, spawnPos.y, 0), rng.random() * 360, Number.MAX_SAFE_INTEGER, 0, 3, true);
+                creep = getCREEPS().SpawnGuardian(parseInt(creatureID.substr(1)), getMAP()._BUILDINGTOPS, "bounce", level, getGRID().ToISO(spawnPos.x, spawnPos.y, 0), rng.random() * 360, Number.MAX_SAFE_INTEGER, 0, 3, true);
             } else {
-                creep = CREEPS.Spawn(creatureID, MAP._BUILDINGTOPS, "bounce", GRID.ToISO(spawnPos.x, spawnPos.y, 0), rng.random() * 360);
+                creep = getCREEPS().Spawn(creatureID, getMAP()._BUILDINGTOPS, "bounce", getGRID().ToISO(spawnPos.x, spawnPos.y, 0), rng.random() * 360);
             }
             
             creep._hitLimit = Number.MAX_SAFE_INTEGER;
@@ -641,7 +644,7 @@ export class WMATTACK {
                 let count = 0;
                 while (count < spawnData[i][2]) {
                     degrees += 8;
-                    const pos = GRID.ToISO(
+                    const pos = getGRID().ToISO(
                         Math.cos(degrees * 0.0174532925) * (800 + spawnData[i][3] / 2),
                         Math.sin(degrees * 0.0174532925) * (800 + spawnData[i][3] / 2),
                         0
@@ -652,7 +655,7 @@ export class WMATTACK {
                 }
                 
                 if (spawnData[i][2] % groupSize !== 0) {
-                    const pos = GRID.ToISO(
+                    const pos = getGRID().ToISO(
                         Math.cos(degrees * 0.0174532925) * (800 + spawnData[i][3] / 2),
                         Math.sin(degrees * 0.0174532925) * (800 + spawnData[i][3] / 2),
                         0
@@ -661,7 +664,7 @@ export class WMATTACK {
                     result.push(creeps);
                 }
             } else {
-                const pos = GRID.ToISO(
+                const pos = getGRID().ToISO(
                     Math.cos(degrees * 0.0174532925) * (800 + spawnData[i][3] / 2),
                     Math.sin(degrees * 0.0174532925) * (800 + spawnData[i][3] / 2),
                     0
@@ -671,12 +674,12 @@ export class WMATTACK {
             }
             
             if (spawnData[i][6] === 1) {
-                const focusPos = GRID.ToISO(
+                const focusPos = getGRID().ToISO(
                     Math.cos(degrees * 0.0174532925) * 900,
                     Math.sin(degrees * 0.0174532925) * 900,
                     0
                 );
-                MAP.Focus(focusPos.x, focusPos.y);
+                getMAP().Focus(focusPos.x, focusPos.y);
             }
         }
         
@@ -684,7 +687,7 @@ export class WMATTACK {
     }
 
     public static SpawnB(pos: Point, spread: number, creatureID: string, count: number, behavior: string): any[] {
-        const baseValue = BASE._basePoints + BASE._baseValue;
+        const baseValue = getBASE()._basePoints + getBASE()._baseValue;
         let scaleFactor = 0.4;
         
         if (baseValue > 1000000) scaleFactor = 0.5;
@@ -699,7 +702,7 @@ export class WMATTACK {
             rng = WMATTACK._rngCache[seedValue] = new Rndm(seedValue);
         }
         
-        const gridPos = GRID.FromISO(pos.x, pos.y);
+        const gridPos = getGRID().FromISO(pos.x, pos.y);
         const result: any[] = [];
         
         for (let i = 0; i < count; i++) {
@@ -708,7 +711,7 @@ export class WMATTACK {
             const offsetPoint = WMATTACK.getPooledPoint(Math.cos(angle) * dist, Math.sin(angle) * dist);
             const spawnPos = gridPos.add(offsetPoint);
             
-            const creep = CREEPS.Spawn(creatureID, MAP._BUILDINGTOPS, "bounce", GRID.ToISO(spawnPos.x, spawnPos.y, 0), rng.random() * 360, scaleFactor, true);
+            const creep = getCREEPS().Spawn(creatureID, getMAP()._BUILDINGTOPS, "bounce", getGRID().ToISO(spawnPos.x, spawnPos.y, 0), rng.random() * 360, scaleFactor, true);
             
             if (WMATTACK._rage) {
                 creep.addComponent(new TemporaryComponent(new Enrage(2, 0), WMATTACK._rage));
@@ -723,15 +726,15 @@ export class WMATTACK {
     public static AttackB(): void {
         WMATTACK.HideWarning();
         WMATTACK._inProgress = true;
-        ATTACK.Setup();
-        BASE._blockSave = true;
-        UI2.Hide("top");
-        UI2.Hide("wmbar");
-        UI2.Hide("bottom");
-        UI2.Show("warning");
-        UI2._warning.Update("<font size=\"28\">" + KEYS.Get("msg_dontpanic") + "</font>");
-        PLANNER.Hide();
-        STORE.Hide();
+        getATTACK().Setup();
+        getBASE()._blockSave = true;
+        getUI2().Hide("top");
+        getUI2().Hide("wmbar");
+        getUI2().Hide("bottom");
+        getUI2().Show("warning");
+        getUI2()._warning.Update("<font size=\"28\">" + getKEYS().Get("msg_dontpanic") + "</font>");
+        getPLANNER().Hide();
+        getSTORE().Hide();
         HATCHERY.Hide();
         HATCHERYCC.Hide();
     }
@@ -750,10 +753,10 @@ export class WMATTACK {
 
     public static CleanUp(): void {
         WMATTACK._inProgress = false;
-        UI2.Show("top");
-        UI2.Show("bottom");
-        UI2.Hide("warning");
-        UI2.Hide("scareAway");
+        getUI2().Show("top");
+        getUI2().Show("bottom");
+        getUI2().Hide("warning");
+        getUI2().Hide("scareAway");
         WMATTACK.warningPopup = null;
         
         if (WMATTACK._history["s1"] && WMATTACK._history["s1"][0] === 1) {
@@ -765,15 +768,15 @@ export class WMATTACK {
             WMATTACK.ResetWait();
         }
         
-        if (BASE.isInfernoMainYardOrOutpost) {
-            SOUNDS.PlayMusic("musicibuild");
+        if (getBASE().isInfernoMainYardOrOutpost) {
+            getSOUNDS().PlayMusic("musicibuild");
         } else {
-            SOUNDS.PlayMusic("musicbuild");
+            getSOUNDS().PlayMusic("musicbuild");
         }
         
         let currentHealth = 0;
         let maxHealth = 0;
-        const buildings: BFOUNDATION[] = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const buildings: BFOUNDATION[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
         
         for (const building of buildings) {
             building.GridCost(true);
@@ -786,32 +789,32 @@ export class WMATTACK {
             }
         }
         
-        BASE._blockSave = false;
-        BASE.Save();
+        getBASE()._blockSave = false;
+        getBASE().Save();
         
         if (MONSTERBAITER._scaredAway) {
             MONSTERBAITER._scaredAway = false;
             CUSTOMATTACKS._started = false;
-            QUESTS.Check();
+            getQUESTS().Check();
             MONSTERBAITER._attacking = 0;
             return;
         }
         
-        const activeEvent = SPECIALEVENT.getActiveSpecialEvent();
+        const activeEvent = getSPECIALEVENT().getActiveSpecialEvent();
         if (activeEvent.active) {
-            if (CREEPS._creepCount > 0 || !activeEvent.AllWavesSpawned() || currentHealth <= maxHealth * 0.1) {
-                ATTACK.PoorDefense();
+            if (getCREEPS()._creepCount > 0 || !activeEvent.AllWavesSpawned() || currentHealth <= maxHealth * 0.1) {
+                getATTACK().PoorDefense();
             } else {
-                ATTACK.WellDefended(true);
+                getATTACK().WellDefended(true);
             }
-        } else if (currentHealth < maxHealth * 0.9 || TUTORIAL._stage < 200) {
-            ATTACK.PoorDefense();
+        } else if (currentHealth < maxHealth * 0.9 || getTUTORIAL()._stage < 200) {
+            getATTACK().PoorDefense();
         } else if (currentHealth >= maxHealth * 0.9) {
-            ATTACK.WellDefended(true);
+            getATTACK().WellDefended(true);
         }
         
         CUSTOMATTACKS._started = false;
-        QUESTS.Check();
+        getQUESTS().Check();
         MONSTERBAITER._attacking = 0;
         
         if (WMATTACK._isAI && WMATTACK.intelligence > 0) {
@@ -821,10 +824,10 @@ export class WMATTACK {
 
     public static CleanUpLite(): void {
         WMATTACK._inProgress = false;
-        UI2.Show("top");
-        UI2.Show("bottom");
-        UI2.Hide("warning");
-        UI2.Hide("scareAway");
+        getUI2().Show("top");
+        getUI2().Show("bottom");
+        getUI2().Hide("warning");
+        getUI2().Hide("scareAway");
         WMATTACK.warningPopup = null;
         
         if (WMATTACK._history["s1"] && WMATTACK._history["s1"][0] === 1) {
@@ -836,13 +839,13 @@ export class WMATTACK {
             WMATTACK.ResetWait();
         }
         
-        if (BASE.isInfernoMainYardOrOutpost) {
-            SOUNDS.PlayMusic("musicibuild");
+        if (getBASE().isInfernoMainYardOrOutpost) {
+            getSOUNDS().PlayMusic("musicibuild");
         } else {
-            SOUNDS.PlayMusic("musicbuild");
+            getSOUNDS().PlayMusic("musicbuild");
         }
         
-        const buildings: BFOUNDATION[] = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const buildings: BFOUNDATION[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
         for (const building of buildings) {
             building.GridCost(true);
             if (building._repairing !== 1) {
@@ -852,31 +855,31 @@ export class WMATTACK {
             }
         }
         
-        BASE._blockSave = false;
-        BASE.Save();
+        getBASE()._blockSave = false;
+        getBASE().Save();
         MONSTERBAITER._scaredAway = false;
         CUSTOMATTACKS._started = false;
-        QUESTS.Check();
+        getQUESTS().Check();
         MONSTERBAITER._attacking = 0;
     }
 
     public static End(): void {
         WMATTACK.Tick();
         
-        if (BASE.isInfernoMainYardOrOutpost) {
-            SOUNDS.PlayMusic("musicibuild");
+        if (getBASE().isInfernoMainYardOrOutpost) {
+            getSOUNDS().PlayMusic("musicibuild");
         } else {
-            SOUNDS.PlayMusic("musicbuild");
+            getSOUNDS().PlayMusic("musicbuild");
         }
         
-        UI2.Show("top");
-        UI2.Show("bottom");
-        UI2.Hide("warning");
-        UI2.Hide("scareAway");
+        getUI2().Show("top");
+        getUI2().Show("bottom");
+        getUI2().Hide("warning");
+        getUI2().Hide("scareAway");
         
         let currentHealth = 0;
         let maxHealth = 0;
-        const buildings: BFOUNDATION[] = InstanceManager.getInstancesByClass(BFOUNDATION);
+        const buildings: BFOUNDATION[] = getInstanceManager().getInstancesByClass(BFOUNDATION);
         
         for (const building of buildings) {
             building.GridCost(true);
@@ -891,21 +894,21 @@ export class WMATTACK {
             }
         }
         
-        BASE._blockSave = false;
-        BASE.Save();
+        getBASE()._blockSave = false;
+        getBASE().Save();
         
         if (MONSTERBAITER._scaredAway && currentHealth < maxHealth) {
-            ATTACK.PoorDefense();
-        } else if (currentHealth < maxHealth * 0.9 || TUTORIAL._stage < 200) {
-            ATTACK.PoorDefense();
+            getATTACK().PoorDefense();
+        } else if (currentHealth < maxHealth * 0.9 || getTUTORIAL()._stage < 200) {
+            getATTACK().PoorDefense();
         } else if (currentHealth >= maxHealth * 0.9) {
             if (!MONSTERBAITER._scaredAway) {
-                ATTACK.WellDefended(true);
+                getATTACK().WellDefended(true);
             }
         }
         
         MONSTERBAITER._scaredAway = false;
-        QUESTS.Check();
+        getQUESTS().Check();
         MONSTERBAITER._attacking = 0;
     }
 
@@ -930,8 +933,8 @@ export class WMATTACK {
                 WMATTACK._attackVolumeAmplifier = 0.5;
                 WMATTACK._hitsPerCreep = 20;
                 WMATTACK._history.attackPreference = -1;
-                if (BASE.isInfernoMainYardOrOutpost) {
-                    LOGGER.Stat([89, "slow"]);
+                if (getBASE().isInfernoMainYardOrOutpost) {
+                    getLOGGER().Stat([89, "slow"]);
                 }
                 break;
             case 0:
@@ -940,8 +943,8 @@ export class WMATTACK {
                 WMATTACK._attackVolumeAmplifier = 1;
                 WMATTACK._hitsPerCreep = 30;
                 WMATTACK._history.attackPreference = 0;
-                if (BASE.isInfernoMainYardOrOutpost) {
-                    LOGGER.Stat([89, "med"]);
+                if (getBASE().isInfernoMainYardOrOutpost) {
+                    getLOGGER().Stat([89, "med"]);
                 }
                 break;
             case 1:
@@ -949,22 +952,22 @@ export class WMATTACK {
                 WMATTACK._attackVolumeAmplifier = 1.3;
                 WMATTACK._hitsPerCreep = 50;
                 WMATTACK._history.attackPreference = 1;
-                if (BASE.isInfernoMainYardOrOutpost) {
-                    LOGGER.Stat([89, "fast"]);
+                if (getBASE().isInfernoMainYardOrOutpost) {
+                    getLOGGER().Stat([89, "fast"]);
                 }
                 break;
         }
-        BASE.Save();
+        getBASE().Save();
     }
 
     public static dpsAtPoint(solution: Solution, point: Point): number {
-        const gridPoint = GRID.FromISO(point.x, point.y);
+        const gridPoint = getGRID().FromISO(point.x, point.y);
         let totalDps = 0;
-        const towers: BTOWER[] = InstanceManager.getInstancesByClass(BTOWER);
+        const towers: BTOWER[] = getInstanceManager().getInstancesByClass(BTOWER);
         
         for (const tower of towers) {
             if (tower._countdownUpgrade.Get() === 0 && tower._countdownBuild.Get() === 0 && tower._countdownFortify.Get()) {
-                const towerPos = GRID.FromISO(tower.x, tower.y);
+                const towerPos = getGRID().FromISO(tower.x, tower.y);
                 towerPos.add(new Point(tower._footprint[0].width * 0.5, tower._footprint[0].height * 0.5));
                 const distance = Point.distance(towerPos, gridPoint);
                 

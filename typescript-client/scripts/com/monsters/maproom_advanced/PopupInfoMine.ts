@@ -7,21 +7,24 @@ import { ScrollSet } from "../display/ScrollSet";
 import { EnumYardType } from "../enums/EnumYardType";
 import { Message } from "../mailbox/Message";
 import { Contact } from "../mailbox/model/Contact";
-import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { CellData } from "./CellData";
 import { MapRoom } from "./MapRoom";
 import { MapRoomCell } from "./MapRoomCell";
 import { PopupInfoMine_CLIP } from "../../../PopupInfoMine_CLIP";
 import { PopupInfoMonster } from "./PopupInfoMonster";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGGER } from "../../../LOGGER";
-import { LOGIN } from "../../../LOGIN";
 import { POWERUPS } from "../../../POWERUPS";
-import { SOUNDS } from "../../../SOUNDS";
-import { URLLoaderApi } from "../../../URLLoaderApi";
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+function getLOGIN(): any { return require("../../../LOGIN").LOGIN; }
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+function getURLLoaderApi(): any { return require("../../../URLLoaderApi").URLLoaderApi; }
+
 
 /**
  * PopupInfoMine - popup for player's own bases in map room.
@@ -81,14 +84,14 @@ export class PopupInfoMine extends PopupInfoMine_CLIP {
             if (!this._bookmarked) {
                 MapRoom._mc.ShowBookmarkAddPopup(this._cell!);
             } else {
-                GLOBAL.Message(KEYS.Get("newmap_bm_done"));
+                getGLOBAL().Message(getKEYS().Get("newmap_bm_done"));
             }
         });
         (this.mcFrame as any).Setup();
     }
 
     private StartTransferM(event: MouseEvent): void {
-        if (this.bMonsters.Enabled && !MapRoom._monsterTransferInProgress && !MapRoom._resourceTransferInProgress && GLOBAL._mapOutpost.length > 0 && this._hasMonsters) {
+        if (this.bMonsters.Enabled && !MapRoom._monsterTransferInProgress && !MapRoom._resourceTransferInProgress && getGLOBAL()._mapOutpost.length > 0 && this._hasMonsters) {
             MapRoom._mc.ShowMonstersA(this._cell!);
         }
     }
@@ -99,19 +102,19 @@ export class PopupInfoMine extends PopupInfoMine_CLIP {
 
     public Setup(cell: MapRoomCell): void {
         this._cell = cell;
-        this.tLabel1.htmlText = "<b>" + KEYS.Get("popup_label_name") + "</b>";
-        this.tLabel2.htmlText = "<b>" + KEYS.Get("popup_label_thisyardhas") + "</b>";
-        this.tLabel3.htmlText = "<b>" + KEYS.Get("popup_label_locationheight") + "</b>";
-        this.tLabel4.htmlText = "<b>" + KEYS.Get("popup_label_monstershoused") + "</b>";
+        this.tLabel1.htmlText = "<b>" + getKEYS().Get("popup_label_name") + "</b>";
+        this.tLabel2.htmlText = "<b>" + getKEYS().Get("popup_label_thisyardhas") + "</b>";
+        this.tLabel3.htmlText = "<b>" + getKEYS().Get("popup_label_locationheight") + "</b>";
+        this.tLabel4.htmlText = "<b>" + getKEYS().Get("popup_label_monstershoused") + "</b>";
         let warBonus = 0;
         if (POWERUPS.CheckPowers(POWERUPS.ALLIANCE_DECLAREWAR, "NORMAL")) {
             warBonus = POWERUPS.Apply(POWERUPS.ALLIANCE_DECLAREWAR, [0]);
         }
-        GLOBAL._attackerCellsInRange = MapRoom._mc.GetCellsInRange(this._cell.X, this._cell.Y, 10 + warBonus);
+        getGLOBAL()._attackerCellsInRange = MapRoom._mc.GetCellsInRange(this._cell.X, this._cell.Y, 10 + warBonus);
         if (this._cell._base === 3) {
-            this.tName.htmlText = KEYS.Get("map_outpostowner", { "v1": this._cell._name });
+            this.tName.htmlText = getKEYS().Get("map_outpostowner", { "v1": this._cell._name });
         } else {
-            this.tName.htmlText = KEYS.Get("map_yardowner", { "v1": this._cell._name });
+            this.tName.htmlText = getKEYS().Get("map_yardowner", { "v1": this._cell._name });
         }
         this.tLocation.htmlText = cell.X + "x" + cell.Y;
         this.tHeight.htmlText = this._cell._height - 100 + "m";
@@ -119,28 +122,28 @@ export class PopupInfoMine extends PopupInfoMine_CLIP {
         if (this._cell._base === 2) {
             heightBonus = 0;
         } else {
-            heightBonus = this._cell._height * 100 / GLOBAL._averageAltitude.Get() - 100;
+            heightBonus = this._cell._height * 100 / getGLOBAL()._averageAltitude.Get() - 100;
         }
         let inverseBonus = 0;
         if (this._cell._base === 2) {
             inverseBonus = 0;
         } else {
-            inverseBonus = 100 * GLOBAL._averageAltitude.Get() / this._cell._height - 100;
+            inverseBonus = 100 * getGLOBAL()._averageAltitude.Get() / this._cell._height - 100;
         }
         let heightText = "";
         if (heightBonus >= 0) {
-            heightText = "<font color=\"#003300\">+" + KEYS.Get("newmap_h1", { "v1": heightBonus }) + "</font>";
+            heightText = "<font color=\"#003300\">+" + getKEYS().Get("newmap_h1", { "v1": heightBonus }) + "</font>";
         } else {
-            heightText = "<font color=\"#330000\">- " + KEYS.Get("newmap_h1", { "v1": Math.abs(heightBonus) }) + "</font>";
+            heightText = "<font color=\"#330000\">- " + getKEYS().Get("newmap_h1", { "v1": Math.abs(heightBonus) }) + "</font>";
         }
         let inverseText = "";
         if (inverseBonus >= 0) {
-            inverseText = "<font color=\"#003300\">+" + KEYS.Get("newmap_h2", { "v1": inverseBonus }) + "</font>";
+            inverseText = "<font color=\"#003300\">+" + getKEYS().Get("newmap_h2", { "v1": inverseBonus }) + "</font>";
         } else {
-            inverseText = "<font color=\"#330000\">- " + KEYS.Get("newmap_h2", { "v1": Math.abs(inverseBonus) }) + "</font>";
+            inverseText = "<font color=\"#330000\">- " + getKEYS().Get("newmap_h2", { "v1": Math.abs(inverseBonus) }) + "</font>";
         }
         this.tBonus.htmlText = heightText + "<br>" + inverseText;
-        if (GLOBAL._mapOutpost.length > 0) {
+        if (getGLOBAL()._mapOutpost.length > 0) {
             this.bMonsters.Enabled = true;
         } else {
             this.bMonsters.Enabled = false;
@@ -183,16 +186,16 @@ export class PopupInfoMine extends PopupInfoMine_CLIP {
     }
 
     private Open(): void {
-        if (!this._cell!._locked || this._cell!._locked === LOGIN._playerID) {
-            GLOBAL._currentCell = this._cell;
+        if (!this._cell!._locked || this._cell!._locked === getLOGIN()._playerID) {
+            getGLOBAL()._currentCell = this._cell;
             MapRoom._mc.HideInfoMine();
-            MapRoomManager.instance.Hide();
+            getMapRoomManager().instance.Hide();
             MapRoom.ClearCells();
-            GLOBAL._attackerCellsInRange = [];
+            getGLOBAL()._attackerCellsInRange = [];
             const yardType = this._cell!._base === 3 ? EnumYardType.OUTPOST : EnumYardType.MAIN_YARD;
-            BASE.LoadBase(null, 0, this._cell!._baseID, GLOBAL.e_BASE_MODE.BUILD, false, yardType);
+            getBASE().LoadBase(null, 0, this._cell!._baseID, getGLOBAL().e_BASE_MODE.BUILD, false, yardType);
         } else {
-            GLOBAL.Message(KEYS.Get("newmap_attacked"));
+            getGLOBAL().Message(getKEYS().Get("newmap_attacked"));
         }
     }
 
@@ -207,7 +210,7 @@ export class PopupInfoMine extends PopupInfoMine_CLIP {
         const onMigrateRevokeSuccess = (data: Record<string, any>): void => {
             this.Hide();
             if (data.error !== 0) {
-                GLOBAL.Message(KEYS.Get("msg_err_revoke") + data.error);
+                getGLOBAL().Message(getKEYS().Get("msg_err_revoke") + data.error);
                 return;
             }
             this._cell!._invitePendingID = 0;
@@ -216,42 +219,42 @@ export class PopupInfoMine extends PopupInfoMine_CLIP {
             if (MapRoom._open) {
                 MapRoom.GetCell(this._cell!.X, this._cell!.Y, true);
             }
-            GLOBAL.Message(KEYS.Get("msg_revoke_success"));
+            getGLOBAL().Message(getKEYS().Get("msg_revoke_success"));
         };
         const onFail = (error: Error): void => {
             this.Hide();
-            GLOBAL.Message(KEYS.Get("msg_err_revoke") + error.message);
-            LOGGER.Log("err", "PopupInfoMine.RevokeInvitation HTTP " + error.message);
+            getGLOBAL().Message(getKEYS().Get("msg_err_revoke") + error.message);
+            getLOGGER().Log("err", "PopupInfoMine.RevokeInvitation HTTP " + error.message);
         };
         if (!this._cell!._updated) {
             return;
         }
-        SOUNDS.Play("click1");
-        const body = KEYS.Get("invite_revoke");
-        const subject = KEYS.Get("invite_subject");
-        const vars = [["threadid", this._cell!._invitePendingID], ["targetid", LOGIN._playerID], ["targetbaseid", 0], ["type", "migraterevoke"], ["subject", subject], ["message", body]];
-        const r = new URLLoaderApi();
-        r.load(GLOBAL._apiURL + "player/sendmessage", vars, onMigrateRevokeSuccess, onFail);
+        getSOUNDS().Play("click1");
+        const body = getKEYS().Get("invite_revoke");
+        const subject = getKEYS().Get("invite_subject");
+        const vars = [["threadid", this._cell!._invitePendingID], ["targetid", getLOGIN()._playerID], ["targetbaseid", 0], ["type", "migraterevoke"], ["subject", subject], ["message", body]];
+        const r = new (getURLLoaderApi())();
+        r.load(getGLOBAL()._apiURL + "player/sendmessage", vars, onMigrateRevokeSuccess, onFail);
     }
 
     private ButtonInfo(type: string): void {
         if (type === "open") {
-            this.txtButtonInfo.htmlText = KEYS.Get("newmap_inf_open");
+            this.txtButtonInfo.htmlText = getKEYS().Get("newmap_inf_open");
             this.mcArrow.x = this.bOpen.x + this.bOpen.width / 2 - 5;
         } else if (type === "monsters") {
-            this.txtButtonInfo.htmlText = KEYS.Get("newmap_inf_tr");
+            this.txtButtonInfo.htmlText = getKEYS().Get("newmap_inf_tr");
             this.mcArrow.x = this.bMonsters.x + this.bMonsters.width / 2 - 5;
         } else if (type === "bookmark") {
-            this.txtButtonInfo.htmlText = KEYS.Get("newmap_bookmark");
+            this.txtButtonInfo.htmlText = getKEYS().Get("newmap_bookmark");
             this.mcArrow.x = this.bBookmark.x + this.bBookmark.width / 2 - 5;
         } else if (type === "relocateme") {
-            this.txtButtonInfo.htmlText = KEYS.Get("newmap_relocate_exp");
+            this.txtButtonInfo.htmlText = getKEYS().Get("newmap_relocate_exp");
             this.mcArrow.x = this.bRelocate.x + this.bRelocate.width / 2 - 5;
         } else if (type === "invitemigrate") {
             if (this._cell!._invitePendingID) {
-                this.txtButtonInfo.htmlText = KEYS.Get("newmap_revokepending");
+                this.txtButtonInfo.htmlText = getKEYS().Get("newmap_revokepending");
             } else {
-                this.txtButtonInfo.htmlText = KEYS.Get("newmap_invite_exp");
+                this.txtButtonInfo.htmlText = getKEYS().Get("newmap_invite_exp");
             }
             this.mcArrow.x = this.bInviteMigrate.x + this.bInviteMigrate.width / 2 - 5;
         }
@@ -263,7 +266,7 @@ export class PopupInfoMine extends PopupInfoMine_CLIP {
 
     private ShowInviteMigrate(): void {
         if (this._cell!._base < 2) {
-            GLOBAL.Message(KEYS.Get("newmap_wmtruce", { "v1": this._cell!._name }));
+            getGLOBAL().Message(getKEYS().Get("newmap_wmtruce", { "v1": this._cell!._name }));
             return;
         }
         if (!this._cell!._updated) {
@@ -284,12 +287,12 @@ export class PopupInfoMine extends PopupInfoMine_CLIP {
         });
         this._message = new Message("map2friends");
         this._message.requestType = "migraterequest";
-        this._message.subject_txt.htmlText = KEYS.Get("invite_subject");
-        this._message.body_txt.htmlText = KEYS.Get("invite_body");
+        this._message.subject_txt.htmlText = getKEYS().Get("invite_subject");
+        this._message.body_txt.htmlText = getKEYS().Get("invite_body");
         this._message.x = 0;
         this._message.y = -450;
         this._message.baseID = this._cell!._baseID;
-        GLOBAL.BlockerAdd(this.parent as MovieClip);
+        getGLOBAL().BlockerAdd(this.parent as MovieClip);
         MapRoom._mc.addChild(this._message);
         this.bInviteMigrate.Enabled = false;
     }
@@ -326,7 +329,7 @@ export class PopupInfoMine extends PopupInfoMine_CLIP {
             }
             this.mMonsters.addChild(this._mcMonsters);
         }
-        if (this._hasMonsters && GLOBAL._mapOutpost.length > 0) {
+        if (this._hasMonsters && getGLOBAL()._mapOutpost.length > 0) {
             this.bMonsters.Enabled = true;
         } else {
             this.bMonsters.Enabled = false;

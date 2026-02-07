@@ -2,8 +2,6 @@ import Bitmap from 'openfl/display/Bitmap';
 import DisplayObject from 'openfl/display/DisplayObject';
 import MovieClip from 'openfl/display/MovieClip';
 import MouseEvent from 'openfl/events/MouseEvent';
-import { GLOBAL } from './GLOBAL';
-import { POPUPS } from './POPUPS';
 import { frame3_bottom_left } from './frame3_bottom_left';
 import { frame3_bottom_right } from './frame3_bottom_right';
 import { frame3_top_left } from './frame3_top_left';
@@ -15,6 +13,11 @@ import { frame3_filler_bottom } from './frame3_filler_bottom';
 import { frame3_background } from './frame3_background';
 import { frame_button_close } from './frame_button_close';
 import { frame_button_help } from './frame_button_help';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getPOPUPS(): any { return require("./POPUPS").POPUPS; }
+
 
 /**
  * frame3 - Frame type 3 component with decorations and buttons
@@ -203,7 +206,7 @@ export class frame3 extends MovieClip {
         } else if (this._customCloseFunction) {
             this._customCloseFunction();
         } else {
-            POPUPS.Next();
+            getPOPUPS().Next();
         }
     }
 
@@ -214,7 +217,7 @@ export class frame3 extends MovieClip {
     }
 
     private BtnFullScreen(param1: MouseEvent | null = null): void {
-        GLOBAL.goFullScreen();
+        getGLOBAL().goFullScreen();
         if (this.parent && 'FullScreen' in this.parent) {
             (this.parent as any).FullScreen();
         }

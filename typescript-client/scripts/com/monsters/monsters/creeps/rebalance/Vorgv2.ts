@@ -1,16 +1,19 @@
 import Point from "openfl/geom/Point";
 
 import { ITargetable } from "../../../interfaces/ITargetable";
-import { MonsterBase } from "../../MonsterBase";
-import { Targeting } from "../../../../../Targeting";
 import { CreepBase } from "../CreepBase";
 import { ProjectileUtils } from "../../../projectiles/ProjectileUtils";
 import { Projectilev2 } from "../../../projectiles/Projectilev2";
 
-import { BFOUNDATION } from "../../../../../BFOUNDATION";
-import { SPRITES } from "../../../../../SPRITES";
-import { SOUNDS } from "../../../../../SOUNDS";
 import { LoanShark } from "../../../../../org/kissmyas/utils/loanshark/LoanShark";
+
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+function getTargeting(): any { return require("../../../../../Targeting").Targeting; }
+function getBFOUNDATION(): any { return require("../../../../../BFOUNDATION").BFOUNDATION; }
+function getSPRITES(): any { return require("../../../../../SPRITES").SPRITES; }
+function getSOUNDS(): any { return require("../../../../../SOUNDS").SOUNDS; }
+
 
 /**
  * Vorg v2 - rebalanced flying creep with projectile pool.
@@ -35,15 +38,15 @@ export class Vorgv2 extends CreepBase {
         parent: MonsterBase | null = null
     ) {
         super(id, type, startPos, velocity, startFrame, endFrame, targetPos, ownedByAttacker, building, scale, flipped, parent);
-        SPRITES.SetupSprite("shadow");
+        getSPRITES().SetupSprite("shadow");
         this.m_projectilePool = new LoanShark(Projectilev2, true, Vorgv2.k_projectilePoolSize);
-        this.attackFlags = Targeting.getOldStyleTargets(1);
+        this.attackFlags = getTargeting().getOldStyleTargets(1);
     }
 
     protected override rangedAttack(target: ITargetable): ITargetable {
         const projectile: Projectilev2 = this.m_projectilePool.borrowObject() as Projectilev2;
         projectile.setup(ProjectileUtils.getHealballBitmapData(), this.x, this.getDisplayY(), target, ProjectileUtils.k_healballSpeed, this.damage, this);
-        SOUNDS.Play("hit" + Math.floor(4 + Math.random() * 1), 0.1 + Math.random() * 0.1);
+        getSOUNDS().Play("hit" + Math.floor(4 + Math.random() * 1), 0.1 + Math.random() * 0.1);
         return projectile;
     }
 

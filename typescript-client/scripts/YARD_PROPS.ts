@@ -3,31 +3,34 @@ import Rectangle from "openfl/geom/Rectangle";
 import { SecNum } from "./com/cc/utils/SecNum";
 import { SiegeFactory } from "./com/monsters/siege/SiegeFactory";
 import { SiegeLab } from "./com/monsters/siege/SiegeLab";
-import { BUILDING1 } from "./BUILDING1";
-import { BUILDING2 } from "./BUILDING2";
-import { BUILDING3 } from "./BUILDING3";
-import { BUILDING4 } from "./BUILDING4";
-import { BUILDING5 } from "./BUILDING5";
-import { BUILDING6 } from "./BUILDING6";
-import { BUILDING7 } from "./BUILDING7";
-import { BUILDING8 } from "./BUILDING8";
-import { BUILDING9 } from "./BUILDING9";
-import { BUILDING10 } from "./BUILDING10";
-import { BUILDING11 } from "./BUILDING11";
-import { BUILDING12 } from "./BUILDING12";
-import { BUILDING13 } from "./BUILDING13";
-import { BUILDING14 } from "./BUILDING14";
-import { BUILDING15 } from "./BUILDING15";
-import { BUILDING16 } from "./BUILDING16";
-import { BUILDING17 } from "./BUILDING17";
-import { BUILDING18 } from "./BUILDING18";
-import { BUILDING19 } from "./BUILDING19";
-import { BUILDING20 } from "./BUILDING20";
-import { BUILDING21 } from "./BUILDING21";
-import { BUILDING22 } from "./BUILDING22";
-import { BUILDING23 } from "./BUILDING23";
-import { BUILDING24 } from "./BUILDING24";
-import { BUILDING25 } from "./BUILDING25";
+
+// Lazy imports to break circular dependency chains
+function getBUILDING1(): any { return require("./BUILDING1").BUILDING1; }
+function getBUILDING2(): any { return require("./BUILDING2").BUILDING2; }
+function getBUILDING3(): any { return require("./BUILDING3").BUILDING3; }
+function getBUILDING4(): any { return require("./BUILDING4").BUILDING4; }
+function getBUILDING5(): any { return require("./BUILDING5").BUILDING5; }
+function getBUILDING6(): any { return require("./BUILDING6").BUILDING6; }
+function getBUILDING7(): any { return require("./BUILDING7").BUILDING7; }
+function getBUILDING8(): any { return require("./BUILDING8").BUILDING8; }
+function getBUILDING9(): any { return require("./BUILDING9").BUILDING9; }
+function getBUILDING10(): any { return require("./BUILDING10").BUILDING10; }
+function getBUILDING11(): any { return require("./BUILDING11").BUILDING11; }
+function getBUILDING12(): any { return require("./BUILDING12").BUILDING12; }
+function getBUILDING13(): any { return require("./BUILDING13").BUILDING13; }
+function getBUILDING14(): any { return require("./BUILDING14").BUILDING14; }
+function getBUILDING15(): any { return require("./BUILDING15").BUILDING15; }
+function getBUILDING16(): any { return require("./BUILDING16").BUILDING16; }
+function getBUILDING17(): any { return require("./BUILDING17").BUILDING17; }
+function getBUILDING18(): any { return require("./BUILDING18").BUILDING18; }
+function getBUILDING19(): any { return require("./BUILDING19").BUILDING19; }
+function getBUILDING20(): any { return require("./BUILDING20").BUILDING20; }
+function getBUILDING21(): any { return require("./BUILDING21").BUILDING21; }
+function getBUILDING22(): any { return require("./BUILDING22").BUILDING22; }
+function getBUILDING23(): any { return require("./BUILDING23").BUILDING23; }
+function getBUILDING24(): any { return require("./BUILDING24").BUILDING24; }
+function getBUILDING25(): any { return require("./BUILDING25").BUILDING25; }
+
 
 /**
  * Cost structure for building construction/upgrades
@@ -128,7 +131,7 @@ export class YARD_PROPS {
             tutstage: 0,
             sale: 0,
             description: "twigsnapper_desc",
-            cls: BUILDING1,
+            get cls() { return getBUILDING1(); },
             costs: [
                 { r1: new SecNum(0), r2: new SecNum(750), r3: new SecNum(0), r4: new SecNum(0), time: new SecNum(15), re: [[14, 1, 1]] },
                 { r1: new SecNum(0), r2: new SecNum(1575), r3: new SecNum(0), r4: new SecNum(0), time: new SecNum(300), re: [[14, 1, 1]] },
@@ -171,7 +174,7 @@ export class YARD_PROPS {
             tutstage: 0,
             sale: 0,
             description: "pebbleshiner_desc",
-            cls: BUILDING2,
+            get cls() { return getBUILDING2(); },
             costs: [
                 { r1: new SecNum(750), r2: new SecNum(0), r3: new SecNum(0), r4: new SecNum(0), time: new SecNum(15), re: [[14, 1, 1]] },
                 { r1: new SecNum(1575), r2: new SecNum(0), r3: new SecNum(0), r4: new SecNum(0), time: new SecNum(300), re: [[14, 1, 1]] },
@@ -214,7 +217,7 @@ export class YARD_PROPS {
             tutstage: 80,
             sale: 0,
             description: "puttysquisher_desc",
-            cls: BUILDING3,
+            get cls() { return getBUILDING3(); },
             costs: [
                 { r1: new SecNum(525), r2: new SecNum(224), r3: new SecNum(0), r4: new SecNum(0), time: new SecNum(20), re: [[14, 1, 1]] },
                 { r1: new SecNum(1102), r2: new SecNum(470), r3: new SecNum(0), r4: new SecNum(0), time: new SecNum(300), re: [[14, 1, 1]] },
@@ -249,7 +252,7 @@ export class YARD_PROPS {
             tutstage: 80,
             sale: 0,
             description: "goofactory_desc",
-            cls: BUILDING4,
+            get cls() { return getBUILDING4(); },
             costs: [
                 { r1: new SecNum(247), r2: new SecNum(577), r3: new SecNum(0), r4: new SecNum(0), time: new SecNum(20), re: [[14, 1, 1]] },
                 { r1: new SecNum(520), r2: new SecNum(1212), r3: new SecNum(0), r4: new SecNum(0), time: new SecNum(300), re: [[14, 1, 1]] },
@@ -283,7 +286,7 @@ export class YARD_PROPS {
             tutstage: 60,
             sale: 0,
             description: "flinger_desc",
-            cls: BUILDING5,
+            get cls() { return getBUILDING5(); },
             costs: [
                 { r1: new SecNum(1000), r2: new SecNum(1000), r3: new SecNum(500), r4: new SecNum(0), time: new SecNum(900), re: [[14, 1, 1]] },
                 { r1: new SecNum(20000), r2: new SecNum(20000), r3: new SecNum(10000), r4: new SecNum(0), time: new SecNum(7200), re: [[14, 1, 2], [11, 1, 1]] },

@@ -1,4 +1,7 @@
-import { KEYS } from "./KEYS";
+
+
+// Lazy imports to break circular dependency chains
+function getKEYS(): any { return require("./KEYS").KEYS; }
 
 export class INFERNO_QUESTS {
     public static _infernoQuests: Array<any> = [
@@ -12,7 +15,7 @@ export class INFERNO_QUESTS {
             "description": "q_build_description",
             "hint": "q_build_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_snipertower#"),
+                "v1": getKEYS().Get("#bi_snipertower#"),
                 "v2": "1",
                 "v3": "Defensive"
             },
@@ -33,7 +36,7 @@ export class INFERNO_QUESTS {
             "description": "q_build_description",
             "hint": "q_build_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_housing#"),
+                "v1": getKEYS().Get("#bi_housing#"),
                 "v2": "1",
                 "v3": "Buildings"
             },
@@ -54,7 +57,7 @@ export class INFERNO_QUESTS {
             "description": "q_build_description",
             "hint": "q_build_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_hatchery#"),
+                "v1": getKEYS().Get("#bi_hatchery#"),
                 "v2": "1",
                 "v3": "Buildings"
             },
@@ -96,7 +99,7 @@ export class INFERNO_QUESTS {
             "description": "q_build_description",
             "hint": "q_build_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_cannontower#"),
+                "v1": getKEYS().Get("#bi_cannontower#"),
                 "v2": "1",
                 "v3": "Defensive"
             },
@@ -117,7 +120,7 @@ export class INFERNO_QUESTS {
             "description": "q_upgrade_description",
             "hint": "q_upgrade_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_townhall#"),
+                "v1": getKEYS().Get("#bi_townhall#"),
                 "v2": "2",
                 "v3": "Buildings"
             },
@@ -139,7 +142,7 @@ export class INFERNO_QUESTS {
             "description": "q_build_description",
             "hint": "q_build_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_monsterlocker#"),
+                "v1": getKEYS().Get("#bi_monsterlocker#"),
                 "v2": "1",
                 "v3": "Buildings"
             },
@@ -160,7 +163,7 @@ export class INFERNO_QUESTS {
             "name": "q_unlock_name",
             "description": "q_unlock_idescription",
             "hint": "inf_q_unlock_hint",
-            "keyvars": { "v1": KEYS.Get("#mi_Zagnoid#") },
+            "keyvars": { "v1": getKEYS().Get("#mi_Zagnoid#") },
             "questimage": "inferno_monster2.png",
             "questicon": "icon_IC2.png",
             "streamTitle": "q_c0_streamtitle",
@@ -180,7 +183,7 @@ export class INFERNO_QUESTS {
             "name": "q_unlock_name",
             "description": "q_unlock_idescription",
             "hint": "inf_q_unlock_hint",
-            "keyvars": { "v1": KEYS.Get("#mi_Malphus#") },
+            "keyvars": { "v1": getKEYS().Get("#mi_Malphus#") },
             "questimage": "inferno_monster3.png",
             "questicon": "icon_IC3.png",
             "streamTitle": "q_c0_streamtitle",
@@ -200,7 +203,7 @@ export class INFERNO_QUESTS {
             "description": "q_upgrade_description",
             "hint": "q_upgrade_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_boneharvester#"),
+                "v1": getKEYS().Get("#bi_boneharvester#"),
                 "v2": "3",
                 "v3": "Resources"
             },
@@ -221,7 +224,7 @@ export class INFERNO_QUESTS {
             "description": "q_upgrade_description",
             "hint": "q_upgrade_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_coalharvester#"),
+                "v1": getKEYS().Get("#bi_coalharvester#"),
                 "v2": "3",
                 "v3": "Resources"
             },
@@ -242,7 +245,7 @@ export class INFERNO_QUESTS {
             "description": "q_upgrade_description",
             "hint": "q_upgrade_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_sulfurharvester#"),
+                "v1": getKEYS().Get("#bi_sulfurharvester#"),
                 "v2": "3",
                 "v3": "Resources"
             },
@@ -263,7 +266,7 @@ export class INFERNO_QUESTS {
             "description": "q_upgrade_description",
             "hint": "q_upgrade_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_magmaharverster#"),
+                "v1": getKEYS().Get("#bi_magmaharverster#"),
                 "v2": "3",
                 "v3": "Resources"
             },
@@ -285,7 +288,7 @@ export class INFERNO_QUESTS {
             "description": "q_upgrade_description",
             "hint": "q_upgrade_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_storagesilo#"),
+                "v1": getKEYS().Get("#bi_storagesilo#"),
                 "v2": "3",
                 "v3": "Resources"
             },
@@ -323,7 +326,7 @@ export class INFERNO_QUESTS {
             "description": "q_upgrade_description",
             "hint": "q_upgrade_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_boneharvester#"),
+                "v1": getKEYS().Get("#bi_boneharvester#"),
                 "v2": "4",
                 "v3": "Resources"
             },
@@ -345,7 +348,7 @@ export class INFERNO_QUESTS {
             "description": "q_upgrade_description",
             "hint": "q_upgrade_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_coalharvester#"),
+                "v1": getKEYS().Get("#bi_coalharvester#"),
                 "v2": "4",
                 "v3": "Resources"
             },
@@ -367,7 +370,7 @@ export class INFERNO_QUESTS {
             "description": "q_upgrade_description",
             "hint": "q_upgrade_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_sulfurharvester#"),
+                "v1": getKEYS().Get("#bi_sulfurharvester#"),
                 "v2": "4",
                 "v3": "Resources"
             },
@@ -389,7 +392,7 @@ export class INFERNO_QUESTS {
             "description": "q_upgrade_description",
             "hint": "q_upgrade_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_magmaharverster#"),
+                "v1": getKEYS().Get("#bi_magmaharverster#"),
                 "v2": "4",
                 "v3": "Resources"
             },
@@ -411,7 +414,7 @@ export class INFERNO_QUESTS {
             "description": "q_upgrade_description",
             "hint": "q_upgrade_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_storagesilo#"),
+                "v1": getKEYS().Get("#bi_storagesilo#"),
                 "v2": "3",
                 "v3": "Resources"
             },
@@ -433,7 +436,7 @@ export class INFERNO_QUESTS {
             "description": "q_upgrade_description",
             "hint": "q_upgrade_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_townhall#"),
+                "v1": getKEYS().Get("#bi_townhall#"),
                 "v2": "3",
                 "v3": "Resources"
             },
@@ -455,7 +458,7 @@ export class INFERNO_QUESTS {
             "description": "q_upgrade_description",
             "hint": "q_upgrade_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_storagesilo#"),
+                "v1": getKEYS().Get("#bi_storagesilo#"),
                 "v2": "4",
                 "v3": "Resources"
             },
@@ -477,7 +480,7 @@ export class INFERNO_QUESTS {
             "description": "q_upgrade_description",
             "hint": "q_upgrade_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_storagesilo#"),
+                "v1": getKEYS().Get("#bi_storagesilo#"),
                 "v2": "5",
                 "v3": "Resources"
             },
@@ -498,8 +501,8 @@ export class INFERNO_QUESTS {
             "description": "q_build_description2",
             "hint": "q_build_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_academy#"),
-                "v3": KEYS.Get("ui_topbuildings")
+                "v1": getKEYS().Get("#bi_academy#"),
+                "v3": getKEYS().Get("ui_topbuildings")
             },
             "questimage": "building_inferno_academy.png",
             "questicon": "icon_iacademy.png",
@@ -518,7 +521,7 @@ export class INFERNO_QUESTS {
             "name": "q_unlock_name",
             "description": "q_unlock_idescription",
             "hint": "inf_q_unlock_hint",
-            "keyvars": { "v1": KEYS.Get("#mi_Valgos#") },
+            "keyvars": { "v1": getKEYS().Get("#mi_Valgos#") },
             "questimage": "inferno_monster4.png",
             "questicon": "icon_IC4.png",
             "streamTitle": "q_c0_streamtitle",
@@ -538,7 +541,7 @@ export class INFERNO_QUESTS {
             "name": "q_unlock_name",
             "description": "q_unlock_idescription",
             "hint": "inf_q_unlock_hint",
-            "keyvars": { "v1": KEYS.Get("#mi_Grokus#") },
+            "keyvars": { "v1": getKEYS().Get("#mi_Grokus#") },
             "questimage": "inferno_monster6.png",
             "questicon": "icon_IC6.png",
             "streamTitle": "q_c0_streamtitle",
@@ -618,7 +621,7 @@ export class INFERNO_QUESTS {
             "description": "q_upgrade_description",
             "hint": "q_upgrade_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_townhall#"),
+                "v1": getKEYS().Get("#bi_townhall#"),
                 "v2": "4",
                 "v3": "Resources"
             },
@@ -641,7 +644,7 @@ export class INFERNO_QUESTS {
             "name": "q_unlock_name",
             "description": "q_unlock_idescription",
             "hint": "inf_q_unlock_hint",
-            "keyvars": { "v1": KEYS.Get("#mi_Balthazar#") },
+            "keyvars": { "v1": getKEYS().Get("#mi_Balthazar#") },
             "questimage": "inferno_monster5.png",
             "questicon": "icon_IC6.png",
             "streamTitle": "q_c0_streamtitle",
@@ -661,7 +664,7 @@ export class INFERNO_QUESTS {
             "name": "q_unlock_name",
             "description": "q_unlock_idescription",
             "hint": "inf_q_unlock_hint",
-            "keyvars": { "v1": KEYS.Get("#mi_Sabnox#") },
+            "keyvars": { "v1": getKEYS().Get("#mi_Sabnox#") },
             "questimage": "inferno_monster7.png",
             "questicon": "icon_IC7.png",
             "streamTitle": "q_c0_streamtitle",
@@ -726,7 +729,7 @@ export class INFERNO_QUESTS {
             "description": "q_upgrade_description",
             "hint": "q_upgrade_hint",
             "keyvars": {
-                "v1": KEYS.Get("#bi_townhall#"),
+                "v1": getKEYS().Get("#bi_townhall#"),
                 "v2": "5",
                 "v3": "Buildings"
             },
@@ -749,7 +752,7 @@ export class INFERNO_QUESTS {
             "name": "q_unlock_name",
             "description": "q_unlock_idescription",
             "hint": "inf_q_unlock_hint",
-            "keyvars": { "v1": KEYS.Get("#mi_King_Wormzer#") },
+            "keyvars": { "v1": getKEYS().Get("#mi_King_Wormzer#") },
             "questimage": "inferno_monster8.png",
             "questicon": "icon_IC8.png",
             "streamTitle": "q_c0_streamtitle",

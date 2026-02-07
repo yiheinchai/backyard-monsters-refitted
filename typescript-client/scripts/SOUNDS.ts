@@ -2,8 +2,11 @@ import Event from 'openfl/events/Event';
 import MouseEvent from 'openfl/events/MouseEvent';
 import SoundChannel from 'openfl/media/SoundChannel';
 import SoundTransform from 'openfl/media/SoundTransform';
-import { GLOBAL } from './GLOBAL';
-import { UI2 } from './UI2';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getUI2(): any { return require("./UI2").UI2; }
+
 
 /**
  * SOUNDS - Audio Management System
@@ -129,21 +132,21 @@ export class SOUNDS {
         if (!SOUNDS._setup) {
             SOUNDS._setup = true;
             SOUNDS._musicVolume = SOUNDS._mutedMusic === 0 ? 0.7 : 0;
-            if (GLOBAL.StatGet("mute") === 1) {
+            if (getGLOBAL().StatGet("mute") === 1) {
                 SOUNDS.MuteUnmute(true);
             }
-            if (GLOBAL.StatGet("mutemusic") === 1) {
+            if (getGLOBAL().StatGet("mutemusic") === 1) {
                 SOUNDS.MuteUnmute(true, "music");
             }
             try {
                 for (const key in SOUNDS._sounds) {
                     if (key === "click1") continue;
                     // Preload audio using HTML5 Audio
-                    const audio = new Audio(GLOBAL._soundPathURL + SOUNDS._sounds[key]);
+                    const audio = new Audio(getGLOBAL()._soundPathURL + SOUNDS._sounds[key]);
                     SOUNDS._sounds[key] = audio;
                 }
             } catch (e: any) {
-                GLOBAL.Message("There was a problem setting up audio " + e.message);
+                getGLOBAL().Message("There was a problem setting up audio " + e.message);
             }
         }
     }
@@ -192,7 +195,7 @@ export class SOUNDS {
     }
 
     public static Play(soundPath: string = "", volume: number = 0.8, pan: number = 0, loop: number = 1): any {
-        if (!GLOBAL._catchup && !SOUNDS._muted) {
+        if (!getGLOBAL()._catchup && !SOUNDS._muted) {
             if (!SOUNDS._concurrent[soundPath] || SOUNDS._concurrent[soundPath] <= 2) {
                 SOUNDS._concurrent[soundPath] = (SOUNDS._concurrent[soundPath] || 0) + 1;
                 const sound = SOUNDS._sounds[soundPath];
@@ -248,11 +251,11 @@ export class SOUNDS {
             } else {
                 SOUNDS.MuteUnmute(false);
             }
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-                GLOBAL.StatSet("mute", SOUNDS._muted);
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+                getGLOBAL().StatSet("mute", SOUNDS._muted);
             }
         } catch (e) {
-            GLOBAL.Message("There was a problem turning sounds on");
+            getGLOBAL().Message("There was a problem turning sounds on");
         }
     }
 
@@ -263,38 +266,38 @@ export class SOUNDS {
             } else {
                 SOUNDS.MuteUnmute(false, "music");
             }
-            if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD) {
-                GLOBAL.StatSet("mutemusic", SOUNDS._mutedMusic);
+            if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD) {
+                getGLOBAL().StatSet("mutemusic", SOUNDS._mutedMusic);
             }
         } catch (e) {
-            GLOBAL.Message("There was a problem turning the music on");
+            getGLOBAL().Message("There was a problem turning the music on");
         }
     }
 
     public static MuteUnmute(mute: boolean = true, type: string = "snd"): void {
         if (type === "snd") {
             if (mute) {
-                const frame = (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) ? 4 : 2;
-                if (UI2._top?.mcSound) UI2._top.mcSound.gotoAndStop(frame);
+                const frame = (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) ? 4 : 2;
+                if (getUI2()._top?.mcSound) getUI2()._top.mcSound.gotoAndStop(frame);
                 SOUNDS._muted = 1;
             } else {
-                const frame = (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) ? 3 : 1;
-                if (UI2._top?.mcSound) UI2._top.mcSound.gotoAndStop(frame);
+                const frame = (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) ? 3 : 1;
+                if (getUI2()._top?.mcSound) getUI2()._top.mcSound.gotoAndStop(frame);
                 SOUNDS._muted = 0;
             }
         } else if (type === "music") {
             if (mute) {
-                const frame = (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) ? 4 : 2;
-                if (UI2._top?.mcMusic) UI2._top.mcMusic.gotoAndStop(frame);
+                const frame = (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) ? 4 : 2;
+                if (getUI2()._top?.mcMusic) getUI2()._top.mcMusic.gotoAndStop(frame);
                 SOUNDS._musicVolume = 0;
                 SOUNDS._mutedMusic = 1;
             } else {
-                const frame = (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) ? 3 : 1;
-                if (UI2._top?.mcMusic) UI2._top.mcMusic.gotoAndStop(frame);
+                const frame = (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) ? 3 : 1;
+                if (getUI2()._top?.mcMusic) getUI2()._top.mcMusic.gotoAndStop(frame);
                 SOUNDS._musicVolume = 0.7;
                 SOUNDS._mutedMusic = 0;
                 if (SOUNDS._currentMusic === null && SOUNDS._queuedMusic === null) {
-                    if (GLOBAL.mode === GLOBAL.e_BASE_MODE.ATTACK || GLOBAL.mode === GLOBAL.e_BASE_MODE.WMATTACK) {
+                    if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.ATTACK || getGLOBAL().mode === getGLOBAL().e_BASE_MODE.WMATTACK) {
                         SOUNDS.PlayMusic("musicattack");
                     } else {
                         SOUNDS.PlayMusic("musicbuild");

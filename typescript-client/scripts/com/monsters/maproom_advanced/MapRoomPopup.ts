@@ -14,7 +14,6 @@ import getTimer from "openfl/utils/getTimer";
 import { AllyInfo } from "../alliances/AllyInfo";
 import { ImageCache } from "../display/ImageCache";
 import { EnumYardType } from "../enums/EnumYardType";
-import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { bubblepopup3 } from "../../../bubblepopup3";
 import { bubblepopupBuff } from "../../../bubblepopupBuff";
 import { CellData } from "./CellData";
@@ -33,13 +32,17 @@ import { PopupNewBookmark } from "../../../PopupNewBookmark";
 import { PopupRelocateMe } from "./PopupRelocateMe";
 import { ui_buffIcon_CLIP } from "../../../ui_buffIcon_CLIP";
 
-import { BASE } from "../../../BASE";
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGGER } from "../../../LOGGER";
 import { POWERUPS } from "../../../POWERUPS";
-import { SOUNDS } from "../../../SOUNDS";
 import { Tutorial } from "./Tutorial";
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("../../../BASE").BASE; }
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGGER(): any { return require("../../../LOGGER").LOGGER; }
+function getSOUNDS(): any { return require("../../../SOUNDS").SOUNDS; }
+
 
 /**
  * MapRoomPopup - Main map room popup UI controller.
@@ -78,12 +81,12 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
     constructor() {
         super();
         this._sortArray = [];
-        let w = GLOBAL._ROOT.stage.stageWidth;
-        let h = GLOBAL.GetGameHeight();
+        let w = getGLOBAL()._ROOT.stage.stageWidth;
+        let h = getGLOBAL().GetGameHeight();
         if (w > 1024) w = 1024;
         if (h > 768) h = 768;
         const r = new Rectangle(0 - (w - 760) / 2, 0 - (h - 720) / 2, w, h);
-        if (GLOBAL.isFullScreen) {
+        if (getGLOBAL().isFullScreen) {
             this._fullScreen = true;
             this.mcFrame.x = r.x + 175;
             this.mcFrame.y = r.y + 20;
@@ -135,7 +138,7 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
         this._popupInfoViewOnly = new PopupInfoViewOnly();
         if (!MapRoom._viewOnly) {
             this.bHome.SetupKey("btn_home");
-            this.bHome.addEventListener(MouseEvent.CLICK, (e: MouseEvent) => { this.HideBookmarkMenu(); MapRoom.JumpTo(GLOBAL._mapHome); });
+            this.bHome.addEventListener(MouseEvent.CLICK, (e: MouseEvent) => { this.HideBookmarkMenu(); MapRoom.JumpTo(getGLOBAL()._mapHome); });
             this.bHome.buttonMode = true;
             this.bHome.x = this.mcFrame2.x + 20;
             this.bHome.y = this.mcFrame2.y + 200;
@@ -161,26 +164,26 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
             this.bJump.visible = false;
             this.HideResourceDisplay();
         }
-        this.mcInfo.labelOwner.htmlText = "<b>" + KEYS.Get("label_owner") + "</b>";
-        if (Boolean(GLOBAL._flags.viximo) || Boolean(GLOBAL._flags.kongregate)) { this.mcInfo.labelAlliance.htmlText = "<b>" + KEYS.Get("label_type") + "</b>"; }
-        else { this.mcInfo.labelAlliance.htmlText = "<b>" + KEYS.Get("label_alliance") + "</b>"; }
-        this.mcInfo.labelStatus.htmlText = "<b>" + KEYS.Get("label_status") + "</b>";
-        this.mcInfo.labelLocation.htmlText = "<b>" + KEYS.Get("label_location") + "</b>";
+        this.mcInfo.labelOwner.htmlText = "<b>" + getKEYS().Get("label_owner") + "</b>";
+        if (Boolean(getGLOBAL()._flags.viximo) || Boolean(getGLOBAL()._flags.kongregate)) { this.mcInfo.labelAlliance.htmlText = "<b>" + getKEYS().Get("label_type") + "</b>"; }
+        else { this.mcInfo.labelAlliance.htmlText = "<b>" + getKEYS().Get("label_alliance") + "</b>"; }
+        this.mcInfo.labelStatus.htmlText = "<b>" + getKEYS().Get("label_status") + "</b>";
+        this.mcInfo.labelLocation.htmlText = "<b>" + getKEYS().Get("label_location") + "</b>";
         this.GenerateCells(MapRoom._homePoint);
         this._sortArray.sort((a, b) => a.depth - b.depth);
         for (let i = 0; i < this._sortArray.length; i++) { if (this._cellContainer!.getChildIndex(this._sortArray[i]) !== i) this._cellContainer!.setChildIndex(this._sortArray[i], i); }
         this._cellContainer!.addEventListener(MouseEvent.MOUSE_DOWN, this.ContainerClick.bind(this));
-        GLOBAL._ROOT.stage.addEventListener(MouseEvent.MOUSE_UP, this.ContainerRelease.bind(this));
+        getGLOBAL()._ROOT.stage.addEventListener(MouseEvent.MOUSE_UP, this.ContainerRelease.bind(this));
         this.mcMask.mcBG.addChild(this._cellContainer!);
     }
 
     private JumpPopupShow(event: MouseEvent | null = null): void {
         let popupMC: MapRoomPopupJump | null = null;
-        const Jump = (e: MouseEvent | null = null): void => { const result = this.JumpToCoordinate(popupMC!.tX.text, popupMC!.tY.text); if (result) GLOBAL.Message(result); else JumpPopupHide(); };
-        const JumpPopupHide = (e: MouseEvent | null = null): void => { GLOBAL.BlockerRemove(); popupMC!.bJump.removeEventListener(MouseEvent.CLICK, Jump); popupMC!.mcFrame = null; popupMC!.parent.removeChild(popupMC!); popupMC = null; };
+        const Jump = (e: MouseEvent | null = null): void => { const result = this.JumpToCoordinate(popupMC!.tX.text, popupMC!.tY.text); if (result) getGLOBAL().Message(result); else JumpPopupHide(); };
+        const JumpPopupHide = (e: MouseEvent | null = null): void => { getGLOBAL().BlockerRemove(); popupMC!.bJump.removeEventListener(MouseEvent.CLICK, Jump); popupMC!.mcFrame = null; popupMC!.parent.removeChild(popupMC!); popupMC = null; };
         this.HideBookmarkMenu();
         popupMC = new MapRoomPopupJump();
-        popupMC.tMessage.htmlText = KEYS.Get("label_jumptolocation");
+        popupMC.tMessage.htmlText = getKEYS().Get("label_jumptolocation");
         popupMC.tX.htmlText = "";
         popupMC.tY.htmlText = "";
         popupMC.bJump.SetupKey("btn_jump");
@@ -188,7 +191,7 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
         popupMC.x = 450;
         popupMC.y = 250;
         popupMC.mcFrame.Setup(true, JumpPopupHide);
-        GLOBAL.BlockerAdd(this);
+        getGLOBAL().BlockerAdd(this);
         this.addChild(popupMC);
     }
 
@@ -197,14 +200,14 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
         for (let i = 1; i < 5; i++) {
             (this as any)["mcR" + i].x = this.mcFrame2.x + 20;
             (this as any)["mcR" + i].y = this.mcFrame2.y + 18 + (i - 1) * 36;
-            (this as any)["mcR" + i].tR.htmlText = GLOBAL.FormatNumber(GLOBAL._resources["r" + i].Get());
-            let barWidth = Math.floor(100 / GLOBAL._resources["r" + i + "max"] * GLOBAL._resources["r" + i].Get());
+            (this as any)["mcR" + i].tR.htmlText = getGLOBAL().FormatNumber(getGLOBAL()._resources["r" + i].Get());
+            let barWidth = Math.floor(100 / getGLOBAL()._resources["r" + i + "max"] * getGLOBAL()._resources["r" + i].Get());
             if (barWidth > 90) barWidth = 90;
             (this as any)["mcR" + i].mcBar.width = barWidth;
         }
         this.mcOutposts.x = this.mcFrame2.x + 20;
         this.mcOutposts.y = this.mcFrame2.y + 162;
-        this.mcOutposts.tR.htmlText = GLOBAL._mapOutpost.length + " " + KEYS.Get("newmap_outposts");
+        this.mcOutposts.tR.htmlText = getGLOBAL()._mapOutpost.length + " " + getKEYS().Get("newmap_outposts");
     }
 
     public ShowInfo(cell: MapRoomCell): void {
@@ -214,19 +217,19 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
         numChildren = this.mcInfo.mcAlliancePic.mcImage.numChildren;
         while (numChildren--) this.mcInfo.mcAlliancePic.mcImage.removeChildAt(numChildren);
         this.mcInfo.mcAlliancePic.visible = false;
-        if (!GLOBAL._flags.viximo) {
+        if (!getGLOBAL()._flags.viximo) {
             if (cell._base > 1 && Boolean(cell._pic_square)) { this.ProfilePicVix(cell._pic_square); if (Boolean(cell._alliance) && Boolean(cell._alliance.image)) { this.AlliancePic(AllyInfo._picURLs.sizeM, cell._alliance); this.mcInfo.mcAlliancePic.visible = true; } }
         } else if (cell._base > 1 && Boolean(cell._facebookID)) { this.ProfilePic(cell._facebookID); if (Boolean(cell._alliance) && Boolean(cell._alliance.image)) { this.AlliancePic(AllyInfo._picURLs.sizeM, cell._alliance); this.mcInfo.mcAlliancePic.visible = true; } }
         if (cell._base === 1 && Boolean(cell._name)) this.TribePic(cell._name);
-        if (cell._water) { this.mcInfo.tAlliance.htmlText = ""; this.mcInfo.tStatus.htmlText = KEYS.Get("status_water"); this.mcInfo.tOwner.htmlText = ""; this.mcInfo.tUserId.visible = false; }
+        if (cell._water) { this.mcInfo.tAlliance.htmlText = ""; this.mcInfo.tStatus.htmlText = getKEYS().Get("status_water"); this.mcInfo.tOwner.htmlText = ""; this.mcInfo.tUserId.visible = false; }
         else {
-            if (cell._alliance) { if (cell._base === 0) this.mcInfo.tAlliance.htmlText = ""; else if (cell._base === 1) this.mcInfo.tAlliance.htmlText = KEYS.Get("newmap_wm"); else this.mcInfo.tAlliance.htmlText = cell._alliance.name; }
-            else { if (cell._base === 0) this.mcInfo.tAlliance.htmlText = ""; else if (cell._base === 1) this.mcInfo.tAlliance.htmlText = KEYS.Get("newmap_wm"); else if (cell._base === 2 && Boolean(cell._mine)) this.mcInfo.tAlliance.htmlText = KEYS.Get("newmap_my"); else if (cell._base === 2 && !cell._mine) this.mcInfo.tAlliance.htmlText = KEYS.Get("newmap_ey"); else if (cell._base === 3 && Boolean(cell._mine)) this.mcInfo.tAlliance.htmlText = KEYS.Get("newmap_outposts"); else if (cell._base === 3 && !cell._mine) this.mcInfo.tAlliance.htmlText = KEYS.Get("newmap_eo"); }
-            if (cell._damage) this.mcInfo.tStatus.htmlText = '<font color="#FF0000">' + KEYS.Get("newmap_inf_damaged", { "v1": Math.floor(cell._damage) }) + "</font>";
+            if (cell._alliance) { if (cell._base === 0) this.mcInfo.tAlliance.htmlText = ""; else if (cell._base === 1) this.mcInfo.tAlliance.htmlText = getKEYS().Get("newmap_wm"); else this.mcInfo.tAlliance.htmlText = cell._alliance.name; }
+            else { if (cell._base === 0) this.mcInfo.tAlliance.htmlText = ""; else if (cell._base === 1) this.mcInfo.tAlliance.htmlText = getKEYS().Get("newmap_wm"); else if (cell._base === 2 && Boolean(cell._mine)) this.mcInfo.tAlliance.htmlText = getKEYS().Get("newmap_my"); else if (cell._base === 2 && !cell._mine) this.mcInfo.tAlliance.htmlText = getKEYS().Get("newmap_ey"); else if (cell._base === 3 && Boolean(cell._mine)) this.mcInfo.tAlliance.htmlText = getKEYS().Get("newmap_outposts"); else if (cell._base === 3 && !cell._mine) this.mcInfo.tAlliance.htmlText = getKEYS().Get("newmap_eo"); }
+            if (cell._damage) this.mcInfo.tStatus.htmlText = '<font color="#FF0000">' + getKEYS().Get("newmap_inf_damaged", { "v1": Math.floor(cell._damage) }) + "</font>";
             if (!cell._damage) this.mcInfo.tStatus.htmlText = "Fine";
-            if (!cell._damage && cell._base < 1) this.mcInfo.tStatus.htmlText = KEYS.Get("newmap_re");
+            if (!cell._damage && cell._base < 1) this.mcInfo.tStatus.htmlText = getKEYS().Get("newmap_re");
             this.mcInfo.tOwner.htmlText = cell._name;
-            this.mcInfo.tUserId.text = KEYS.Get("label_userid", { "v1": cell._userID });
+            this.mcInfo.tUserId.text = getKEYS().Get("label_userid", { "v1": cell._userID });
             this.mcInfo.tUserId.visible = true;
         }
         this.mcInfo.tLocation.htmlText = cell.X + " x " + cell.Y;
@@ -264,15 +267,15 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
     private AlliancePic(size: string, ally: AllyInfo): void { ally.AlliancePic(size, this.mcInfo.mcAlliancePic.mcImage, this.mcInfo.mcAlliancePic.mcBG, true); }
 
     public Hide(event: MouseEvent | null = null): void {
-        GLOBAL._attackerCellsInRange = [];
-        if (BASE._loadedFriendlyBaseID) { BASE.yardType = BASE._loadedYardType; BASE.LoadBase(null, 0, BASE._loadedFriendlyBaseID, GLOBAL.e_BASE_MODE.BUILD, false, BASE._loadedYardType); }
-        else { BASE.yardType = EnumYardType.MAIN_YARD; BASE.LoadBase(null, 0, GLOBAL._homeBaseID, GLOBAL.e_BASE_MODE.BUILD, false, EnumYardType.MAIN_YARD); }
-        SOUNDS.Play("close");
+        getGLOBAL()._attackerCellsInRange = [];
+        if (getBASE()._loadedFriendlyBaseID) { getBASE().yardType = getBASE()._loadedYardType; getBASE().LoadBase(null, 0, getBASE()._loadedFriendlyBaseID, getGLOBAL().e_BASE_MODE.BUILD, false, getBASE()._loadedYardType); }
+        else { getBASE().yardType = EnumYardType.MAIN_YARD; getBASE().LoadBase(null, 0, getGLOBAL()._homeBaseID, getGLOBAL().e_BASE_MODE.BUILD, false, EnumYardType.MAIN_YARD); }
+        getSOUNDS().Play("close");
         this.Cleanup();
-        MapRoomManager.instance.Hide();
+        getMapRoomManager().instance.Hide();
     }
 
-    public CloseMapRoomAfterMigration(): void { BASE.yardType = EnumYardType.MAIN_YARD; BASE.LoadBase(null, 0, GLOBAL._homeBaseID, GLOBAL.e_BASE_MODE.BUILD, false, EnumYardType.MAIN_YARD); this.Cleanup(); MapRoomManager.instance.Hide(); }
+    public CloseMapRoomAfterMigration(): void { getBASE().yardType = EnumYardType.MAIN_YARD; getBASE().LoadBase(null, 0, getGLOBAL()._homeBaseID, getGLOBAL().e_BASE_MODE.BUILD, false, EnumYardType.MAIN_YARD); this.Cleanup(); getMapRoomManager().instance.Hide(); }
 
     public Cleanup(): void {
         this._bubble = null;
@@ -291,7 +294,7 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
         if (this._cellContainer) {
             while (this._cellContainer.numChildren > 0) this._cellContainer.removeChildAt(0);
             this._cellContainer.removeEventListener(MouseEvent.MOUSE_DOWN, this.ContainerClick.bind(this));
-            GLOBAL._ROOT.stage.removeEventListener(MouseEvent.MOUSE_UP, this.ContainerRelease.bind(this));
+            getGLOBAL()._ROOT.stage.removeEventListener(MouseEvent.MOUSE_UP, this.ContainerRelease.bind(this));
             if (this._cellContainer.parent) this._cellContainer.parent.removeChild(this._cellContainer);
             this._cellContainer = null;
         }
@@ -302,7 +305,7 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
         const savedCount = MapRoom.BookmarkDataGet("mbms");
         if (savedCount > 0) {
             for (let i = 0; i < savedCount; i++) { const data = MapRoom.BookmarkDataGet("mbm" + i); const posX = Math.floor(data / 10000); const posY = data - posX * 10000; const name = MapRoom.BookmarkDataGetStr("mbmn" + i); MapRoom._currentPosition = new Point(posX, posY); MapRoom.AddBookmark(name, false); }
-        } else { MapRoomManager.instance.BookmarksClear(); }
+        } else { getMapRoomManager().instance.BookmarksClear(); }
         if (MapRoom._bookmarks.length > 0 || MapRoom._viewOnly) this.bBookmarks.Enabled = true;
         else this.bBookmarks.Enabled = false;
     }
@@ -313,23 +316,23 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
         this._sortArray.sort((a, b) => a.depth - b.depth);
         for (let i = 0; i < this._sortArray.length; i++) { if (this._cellContainer!.getChildIndex(this._sortArray[i]) !== i) this._cellContainer!.setChildIndex(this._sortArray[i], i); }
         this._cellContainer!.addEventListener(MouseEvent.MOUSE_DOWN, this.ContainerClick.bind(this));
-        GLOBAL._ROOT.stage.addEventListener(MouseEvent.MOUSE_UP, this.ContainerRelease.bind(this));
+        getGLOBAL()._ROOT.stage.addEventListener(MouseEvent.MOUSE_UP, this.ContainerRelease.bind(this));
         this.mcMask.mcBG.addChild(this._cellContainer!);
         this.Update();
     }
 
     private GenerateCells(point: Point): void {
-        let stageWidth = GLOBAL._ROOT.stage.stageWidth;
-        let stageHeight = GLOBAL.GetGameHeight();
-        LOGGER.Log("log", "val of param1: " + point);
+        let stageWidth = getGLOBAL()._ROOT.stage.stageWidth;
+        let stageHeight = getGLOBAL().GetGameHeight();
+        getLOGGER().Log("log", "val of param1: " + point);
         if (stageWidth > 1024) stageWidth = 1024;
         if (stageHeight > 768) stageHeight = 768;
-        if (this._cellContainer) { while (this._cellContainer.numChildren > 0) this._cellContainer.removeChildAt(0); this._cellContainer.removeEventListener(MouseEvent.MOUSE_DOWN, this.ContainerClick.bind(this)); GLOBAL._ROOT.stage.removeEventListener(MouseEvent.MOUSE_UP, this.ContainerRelease.bind(this)); if (this._cellContainer.parent) this._cellContainer.parent.removeChild(this._cellContainer); this._cellContainer = null; }
+        if (this._cellContainer) { while (this._cellContainer.numChildren > 0) this._cellContainer.removeChildAt(0); this._cellContainer.removeEventListener(MouseEvent.MOUSE_DOWN, this.ContainerClick.bind(this)); getGLOBAL()._ROOT.stage.removeEventListener(MouseEvent.MOUSE_UP, this.ContainerRelease.bind(this)); if (this._cellContainer.parent) this._cellContainer.parent.removeChild(this._cellContainer); this._cellContainer = null; }
         if (this._cells) { for (let i = this._cells.length - 1; i >= 0; i--) { } }
         this._cells = [];
         this._cellContainer = new MovieClip();
         this._sortArray = [];
-        if (GLOBAL.isFullScreen) { this._cellCountX = 18; this._cellCountY = 15; }
+        if (getGLOBAL().isFullScreen) { this._cellCountX = 18; this._cellCountY = 15; }
         else { this._cellCountX = 16; this._cellCountY = 14; }
         for (let colIndex = 0; colIndex < this._cellCountX; colIndex++) {
             for (let rowIndex = 0; rowIndex < this._cellCountY; rowIndex++) {
@@ -346,15 +349,15 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
                 mapRoomCell.depth = mapRoomCell.y * 1000 + mapRoomCell.x;
                 this._sortArray.push(mapRoomCell);
                 this._cellContainer.addChild(mapRoomCell);
-                if (GLOBAL.isFullScreen) { mapRoomCell.Y += point.y - 8; if (point.x % 2) { mapRoomCell.X += point.x - 8; this._cellContainer.x = -125; this._cellContainer.y = 18; } else { mapRoomCell.X += point.x - 7; this._cellContainer.x = -9; this._cellContainer.y = 54; } }
+                if (getGLOBAL().isFullScreen) { mapRoomCell.Y += point.y - 8; if (point.x % 2) { mapRoomCell.X += point.x - 8; this._cellContainer.x = -125; this._cellContainer.y = 18; } else { mapRoomCell.X += point.x - 7; this._cellContainer.x = -9; this._cellContainer.y = 54; } }
                 else { mapRoomCell.Y += point.y - 7; if (point.x % 2) { mapRoomCell.X += point.x - 4; this._cellContainer.x = 209; this._cellContainer.y = 7; } else { mapRoomCell.X += point.x - 5; this._cellContainer.x = 101; this._cellContainer.y = 40; } }
             }
         }
         this._fallbackHomeCell = new MapRoomCell();
-        this._fallbackHomeCell.X = GLOBAL._mapHome.x;
-        this._fallbackHomeCell.Y = GLOBAL._mapHome.y;
+        this._fallbackHomeCell.X = getGLOBAL()._mapHome.x;
+        this._fallbackHomeCell.Y = getGLOBAL()._mapHome.y;
         this._cellContainer.addEventListener(MouseEvent.MOUSE_DOWN, this.ContainerClick.bind(this));
-        GLOBAL._ROOT.stage.addEventListener(MouseEvent.MOUSE_UP, this.ContainerRelease.bind(this));
+        getGLOBAL()._ROOT.stage.addEventListener(MouseEvent.MOUSE_UP, this.ContainerRelease.bind(this));
         this.mcMask.mcBG.addChild(this._cellContainer);
     }
 
@@ -371,7 +374,7 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
     public Check(): void { for (const cell of this._cells) cell.Check(); }
 
     public Update(forceUpdate: boolean = false): void {
-        if (this._fullScreen && GLOBAL._ROOT.stage.displayState === StageDisplayState.NORMAL) { MapRoomManager.instance.ResizeHandler(); this._fullScreen = false; return; }
+        if (this._fullScreen && getGLOBAL()._ROOT.stage.displayState === StageDisplayState.NORMAL) { getMapRoomManager().instance.ResizeHandler(); this._fullScreen = false; return; }
         if ((!this._fallbackHomeCell!._updated || forceUpdate) && this._fallbackHomeCell!._dataAge <= 0) { const data = MapRoom.GetCell(this._fallbackHomeCell!.X, this._fallbackHomeCell!.Y); if (data) this._fallbackHomeCell!.Setup(data); }
         this._sortArray = [];
         let needsSort = false;
@@ -394,7 +397,7 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
         if (Boolean(this._popupInfoMine) && Boolean(this._popupInfoMine!.parent)) this._popupInfoMine!.Update();
         if (Boolean(this._popupAttackA) && Boolean(this._popupAttackA!.parent)) this._popupAttackA!.Update();
         if (!this._dragged) { for (const cell of this._cells) { if (!cell._over) cell.mc.mcGlow.alpha = 0; else cell.mc.mcGlow.alpha = 0.5; cell._inRange = false; } }
-        if (!MapRoom._viewOnly) { let homeCellRendered = false; for (const cell of this._cells) { if (cell._mine && cell._flingerRange!.Get() > 0 && cell._base > 0) { const range = POWERUPS.Apply(POWERUPS.ALLIANCE_DECLAREWAR, [cell._flingerRange!.Get()]); this.ShowRange(cell, range); if (cell.X === GLOBAL._mapHome.x && cell.y === GLOBAL._mapHome.y) homeCellRendered = true; } } if (!homeCellRendered && this._fallbackHomeCell!._mine && this._fallbackHomeCell!._base > 0) this.ShowRange(this._fallbackHomeCell!, POWERUPS.Apply(POWERUPS.ALLIANCE_DECLAREWAR, [this._fallbackHomeCell!._flingerRange!.Get()])); }
+        if (!MapRoom._viewOnly) { let homeCellRendered = false; for (const cell of this._cells) { if (cell._mine && cell._flingerRange!.Get() > 0 && cell._base > 0) { const range = POWERUPS.Apply(POWERUPS.ALLIANCE_DECLAREWAR, [cell._flingerRange!.Get()]); this.ShowRange(cell, range); if (cell.X === getGLOBAL()._mapHome.x && cell.y === getGLOBAL()._mapHome.y) homeCellRendered = true; } } if (!homeCellRendered && this._fallbackHomeCell!._mine && this._fallbackHomeCell!._base > 0) this.ShowRange(this._fallbackHomeCell!, POWERUPS.Apply(POWERUPS.ALLIANCE_DECLAREWAR, [this._fallbackHomeCell!._flingerRange!.Get()])); }
         if (MapRoom._bookmarks.length > 0 || MapRoom._viewOnly) this.bBookmarks.Enabled = true; else this.bBookmarks.Enabled = false;
         this.DisplayBuffs();
     }
@@ -440,23 +443,23 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
         return null;
     }
 
-    public ShowInfoMine(cell: MapRoomCell): void { this.HideBookmarkMenu(); if (!this._dragged) { SOUNDS.Play("click1"); this.HideBubble(); this._popupInfoMine!.Setup(cell); GLOBAL.BlockerAdd(this); this.addChild(this._popupInfoMine!); } this._dragged = false; }
-    public HideInfoMine(): void { GLOBAL.BlockerRemove(); if (this._popupInfoMine!.parent) this._popupInfoMine!.parent.removeChild(this._popupInfoMine!); SOUNDS.Play("close"); }
-    public ShowInfoEnemy(cell: MapRoomCell, inRange: boolean = false): void { this.HideBookmarkMenu(); if (!this._dragged) { SOUNDS.Play("click1"); this.HideBubble(); this._popupInfoEnemy!.Setup(cell, inRange); GLOBAL.BlockerAdd(this); this.addChild(this._popupInfoEnemy!); } this._dragged = false; }
-    public HideInfoEnemy(): void { GLOBAL.BlockerRemove(); if (this._popupInfoEnemy!.parent) this._popupInfoEnemy!.parent.removeChild(this._popupInfoEnemy!); SOUNDS.Play("close"); }
-    public ShowInfoViewOnly(cell: MapRoomCell, inRange: boolean = false): void { if (!this._dragged) { SOUNDS.Play("click1"); this._popupInfoViewOnly!.Setup(cell, inRange); GLOBAL.BlockerAdd(this); this.addChild(this._popupInfoViewOnly!); } this._dragged = false; }
-    public HideInfoViewOnly(): void { GLOBAL.BlockerRemove(); if (this._popupInfoViewOnly!.parent) this._popupInfoViewOnly!.parent.removeChild(this._popupInfoViewOnly!); SOUNDS.Play("close"); }
-    public ShowInfoDestroyed(cell: MapRoomCell): void { this.HideBookmarkMenu(); if (!this._dragged) { SOUNDS.Play("click1"); this.HideBubble(); cell._destroyed = 1; this._popupInfoEnemy!.Setup(cell); GLOBAL.BlockerAdd(this); this.addChild(this._popupInfoEnemy!); } this._dragged = false; }
+    public ShowInfoMine(cell: MapRoomCell): void { this.HideBookmarkMenu(); if (!this._dragged) { getSOUNDS().Play("click1"); this.HideBubble(); this._popupInfoMine!.Setup(cell); getGLOBAL().BlockerAdd(this); this.addChild(this._popupInfoMine!); } this._dragged = false; }
+    public HideInfoMine(): void { getGLOBAL().BlockerRemove(); if (this._popupInfoMine!.parent) this._popupInfoMine!.parent.removeChild(this._popupInfoMine!); getSOUNDS().Play("close"); }
+    public ShowInfoEnemy(cell: MapRoomCell, inRange: boolean = false): void { this.HideBookmarkMenu(); if (!this._dragged) { getSOUNDS().Play("click1"); this.HideBubble(); this._popupInfoEnemy!.Setup(cell, inRange); getGLOBAL().BlockerAdd(this); this.addChild(this._popupInfoEnemy!); } this._dragged = false; }
+    public HideInfoEnemy(): void { getGLOBAL().BlockerRemove(); if (this._popupInfoEnemy!.parent) this._popupInfoEnemy!.parent.removeChild(this._popupInfoEnemy!); getSOUNDS().Play("close"); }
+    public ShowInfoViewOnly(cell: MapRoomCell, inRange: boolean = false): void { if (!this._dragged) { getSOUNDS().Play("click1"); this._popupInfoViewOnly!.Setup(cell, inRange); getGLOBAL().BlockerAdd(this); this.addChild(this._popupInfoViewOnly!); } this._dragged = false; }
+    public HideInfoViewOnly(): void { getGLOBAL().BlockerRemove(); if (this._popupInfoViewOnly!.parent) this._popupInfoViewOnly!.parent.removeChild(this._popupInfoViewOnly!); getSOUNDS().Play("close"); }
+    public ShowInfoDestroyed(cell: MapRoomCell): void { this.HideBookmarkMenu(); if (!this._dragged) { getSOUNDS().Play("click1"); this.HideBubble(); cell._destroyed = 1; this._popupInfoEnemy!.Setup(cell); getGLOBAL().BlockerAdd(this); this.addChild(this._popupInfoEnemy!); } this._dragged = false; }
     public HideTransferB(): void { }
-    public ShowMonstersA(cell: MapRoomCell, isReopen: boolean = false): void { SOUNDS.Play("click1"); this.HideBookmarkMenu(); this.HideInfoMine(); this._popupMonsters!.Setup(cell, isReopen); GLOBAL.BlockerAdd(this); this.addChild(this._popupMonsters!); }
-    public HideMonstersA(): void { if (this._popupMonsters!.parent) this._popupMonsters!.parent.removeChild(this._popupMonsters!); GLOBAL.BlockerRemove(); SOUNDS.Play("close"); }
-    public ShowMonstersB(monsters: any, cell: MapRoomCell): void { SOUNDS.Play("click1"); this.HideBookmarkMenu(); this._popupMonstersB!.Setup(monsters, cell); GLOBAL.BlockerAdd(this); this.addChild(this._popupMonstersB!); }
-    public HideMonstersB(): void { GLOBAL.BlockerRemove(); if (Boolean(this._popupMonstersB) && Boolean(this._popupMonstersB!.parent)) this._popupMonstersB!.parent.removeChild(this._popupMonstersB!); SOUNDS.Play("close"); }
-    public ShowAttack(cell: MapRoomCell): void { SOUNDS.Play("click1"); this.HideBookmarkMenu(); if (cell && !cell._protected && !(cell._truce && cell._truce > GLOBAL.Timestamp())) { this._popupAttackA!.Setup(cell); GLOBAL.BlockerAdd(this); this.addChild(this._popupAttackA!); } else if (cell._protected) GLOBAL.Message(KEYS.Get("newmap_dp")); else if (Boolean(cell._truce) && cell._truce > GLOBAL.Timestamp()) GLOBAL.Message(KEYS.Get("newmap_truce")); }
-    public HideAttack(): void { GLOBAL.BlockerRemove(); if (this._popupAttackA!.parent) this._popupAttackA!.parent.removeChild(this._popupAttackA!); SOUNDS.Play("close"); }
+    public ShowMonstersA(cell: MapRoomCell, isReopen: boolean = false): void { getSOUNDS().Play("click1"); this.HideBookmarkMenu(); this.HideInfoMine(); this._popupMonsters!.Setup(cell, isReopen); getGLOBAL().BlockerAdd(this); this.addChild(this._popupMonsters!); }
+    public HideMonstersA(): void { if (this._popupMonsters!.parent) this._popupMonsters!.parent.removeChild(this._popupMonsters!); getGLOBAL().BlockerRemove(); getSOUNDS().Play("close"); }
+    public ShowMonstersB(monsters: any, cell: MapRoomCell): void { getSOUNDS().Play("click1"); this.HideBookmarkMenu(); this._popupMonstersB!.Setup(monsters, cell); getGLOBAL().BlockerAdd(this); this.addChild(this._popupMonstersB!); }
+    public HideMonstersB(): void { getGLOBAL().BlockerRemove(); if (Boolean(this._popupMonstersB) && Boolean(this._popupMonstersB!.parent)) this._popupMonstersB!.parent.removeChild(this._popupMonstersB!); getSOUNDS().Play("close"); }
+    public ShowAttack(cell: MapRoomCell): void { getSOUNDS().Play("click1"); this.HideBookmarkMenu(); if (cell && !cell._protected && !(cell._truce && cell._truce > getGLOBAL().Timestamp())) { this._popupAttackA!.Setup(cell); getGLOBAL().BlockerAdd(this); this.addChild(this._popupAttackA!); } else if (cell._protected) getGLOBAL().Message(getKEYS().Get("newmap_dp")); else if (Boolean(cell._truce) && cell._truce > getGLOBAL().Timestamp()) getGLOBAL().Message(getKEYS().Get("newmap_truce")); }
+    public HideAttack(): void { getGLOBAL().BlockerRemove(); if (this._popupAttackA!.parent) this._popupAttackA!.parent.removeChild(this._popupAttackA!); getSOUNDS().Play("close"); }
 
     public ShowBookmarkMenu(event: MouseEvent): void {
-        SOUNDS.Play("click1");
+        getSOUNDS().Play("click1");
         if (!this._menuShown && MapRoom._bookmarks.length > 0) {
             const length = MapRoom._bookmarks.length;
             let newY = this.bBookmarks.y;
@@ -480,13 +483,13 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
         } else { this.HideBookmarkMenu(); }
     }
 
-    public HideBookmarkMenu(): void { if (this._menuShown) { for (let i = 0; i < this._popupBookmarkMenu.length; i++) { if (this._popupBookmarkMenu[i].parent) this._popupBookmarkMenu[i].parent.removeChild(this._popupBookmarkMenu[i]); } this._menuShown = false; SOUNDS.Play("close"); } }
+    public HideBookmarkMenu(): void { if (this._menuShown) { for (let i = 0; i < this._popupBookmarkMenu.length; i++) { if (this._popupBookmarkMenu[i].parent) this._popupBookmarkMenu[i].parent.removeChild(this._popupBookmarkMenu[i]); } this._menuShown = false; getSOUNDS().Play("close"); } }
 
     public JumpToCoordinate(xStr: string, yStr: string): string {
         const x = Number(xStr);
         const y = Number(yStr);
-        if (!isNaN(x) && !isNaN(y)) { const intX = Math.floor(x); const intY = Math.floor(y); if (intX >= 0 && intX < MapRoom._mapWidth && intY >= 0 && intY <= MapRoom._mapHeight) { MapRoom._homePoint = new Point(intX, intY); MapRoom.JumpTo(MapRoom._homePoint); return ""; } return KEYS.Get("map_coordinateoffmap"); }
-        return KEYS.Get("map_notanumber");
+        if (!isNaN(x) && !isNaN(y)) { const intX = Math.floor(x); const intY = Math.floor(y); if (intX >= 0 && intX < MapRoom._mapWidth && intY >= 0 && intY <= MapRoom._mapHeight) { MapRoom._homePoint = new Point(intX, intY); MapRoom.JumpTo(MapRoom._homePoint); return ""; } return getKEYS().Get("map_coordinateoffmap"); }
+        return getKEYS().Get("map_notanumber");
     }
 
     public BookmarkSelect(index: number): void { this.HideBookmarkMenu(); if (MapRoom._bookmarks.length > index) MapRoom.JumpTo(MapRoom._bookmarks[index].location); }
@@ -501,13 +504,13 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
             MapRoom.BookmarkDataSet("mbm" + length, 0, false);
             MapRoom.BookmarkDataSetStr("mbmn" + length, "", false);
             MapRoom.BookmarksSave();
-        } else { MapRoomManager.instance.BookmarksClear(); this._menuShown = false; }
+        } else { getMapRoomManager().instance.BookmarksClear(); this._menuShown = false; }
     }
 
-    public ShowBookmarkAddPopup(cell: MapRoomCell): void { SOUNDS.Play("click1"); MapRoom._currentPosition = new Point(cell.X, cell.Y); this._popupBookmarkAdd!.tName.htmlText = KEYS.Get("map_yardowner", { "v1": cell._name }); this._popupBookmarkAdd!.tMessage.htmlText = KEYS.Get("newmap_bm_add"); this._popupBookmarkAdd!.bSave.SetupKey("btn_save"); this._popupBookmarkAdd!.bSave.addEventListener(MouseEvent.CLICK, this.HideBookmarkAddPopupWithAdd.bind(this)); GLOBAL.BlockerAdd(this); this.addChild(this._popupBookmarkAdd!); }
-    public ShowRelocateMePopup(cell: MapRoomCell): void { SOUNDS.Play("click1"); this._popupRelocateMe!.Setup(cell); GLOBAL.BlockerAdd(this); this.addChild(this._popupRelocateMe!); }
-    public HideBookmarkAddPopup(event: MouseEvent | null = null): void { if (this._popupBookmarkAdd!.parent) this._popupBookmarkAdd!.parent.removeChild(this._popupBookmarkAdd!); GLOBAL.BlockerRemove(); }
-    public HideBookmarkAddPopupWithAdd(event: MouseEvent): void { GLOBAL.BlockerRemove(); const result = MapRoom.AddBookmark(this._popupBookmarkAdd!.tName.text); if (result.hide && this._popupBookmarkAdd && Boolean(this._popupBookmarkAdd.parent)) this._popupBookmarkAdd.parent.removeChild(this._popupBookmarkAdd); if (result.message !== "SUCCESS") GLOBAL.Message(result.message); SOUNDS.Play("close"); }
+    public ShowBookmarkAddPopup(cell: MapRoomCell): void { getSOUNDS().Play("click1"); MapRoom._currentPosition = new Point(cell.X, cell.Y); this._popupBookmarkAdd!.tName.htmlText = getKEYS().Get("map_yardowner", { "v1": cell._name }); this._popupBookmarkAdd!.tMessage.htmlText = getKEYS().Get("newmap_bm_add"); this._popupBookmarkAdd!.bSave.SetupKey("btn_save"); this._popupBookmarkAdd!.bSave.addEventListener(MouseEvent.CLICK, this.HideBookmarkAddPopupWithAdd.bind(this)); getGLOBAL().BlockerAdd(this); this.addChild(this._popupBookmarkAdd!); }
+    public ShowRelocateMePopup(cell: MapRoomCell): void { getSOUNDS().Play("click1"); this._popupRelocateMe!.Setup(cell); getGLOBAL().BlockerAdd(this); this.addChild(this._popupRelocateMe!); }
+    public HideBookmarkAddPopup(event: MouseEvent | null = null): void { if (this._popupBookmarkAdd!.parent) this._popupBookmarkAdd!.parent.removeChild(this._popupBookmarkAdd!); getGLOBAL().BlockerRemove(); }
+    public HideBookmarkAddPopupWithAdd(event: MouseEvent): void { getGLOBAL().BlockerRemove(); const result = MapRoom.AddBookmark(this._popupBookmarkAdd!.tName.text); if (result.hide && this._popupBookmarkAdd && Boolean(this._popupBookmarkAdd.parent)) this._popupBookmarkAdd.parent.removeChild(this._popupBookmarkAdd); if (result.message !== "SUCCESS") getGLOBAL().Message(result.message); getSOUNDS().Play("close"); }
 
     public DisplayBuffs(): void {
         const powerCount = POWERUPS.CheckPowers(null, "NORMAL");
@@ -517,7 +520,7 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
             const maxCols = 3; let colIdx = 0; let rowIdx = 0;
             const powerups = POWERUPS.GetPowerups("NORMAL");
             for (const key in powerups) {
-                if (POWERUPS._expireRealTime && powerups[key].endtime.Get() < GLOBAL.Timestamp()) { this.BuffHide(null); continue; }
+                if (POWERUPS._expireRealTime && powerups[key].endtime.Get() < getGLOBAL().Timestamp()) { this.BuffHide(null); continue; }
                 const icon = new ui_buffIcon_CLIP();
                 icon.gotoAndStop(key);
                 icon.name = key;
@@ -532,10 +535,10 @@ export class MapRoomPopup extends MapRoomPopup_CLIP {
         } else { this.BuffHide(null); }
     }
 
-    public BuffShow(event: MouseEvent): void { const target = event.currentTarget as MovieClip; const desc = KEYS.Get(target.name + "_desc"); let duration = "<b>" + KEYS.Get("buff_duration") + "</b>"; if (POWERUPS._expireRealTime) { if (POWERUPS.Timeleft(target.name) > 0) duration += GLOBAL.ToTime(POWERUPS.Timeleft(target.name), true); else duration = ""; } else { if (POWERUPS.Timeleft(target.name) > 0) duration += GLOBAL.ToTime(POWERUPS.Timeleft(target.name), true); else duration = ""; } if (!this._popupBuff) { const buff = new bubblepopupBuff(); this._popupBuff = this.addChild(buff) as bubblepopupBuff; buff.Setup(target.x + target.width / 2, target.y + target.height + 4, desc, duration); buff.x = this.mcBuffHolder.x + (target.x + target.width / 2); if (buff.x >= this.mcBuffHolder.x) { buff.x = this.mcBuffHolder.x + (target.x + target.width / 2) - 60; buff.mcArrow.x = 60; } buff.y = this.mcBuffHolder.y + (target.y + target.height + 4); } else { (this._popupBuff as bubblepopupBuff).Update(desc, duration); } }
+    public BuffShow(event: MouseEvent): void { const target = event.currentTarget as MovieClip; const desc = getKEYS().Get(target.name + "_desc"); let duration = "<b>" + getKEYS().Get("buff_duration") + "</b>"; if (POWERUPS._expireRealTime) { if (POWERUPS.Timeleft(target.name) > 0) duration += getGLOBAL().ToTime(POWERUPS.Timeleft(target.name), true); else duration = ""; } else { if (POWERUPS.Timeleft(target.name) > 0) duration += getGLOBAL().ToTime(POWERUPS.Timeleft(target.name), true); else duration = ""; } if (!this._popupBuff) { const buff = new bubblepopupBuff(); this._popupBuff = this.addChild(buff) as bubblepopupBuff; buff.Setup(target.x + target.width / 2, target.y + target.height + 4, desc, duration); buff.x = this.mcBuffHolder.x + (target.x + target.width / 2); if (buff.x >= this.mcBuffHolder.x) { buff.x = this.mcBuffHolder.x + (target.x + target.width / 2) - 60; buff.mcArrow.x = 60; } buff.y = this.mcBuffHolder.y + (target.y + target.height + 4); } else { (this._popupBuff as bubblepopupBuff).Update(desc, duration); } }
     public BuffHide(event: MouseEvent | null): void { if (this._popupBuff) { this.removeChild(this._popupBuff); (this._popupBuff as bubblepopupBuff).Cleanup(); this._popupBuff = null; } }
     public BuffOff(event: MouseEvent): void { POWERUPS._testToggleOffPowers = true; const target = event.currentTarget as MovieClip; POWERUPS.Remove(target.name); this.BuffHide(null); }
     public Help(): void { Tutorial.ForceShowAll(); }
-    public FullScreen(): void { if (GLOBAL.isFullScreen) this._fullScreen = true; else this._fullScreen = false; MapRoomManager.instance.ResizeHandler(); }
-    public Resize(): void { let needsResize = false; if (GLOBAL.isFullScreen) { if (this._fullScreen !== true) needsResize = true; } else if (this._fullScreen !== false) needsResize = true; if (needsResize) MapRoomManager.instance.ResizeHandler(); }
+    public FullScreen(): void { if (getGLOBAL().isFullScreen) this._fullScreen = true; else this._fullScreen = false; getMapRoomManager().instance.ResizeHandler(); }
+    public Resize(): void { let needsResize = false; if (getGLOBAL().isFullScreen) { if (this._fullScreen !== true) needsResize = true; } else if (this._fullScreen !== false) needsResize = true; if (needsResize) getMapRoomManager().instance.ResizeHandler(); }
 }

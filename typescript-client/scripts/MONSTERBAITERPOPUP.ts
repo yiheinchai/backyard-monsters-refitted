@@ -2,14 +2,17 @@ import MovieClip from 'openfl/display/MovieClip';
 import Event from 'openfl/events/Event';
 import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
 import { MONSTERBAITER } from './MONSTERBAITER';
 import { MONSTERBAITERPOPUP_CLIP } from './MONSTERBAITERPOPUP_CLIP';
 import { MonsterBaiterItem } from './MonsterBaiterItem';
 import { POPUPSETTINGS } from './POPUPSETTINGS';
-import { SOUNDS } from './SOUNDS';
-import { STORE } from './STORE';
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getSTORE(): any { return require("./STORE").STORE; }
+
 
 /**
  * MONSTERBAITERPOPUP - Monster baiter popup for attack setup
@@ -29,7 +32,7 @@ export class MONSTERBAITERPOPUP extends MONSTERBAITERPOPUP_CLIP {
 
     constructor() {
         super();
-        this.title_txt.htmlText = KEYS.Get("bait_title");
+        this.title_txt.htmlText = getKEYS().Get("bait_title");
     }
 
     public Setup(param1: any, param2: number): void {
@@ -40,8 +43,8 @@ export class MONSTERBAITERPOPUP extends MONSTERBAITERPOPUP_CLIP {
         
         this.clearBtn.SetupKey("bait_clear_btn");
         this.clearBtn.addEventListener(MouseEvent.CLICK, this.clearDown.bind(this));
-        this.tSize.htmlText = "<b>" + KEYS.Get("size_of_attack") + "</b>";
-        this.tUpgrade.htmlText = KEYS.Get("upgrade_monster_baiter");
+        this.tSize.htmlText = "<b>" + getKEYS().Get("size_of_attack") + "</b>";
+        this.tUpgrade.htmlText = getKEYS().Get("upgrade_monster_baiter");
         this.sendBtn.SetupKey("bait_start_btn");
         this.sendBtn.addEventListener(MouseEvent.CLICK, this.onSendDown.bind(this));
         this.attackStrings = ["tl", "tr", "br", "bl", "t", "r", "b", "l"];
@@ -63,7 +66,7 @@ export class MONSTERBAITERPOPUP extends MONSTERBAITERPOPUP_CLIP {
         }
         
         const _loc5_: MovieClip[] = [this.tl_mc, this.tr_mc, this.br_mc, this.bl_mc, this.t_mc, this.r_mc, this.b_mc, this.l_mc];
-        this._arrows = GLOBAL._bBaiter._lvl.Get() >= 3 ? _loc5_.splice(0, 8) : _loc5_.splice(0, 4);
+        this._arrows = getGLOBAL()._bBaiter._lvl.Get() >= 3 ? _loc5_.splice(0, 8) : _loc5_.splice(0, 4);
         if (param2 >= this._arrows.length) {
             param2 = 0;
         }
@@ -90,7 +93,7 @@ export class MONSTERBAITERPOPUP extends MONSTERBAITERPOPUP_CLIP {
     }
 
     private onBuyDown(param1: MouseEvent): void {
-        STORE.ShowB(2, 1, ["MUSK"]);
+        getSTORE().ShowB(2, 1, ["MUSK"]);
     }
 
     private onIncrementAttempt(param1: Event): void {
@@ -110,7 +113,7 @@ export class MONSTERBAITERPOPUP extends MONSTERBAITERPOPUP_CLIP {
         }
         MONSTERBAITER._queue = _loc2_;
         this.Update();
-        SOUNDS.Play("click1");
+        getSOUNDS().Play("click1");
     }
 
     public setAttackDirection(param1: MovieClip): void {
@@ -191,7 +194,7 @@ export class MONSTERBAITERPOPUP extends MONSTERBAITERPOPUP_CLIP {
         }
         this.gotoAndStop(this._guidePage);
         if (this._guidePage > 1) {
-            this.txtGuide.htmlText = KEYS.Get("bait_tut_" + (this._guidePage - 1));
+            this.txtGuide.htmlText = getKEYS().Get("bait_tut_" + (this._guidePage - 1));
             if (this._guidePage == 2) {
                 this.bContinue.addEventListener(MouseEvent.CLICK, this.Help.bind(this));
                 this.bContinue.SetupKey("btn_continue");

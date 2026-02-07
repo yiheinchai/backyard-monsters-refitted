@@ -6,13 +6,16 @@ import { IAttackable } from "../../../interfaces/IAttackable";
 import { ITargetable } from "../../../interfaces/ITargetable";
 import { ITickable } from "../../../interfaces/ITickable";
 import { IComponentOwner } from "../../IComponentOwner";
-import { MonsterBase } from "../../MonsterBase";
 import { Component } from "../Component";
 import { AcidStatusEffect } from "../statusEffects/AcidStatusEffect";
-import { Targeting } from "../../../../../Targeting";
 
-import { GLOBAL } from "../../../../../GLOBAL";
-import { MAP } from "../../../../../MAP";
+// Lazy imports to break circular dependency chains
+function getMonsterBase(): any { return require("../../MonsterBase").MonsterBase; }
+function getTargeting(): any { return require("../../../../../Targeting").Targeting; }
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+function getMAP(): any { return require("../../../../../MAP").MAP; }
+
+
 
 /**
  * AcidOnDeath - component that creates an acid pool when the monster dies.
@@ -38,11 +41,11 @@ export class AcidOnDeath extends Component {
     }
 
     protected override onRegister(): void {
-        this.owner.addEventListener(MonsterBase.k_DEATH_EVENT, this.onDeath.bind(this));
+        this.owner.addEventListener(getMonsterBase().k_DEATH_EVENT, this.onDeath.bind(this));
     }
 
     protected override onUnregister(): void {
-        this.owner.removeEventListener(MonsterBase.k_DEATH_EVENT, this.onDeath.bind(this));
+        this.owner.removeEventListener(getMonsterBase().k_DEATH_EVENT, this.onDeath.bind(this));
     }
 
     protected onDeath(event: Event | null = null): void {
@@ -51,21 +54,21 @@ export class AcidOnDeath extends Component {
 
     private addAcidPool(): void {
         this.m_acidPool = new AcidPool(this.owner.x, this.owner.y, this.m_damage, this.m_radius);
-        this.m_acidPool.timeActivated = GLOBAL.Timestamp();
-        MAP._CREEPSMC.addChild(this.m_acidPool.graphic);
-        GLOBAL.addTickable(this);
+        this.m_acidPool.timeActivated = getGLOBAL().Timestamp();
+        getMAP()._CREEPSMC.addChild(this.m_acidPool.graphic);
+        getGLOBAL().addTickable(this);
     }
 
     private removeAcidPool(): void {
-        MAP._CREEPSMC.removeChild(this.m_acidPool!.graphic);
+        getMAP()._CREEPSMC.removeChild(this.m_acidPool!.graphic);
         this.m_acidPool = null;
-        GLOBAL.removeTickable(this);
+        getGLOBAL().removeTickable(this);
     }
 
     public override tick(delta: number = 1): void {
         if (this.m_acidPool) {
             this.m_acidPool.tick(delta);
-            if (GLOBAL.Timestamp() - this.m_acidPool.timeActivated >= this.m_duration) {
+            if (getGLOBAL().Timestamp() - this.m_acidPool.timeActivated >= this.m_duration) {
                 this.removeAcidPool();
             }
         }
@@ -97,7 +100,7 @@ class AcidPool implements ITickable, ITargetable {
     }
 
     public tick(delta: number = 1): void {
-        const targets = Targeting.getAllBUTTargetsInRange(this.m_radius, new Point(this.m_x, this.m_y), Targeting.k_TARGETS_FLYING);
+        const targets = getTargeting().getAllBUTTargetsInRange(this.m_radius, new Point(this.m_x, this.m_y), getTargeting().k_TARGETS_FLYING);
         for (let i = 0; i < targets.length; i++) {
             const attackable = targets[i].creep as IAttackable;
             attackable.modifyHealth(this.m_damage, this);

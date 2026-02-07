@@ -1,10 +1,13 @@
-import { BuildingEvent } from "../../../events/BuildingEvent";
 import { KeywordMessage } from "../KeywordMessage";
 
-import { GLOBAL } from "../../../../../GLOBAL";
-import { BASE } from "../../../../../BASE";
-import { BUILDING20 } from "../../../../../BUILDING20";
-import { LOGGER } from "../../../../../LOGGER";
+// Lazy imports to break circular dependency chains
+function getBuildingEvent(): any { return require("../../../events/BuildingEvent").BuildingEvent; }
+function getGLOBAL(): any { return require("../../../../../GLOBAL").GLOBAL; }
+function getBASE(): any { return require("../../../../../BASE").BASE; }
+function getBUILDING20(): any { return require("../../../../../BUILDING20").BUILDING20; }
+function getLOGGER(): any { return require("../../../../../LOGGER").LOGGER; }
+
+
 
 /**
  * Build tree 01 - Sniper/Cannon Towers suggestion message (first tower).
@@ -15,13 +18,13 @@ export class BuildTree_01_SniperCannonTowers extends KeywordMessage {
     }
 
     public override get areRequirementsMet(): boolean {
-        return GLOBAL.townHall._lvl.Get() >= 1 && BASE.hasNumBuildings(BUILDING20.TYPE) <= 0;
+        return getGLOBAL().townHall._lvl.Get() >= 1 && getBASE().hasNumBuildings(getBUILDING20().TYPE) <= 0;
     }
 
     protected override onButtonClick(): void {
         this.buyMenu(3, 1, 0);
-        GLOBAL.eventDispatcher.addEventListener(
-            BuildingEvent.PLACED_FOR_CONSTRUCTION,
+        getGLOBAL().eventDispatcher.addEventListener(
+            getBuildingEvent().PLACED_FOR_CONSTRUCTION,
             this.placedForConstruction.bind(this),
             false,
             0,
@@ -30,12 +33,12 @@ export class BuildTree_01_SniperCannonTowers extends KeywordMessage {
     }
 
     protected placedForConstruction(event: BuildingEvent): void {
-        if (event.building._type === BUILDING20.TYPE) {
-            GLOBAL.eventDispatcher.removeEventListener(
-                BuildingEvent.PLACED_FOR_CONSTRUCTION,
+        if (event.building._type === getBUILDING20().TYPE) {
+            getGLOBAL().eventDispatcher.removeEventListener(
+                getBuildingEvent().PLACED_FOR_CONSTRUCTION,
                 this.placedForConstruction.bind(this)
             );
-            LOGGER.StatB({
+            getLOGGER().StatB({
                 "st1": "GTP",
                 "st2": "Action",
                 "value": 1

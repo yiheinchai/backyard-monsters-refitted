@@ -15,10 +15,13 @@ import { SpriteSheetAnimation } from "../display/SpriteSheetAnimation";
 import { EnumBaseRelationship } from "../enums/EnumBaseRelationship";
 import { EnumYardType } from "../enums/EnumYardType";
 import { MapRoom3TileSetManager } from "./tiles/MapRoom3TileSetManager";
-import { MapRoomManager } from "../maproom_manager/MapRoomManager";
 import { MapRoom3 } from "./MapRoom3";
 import { MapRoom3AssetCache } from "./MapRoom3AssetCache";
 import { MapRoom3Cell } from "./MapRoom3Cell";
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("../maproom_manager/MapRoomManager").MapRoomManager; }
+
 
 /**
  * MapRoom3CellGraphic - Graphical representation of a map room 3 cell.
@@ -452,37 +455,37 @@ export class MapRoom3CellGraphic extends Sprite {
         const cellY = this.m_Cell!.cellY;
         let checkX = cellX + 1;
         let checkY = cellY;
-        let checkCell = MapRoomManager.instance.FindCell(checkX, checkY) as MapRoom3Cell;
+        let checkCell = getMapRoomManager().instance.FindCell(checkX, checkY) as MapRoom3Cell;
         if (this.m_Cell!.DoesFortify(checkCell)) {
             return new Bitmap(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.CELL_ICON_FORTIFICATION_EAST));
         }
         checkX = cellX - 1;
         checkY = cellY;
-        checkCell = MapRoomManager.instance.FindCell(checkX, checkY) as MapRoom3Cell;
+        checkCell = getMapRoomManager().instance.FindCell(checkX, checkY) as MapRoom3Cell;
         if (this.m_Cell!.DoesFortify(checkCell)) {
             return new Bitmap(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.CELL_ICON_FORTIFICATION_WEST));
         }
         checkX = cellY % 2 ? cellX + 1 : cellX;
         checkY = cellY - 1;
-        checkCell = MapRoomManager.instance.FindCell(checkX, checkY) as MapRoom3Cell;
+        checkCell = getMapRoomManager().instance.FindCell(checkX, checkY) as MapRoom3Cell;
         if (this.m_Cell!.DoesFortify(checkCell)) {
             return new Bitmap(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.CELL_ICON_FORTIFICATION_NORTH_EAST));
         }
         checkX = cellY % 2 ? cellX : cellX - 1;
         checkY = cellY - 1;
-        checkCell = MapRoomManager.instance.FindCell(checkX, checkY) as MapRoom3Cell;
+        checkCell = getMapRoomManager().instance.FindCell(checkX, checkY) as MapRoom3Cell;
         if (this.m_Cell!.DoesFortify(checkCell)) {
             return new Bitmap(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.CELL_ICON_FORTIFICATION_NORTH_WEST));
         }
         checkX = cellY % 2 ? cellX + 1 : cellX;
         checkY = cellY + 1;
-        checkCell = MapRoomManager.instance.FindCell(checkX, checkY) as MapRoom3Cell;
+        checkCell = getMapRoomManager().instance.FindCell(checkX, checkY) as MapRoom3Cell;
         if (this.m_Cell!.DoesFortify(checkCell)) {
             return new Bitmap(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.CELL_ICON_FORTIFICATION_SOUTH_EAST));
         }
         checkX = cellY % 2 ? cellX : cellX - 1;
         checkY = cellY + 1;
-        checkCell = MapRoomManager.instance.FindCell(checkX, checkY) as MapRoom3Cell;
+        checkCell = getMapRoomManager().instance.FindCell(checkX, checkY) as MapRoom3Cell;
         if (this.m_Cell!.DoesFortify(checkCell)) {
             return new Bitmap(MapRoom3AssetCache.instance.GetAsset(MapRoom3AssetCache.CELL_ICON_FORTIFICATION_SOUTH_WEST));
         }
@@ -494,37 +497,37 @@ export class MapRoom3CellGraphic extends Sprite {
         const cellY = this.m_Cell!.cellY;
         let checkX = cellX + 1;
         let checkY = cellY;
-        let checkCell = MapRoomManager.instance.FindCell(checkX, checkY) as MapRoom3Cell;
+        let checkCell = getMapRoomManager().instance.FindCell(checkX, checkY) as MapRoom3Cell;
         if (checkCell !== null && checkCell.DoesFortify(this.m_Cell!) === false) {
             return false;
         }
         checkX = cellX - 1;
         checkY = cellY;
-        checkCell = MapRoomManager.instance.FindCell(checkX, checkY) as MapRoom3Cell;
+        checkCell = getMapRoomManager().instance.FindCell(checkX, checkY) as MapRoom3Cell;
         if (checkCell !== null && checkCell.DoesFortify(this.m_Cell!) === false) {
             return false;
         }
         checkX = cellY % 2 ? cellX + 1 : cellX;
         checkY = cellY - 1;
-        checkCell = MapRoomManager.instance.FindCell(checkX, checkY) as MapRoom3Cell;
+        checkCell = getMapRoomManager().instance.FindCell(checkX, checkY) as MapRoom3Cell;
         if (checkCell !== null && checkCell.DoesFortify(this.m_Cell!) === false) {
             return false;
         }
         checkX = cellY % 2 ? cellX : cellX - 1;
         checkY = cellY - 1;
-        checkCell = MapRoomManager.instance.FindCell(checkX, checkY) as MapRoom3Cell;
+        checkCell = getMapRoomManager().instance.FindCell(checkX, checkY) as MapRoom3Cell;
         if (checkCell !== null && checkCell.DoesFortify(this.m_Cell!) === false) {
             return false;
         }
         checkX = cellY % 2 ? cellX + 1 : cellX;
         checkY = cellY + 1;
-        checkCell = MapRoomManager.instance.FindCell(checkX, checkY) as MapRoom3Cell;
+        checkCell = getMapRoomManager().instance.FindCell(checkX, checkY) as MapRoom3Cell;
         if (checkCell !== null && checkCell.DoesFortify(this.m_Cell!) === false) {
             return false;
         }
         checkX = cellY % 2 ? cellX : cellX - 1;
         checkY = cellY + 1;
-        checkCell = MapRoomManager.instance.FindCell(checkX, checkY) as MapRoom3Cell;
+        checkCell = getMapRoomManager().instance.FindCell(checkX, checkY) as MapRoom3Cell;
         if (checkCell !== null && checkCell.DoesFortify(this.m_Cell!) === false) {
             return false;
         }

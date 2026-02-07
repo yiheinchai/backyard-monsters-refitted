@@ -4,12 +4,15 @@ import MouseEvent from "openfl/events/MouseEvent";
 
 import { RADIO } from "./RADIO";
 
-import { GLOBAL } from "../../../GLOBAL";
-import { KEYS } from "../../../KEYS";
-import { LOGIN } from "../../../LOGIN";
 import { POPUPSETTINGS } from "../../../POPUPSETTINGS";
 import { RADIOSETTINGSPOPUP_CLIP } from "../../../RADIOSETTINGSPOPUP_CLIP";
 import { Checkbox } from "../../../Checkbox";
+
+// Lazy imports to break circular dependency chains
+function getGLOBAL(): any { return require("../../../GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("../../../KEYS").KEYS; }
+function getLOGIN(): any { return require("../../../LOGIN").LOGIN; }
+
 
 /**
  * Radio settings popup for email notification preferences.
@@ -24,7 +27,7 @@ export class RADIOSETTINGSPOPUP extends RADIOSETTINGSPOPUP_CLIP {
 
     constructor() {
         super();
-        this._emailAddress = KEYS.Get("radio_insertemail");
+        this._emailAddress = getKEYS().Get("radio_insertemail");
         this.addEventListener(Event.ADDED_TO_STAGE, this.onAdded.bind(this));
         
         if (RADIO._settings) {
@@ -43,12 +46,12 @@ export class RADIOSETTINGSPOPUP extends RADIOSETTINGSPOPUP_CLIP {
         this.bSave.addEventListener(MouseEvent.CLICK, this.onButtonClick.bind(this));
         this.bSave.SetupKey("radio_bSave");
         
-        this.tTitle.htmlText = KEYS.Get("radio_tTitle");
-        this.tNews.htmlText = KEYS.Get("radio_cbNews");
-        this.tAttack.htmlText = KEYS.Get("radio_cbAttack");
-        this.tEmail.htmlText = KEYS.Get("radio_tEmail");
-        this.tEmailInput.htmlText = '<font color="#444444">' + KEYS.Get("radio_tfEmail") + '</font>';
-        this.tDesc.htmlText = KEYS.Get("radio_desc");
+        this.tTitle.htmlText = getKEYS().Get("radio_tTitle");
+        this.tNews.htmlText = getKEYS().Get("radio_cbNews");
+        this.tAttack.htmlText = getKEYS().Get("radio_cbAttack");
+        this.tEmail.htmlText = getKEYS().Get("radio_tEmail");
+        this.tEmailInput.htmlText = '<font color="#444444">' + getKEYS().Get("radio_tfEmail") + '</font>';
+        this.tDesc.htmlText = getKEYS().Get("radio_desc");
         
         this.tEmailInput.addEventListener(Event.CHANGE, this.onEmailChange.bind(this));
         this.tEmailInput.addEventListener(MouseEvent.CLICK, this.onEmailClear.bind(this));
@@ -68,19 +71,19 @@ export class RADIOSETTINGSPOPUP extends RADIOSETTINGSPOPUP_CLIP {
             
             if (settings[RADIO.ADDRESS_KEY]) {
                 this.tEmailInput.htmlText = String(settings[RADIO.ADDRESS_KEY]);
-            } else if (LOGIN._email && LOGIN._email !== LOGIN._proxymail) {
-                this.tEmailInput.htmlText = LOGIN._email;
+            } else if (getLOGIN()._email && getLOGIN()._email !== getLOGIN()._proxymail) {
+                this.tEmailInput.htmlText = getLOGIN()._email;
             } else {
-                this.tEmailInput.htmlText = '<font color="#444444">' + KEYS.Get("radio_tfEmail") + '</font>';
+                this.tEmailInput.htmlText = '<font color="#444444">' + getKEYS().Get("radio_tfEmail") + '</font>';
             }
         } else {
             (this.cbNews as unknown as Checkbox).deselect();
             (this.cbAttack as unknown as Checkbox).deselect();
             
-            if (LOGIN._email && LOGIN._email !== LOGIN._proxymail) {
-                this.tEmailInput.htmlText = LOGIN._email;
+            if (getLOGIN()._email && getLOGIN()._email !== getLOGIN()._proxymail) {
+                this.tEmailInput.htmlText = getLOGIN()._email;
             } else {
-                this.tEmailInput.htmlText = '<font color="#444444">' + KEYS.Get("radio_tfEmail") + '</font>';
+                this.tEmailInput.htmlText = '<font color="#444444">' + getKEYS().Get("radio_tfEmail") + '</font>';
             }
         }
         
@@ -118,12 +121,12 @@ export class RADIOSETTINGSPOPUP extends RADIOSETTINGSPOPUP_CLIP {
                     obj[RADIO.ADDRESS_KEY] = this.tEmailInput.text;
                     
                     if (!cbNewsTyped.selected && !cbAttackTyped.selected) {
-                        GLOBAL.Message(
-                            KEYS.Get("radio_noSubscribe"),
-                            KEYS.Get("radio_noSubscribeY"),
+                        getGLOBAL().Message(
+                            getKEYS().Get("radio_noSubscribe"),
+                            getKEYS().Get("radio_noSubscribeY"),
                             this.SaveConfirmCB.bind(this),
                             ["o1", obj],
-                            KEYS.Get("radio_noSubscribeN"),
+                            getKEYS().Get("radio_noSubscribeN"),
                             null,
                             null
                         );
@@ -132,7 +135,7 @@ export class RADIOSETTINGSPOPUP extends RADIOSETTINGSPOPUP_CLIP {
                         this._changed = false;
                     }
                 } else {
-                    GLOBAL.Message(KEYS.Get("radio_enterValidEmail"));
+                    getGLOBAL().Message(getKEYS().Get("radio_enterValidEmail"));
                 }
                 break;
         }
@@ -188,14 +191,14 @@ export class RADIOSETTINGSPOPUP extends RADIOSETTINGSPOPUP_CLIP {
         const cbAttackTyped = this.cbAttack as unknown as Checkbox;
         
         if (this._changed) {
-            GLOBAL.Message(KEYS.Get("radio_unsavedChanges"), KEYS.Get("radio_abandonChanges"), RADIO.Hide);
+            getGLOBAL().Message(getKEYS().Get("radio_unsavedChanges"), getKEYS().Get("radio_abandonChanges"), RADIO.Hide);
         } else if (!cbNewsTyped.selected && !cbAttackTyped.selected) {
-            GLOBAL.Message(
-                KEYS.Get("radio_noSubscribe"),
-                KEYS.Get("radio_noSubscribeY"),
+            getGLOBAL().Message(
+                getKEYS().Get("radio_noSubscribe"),
+                getKEYS().Get("radio_noSubscribeY"),
                 RADIO.Hide,
                 null,
-                KEYS.Get("radio_noSubscribeN"),
+                getKEYS().Get("radio_noSubscribeN"),
                 null,
                 null
             );

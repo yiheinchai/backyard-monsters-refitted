@@ -1,21 +1,24 @@
 import { SecNum } from './com/cc/utils/SecNum';
 import { EnumYardType } from './com/monsters/enums/EnumYardType';
-import { MapRoomManager } from './com/monsters/maproom_manager/MapRoomManager';
 import { SiegeFactory } from './com/monsters/siege/SiegeFactory';
 import { SiegeLab } from './com/monsters/siege/SiegeLab';
 import MouseEvent from 'openfl/events/MouseEvent';
 import Point from 'openfl/geom/Point';
 import Rectangle from 'openfl/geom/Rectangle';
-import { BASE } from './BASE';
 import { BFOUNDATION } from './BFOUNDATION';
-import { CREATURES } from './CREATURES';
-import { GLOBAL } from './GLOBAL';
-import { KEYS } from './KEYS';
-import { LOGGER } from './LOGGER';
 import { MAPROOM_DESCENT } from './MAPROOM_DESCENT';
 import { PLEASEWAIT } from './PLEASEWAIT';
-import { SOUNDS } from './SOUNDS';
-import { URLLoaderApi } from './URLLoaderApi';
+
+// Lazy imports to break circular dependency chains
+function getMapRoomManager(): any { return require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager; }
+function getBASE(): any { return require("./BASE").BASE; }
+function getCREATURES(): any { return require("./CREATURES").CREATURES; }
+function getGLOBAL(): any { return require("./GLOBAL").GLOBAL; }
+function getKEYS(): any { return require("./KEYS").KEYS; }
+function getLOGGER(): any { return require("./LOGGER").LOGGER; }
+function getSOUNDS(): any { return require("./SOUNDS").SOUNDS; }
+function getURLLoaderApi(): any { return require("./URLLoaderApi").URLLoaderApi; }
+
 
 /**
  * INFERNOPORTAL - Inferno Portal Building
@@ -51,11 +54,11 @@ export class INFERNOPORTAL extends BFOUNDATION {
     }
 
     public static EnterPortal(force: boolean = false): void {
-        if (GLOBAL._flags.inferno !== 1) {
-            GLOBAL.Message(KEYS.Get("inferno_msg_disabled"));
+        if (getGLOBAL()._flags.inferno !== 1) {
+            getGLOBAL().Message(getKEYS().Get("inferno_msg_disabled"));
         } else if (MAPROOM_DESCENT.DescentPassed) {
-            if (GLOBAL._flags.inferno !== 1) {
-                GLOBAL.Message(KEYS.Get("inferno_msg_disabled"));
+            if (getGLOBAL()._flags.inferno !== 1) {
+                getGLOBAL().Message(getKEYS().Get("inferno_msg_disabled"));
                 return;
             }
             INFERNOPORTAL.ToggleYard();
@@ -82,19 +85,19 @@ export class INFERNOPORTAL extends BFOUNDATION {
             INFERNOPORTAL.ShowAscendMonstersDialog();
         };
         const onError = (): void => {
-            LOGGER.Log("err", "INFERNOPORTAL.AscendMonsters No inferno monster data");
-            GLOBAL.ErrorMessage("INFERNOPORTAL.AscendMonsters No inferno monster data");
+            getLOGGER().Log("err", "INFERNOPORTAL.AscendMonsters No inferno monster data");
+            getGLOBAL().ErrorMessage("INFERNOPORTAL.AscendMonsters No inferno monster data");
         };
 
-        if (!BASE.isMainYard) return;
-        PLEASEWAIT.Show(KEYS.Get("msg_loading"));
-        const loader = new URLLoaderApi();
-        loader.load(GLOBAL._infBaseURL + "infernomonsters", [["type", "get"]], onLoad, onError);
+        if (!getBASE().isMainYard) return;
+        PLEASEWAIT.Show(getKEYS().Get("msg_loading"));
+        const loader = new (getURLLoaderApi())();
+        loader.load(getGLOBAL()._infBaseURL + "infernomonsters", [["type", "get"]], onLoad, onError);
     }
 
     private static numHealthyCreeps(creatureId: string, creeps: any[]): number {
         let count = creeps.length;
-        const maxHealth = CREATURES.GetProperty(creatureId, "health");
+        const maxHealth = getCREATURES().GetProperty(creatureId, "health");
         for (let i = count - 1; i >= 0; i--) {
             if (creeps[i].health < maxHealth) count--;
         }
@@ -104,17 +107,17 @@ export class INFERNOPORTAL extends BFOUNDATION {
     public static PageAscensionData(): void {
         const onLoad = (response: any): void => {
             PLEASEWAIT.Hide();
-            BASE.Save();
+            getBASE().Save();
         };
         const onError = (): void => {
-            LOGGER.Log("err", "INFERNOPORTAL.PageAscensionData Could not save inferno monster changes");
-            GLOBAL.ErrorMessage("INFERNOPORTAL.PageAscensionData Could not save inferno monster changes");
+            getLOGGER().Log("err", "INFERNOPORTAL.PageAscensionData Could not save inferno monster changes");
+            getGLOBAL().ErrorMessage("INFERNOPORTAL.PageAscensionData Could not save inferno monster changes");
         };
 
-        PLEASEWAIT.Show(KEYS.Get("msg_loading"));
+        PLEASEWAIT.Show(getKEYS().Get("msg_loading"));
         let result: any = {};
         
-        if (MapRoomManager.instance.isInMapRoom3) {
+        if (getMapRoomManager().instance.isInMapRoom3) {
             for (const s in INFERNOPORTAL._ascensionData) {
                 if (s.substr(0, 2) === "IC") {
                     INFERNOPORTAL.destroyCreep(s, INFERNOPORTAL._ogAscensionData![s] - INFERNOPORTAL._ascensionData![s].Get());
@@ -130,12 +133,12 @@ export class INFERNOPORTAL extends BFOUNDATION {
         }
         INFERNOPORTAL._ascensionData = null;
         
-        const loader = new URLLoaderApi();
-        loader.load(GLOBAL._infBaseURL + "infernomonsters", [["type", "set"], ["imonsters", JSON.stringify(result)]], onLoad, onError);
+        const loader = new (getURLLoaderApi())();
+        loader.load(getGLOBAL()._infBaseURL + "infernomonsters", [["type", "set"], ["imonsters", JSON.stringify(result)]], onLoad, onError);
     }
 
     private static destroyCreep(creatureId: string, count: number): void {
-        const maxHealth = CREATURES.GetProperty(creatureId, "health");
+        const maxHealth = getCREATURES().GetProperty(creatureId, "health");
         for (let i = 0; i < count; i++) {
             for (let j = INFERNOPORTAL._ogInfernoData[creatureId].length - 1; j >= 0; j--) {
                 if (INFERNOPORTAL._ogInfernoData[creatureId][j].health === maxHealth) {
@@ -147,18 +150,18 @@ export class INFERNOPORTAL extends BFOUNDATION {
     }
 
     public static ShowAscendMonstersDialog(): void {
-        GLOBAL.BlockerAdd();
+        getGLOBAL().BlockerAdd();
         INFERNOPORTAL._ascensionMc = new (GLOBAL as any).INFERNO_ASCENSION_POPUP();
-        GLOBAL._layerWindows.addChild(INFERNOPORTAL._ascensionMc);
+        getGLOBAL()._layerWindows.addChild(INFERNOPORTAL._ascensionMc);
         INFERNOPORTAL._ascensionMc.Center();
         INFERNOPORTAL._ascensionMc.ScaleUp();
     }
 
     public static HideAscendMonstersDialog(): void {
         if (INFERNOPORTAL._ascensionMc) {
-            GLOBAL.BlockerRemove();
-            SOUNDS.Play("close");
-            GLOBAL._layerWindows.removeChild(INFERNOPORTAL._ascensionMc);
+            getGLOBAL().BlockerRemove();
+            getSOUNDS().Play("close");
+            getGLOBAL()._layerWindows.removeChild(INFERNOPORTAL._ascensionMc);
             INFERNOPORTAL._ascensionMc = null;
         }
     }
@@ -168,30 +171,30 @@ export class INFERNOPORTAL extends BFOUNDATION {
     }
 
     public static ToggleYard(): void {
-        if (BASE._saving || BASE._loading || BASE._saveCounterA !== BASE._saveCounterB) {
-            GLOBAL._toggleYardWaiting = 1;
+        if (getBASE()._saving || getBASE()._loading || getBASE()._saveCounterA !== getBASE()._saveCounterB) {
+            getGLOBAL()._toggleYardWaiting = 1;
             return;
         }
-        MapRoomManager.instance.mapRoomVersion = MapRoomManager.MAP_ROOM_VERSION_1;
-        if (BASE.isInfernoMainYardOrOutpost) {
-            const yardType = MapRoomManager.instance.isInMapRoom3 ? EnumYardType.PLAYER : EnumYardType.MAIN_YARD;
-            BASE.LoadBase(null, 0, 0, GLOBAL.e_BASE_MODE.BUILD, false, yardType);
+        getMapRoomManager().instance.mapRoomVersion = getMapRoomManager().MAP_ROOM_VERSION_1;
+        if (getBASE().isInfernoMainYardOrOutpost) {
+            const yardType = getMapRoomManager().instance.isInMapRoom3 ? EnumYardType.PLAYER : EnumYardType.MAIN_YARD;
+            getBASE().LoadBase(null, 0, 0, getGLOBAL().e_BASE_MODE.BUILD, false, yardType);
         } else {
-            BASE.LoadBase(GLOBAL._infBaseURL, 0, 0, "ibuild", false, EnumYardType.INFERNO_YARD);
+            getBASE().LoadBase(getGLOBAL()._infBaseURL, 0, 0, "ibuild", false, EnumYardType.INFERNO_YARD);
         }
     }
 
     public static AddPortal(level: number = 0): INFERNOPORTAL {
         const gridPos = new Point(-1200, -150);
         const isoPos = (GLOBAL as any).GRID.ToISO(gridPos.x, gridPos.y, 0);
-        const portal = BASE.addBuildingC(127) as INFERNOPORTAL;
+        const portal = getBASE().addBuildingC(127) as INFERNOPORTAL;
         INFERNOPORTAL.building = portal;
-        ++BASE._buildingCount;
+        ++getBASE()._buildingCount;
         portal.Setup({
             X: gridPos.x,
             Y: gridPos.y,
             t: 127,
-            id: BASE._buildingCount,
+            id: getBASE()._buildingCount,
             l: level
         });
         portal.SetLevel(level);
@@ -203,9 +206,9 @@ export class INFERNOPORTAL extends BFOUNDATION {
     }
 
     public override Click(event: MouseEvent | null = null): void {
-        if (INFERNOPORTAL.isAboveMaxLevel() && (BASE.isInfernoMainYardOrOutpost || GLOBAL.townHall && GLOBAL.townHall._lvl.Get() >= (GLOBAL as any).INFERNO_EMERGENCE_EVENT.TOWN_HALL_LEVEL_REQUIREMENT)) {
+        if (INFERNOPORTAL.isAboveMaxLevel() && (getBASE().isInfernoMainYardOrOutpost || getGLOBAL().townHall && getGLOBAL().townHall._lvl.Get() >= (GLOBAL as any).INFERNO_EMERGENCE_EVENT.TOWN_HALL_LEVEL_REQUIREMENT)) {
             super.Click(event);
-        } else if (GLOBAL.mode === GLOBAL.e_BASE_MODE.BUILD && !(GLOBAL as any).INFERNO_EMERGENCE_EVENT.isAttackActive) {
+        } else if (getGLOBAL().mode === getGLOBAL().e_BASE_MODE.BUILD && !(GLOBAL as any).INFERNO_EMERGENCE_EVENT.isAttackActive) {
             (GLOBAL as any).INFERNO_EMERGENCE_POPUPS.ShowRSVP(INFERNOPORTAL.building!._lvl.Get());
         }
     }
@@ -227,11 +230,11 @@ export class INFERNOPORTAL extends BFOUNDATION {
     }
 
     private checkBuildingUnlocks(): void {
-        if (INFERNOPORTAL.isAboveMaxLevel() && BASE.isMainYard) {
-            GLOBAL._buildingProps[(GLOBAL as any).INFERNO_MAGMA_TOWER.ID - 1].block = false;
-            GLOBAL._buildingProps[(GLOBAL as any).INFERNOQUAKETOWER.TYPE - 1].block = false;
-            GLOBAL._buildingProps[SiegeFactory.ID - 1].block = false;
-            GLOBAL._buildingProps[SiegeLab.ID - 1].block = false;
+        if (INFERNOPORTAL.isAboveMaxLevel() && getBASE().isMainYard) {
+            getGLOBAL()._buildingProps[(GLOBAL as any).INFERNO_MAGMA_TOWER.ID - 1].block = false;
+            getGLOBAL()._buildingProps[(GLOBAL as any).INFERNOQUAKETOWER.TYPE - 1].block = false;
+            getGLOBAL()._buildingProps[SiegeFactory.ID - 1].block = false;
+            getGLOBAL()._buildingProps[SiegeLab.ID - 1].block = false;
         }
     }
 
