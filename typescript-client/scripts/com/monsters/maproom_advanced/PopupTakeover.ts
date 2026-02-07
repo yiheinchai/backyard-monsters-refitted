@@ -139,9 +139,9 @@ export class PopupTakeover extends MapRoomPopup_takeover_CLIP {
         
         this.tDescription.htmlText = "<b>" + KEYS.Get("takeover_expand") + (bonusStr ? " " + bonusStr : "") + "</b>";
         
-        this.mcResources.mcTime.visible = false;
-        this.mcResources.bAction.SetupKey("btn_useresources");
-        this.mcResources.bAction.addEventListener(MouseEvent.CLICK, (e: MouseEvent) => {
+        (this.mcResources as any).mcTime.visible = false;
+        (this.mcResources as any).bAction.SetupKey("btn_useresources");
+        (this.mcResources as any).bAction.addEventListener(MouseEvent.CLICK, (e: MouseEvent) => {
             this.TakeOverConfirm(false);
         });
         

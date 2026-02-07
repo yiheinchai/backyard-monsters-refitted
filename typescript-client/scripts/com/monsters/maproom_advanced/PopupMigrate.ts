@@ -42,8 +42,8 @@ export class PopupMigrate extends MapRoomPopup_Migrate_CLIP {
         this.mcInstant.gCoin.mouseEnabled = false;
         this.mcInstant.gCoin.mouseChildren = false;
         
-        this.mcResources.bAction.SetupKey("buildoptions_resources");
-        this.mcResources.bAction.addEventListener(MouseEvent.CLICK, this.Upgrade.bind(this), false);
+        (this.mcResources as any).bAction.SetupKey("buildoptions_resources");
+        (this.mcResources as any).bAction.addEventListener(MouseEvent.CLICK, this.Upgrade.bind(this), false);
         
         const resourceNames = GLOBAL._resourceNames;
         
@@ -58,9 +58,9 @@ export class PopupMigrate extends MapRoomPopup_Migrate_CLIP {
             costMC.gotoAndStop(i);
         }
         
-        this.mcResources.mcTime.tTitle.htmlText = "<b>" + KEYS.Get(resourceNames[5]) + "</b>";
-        this.mcResources.mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(upgradeCost.time, true, false) + "</b>";
-        this.mcResources.mcTime.gotoAndStop(6);
+        (this.mcResources as any).mcTime.tTitle.htmlText = "<b>" + KEYS.Get(resourceNames[5]) + "</b>";
+        (this.mcResources as any).mcTime.tValue.htmlText = "<b>" + GLOBAL.ToTime(upgradeCost.time, true, false) + "</b>";
+        (this.mcResources as any).mcTime.gotoAndStop(6);
     }
 
     public static Show(closeHandler: Function | null = null): void {

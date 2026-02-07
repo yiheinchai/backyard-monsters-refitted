@@ -63,8 +63,8 @@ export class RADIOSETTINGSPOPUP extends RADIOSETTINGSPOPUP_CLIP {
         const settings = RADIO.getProp("o1");
         
         if (settings) {
-            (this.cbNews as Checkbox).fromInt(settings[RADIO.NEWS_KEY]);
-            (this.cbAttack as Checkbox).fromInt(settings[RADIO.ATTACK_KEY]);
+            (this.cbNews as unknown as Checkbox).fromInt(settings[RADIO.NEWS_KEY]);
+            (this.cbAttack as unknown as Checkbox).fromInt(settings[RADIO.ATTACK_KEY]);
             
             if (settings[RADIO.ADDRESS_KEY]) {
                 this.tEmailInput.htmlText = String(settings[RADIO.ADDRESS_KEY]);
@@ -74,8 +74,8 @@ export class RADIOSETTINGSPOPUP extends RADIOSETTINGSPOPUP_CLIP {
                 this.tEmailInput.htmlText = '<font color="#444444">' + KEYS.Get("radio_tfEmail") + '</font>';
             }
         } else {
-            (this.cbNews as Checkbox).deselect();
-            (this.cbAttack as Checkbox).deselect();
+            (this.cbNews as unknown as Checkbox).deselect();
+            (this.cbAttack as unknown as Checkbox).deselect();
             
             if (LOGIN._email && LOGIN._email !== LOGIN._proxymail) {
                 this.tEmailInput.htmlText = LOGIN._email;
@@ -84,8 +84,8 @@ export class RADIOSETTINGSPOPUP extends RADIOSETTINGSPOPUP_CLIP {
             }
         }
         
-        const cbNewsTyped = this.cbNews as Checkbox;
-        const cbAttackTyped = this.cbAttack as Checkbox;
+        const cbNewsTyped = this.cbNews as unknown as Checkbox;
+        const cbAttackTyped = this.cbAttack as unknown as Checkbox;
         
         cbNewsTyped.removeEventListener(MouseEvent.MOUSE_UP, cbNewsTyped.onUp);
         cbNewsTyped.addEventListener(MouseEvent.MOUSE_UP, this.onCBUp.bind(this));
@@ -103,8 +103,8 @@ export class RADIOSETTINGSPOPUP extends RADIOSETTINGSPOPUP_CLIP {
         switch (buttonName) {
             case "bSave":
                 let valid = true;
-                const cbNewsTyped = this.cbNews as Checkbox;
-                const cbAttackTyped = this.cbAttack as Checkbox;
+                const cbNewsTyped = this.cbNews as unknown as Checkbox;
+                const cbAttackTyped = this.cbAttack as unknown as Checkbox;
                 
                 if (cbNewsTyped.selected || cbAttackTyped.selected) {
                     valid = valid && this.tEmailInput.text.lastIndexOf("@") !== -1;
@@ -162,13 +162,13 @@ export class RADIOSETTINGSPOPUP extends RADIOSETTINGSPOPUP_CLIP {
     }
 
     private onCBClick(event: MouseEvent): void {
-        (event.currentTarget as Checkbox).onClick(event);
+        (event.currentTarget as unknown as Checkbox).onClick(event);
         this.stage.focus = null;
         this._changed = true;
     }
 
     private onCBUp(event: MouseEvent): void {
-        (event.currentTarget as Checkbox).onUp(event);
+        (event.currentTarget as unknown as Checkbox).onUp(event);
         this.stage.focus = null;
         this._changed = true;
     }
@@ -184,8 +184,8 @@ export class RADIOSETTINGSPOPUP extends RADIOSETTINGSPOPUP_CLIP {
     }
 
     public Hide(): void {
-        const cbNewsTyped = this.cbNews as Checkbox;
-        const cbAttackTyped = this.cbAttack as Checkbox;
+        const cbNewsTyped = this.cbNews as unknown as Checkbox;
+        const cbAttackTyped = this.cbAttack as unknown as Checkbox;
         
         if (this._changed) {
             GLOBAL.Message(KEYS.Get("radio_unsavedChanges"), KEYS.Get("radio_abandonChanges"), RADIO.Hide);

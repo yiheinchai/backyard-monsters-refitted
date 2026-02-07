@@ -102,9 +102,9 @@ export class PopupMonstersA extends PopupMonstersA_CLIP {
                     } else {
                         this._monstersLeft[monsterID] = new SecNum(this._cell._monsters[monsterID].Get() - this._transfer[monsterID].Get());
                     }
-                    bar.r1.text = this._monstersLeft[monsterID].Get();
+                    bar.r1.text = String(this._monstersLeft[monsterID].Get());
                     this._transferMonsters[monsterID] = new SecNum(this._transfer[monsterID].Get());
-                    bar.t1.text = this._transferMonsters[monsterID].Get();
+                    bar.t1.text = String(this._transferMonsters[monsterID].Get());
                 } else {
                     bar.r1.text = this._cell._monsters[monsterID].Get();
                     bar.t1.text = "0";

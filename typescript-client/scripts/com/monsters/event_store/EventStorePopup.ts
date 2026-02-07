@@ -83,7 +83,7 @@ export class EventStorePopup extends EventStorePopupMC {
         }
         
         const xpBalance = ReplayableEventHandler.eventXP;
-        this.experienceDisplay.xpBalanceText.htmlText = KEYS.Get("event_store_xp_balance", { v1: xpBalance });
+        (this.experienceDisplay as any).xpBalanceText.htmlText = KEYS.Get("event_store_xp_balance", { v1: xpBalance });
         
         if (this.m_EventStoreDisplayGrid) {
             this.m_EventStoreDisplayGrid.Populate();

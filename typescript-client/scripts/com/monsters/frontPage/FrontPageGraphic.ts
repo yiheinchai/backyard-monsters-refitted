@@ -132,8 +132,8 @@ export class FrontPageGraphic extends popup_frontpage_CLIP {
         
         this.bNext.visible = false;
         this.bPrev.visible = false;
-        this.bNext.tLabel.htmlText = KEYS.Get("btn_next");
-        this.bPrev.tLabel.htmlText = KEYS.Get("btn_prev");
+        (this.bNext as any).tLabel.htmlText = KEYS.Get("btn_next");
+        (this.bPrev as any).tLabel.htmlText = KEYS.Get("btn_prev");
         this.bNext.mouseChildren = false;
         this.bPrev.mouseChildren = false;
         this.bNext.buttonMode = true;

@@ -65,7 +65,7 @@ export class EventStoreItemSelectedPopup extends EventStoreItemSelectedPopupMC {
         
         this.prizeNameText.htmlText = KEYS.Get("prize_title", { v1: prizeName });
         this.descriptionText.htmlText = KEYS.Get(this.m_PrizeBeingDisplayed.descriptionKey);
-        this.experienceDisplay.xpBalanceText.htmlText = KEYS.Get("event_store_xp_balance", { v1: xpBalance });
+        (this.experienceDisplay as any).xpBalanceText.htmlText = KEYS.Get("event_store_xp_balance", { v1: xpBalance });
         this.xpCostText.htmlText = KEYS.Get("event_store_cost", { v1: this.m_PrizeBeingDisplayed.xpCost });
         
         if (this.m_PrizeBeingDisplayed.lockIcon.visible) {

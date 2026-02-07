@@ -131,7 +131,7 @@ export class PopupInfoViewOnly extends PopupInfoViewOnly_CLIP {
         
         const imageComplete = (path: string, data: BitmapData): void => {
             this._profileBmp = new Bitmap(data);
-            this.mcProfilePic.mcBG.addChild(this._profileBmp);
+            (this.mcProfilePic as any).mcBG.addChild(this._profileBmp);
         };
         
         const LoadImageError = (event: IOErrorEvent): void => {

@@ -81,18 +81,18 @@ export class PopupRelocateMe extends PopupRelocateMe_CLIP {
             (resource as any).tValue.htmlText = "<b>" + GLOBAL.FormatNumber(this.RESOURCECOST.Get()) + "</b>";
         }
         
-        this.mcResources.mcTime.visible = false;
-        this.mcResources.bAction.SetupKey("btn_useresources");
+        (this.mcResources as any).mcTime.visible = false;
+        (this.mcResources as any).bAction.SetupKey("btn_useresources");
         
         if (mode === "invite") {
-            this.mcResources.bAction.addEventListener(MouseEvent.CLICK, (e: MouseEvent) => {
+            (this.mcResources as any).bAction.addEventListener(MouseEvent.CLICK, (e: MouseEvent) => {
                 if (this.parent) {
                     this.parent.removeChild(this);
                 }
                 MapRoom.AcceptInvitation(false);
             });
         } else {
-            this.mcResources.bAction.addEventListener(MouseEvent.CLICK, (e: MouseEvent) => {
+            (this.mcResources as any).bAction.addEventListener(MouseEvent.CLICK, (e: MouseEvent) => {
                 this.RelocateConfirm(false);
             });
         }
