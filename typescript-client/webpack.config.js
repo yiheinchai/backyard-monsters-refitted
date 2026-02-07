@@ -1,6 +1,5 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CircularDependencyPlugin = require('circular-dependency-plugin');
 
 module.exports = {
   mode: 'development',
@@ -23,19 +22,22 @@ module.exports = {
       {
         test: /\.ts$/,
         use: {
-          loader: 'ts-loader',
+          loader: 'babel-loader',
           options: {
-            transpileOnly: true,
-            compilerOptions: {
-              // Use CommonJS to avoid circular dependency TDZ issues
-              // Webpack handles CommonJS circular deps gracefully
-              module: 'CommonJS',
-              target: 'ES2020',
-              moduleResolution: 'node',
-              noEmit: false,
-              esModuleInterop: true,
-              allowSyntheticDefaultImports: true,
-            },
+            presets: [
+              ['@babel/preset-env', {
+                targets: { chrome: '90' },
+                modules: 'commonjs',
+              }],
+            ],
+            plugins: [
+              ['@babel/plugin-proposal-decorators', { legacy: true }],
+              ['@babel/plugin-transform-typescript', {
+                allowDeclareFields: true,
+                onlyRemoveTypeImports: false,
+              }],
+              ['@babel/plugin-transform-class-properties', { loose: true }],
+            ],
           },
         },
         exclude: /node_modules/,
@@ -45,18 +47,6 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './index.html',
-    }),
-    new CircularDependencyPlugin({
-      exclude: /node_modules/,
-      failOnError: false,
-      cwd: process.cwd(),
-      // Only log cycles that contain extends-based relationships
-      onDetected({ paths, compilation }) {
-        // Count circular deps silently
-      },
-      onEnd({ compilation }) {
-        // Log summary
-      },
     }),
   ],
   devServer: {
