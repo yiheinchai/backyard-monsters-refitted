@@ -49,7 +49,7 @@ export class MAPROOM_DESCENT {
         "id": 1,
         "name": KEYS.Get("ai_descenttribe_name"),
         "process": PROCESS7,
-        "type": WMATTACK.TYPE_NERD,
+        "type": 7, // WMATTACK.TYPE_NERD - inlined to break circular dependency
         "taunt": KEYS.Get("ai_descenttribe_taunt"),
         "splash": "popups/portrait_moloch.png",
         "description": KEYS.Get("ai_descenttribe_description"),

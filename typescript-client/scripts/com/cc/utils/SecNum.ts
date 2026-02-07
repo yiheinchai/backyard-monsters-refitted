@@ -1,5 +1,3 @@
-import { LOGGER } from "../../../LOGGER";
-
 /**
  * Secure number storage with obfuscation to prevent memory hacking.
  */
@@ -43,11 +41,12 @@ export class SecNum {
             return this._neg ? -decoded : decoded;
         }
         
-        LOGGER.Log("err", "SecNum Broke (impossible unless.....)" + decoded + " != " + check + "?");
-        // Use lazy import to avoid circular dependency with GLOBAL
-        import("../../../GLOBAL").then(({ GLOBAL }) => {
-            GLOBAL.ErrorMessage("SecNum");
-        });
+        // Use lazy imports to avoid circular dependency chains
+        console.error("SecNum Broke (impossible unless.....)" + decoded + " != " + check + "?");
+        try {
+            const { GLOBAL } = require("../../../GLOBAL");
+            GLOBAL?.ErrorMessage?.("SecNum");
+        } catch (e) { /* ignore during init */ }
         return 0;
     }
 }
