@@ -16,50 +16,73 @@ import { SecNum } from "./com/cc/utils/SecNum";
 import { GameObject } from "./com/monsters/GameObject";
 import { BYMConfig } from "./com/monsters/configs/BYMConfig";
 import { BYMDevConfig } from "./com/monsters/configs/BYMDevConfig";
-import { Console } from "./com/monsters/debug/Console";
-import { BuildingAssetContainer } from "./com/monsters/display/BuildingAssetContainer";
-import { BuildingOverlay } from "./com/monsters/display/BuildingOverlay";
-import { ImageCache } from "./com/monsters/display/ImageCache";
-import { Fire } from "./com/monsters/effects/fire/Fire";
-import { Smoke } from "./com/monsters/effects/smoke/Smoke";
 import { EnumYardType } from "./com/monsters/enums/EnumYardType";
-import { BuildingEvent } from "./com/monsters/events/BuildingEvent";
 import { ICoreBuilding } from "./com/monsters/interfaces/ICoreBuilding";
 import { ITargetable } from "./com/monsters/interfaces/ITargetable";
-import { InventoryManager } from "./com/monsters/inventory/InventoryManager";
-import { InstanceManager } from "./com/monsters/managers/InstanceManager";
-import { MapRoomManager } from "./com/monsters/maproom_manager/MapRoomManager";
-import { MonsterBase } from "./com/monsters/monsters/MonsterBase";
 import { CModifiableProperty } from "./com/monsters/monsters/components/CModifiableProperty";
-import { PATHING } from "./com/monsters/pathing/PATHING";
 import { RasterData } from "./com/monsters/rendering/RasterData";
 import { ImageCallbackHelper } from "./com/monsters/utils/ImageCallbackHelper";
 import { MovieClipUtils } from "./com/monsters/utils/MovieClipUtils";
+import { BuildingAssetContainer } from "./com/monsters/display/BuildingAssetContainer";
+import { ImageCache } from "./com/monsters/display/ImageCache";
+import { Fire } from "./com/monsters/effects/fire/Fire";
 
-// Global singletons
-import { BASE } from "./BASE";
-import { GLOBAL } from "./GLOBAL";
-import { MAP } from "./MAP";
-import { KEYS } from "./KEYS";
-import { ATTACK } from "./ATTACK";
-import { SOUNDS } from "./SOUNDS";
-import { UI2 } from "./UI2";
-import { QUEUE } from "./QUEUE";
-import { POPUPS } from "./POPUPS";
-import { UPDATES } from "./UPDATES";
+// Lazy imports for singletons to break circular dependency chains.
+// BFOUNDATION is extended by BSTORAGE, BRESOURCE, etc., and must complete
+// class definition before those modules execute. All modules that could
+// transitively import BSTORAGE/BRESOURCE (via GLOBAL) must be lazy.
 import { LOGGER } from "./LOGGER";
-import { STORE } from "./STORE";
-import { TUTORIAL } from "./TUTORIAL";
-import { QUESTS } from "./QUESTS";
 import { GRID } from "./GRID";
-import { HOUSING } from "./HOUSING";
-import { BUILDINGS } from "./BUILDINGS";
-import { BTOTEM } from "./BTOTEM";
-import { MONSTERBUNKER } from "./MONSTERBUNKER";
-import { BUILDINGOPTIONS } from "./BUILDINGOPTIONS";
-import { PLANNER } from "./PLANNER";
-import { LOGIN } from "./LOGIN";
-import { ResourcePackages } from "./ResourcePackages";
+import { KEYS } from "./KEYS";
+
+// All other modules that import GLOBAL or BFOUNDATION are accessed lazily
+function lazyModule(requireFn: () => any): any {
+    let cached: any = null;
+    return new Proxy({} as any, {
+        get(_t, p) {
+            if (!cached) cached = requireFn();
+            return cached?.[p];
+        },
+        set(_t, p, v) {
+            if (!cached) cached = requireFn();
+            cached[p] = v;
+            return true;
+        },
+    });
+}
+
+// Classes that import GLOBAL or BFOUNDATION (circular chain)
+const Console: any = lazyModule(() => require("./com/monsters/debug/Console").Console);
+const BuildingOverlay: any = lazyModule(() => require("./com/monsters/display/BuildingOverlay").BuildingOverlay);
+const BuildingEvent: any = lazyModule(() => require("./com/monsters/events/BuildingEvent").BuildingEvent);
+const Smoke: any = lazyModule(() => require("./com/monsters/effects/smoke/Smoke").Smoke);
+const InventoryManager: any = lazyModule(() => require("./com/monsters/inventory/InventoryManager").InventoryManager);
+const InstanceManager: any = lazyModule(() => require("./com/monsters/managers/InstanceManager").InstanceManager);
+const MapRoomManager: any = lazyModule(() => require("./com/monsters/maproom_manager/MapRoomManager").MapRoomManager);
+const MonsterBase: any = lazyModule(() => require("./com/monsters/monsters/MonsterBase").MonsterBase);
+const PATHING: any = lazyModule(() => require("./com/monsters/pathing/PATHING").PATHING);
+
+// Singletons that import GLOBAL
+const GLOBAL: any = lazyModule(() => require("./GLOBAL").GLOBAL);
+const BASE: any = lazyModule(() => require("./BASE").BASE);
+const MAP: any = lazyModule(() => require("./MAP").MAP);
+const ATTACK: any = lazyModule(() => require("./ATTACK").ATTACK);
+const SOUNDS: any = lazyModule(() => require("./SOUNDS").SOUNDS);
+const UI2: any = lazyModule(() => require("./UI2").UI2);
+const QUEUE: any = lazyModule(() => require("./QUEUE").QUEUE);
+const POPUPS: any = lazyModule(() => require("./POPUPS").POPUPS);
+const UPDATES: any = lazyModule(() => require("./UPDATES").UPDATES);
+const STORE: any = lazyModule(() => require("./STORE").STORE);
+const TUTORIAL: any = lazyModule(() => require("./TUTORIAL").TUTORIAL);
+const QUESTS: any = lazyModule(() => require("./QUESTS").QUESTS);
+const HOUSING: any = lazyModule(() => require("./HOUSING").HOUSING);
+const BUILDINGS: any = lazyModule(() => require("./BUILDINGS").BUILDINGS);
+const BTOTEM: any = lazyModule(() => require("./BTOTEM").BTOTEM);
+const MONSTERBUNKER: any = lazyModule(() => require("./MONSTERBUNKER").MONSTERBUNKER);
+const BUILDINGOPTIONS: any = lazyModule(() => require("./BUILDINGOPTIONS").BUILDINGOPTIONS);
+const PLANNER: any = lazyModule(() => require("./PLANNER").PLANNER);
+const LOGIN: any = lazyModule(() => require("./LOGIN").LOGIN);
+const ResourcePackages: any = lazyModule(() => require("./ResourcePackages").ResourcePackages);
 
 // Assumed Asset Imports (These would be generated by OpenFL from the SWF/Assets)
 // For the sake of compilation, we assume these are globally available or imported * as Assets

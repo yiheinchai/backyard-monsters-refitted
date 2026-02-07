@@ -1,4 +1,3 @@
-import { GLOBAL } from "../../../GLOBAL";
 import { LOGGER } from "../../../LOGGER";
 
 /**
@@ -45,7 +44,10 @@ export class SecNum {
         }
         
         LOGGER.Log("err", "SecNum Broke (impossible unless.....)" + decoded + " != " + check + "?");
-        GLOBAL.ErrorMessage("SecNum");
+        // Use lazy import to avoid circular dependency with GLOBAL
+        import("../../../GLOBAL").then(({ GLOBAL }) => {
+            GLOBAL.ErrorMessage("SecNum");
+        });
         return 0;
     }
 }

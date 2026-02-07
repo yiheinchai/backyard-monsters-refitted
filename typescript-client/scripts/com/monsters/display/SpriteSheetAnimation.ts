@@ -2,7 +2,9 @@ import Bitmap from "openfl/display/Bitmap";
 import BitmapData from "openfl/display/BitmapData";
 
 import { SpriteData } from "./SpriteData";
-import { SPRITES } from "../../../SPRITES";
+
+// Lazy import to break circular dependency: SpriteSheetAnimation -> SPRITES -> ResurrectProjectile -> MAP -> BFOUNDATION -> GameObject -> SpriteSheetAnimation
+function getSPRITES(): any { return require("../../../SPRITES").SPRITES; }
 
 /**
  * Animated sprite using sprite sheet frames.
@@ -50,7 +52,7 @@ export class SpriteSheetAnimation extends Bitmap {
     }
 
     public render(): void {
-        SPRITES.GetFrame(this.bitmapData, this.spriteData, this.currentFrame % this.totalFrames, this.currentRow);
+        getSPRITES().GetFrame(this.bitmapData, this.spriteData, this.currentFrame % this.totalFrames, this.currentRow);
     }
 
     private animationComplete(): void {
