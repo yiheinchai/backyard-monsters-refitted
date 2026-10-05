@@ -134,6 +134,25 @@ Ruffle, check it out, apply the patch, fix any conflicts, regenerate the patch w
   overrides the URL for testing.
 - The SWF version must match the server's API version, as with the launcher builds.
 
+### Static hosting
+
+The shell works from any path and doesn't need this repository's server to serve it. To host it
+as a static site (for example GitHub Pages) that plays on another game server, copy
+`server/public/play/` (after building) and name the servers in `index.html`, before `play.js`:
+
+```html
+<script>
+  window.BYMR_CONFIG = {
+    serverUrl: "https://server.example.com/",
+    cdnUrl: "https://cdn.example.com/",
+    chatUrl: "wss://chat.example.com/", // optional
+  };
+</script>
+```
+
+The server must allow cross-origin requests (the server here does) and accept the client's API
+version (`GLOBAL.apiVersionSuffix`), so build the client from the release that server runs.
+
 ## Shell options
 
 Query parameters on `/play/`:

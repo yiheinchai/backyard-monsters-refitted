@@ -24,6 +24,8 @@
   const LANGUAGES = { en: "english", fr: "french", es: "spanish", pt: "portuguese" };
 
   const params = new URLSearchParams(location.search);
+  /** Optional settings for a static deployment, set by a script before this one. */
+  const site = window.BYMR_CONFIG || {};
   const viewport = document.getElementById("viewport");
   const stage = document.getElementById("stage");
   const boot = document.getElementById("boot");
@@ -98,6 +100,7 @@
 
   function chatUrl(host, port) {
     if (params.get("chat")) return params.get("chat");
+    if (site.chatUrl) return site.chatUrl;
     const scheme = location.protocol === "https:" ? "wss" : "ws";
     return `${scheme}://${host}:${port}/`;
   }
@@ -210,9 +213,10 @@
       parameters: {
         platform: "web",
         language: language(),
-        // The game server and CDN default to the host serving this page.
-        serverUrl: params.get("server") || `${location.origin}/`,
-        cdnUrl: params.get("cdn") || params.get("server") || `${location.origin}/`,
+        // The game server and CDN default to the host serving this page. A static deployment
+        // names them in window.BYMR_CONFIG instead (see pwa/README.md).
+        serverUrl: params.get("server") || site.serverUrl || `${location.origin}/`,
+        cdnUrl: params.get("cdn") || params.get("server") || site.cdnUrl || `${location.origin}/`,
       },
     })
     .then(() => {

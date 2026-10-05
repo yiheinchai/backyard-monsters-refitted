@@ -23,7 +23,9 @@ const SHELL = [
   "bymr.swf",
 ];
 
-const HASHED = /\/play\/ruffle\/.+\.[0-9a-f]{16,}\.(js|wasm)$|\/play\/ruffle\/[0-9a-f]{16,}\.wasm$/;
+// The shell can be served from any path (/play/ by the game server, or a static host).
+const SCOPE = new URL(self.registration.scope).pathname;
+const HASHED = /^ruffle\/(.+\.[0-9a-f]{16,}\.(js|wasm)|[0-9a-f]{16,}\.wasm)$/;
 const ASSETS = /^\/(assets|gamestage)\//;
 
 self.addEventListener("install", (event) => {
@@ -51,9 +53,10 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   if (url.origin !== location.origin) return;
 
-  if (HASHED.test(url.pathname)) {
+  const inScope = url.pathname.startsWith(SCOPE);
+  if (inScope && HASHED.test(url.pathname.slice(SCOPE.length))) {
     event.respondWith(cacheFirst(request, SHELL_CACHE));
-  } else if (url.pathname.startsWith("/play/")) {
+  } else if (inScope) {
     event.respondWith(networkFirst(request, SHELL_CACHE));
   } else if (ASSETS.test(url.pathname)) {
     event.respondWith(staleWhileRevalidate(request, event));
