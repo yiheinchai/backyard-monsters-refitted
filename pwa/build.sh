@@ -13,7 +13,7 @@
 #
 # Requirements (see pwa/README.md):
 #   swf:    Java, and the Apache Flex SDK in $FLEX_HOME (default /opt/flex)
-#   ruffle: git, Rust with the wasm32-unknown-unknown target, wasm-bindgen-cli matching
+#   ruffle: git, Rust with the wasm32-unknown-unknown target and rust-src, wasm-bindgen-cli matching
 #           Ruffle's Cargo.toml, Node.js; optionally wasm-opt (binaryen) for a faster build
 set -euo pipefail
 
@@ -61,7 +61,9 @@ build_ruffle() {
   (
     cd "$RUFFLE_SRC/web"
     npm install --no-audit --no-fund
-    npm run build -w ruffle-core -w ruffle-selfhosted
+    # BUILD_WASM_MVP adds a second module without newer WebAssembly features (SIMD and others)
+    # for browsers that lack them, such as Safari before iOS 16.4.
+    BUILD_WASM_MVP=true npm run build -w ruffle-core -w ruffle-selfhosted
   )
 
   rm -rf "$OUT/ruffle"

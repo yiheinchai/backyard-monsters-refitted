@@ -113,7 +113,8 @@ Requirements:
 
 - **SWF**: Java and the [Apache Flex SDK](https://flex.apache.org/download-binaries.html) 4.16
   (`FLEX_HOME`, default `/opt/flex`). `playerglobal.swc` comes from this repository.
-- **Ruffle**: git, Node.js, Rust with `rustup target add wasm32-unknown-unknown`, and
+- **Ruffle**: git, Node.js, Rust with `rustup target add wasm32-unknown-unknown` and
+  `rustup component add rust-src` (for the fallback module for older browsers), and
   `cargo install wasm-bindgen-cli --version <the wasm-bindgen version in Ruffle's Cargo.toml>`.
   `wasm-opt` (binaryen) is optional but makes Ruffle faster.
 
