@@ -2,6 +2,7 @@ package com.monsters.monsters {
     import com.cc.utils.SecNum;
     import com.monsters.GameObject;
     import com.monsters.configs.BYMConfig;
+    import com.monsters.configs.WebPlatform;
     import com.monsters.interfaces.IAttackable;
     import com.monsters.interfaces.ILootable;
     import com.monsters.interfaces.ITargetable;
@@ -156,6 +157,8 @@ package com.monsters.monsters {
         public var _spawnPoint:Point;
 
         public var _lastRotation:int = 400;
+
+        private var _healthBarDrawn:Boolean = false;
 
         public var _targetGroup:int;
 
@@ -384,6 +387,7 @@ package com.monsters.monsters {
                 if (_loc5_ >= maxHealth) {
                     if (this._graphic) {
                         this._graphic.fillRect(this._graphic.rect, 0);
+                        this.redrawSprite();
                     }
                     param1 = maxHealth - health;
                 }
@@ -584,6 +588,12 @@ package com.monsters.monsters {
             var _loc2_:String = null;
             var _loc3_:int = 0;
             var _loc4_:int = 0;
+            // The game ticks creatures several times per displayed frame and only the last tick
+            // (GLOBAL._render) is drawn. Sprites aren't fetched on the other ticks, which also
+            // forgets the current frame (_lastFrame) and made every creature recopy its sprite
+            // every frame. On the browser build, whose bitmaps go to the GPU after every change,
+            // the drawing work is only done on the drawn tick.
+            var draw:Boolean = GLOBAL._render || !WebPlatform.isWeb;
             if (!GLOBAL._catchup) {
                 if (!this._lockRotation) {
                     // Only calculate rotation when movement direction changes
@@ -611,14 +621,14 @@ package com.monsters.monsters {
                     this.m_rotation += 360;
                 }
                 this.m_rotation %= 360;
-                if (x != int(this._tmpPoint.x) || y != int(this._tmpPoint.y)) {
+                if (draw && (x != int(this._tmpPoint.x) || y != int(this._tmpPoint.y))) {
                     graphic.x = int(this._tmpPoint.x);
                     graphic.y = int(this._tmpPoint.y);
                 }
-                if (this._graphic) {
+                if (this._graphic && draw) {
                     this._graphic.lock();
                 }
-                if (this._shadow) {
+                if (this._shadow && draw) {
                     this._shadow.lock();
                 }
                 _loc3_ = 0;
@@ -634,8 +644,16 @@ package com.monsters.monsters {
                         graphic.alpha = 1;
                     }
                 }
+                if (!draw) {
+                    return;
+                }
+                if (this._healthBarDrawn && health >= maxHealth) {
+                    // The health bar is drawn over the sprite; draw the sprite again to clear it.
+                    this.redrawSprite();
+                }
                 this.getNextSprite();
                 this._lastRotation = int(this.m_rotation / 12);
+                this._healthBarDrawn = health < maxHealth;
                 if (health < maxHealth) {
                     _loc4_ = 11 - int(11 / maxHealth * health);
                     this._graphic.copyPixels(CREEPS._bmdHPbar, new Rectangle(0, 5 * _loc4_, 17, 5), new Point(-this._graphicMC.x - CREEPS._bmdHPbar.width / 2, 6));
@@ -651,6 +669,12 @@ package com.monsters.monsters {
         }
 
         protected function getNextSprite():void {
+        }
+
+        /**
+         * Makes the next getNextSprite() draw the sprite even if its frame hasn't changed.
+         */
+        protected function redrawSprite():void {
         }
 
         protected function renderBurrow():void {

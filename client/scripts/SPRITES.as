@@ -124,17 +124,21 @@ package {
             if (!GLOBAL._render) {
                 return -1;
             }
+            if (Boolean(_sprites[param2]) && !_sprites[param2].image) {
+                // Not loaded yet: nothing can be drawn, so ask again next time.
+                return -1;
+            }
             if (param4 < 0) {
                 param4 = 360 + param4;
             }
             if (param2 == "worker") {
                 if (STORE._storeData.BST) {
-                    if (param6 != param4 / 12) {
+                    if (param6 != int(param4 / 12)) {
                         GetFrame(param1, _sprites.worker, param4 / 12, 1);
                     }
                     return param4 / 12 + 30;
                 }
-                if (param6 != param4 / 12) {
+                if (param6 != int(param4 / 12)) {
                     GetFrame(param1, _sprites.worker, param4 / 12, 0);
                 }
                 return param4 / 12;
@@ -146,20 +150,20 @@ package {
                     }
                     return param4 / 12 + 30;
                 }
-                if (param6 != param4 / 12) {
+                if (param6 != int(param4 / 12)) {
                     GetFrame(param1, _sprites.C9, param4 / 12, 0);
                 }
                 return param4 / 12;
             }
             if (param2 == "C12") {
-                if (param6 != param4 * 0.083333333) {
+                if (param6 != int(param4 * 0.083333333)) {
                     GetFrame(param1, _sprites.C12, param4 * 0.083333333);
                 }
                 return param4 * 0.083333333;
             }
             if (param2 == "C13") {
                 if (param3 == "walking") {
-                    if (param6 != param4 / 12) {
+                    if (param6 != int(param4 / 12)) {
                         GetFrame(param1, _sprites.C13, param4 / 12);
                     }
                     return param4 / 12;
@@ -203,7 +207,7 @@ package {
                 return param4 / 12;
             }
             if (param2 == "C15") {
-                if (param6 != param4 / 11.25) {
+                if (param6 != int(param4 / 11.25)) {
                     GetFrame(param1, _sprites.C15, int(param4 / 11.25));
                 }
                 return param4 / 11.25;
@@ -353,7 +357,7 @@ package {
                 return param4 / 12;
             }
             if (param2 == "rocket") {
-                if (param6 != param4 / 11.25) {
+                if (param6 != int(param4 / 11.25)) {
                     GetFrame(param1, _sprites.rocket, param4 / 11.25);
                 }
                 return param4 / 11.25;
@@ -365,7 +369,7 @@ package {
                 return param4 / 11.25;
             }
             if (_sprites[param2]) {
-                if (param6 != param4 / 12) {
+                if (param6 != int(param4 / 12)) {
                     GetFrame(param1, _sprites[param2], param4 / 12);
                 }
                 return param4 / 12;

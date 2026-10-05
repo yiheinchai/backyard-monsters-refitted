@@ -1706,6 +1706,10 @@ package com.monsters.monsters.creeps {
             }
         }
 
+        override protected function redrawSprite():void {
+            this._lastFrame = -1;
+        }
+
         override protected function getNextSprite():void {
             if (_creatureID == "IC5" && _movement == "fly" || _movement == "fly_low") {
                 SPRITES.GetSprite(_shadow, "shadow", "shadow", 0);

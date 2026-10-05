@@ -1,5 +1,6 @@
 package {
     import com.monsters.configs.BYMConfig;
+    import com.monsters.configs.WebPlatform;
     import com.monsters.input.KeyboardInputHandler;
     import com.monsters.monsters.MonsterBase;
     import com.monsters.rendering.RasterData;
@@ -10,6 +11,7 @@ package {
     import flash.display.MovieClip;
     import flash.display.Sprite;
     import flash.display.Stage;
+    import flash.utils.Dictionary;
     import flash.events.*;
     import flash.geom.*;
     import gs.*;
@@ -394,10 +396,19 @@ package {
             }
         }
 
+        /** Half the height of each object sorted by SortDepth on the browser build, by object. */
+        private static var _sortHalfHeights:Dictionary = new Dictionary(true);
+
+        private static var _sortCount:int = 0;
+
         public static function SortDepth(param1:Boolean = false, param2:Boolean = false):void {
             var _loc3_:DisplayObject = null;
             var _loc6_:int = 0;
             if (BYMConfig.instance.RENDERER_ON) {
+                return;
+            }
+            if (WebPlatform.isWeb) {
+                SortDepthCached();
                 return;
             }
             var _loc4_:Array = [];
@@ -418,6 +429,42 @@ package {
                     _BUILDINGTOPS.setChildIndex(_loc4_[_loc5_].mc, _loc5_);
                 }
                 _loc5_++;
+            }
+        }
+
+        /**
+         * SortDepth for the browser build. An object's height is the size of everything drawn in
+         * it, which Ruffle measures from scratch on every read, and reading it for every building
+         * and creature every third frame was a regular hitch. Heights rarely change, so each is
+         * remeasured about once a second (a few objects per sort), and the order is checked
+         * without searching the display list for every object.
+         */
+        private static function SortDepthCached():void {
+            var child:DisplayObject = null;
+            var halfHeight:* = undefined;
+            var entries:Array = [];
+            var i:int = _BUILDINGTOPS.numChildren - 1;
+            ++_sortCount;
+            while (i >= 0) {
+                child = _BUILDINGTOPS.getChildAt(i);
+                halfHeight = _sortHalfHeights[child];
+                if (halfHeight === undefined || (_sortCount + i) % 13 == 0) {
+                    halfHeight = int(child.height * 0.5);
+                    _sortHalfHeights[child] = halfHeight;
+                }
+                entries.push({
+                            "depth": (child.y + halfHeight) * 1000 + child.x,
+                            "mc": child
+                        });
+                i--;
+            }
+            entries.sortOn("depth", Array.NUMERIC);
+            i = 0;
+            while (i < entries.length) {
+                if (_BUILDINGTOPS.getChildAt(i) != entries[i].mc) {
+                    _BUILDINGTOPS.setChildIndex(entries[i].mc, i);
+                }
+                i++;
             }
         }
 
