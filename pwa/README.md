@@ -34,6 +34,9 @@ to get a full-screen, landscape app.
   `StampCache` rasterises each variant once, on one sheet, while the yard loads.
 - **Building overlays** (name, progress and health bars) are hidden while empty, so they cost no
   draw calls.
+- **Fullscreen button.** Flash's fullscreen would only enlarge the player element, outside the
+  page's scaling, and Ruffle doesn't allow it by default. The game's button asks the page
+  (`bymrFullscreen` in `play.js`) to make the whole page fullscreen instead.
 - **Touch placement.** Placing or moving a building and dropping monsters were built for a mouse:
   the building (or drop ring) follows the pointer each frame, and the click is checked where it
   is. A tap jumps straight there, so it was checked at the old spot and the building was

@@ -6,6 +6,7 @@ package {
     import com.monsters.ai.WMBASE;
     import com.monsters.chat.Chat;
     import com.monsters.configs.BYMConfig;
+    import com.monsters.configs.WebPlatform;
     import com.monsters.debug.Console;
     import com.monsters.display.ImageCache;
     import com.monsters.effects.fire.Fire;
@@ -999,6 +1000,10 @@ package {
         }
 
         public static function goFullScreen(param1:MouseEvent = null):void {
+            if (WebPlatform.isWeb) {
+                WebPlatform.toggleFullscreen();
+                return;
+            }
             if (_ROOT.stage.displayState == StageDisplayState.NORMAL) {
                 _ROOT.stage.displayState = StageDisplayState.FULL_SCREEN;
                 if (GLOBAL.mode == e_BASE_MODE.ATTACK || GLOBAL.mode == e_BASE_MODE.WMATTACK) {

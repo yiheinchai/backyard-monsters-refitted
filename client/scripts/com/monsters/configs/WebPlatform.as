@@ -1,4 +1,5 @@
 package com.monsters.configs {
+    import flash.external.ExternalInterface;
 
     /**
      * Options for the browser build of the client, which runs on Ruffle inside the PWA shell
@@ -19,6 +20,21 @@ package com.monsters.configs {
          * forced with the flashvar renderer=displaylist or renderer=bitmap.
          */
         public static var useDisplayList:Boolean = false;
+
+        /** Whether the page is fullscreen (the stage's displayState always reads normal). */
+        public static function get isFullscreen():Boolean {
+            return ExternalInterface.available && ExternalInterface.call("bymrFullscreen.active") == true;
+        }
+
+        /**
+         * Enters or leaves fullscreen. The page does this itself: Flash's fullscreen would only
+         * enlarge the player, outside the page's scaling.
+         */
+        public static function toggleFullscreen():void {
+            if (ExternalInterface.available) {
+                ExternalInterface.call("bymrFullscreen.toggle");
+            }
+        }
 
         /**
          * Reads the web options from the SWF's flashvars. Must run before anything reads

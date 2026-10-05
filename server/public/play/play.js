@@ -223,9 +223,7 @@
       bootText.textContent = `Couldn't start the game: ${error.message || error}`;
     });
 
-  /** Takes the whole screen on first touch when running in a normal browser tab. */
-  function enterFullscreen() {
-    if (isStandalone || !isTouch || document.fullscreenElement) return;
+  function requestFullscreen() {
     const root = document.documentElement;
     if (!root.requestFullscreen) return;
     root
@@ -233,7 +231,26 @@
       .then(() => screen.orientation && screen.orientation.lock && screen.orientation.lock("landscape"))
       .catch(noop);
   }
+
+  /** Takes the whole screen on first touch when running in a normal browser tab. */
+  function enterFullscreen() {
+    if (isStandalone || !isTouch || document.fullscreenElement) return;
+    requestFullscreen();
+  }
   addEventListener("pointerup", enterFullscreen, { once: true });
+
+  /**
+   * The game's own fullscreen button (WebPlatform.toggleFullscreen). Flash's fullscreen would
+   * only enlarge the player element, outside the scaling above, so the whole page goes
+   * fullscreen instead.
+   */
+  window.bymrFullscreen = {
+    active: () => !!document.fullscreenElement,
+    toggle: () => {
+      if (document.fullscreenElement) document.exitFullscreen().catch(noop);
+      else requestFullscreen();
+    },
+  };
 
   /* ------------------------------------------------------------------ *
    * Frame-rate counter (?fps=1)
