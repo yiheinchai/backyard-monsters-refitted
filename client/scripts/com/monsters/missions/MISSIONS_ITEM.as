@@ -1,4 +1,5 @@
 package com.monsters.missions {
+    import com.monsters.configs.WebPlatform;
     import com.monsters.display.ImageCache;
     import flash.display.Bitmap;
     import flash.display.BitmapData;
@@ -51,6 +52,11 @@ package com.monsters.missions {
                 ImageLoaded = function(param1:String, param2:BitmapData):void {
                     try {
                         mcImage.addChild(new Bitmap(param2));
+                        if (WebPlatform.isWeb && mcLoading && mcLoading.parent) {
+                            // The spinner under the icon would otherwise keep turning, which
+                            // makes the browser build redraw the whole quest list every frame.
+                            mcLoading.parent.removeChild(mcLoading);
+                        }
                     }
                     catch (e:Error) {
                     }

@@ -32,6 +32,8 @@ to get a full-screen, landscape app.
 - **Effect stamps.** Blood splats and settled dirt are vector art stamped into the map's effects
   bitmap. On Ruffle every stamp was a GPU-to-CPU readback (about 60 ms each in a fight).
   `StampCache` rasterises each variant once, on one sheet, while the yard loads.
+- **Quest list spinners.** Each quest row has a loading spinner that keeps turning under the
+  quest's icon once it has loaded; it is removed then, so the list can be cached.
 - **Building overlays** (name, progress and health bars) are hidden while empty, so they cost no
   draw calls.
 - **Fullscreen button.** Flash's fullscreen would only enlarge the player element, outside the
@@ -82,6 +84,11 @@ The patch also has changes that are always on, because they don't change behavio
   now take the positions of the ones the rewind removed. (Stock Ruffle has this bug too.)
 - **`hardwareAccelerationWarning`** (new option, turned off by `play.js`): without a GPU, Ruffle
   covered the game with an explanation that swallowed the first tap.
+- **Culling.** Shapes, bitmaps and text entirely outside the screen, or outside the mask or
+  scroll rect they are drawn through (scrolled-away list rows), aren't drawn.
+- **Hidden animations.** Moving or rotating an invisible object no longer invalidates the
+  caches above it. Containers that couldn't be cached when they first settled (off screen,
+  for example) are tried again later.
 - **Decoded sound effects.** Sounds up to 6 seconds long are decoded and resampled the first time
   they play and replayed from memory afterwards, instead of decoding the MP3 on every play.
 

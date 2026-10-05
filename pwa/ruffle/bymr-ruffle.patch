@@ -1,9 +1,9 @@
 diff --git a/core/src/auto_cache.rs b/core/src/auto_cache.rs
 new file mode 100644
-index 00000000..56ad0e2a
+index 00000000..6885fc01
 --- /dev/null
 +++ b/core/src/auto_cache.rs
-@@ -0,0 +1,151 @@
+@@ -0,0 +1,175 @@
 +//! Automatic layer caching.
 +//!
 +//! Interfaces built in Flash are usually deep trees of shapes, text and bitmaps that rarely
@@ -106,6 +106,16 @@ index 00000000..56ad0e2a
 +    }
 +}
 +
++impl AutoCacheState {
++    /// Records that the object couldn't be cached when `step` asked for it (it was off screen,
++    /// too big, or held something that can't be cached). It is asked again after another stable
++    /// period, backing off like a churning cache, rather than only after its next change.
++    pub fn ineligible(&mut self) {
++        self.stable = 0;
++        self.penalty = (self.penalty + 1).min(MAX_PENALTY);
++    }
++}
++
 +/// Whether a cache of this size (in device pixels) is acceptable.
 +pub fn size_ok(width: f64, height: f64) -> bool {
 +    width >= 1.0 && height >= 1.0 && width <= MAX_SIDE && height <= MAX_SIDE
@@ -137,6 +147,20 @@ index 00000000..56ad0e2a
 +        assert_eq!(state.step(true, true), Decision::Keep);
 +        assert_eq!(state.step(true, true), Decision::Disable);
 +        assert_eq!(state.penalty, 1);
++        for _ in 1..(STABLE_RENDERS * 2) {
++            assert_eq!(state.step(false, false), Decision::Keep);
++        }
++        assert_eq!(state.step(false, false), Decision::Enable);
++    }
++
++    #[test]
++    fn retries_ineligible_objects_with_back_off() {
++        let mut state = AutoCacheState::default();
++        for _ in 1..STABLE_RENDERS {
++            state.step(false, false);
++        }
++        assert_eq!(state.step(false, false), Decision::Enable);
++        state.ineligible();
 +        for _ in 1..(STABLE_RENDERS * 2) {
 +            assert_eq!(state.step(false, false), Decision::Keep);
 +        }
@@ -409,7 +433,7 @@ index 67eac572..44e96d6f 100644
 +    }
 +}
 diff --git a/core/src/bitmap/operations.rs b/core/src/bitmap/operations.rs
-index 4db9211a..8f298d36 100644
+index 4db9211a..22e6e947 100644
 --- a/core/src/bitmap/operations.rs
 +++ b/core/src/bitmap/operations.rs
 @@ -8,10 +8,11 @@ use crate::bitmap::bitmap_data::{
@@ -827,8 +851,16 @@ index 4db9211a..8f298d36 100644
          }
      }
  
+@@ -1478,6 +1722,7 @@ pub fn draw<'gc>(
+         ui: context.ui,
+         transform_stack: &mut transform_stack,
+         is_offscreen: true,
++        cull_bounds: Default::default(),
+         use_bitmap_cache: false,
+         stage: context.stage,
+     };
 diff --git a/core/src/context.rs b/core/src/context.rs
-index 7c36d00a..c23e8609 100644
+index 7c36d00a..1eda8039 100644
 --- a/core/src/context.rs
 +++ b/core/src/context.rs
 @@ -215,6 +215,10 @@ pub struct UpdateContext<'gc> {
@@ -842,8 +874,19 @@ index 7c36d00a..c23e8609 100644
      /// Manager of in-progress media streams.
      pub stream_manager: &'gc mut StreamManager<'gc>,
  
+@@ -596,6 +600,10 @@ pub struct RenderContext<'a, 'gc> {
+     /// Whether we're rendering offscreen. This can disable some logic like Ruffle-side render culling
+     pub is_offscreen: bool,
+ 
++    /// The visible part of the render target, in its coordinates. Shapes, bitmaps and text
++    /// entirely outside it aren't drawn (only used when not `is_offscreen`).
++    pub cull_bounds: Rectangle<Twips>,
++
+     /// Whether to use cacheAsBitmap, vs drawing everything explicitly
+     pub use_bitmap_cache: bool,
+ 
 diff --git a/core/src/display_object.rs b/core/src/display_object.rs
-index 64e3a325..411f5e2c 100644
+index 64e3a325..20094eac 100644
 --- a/core/src/display_object.rs
 +++ b/core/src/display_object.rs
 @@ -1,3 +1,4 @@
@@ -1001,7 +1044,7 @@ index 64e3a325..411f5e2c 100644
          if should_cache {
              write.cache.get_or_insert_default();
          } else {
-@@ -958,6 +1013,91 @@ struct DrawCacheInfo {
+@@ -958,6 +1013,94 @@ struct DrawCacheInfo {
      filters: Vec<Filter>,
  }
  
@@ -1031,6 +1074,9 @@ index 64e3a325..411f5e2c 100644
 +        Decision::Enable => {
 +            if auto_cache_eligible(this, context) {
 +                base.set_auto_bitmap_cache(true);
++            } else {
++                state.ineligible();
++                base.auto_cache.set(state);
 +            }
 +        }
 +        Decision::Disable => base.set_auto_bitmap_cache(false),
@@ -1093,7 +1139,7 @@ index 64e3a325..411f5e2c 100644
  pub fn render_base<'gc>(
      this: DisplayObject<'gc>,
      context: &mut RenderContext<'_, 'gc>,
-@@ -969,8 +1109,25 @@ pub fn render_base<'gc>(
+@@ -969,8 +1112,42 @@ pub fn render_base<'gc>(
      }
  
      if options.apply_transform {
@@ -1117,10 +1163,187 @@ index 64e3a325..411f5e2c 100644
 +            context.transform_stack.pop();
 +            return;
 +        }
++
++        // Skip shapes, bitmaps and text that lie entirely outside the visible area. Containers
++        // are still visited (measuring them means measuring everything inside), but what they
++        // draw comes from such leaves. Not done for filters, which draw outside the bounds, or
++        // when drawing a mask or into a bitmap, whose visible area is something else.
++        if this.as_container().is_none()
++            && !context.is_offscreen
++            && !context.commands.drawing_mask()
++            && this.filters().is_empty()
++        {
++            let bounds =
++                context.transform_stack.transform().matrix * this.self_bounds(BoundsMode::Engine);
++            if context.cull_bounds.is_valid() && !bounds.intersects(&context.cull_bounds) {
++                context.transform_stack.pop();
++                return;
++            }
++        }
      }
  
      let blend_mode = this.blend_mode();
-@@ -2462,8 +2619,12 @@ pub trait TDisplayObject<'gc>:
+@@ -1095,6 +1272,7 @@ pub fn render_base<'gc>(
+                 ui: context.ui,
+                 transform_stack: &mut transform_stack,
+                 is_offscreen: true,
++                cull_bounds: Default::default(),
+                 use_bitmap_cache: true,
+                 stage: context.stage,
+             };
+@@ -1190,6 +1368,17 @@ pub fn apply_standard_mask_and_scroll<'gc, F>(
+ ) where
+     F: FnOnce(&mut RenderContext<'_, 'gc>),
+ {
++    // The visible crop of the scroll rect, before the scroll translation is applied.
++    let scroll_crop = this.scroll_rect().map(|rect| {
++        context.transform_stack.transform().matrix
++            * Rectangle {
++                x_min: Twips::ZERO,
++                y_min: Twips::ZERO,
++                x_max: rect.width(),
++                y_max: rect.height(),
++            }
++    });
++
+     let scroll_rect_matrix = if let Some(rect) = this.scroll_rect() {
+         let cur_transform = context.transform_stack.transform();
+         // The matrix we use for actually drawing a rectangle for cropping purposes
+@@ -1249,6 +1438,22 @@ pub fn apply_standard_mask_and_scroll<'gc, F>(
+         context.commands.activate_mask();
+     }
+ 
++    // Nothing outside the scroll rect or a stencil mask shows, so don't draw leaves there.
++    let outer_cull_bounds = context.cull_bounds;
++    if !context.is_offscreen {
++        if let Some(crop) = scroll_crop {
++            context.cull_bounds = intersect_cull_bounds(context.cull_bounds, crop);
++        }
++        if let RenderMask::Stencil(m) = mask {
++            let mask_bounds = m.render_bounds_with_transform(
++                &(context.transform_stack.transform().matrix * mask_transform.matrix),
++                true,
++                &context.stage.view_matrix(),
++            );
++            context.cull_bounds = intersect_cull_bounds(context.cull_bounds, mask_bounds);
++        }
++    }
++
+     if let RenderMask::Alpha(m) = mask {
+         let original_commands = std::mem::take(&mut context.commands);
+ 
+@@ -1273,6 +1478,7 @@ pub fn apply_standard_mask_and_scroll<'gc, F>(
+     } else {
+         draw(context);
+     }
++    context.cull_bounds = outer_cull_bounds;
+ 
+     if let Some(rect_mat) = scroll_rect_matrix {
+         // Draw the rectangle again after deactivating the mask,
+@@ -1296,6 +1502,22 @@ pub fn apply_standard_mask_and_scroll<'gc, F>(
+     }
+ }
+ 
++/// The part of `bounds` that is also inside `area`, for narrowing the culling area. An unknown
++/// area leaves it as it was, and an empty result is kept as a zero-size edge.
++fn intersect_cull_bounds(bounds: Rectangle<Twips>, area: Rectangle<Twips>) -> Rectangle<Twips> {
++    if !bounds.is_valid() || !area.is_valid() {
++        return bounds;
++    }
++    let x_min = bounds.x_min.max(area.x_min);
++    let y_min = bounds.y_min.max(area.y_min);
++    Rectangle {
++        x_min,
++        y_min,
++        x_max: bounds.x_max.min(area.x_max).max(x_min),
++        y_max: bounds.y_max.min(area.y_max).max(y_min),
++    }
++}
++
+ #[enum_trait_object(
+     #[derive(Clone, Collect, Debug, Copy)]
+     #[collect(no_drop)]
+@@ -1589,6 +1811,7 @@ pub trait TDisplayObject<'gc>:
+     /// This invalidates any ancestors cacheAsBitmap automatically.
+     fn set_x(self, x: Twips) {
+         if self.base().set_x(x)
++            && self.affects_parent_appearance()
+             && let Some(parent) = self.parent()
+         {
+             // Self-transform changes are automatically handled,
+@@ -1608,6 +1831,7 @@ pub trait TDisplayObject<'gc>:
+     /// This invalidates any ancestors cacheAsBitmap automatically.
+     fn set_y(self, y: Twips) {
+         if self.base().set_y(y)
++            && self.affects_parent_appearance()
+             && let Some(parent) = self.parent()
+         {
+             // Self-transform changes are automatically handled,
+@@ -1627,6 +1851,7 @@ pub trait TDisplayObject<'gc>:
+     /// This invalidates any ancestors cacheAsBitmap automatically.
+     fn set_z(self, z: f64) {
+         if self.base().set_z(z)
++            && self.affects_parent_appearance()
+             && let Some(parent) = self.parent()
+         {
+             // Self-transform changes are automatically handled,
+@@ -1644,6 +1869,14 @@ pub trait TDisplayObject<'gc>:
+         degrees
+     }
+ 
++    /// Whether a change to this object's transform or alpha can change how its parent looks.
++    /// An invisible object (other than a mask) can't, and `set_visible` informs the parent when
++    /// it is shown again, so hidden animations don't keep invalidating every cache above them.
++    #[no_dynamic]
++    fn affects_parent_appearance(self) -> bool {
++        self.visible() || self.maskee().is_some()
++    }
++
+     /// Sets the rotation in degrees this display object in local space.
+     /// Set by the `_rotation`/`rotation` ActionScript properties.
+     /// This invalidates any ancestors cacheAsBitmap automatically.
+@@ -1651,7 +1884,9 @@ pub trait TDisplayObject<'gc>:
+     fn set_rotation(self, radians: Degrees) {
+         if self.base().set_rotation(radians) {
+             self.set_scale_rotation_cached();
+-            if let Some(parent) = self.parent() {
++            if self.affects_parent_appearance()
++                && let Some(parent) = self.parent()
++            {
+                 // Self-transform changes are automatically handled,
+                 // we only want to inform ancestors to avoid unnecessary invalidations for tx/ty
+                 parent.invalidate_cached_bitmap();
+@@ -1675,7 +1910,9 @@ pub trait TDisplayObject<'gc>:
+     fn set_scale_x(self, value: Percent) {
+         if self.base().set_scale_x(value) {
+             self.set_scale_rotation_cached();
+-            if let Some(parent) = self.parent() {
++            if self.affects_parent_appearance()
++                && let Some(parent) = self.parent()
++            {
+                 // Self-transform changes are automatically handled,
+                 // we only want to inform ancestors to avoid unnecessary invalidations for tx/ty
+                 parent.invalidate_cached_bitmap();
+@@ -1699,7 +1936,9 @@ pub trait TDisplayObject<'gc>:
+     fn set_scale_y(self, value: Percent) {
+         if self.base().set_scale_y(value) {
+             self.set_scale_rotation_cached();
+-            if let Some(parent) = self.parent() {
++            if self.affects_parent_appearance()
++                && let Some(parent) = self.parent()
++            {
+                 // Self-transform changes are automatically handled,
+                 // we only want to inform ancestors to avoid unnecessary invalidations for tx/ty
+                 parent.invalidate_cached_bitmap();
+@@ -1831,6 +2070,7 @@ pub trait TDisplayObject<'gc>:
+     #[no_dynamic]
+     fn set_alpha(self, value: f64) {
+         if self.base().set_alpha(value)
++            && self.affects_parent_appearance()
+             && let Some(parent) = self.parent()
+         {
+             // Self-transform changes are automatically handled
+@@ -2462,8 +2702,12 @@ pub trait TDisplayObject<'gc>:
      /// Note that this happens even if the child is invisible
      /// (as long as the child is still on a render list)
      #[no_dynamic]
@@ -1134,7 +1357,7 @@ index 64e3a325..411f5e2c 100644
          this.clear_invalidate_flag();
          this.scroll_rect
              .set(this.has_scroll_rect().then(|| this.next_scroll_rect.get()));
-@@ -2842,6 +3003,12 @@ pub trait TDisplayObject<'gc>:
+@@ -2842,6 +3086,12 @@ pub trait TDisplayObject<'gc>:
      #[no_dynamic]
      fn invalidate_cached_bitmap(self) {
          if self.base().invalidate_cached_bitmap() {
@@ -1147,7 +1370,7 @@ index 64e3a325..411f5e2c 100644
              // Don't inform ancestors if we've already done so this frame
              if let Some(parent) = self.parent() {
                  parent.invalidate_cached_bitmap();
-@@ -3053,6 +3220,10 @@ bitflags! {
+@@ -3053,6 +3303,10 @@ bitflags! {
          /// (they need to be instantiated "manually" by
          /// `Sprite.constructChildren`).
          const MANUAL_FRAME_CONSTRUCT  = 1 << 16;
@@ -1747,7 +1970,7 @@ index a231dc08..673408ed 100644
      }
  
 diff --git a/core/src/player.rs b/core/src/player.rs
-index 675ef3a7..cf818cc4 100644
+index 675ef3a7..2e396f55 100644
 --- a/core/src/player.rs
 +++ b/core/src/player.rs
 @@ -334,6 +334,12 @@ pub struct Player {
@@ -1790,7 +2013,15 @@ index 675ef3a7..cf818cc4 100644
          let (cache_draws, commands) = self.enter_arena_mut(|gc_context, gc_root, this| {
              let stage = gc_root.stage;
  
-@@ -2139,12 +2151,40 @@ impl Player {
+@@ -2112,6 +2124,7 @@ impl Player {
+                 ui: this.ui.deref(),
+                 transform_stack: &mut this.transform_stack,
+                 is_offscreen: false,
++                cull_bounds: stage.view_matrix() * stage.view_bounds(),
+                 use_bitmap_cache: true,
+                 stage,
+             };
+@@ -2139,12 +2152,40 @@ impl Player {
              (cache_draws, commands)
          });
  
@@ -1831,7 +2062,7 @@ index 675ef3a7..cf818cc4 100644
      /// The current frame of the main timeline, if available.
      /// The first frame is frame 1.
      pub fn current_frame(&self) -> Option<u16> {
-@@ -2364,6 +2404,7 @@ impl Player {
+@@ -2364,6 +2405,7 @@ impl Player {
                  forced_frame_rate: this.forced_frame_rate,
                  actions_since_timeout_check: &mut this.actions_since_timeout_check,
                  frame_phase: &mut this.frame_phase,
@@ -1839,7 +2070,7 @@ index 675ef3a7..cf818cc4 100644
                  stub_tracker: &mut this.stub_tracker,
                  stream_manager,
                  sockets,
-@@ -2660,6 +2701,9 @@ pub struct PlayerBuilder {
+@@ -2660,6 +2702,9 @@ pub struct PlayerBuilder {
      quality: StageQuality,
      page_url: Option<String>,
      frame_rate: Option<f64>,
@@ -1849,7 +2080,7 @@ index 675ef3a7..cf818cc4 100644
      external_interface_provider: Option<Box<dyn ExternalInterfaceProvider>>,
      fs_command_provider: Box<dyn FsCommandProvider>,
      #[cfg(feature = "known_stubs")]
-@@ -2717,6 +2761,9 @@ impl PlayerBuilder {
+@@ -2717,6 +2762,9 @@ impl PlayerBuilder {
              quality: StageQuality::High,
              page_url: None,
              frame_rate: None,
@@ -1859,7 +2090,7 @@ index 675ef3a7..cf818cc4 100644
              external_interface_provider: None,
              fs_command_provider: Box::new(NullFsCommandProvider),
              #[cfg(feature = "known_stubs")]
-@@ -2922,6 +2969,27 @@ impl PlayerBuilder {
+@@ -2922,6 +2970,27 @@ impl PlayerBuilder {
          self
      }
  
@@ -1887,7 +2118,7 @@ index 675ef3a7..cf818cc4 100644
      /// Adds an External Interface provider for movies to communicate with
      pub fn with_external_interface(mut self, provider: Box<dyn ExternalInterfaceProvider>) -> Self {
          self.external_interface_provider = Some(provider);
-@@ -3025,6 +3093,12 @@ impl PlayerBuilder {
+@@ -3025,6 +3094,12 @@ impl PlayerBuilder {
  
      /// Builds the player, wiring up the backends and configuring the specified settings.
      pub fn build(self) -> Arc<Mutex<Player>> {
@@ -1900,7 +2131,7 @@ index 675ef3a7..cf818cc4 100644
          use crate::backend::*;
          use ruffle_video::null;
          let audio = self
-@@ -3083,6 +3157,7 @@ impl PlayerBuilder {
+@@ -3083,6 +3158,7 @@ impl PlayerBuilder {
                  frame_rate,
                  forced_frame_rate,
                  frame_phase: Default::default(),
@@ -1908,7 +2139,7 @@ index 675ef3a7..cf818cc4 100644
                  frame_accumulator: FloatDuration::ZERO,
                  recent_run_frame_timings: VecDeque::with_capacity(10),
                  start_time: Instant::now(),
-@@ -3115,6 +3190,8 @@ impl PlayerBuilder {
+@@ -3115,6 +3191,8 @@ impl PlayerBuilder {
                      RunState::Suspended
                  },
                  needs_render: true,
