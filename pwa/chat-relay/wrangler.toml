@@ -1,0 +1,9 @@
+name = "bymr-chat-relay"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+# Chat servers the relay may connect to, comma-separated host names.
+CHAT_HOSTS = "chat.example.com"
+# Pages allowed to use the relay, comma-separated origins.
+ALLOWED_ORIGINS = "https://example.com"

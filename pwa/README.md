@@ -151,6 +151,21 @@ as a static site (for example GitHub Pages) that plays on another game server, c
 </script>
 ```
 
+#### Chat relay
+
+If the chat server only accepts plain `ws://`, an HTTPS page can't reach it. `pwa/chat-relay/`
+is a Cloudflare Worker that takes the page's `wss://` connection and passes every message through
+to the chat server unchanged. Set `CHAT_HOSTS` (the chat server's host name) and `ALLOWED_ORIGINS`
+(the page's origin) in `wrangler.toml`, run `npx wrangler deploy` there, and name the relay in
+`index.html`:
+
+```js
+window.BYMR_CONFIG = { ..., chatRelay: "wss://bymr-chat-relay.<account>.workers.dev/" };
+```
+
+The page tells the relay which chat server the game was given (`?to=host:port`). The relay only
+connects to hosts in `CHAT_HOSTS` and only accepts pages from `ALLOWED_ORIGINS`.
+
 The server must allow cross-origin requests (the server here does) and accept the client's API
 version (`GLOBAL.apiVersionSuffix`), so build the client from the release that server runs.
 
