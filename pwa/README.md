@@ -179,6 +179,7 @@ Query parameters on `/play/`:
 | `interp=0` | No frame interpolation (game frame rate only) |
 | `textcache=0`, `autocache=0` | Turn off the caching options |
 | `quality=low\|medium\|high` | Ruffle render quality (default `medium`) |
+| `dpr=1` | Draw at most this many pixels per CSS pixel (default: the screen's own). Lower is cheaper and softer |
 | `renderer=webgpu\|wgpu-webgl\|webgl` | Force a Ruffle renderer. `webgl` is cheaper but has no filters or bitmap caching |
 | `server=`, `cdn=`, `chat=` | Point the client at another server |
 | `logout=1` | Forget the saved session |
