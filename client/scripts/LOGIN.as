@@ -2,6 +2,7 @@ package {
     import com.auth.AuthForm;
     import com.cc.utils.SecNum;
     import com.monsters.configs.BYMDevConfig;
+    import com.monsters.configs.WebPlatform;
     import com.monsters.enums.EnumYardType;
     import com.monsters.maproom_manager.MapRoomManager;
     import com.monsters.player.Player;
@@ -45,14 +46,49 @@ package {
         }
 
         public static function Login():void {
-            if (GAME.token) {
+            if (GAME.token || hasRememberedSession()) {
                 PLEASEWAIT.Show("Logging in...");
                 GLOBAL.eventDispatcher.addEventListener(KEYS.LANGUAGE_FILE_LOADED, onLanguageLoaded);
                 GLOBAL.LanguageSetup();
             }
             else {
-                authForm = new AuthForm();
-                GLOBAL._layerTop.addChild(authForm);
+                showAuthForm();
+            }
+        }
+
+        private static function showAuthForm():void {
+            authForm = new AuthForm();
+            GLOBAL._layerTop.addChild(authForm);
+        }
+
+        /**
+         * The browser build has no launcher to hold the session, so it keeps the latest
+         * session token in the SharedObject and signs back in with it on the next visit.
+         */
+        private static function hasRememberedSession():Boolean {
+            return WebPlatform.isWeb && GAME.sharedObj && Boolean(GAME.sharedObj.data.token);
+        }
+
+        private static function rememberSession(sessionToken:String):void {
+            if (!WebPlatform.isWeb || !GAME.sharedObj || !sessionToken) {
+                return;
+            }
+            try {
+                GAME.sharedObj.data.token = sessionToken;
+                GAME.sharedObj.flush();
+            }
+            catch (e:Error) {
+                LOGGER.Log("err", "Error saving session token: " + e.message);
+            }
+        }
+
+        private static function forgetSession():void {
+            try {
+                delete GAME.sharedObj.data.token;
+                GAME.sharedObj.flush();
+            }
+            catch (e:Error) {
+                LOGGER.Log("err", "Error clearing session token: " + e.message);
             }
         }
 
@@ -69,6 +105,12 @@ package {
             if (GLOBAL._local) {
                 handleLoadSuccessful = function(serverData:Object):void {
                     if (serverData.hasOwnProperty("error") && serverData.error != 0) {
+                        if (hasRememberedSession()) {
+                            forgetSession();
+                            PLEASEWAIT.Hide();
+                            showAuthForm();
+                            return;
+                        }
                         GLOBAL.Message(serverData.error);
                         return;
                     }
@@ -77,6 +119,7 @@ package {
                         if (GLOBAL._local) {
                             // Set token
                             token = serverData.token;
+                            rememberSession(token);
 
                             new URLLoaderApi().load(GLOBAL._apiURL + "bm/getnewmap", [["token", token]],
                                     function(mapData:Object):void {
@@ -91,6 +134,10 @@ package {
                     }
                 };
                 handleLoadError = function(error:IOErrorEvent):void {
+                    if (hasRememberedSession() && !authForm) {
+                        PLEASEWAIT.Hide();
+                        showAuthForm();
+                    }
                     GLOBAL._layerTop.addChild(GLOBAL.Message("An error occurred during login on the server."));
                 };
                 new URLLoaderApi().load(GLOBAL._apiURL + "player/getinfo", [["version", GLOBAL._version.Get()]].concat(authInfo), handleLoadSuccessful, handleLoadError);

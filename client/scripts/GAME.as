@@ -12,6 +12,7 @@ package {
     import flash.system.Security;
     import flash.net.SharedObject;
     import com.monsters.external_interface.ExternalInterfaceManager;
+    import com.monsters.configs.WebPlatform;
     public class GAME extends Sprite {
 
         public static var _instance:GAME;
@@ -35,11 +36,20 @@ package {
         public function GAME() {
             var urls:Object = null;
 
+            WebPlatform.init(loaderInfo.parameters);
+
             // Override server URL if provided as a flash var
             var flashVarServerUrl:* = loaderInfo.parameters["serverUrl"];
 
             if (flashVarServerUrl != undefined && flashVarServerUrl != "") {
                 GLOBAL.serverUrl = String(flashVarServerUrl);
+            }
+
+            // Likewise for the CDN, so the browser build can be served from any host
+            var flashVarCdnUrl:* = loaderInfo.parameters["cdnUrl"];
+
+            if (flashVarCdnUrl != undefined && flashVarCdnUrl != "") {
+                GLOBAL.cdnUrl = String(flashVarCdnUrl);
             }
 
             var serverUrl:String = GLOBAL.serverUrl;
@@ -48,7 +58,8 @@ package {
             super();
             _instance = this;
             FONTS.Register();
-            GLOBAL._local = !ExternalInterface.available;
+            // The browser build talks to its page through ExternalInterface, but plays like the launcher
+            GLOBAL._local = !ExternalInterface.available || WebPlatform.isWeb;
             ReferencedExposedStructures.Include();
             if (this.parent) {
                 urls = {};

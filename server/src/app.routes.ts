@@ -113,6 +113,9 @@ const router = new Router();
 router.post("/init", logRequest, init);
 router.get("/connection", (ctx) => (ctx.status = Status.OK));
 
+// Browser / PWA client, served from public/play/
+router.get("/play", (ctx) => ctx.redirect("/play/"));
+
 /**  ────────────────────────────────────────────────
 * 📦 Auth
 * ──────────────────────────────────────────────── */

@@ -1,0 +1,968 @@
+diff --git a/core/src/auto_cache.rs b/core/src/auto_cache.rs
+new file mode 100644
+index 00000000..f9dc1a40
+--- /dev/null
++++ b/core/src/auto_cache.rs
+@@ -0,0 +1,151 @@
++//! Automatic layer caching.
++//!
++//! Interfaces built in Flash are usually deep trees of shapes, text and bitmaps that rarely
++//! change, but every one of them costs at least one draw call on every frame. When enabled, the
++//! player watches how often each container changes and draws the ones that have stayed still
++//! for a while through a bitmap cache (the same machinery as `cacheAsBitmap`), so a whole panel
++//! costs a single draw until something in it changes.
++//!
++//! Containers that keep changing while cached are dropped from the cache again, and wait longer
++//! before being tried again; their stable children are then cached individually instead.
++//! Containers that would render differently through a cache (blend modes inside, editable text
++//! with a blinking caret, video) or would need a very large texture are never cached.
++
++use std::sync::atomic::{AtomicBool, Ordering};
++
++static ENABLED: AtomicBool = AtomicBool::new(false);
++
++/// Unchanged renders needed before a container is cached (doubled per penalty step).
++const STABLE_RENDERS: u16 = 30;
++
++/// Changes allowed while cached before the cache is dropped.
++const MAX_CHURN: u8 = 3;
++
++/// Longest back-off, as a power of two of `STABLE_RENDERS`.
++const MAX_PENALTY: u8 = 5;
++
++/// Cached containers are re-rendered this often even if nothing reported a change,
++/// so that a change Ruffle fails to notice can never leave a stale image for long.
++const REFRESH_RENDERS: u16 = 240;
++
++/// Descendants needed for a container to be worth caching.
++const MIN_DESCENDANTS: u32 = 3;
++
++/// Descendants beyond which the eligibility scan gives up.
++const MAX_DESCENDANTS: u32 = 4000;
++
++/// Largest cache texture side, in device pixels.
++const MAX_SIDE: f64 = 2048.0;
++
++pub fn set_enabled(enabled: bool) {
++    ENABLED.store(enabled, Ordering::Relaxed);
++}
++
++pub fn enabled() -> bool {
++    ENABLED.load(Ordering::Relaxed)
++}
++
++/// Per-object bookkeeping.
++#[derive(Clone, Copy, Default, Debug)]
++pub struct AutoCacheState {
++    /// Consecutive renders without a change.
++    pub stable: u16,
++    /// Changes seen since the object was last cached.
++    pub churn: u8,
++    /// Back-off level, raised each time a cache is dropped for churning.
++    pub penalty: u8,
++}
++
++/// What to do with an object's automatic cache after one render.
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub enum Decision {
++    Keep,
++    Enable,
++    Disable,
++    Refresh,
++}
++
++impl AutoCacheState {
++    /// Updates the bookkeeping for one render and decides what to do with the cache.
++    /// `changed` is whether the object or anything inside it changed since the last render.
++    pub fn step(&mut self, changed: bool, cached: bool) -> Decision {
++        if changed {
++            self.stable = 0;
++            if cached {
++                self.churn += 1;
++                if self.churn >= MAX_CHURN {
++                    self.churn = 0;
++                    self.penalty = (self.penalty + 1).min(MAX_PENALTY);
++                    return Decision::Disable;
++                }
++            }
++            return Decision::Keep;
++        }
++
++        self.stable = self.stable.saturating_add(1);
++        if cached {
++            if self.stable == STABLE_RENDERS {
++                // Settled again; forgive earlier changes.
++                self.churn = 0;
++            }
++            if self.stable % REFRESH_RENDERS == 0 {
++                return Decision::Refresh;
++            }
++            Decision::Keep
++        } else if self.stable == STABLE_RENDERS << self.penalty {
++            Decision::Enable
++        } else {
++            Decision::Keep
++        }
++    }
++}
++
++/// Whether a cache of this size (in device pixels) is acceptable.
++pub fn size_ok(width: f64, height: f64) -> bool {
++    width >= 1.0 && height >= 1.0 && width <= MAX_SIDE && height <= MAX_SIDE
++}
++
++pub fn descendants_ok(count: u32) -> bool {
++    (MIN_DESCENDANTS..=MAX_DESCENDANTS).contains(&count)
++}
++
++pub const SCAN_LIMIT: u32 = MAX_DESCENDANTS + 1;
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    #[test]
++    fn caches_after_stable_period() {
++        let mut state = AutoCacheState::default();
++        for _ in 1..STABLE_RENDERS {
++            assert_eq!(state.step(false, false), Decision::Keep);
++        }
++        assert_eq!(state.step(false, false), Decision::Enable);
++    }
++
++    #[test]
++    fn drops_churning_cache_and_backs_off() {
++        let mut state = AutoCacheState::default();
++        assert_eq!(state.step(true, true), Decision::Keep);
++        assert_eq!(state.step(true, true), Decision::Keep);
++        assert_eq!(state.step(true, true), Decision::Disable);
++        assert_eq!(state.penalty, 1);
++        for _ in 1..(STABLE_RENDERS * 2) {
++            assert_eq!(state.step(false, false), Decision::Keep);
++        }
++        assert_eq!(state.step(false, false), Decision::Enable);
++    }
++
++    #[test]
++    fn refreshes_periodically() {
++        let mut state = AutoCacheState::default();
++        let mut refreshes = 0;
++        for _ in 0..REFRESH_RENDERS {
++            if state.step(false, true) == Decision::Refresh {
++                refreshes += 1;
++            }
++        }
++        assert_eq!(refreshes, 1);
++    }
++}
+diff --git a/core/src/display_object.rs b/core/src/display_object.rs
+index 64e3a325..394947d7 100644
+--- a/core/src/display_object.rs
++++ b/core/src/display_object.rs
+@@ -8,6 +8,8 @@ use crate::avm2::{
+ };
+ use crate::context::{RenderContext, UpdateContext};
+ use crate::drawing::Drawing;
++use crate::auto_cache::{self, AutoCacheState, Decision};
++use crate::frame_interpolation;
+ use crate::prelude::*;
+ use crate::string::{AvmString, WString};
+ use crate::tag_utils::SwfMovie;
+@@ -55,6 +57,7 @@ pub use bitmap::{Bitmap, BitmapClass};
+ #[allow(unused)]
+ pub use edit_text::LayoutDebugBoxesFlag;
+ pub use edit_text::{AutoSizeMode, EditText, TextSelection};
++pub(crate) use edit_text::CACHE_TEXT_AS_BITMAP;
+ pub use graphic::Graphic;
+ pub use interactive::{Avm2MousePick, InteractiveObject, TInteractiveObject};
+ pub use loader_display::LoaderDisplay;
+@@ -271,6 +274,17 @@ pub struct DisplayObjectBase<'gc> {
+     // (Split into several fields for easier access)
+     matrix: Cell<Matrix>,
+     color_transform: Cell<ColorTransform>,
++
++    // Frame interpolation (see `crate::frame_interpolation`): the matrix this object had
++    // before the first change in frame `prev_matrix_frame`, and the last frame during which it
++    // was drawn on screen.
++    prev_matrix: Cell<Matrix>,
++    prev_matrix_frame: Cell<u32>,
++    rendered_frame: Cell<u32>,
++
++    // Automatic layer caching (see `crate::auto_cache`).
++    #[collect(require_static)]
++    auto_cache: Cell<AutoCacheState>,
+     perspective_projection: Cell<Option<PerspectiveProjection>>,
+     tz: Cell<f64>,
+ 
+@@ -348,6 +362,10 @@ impl Default for DisplayObjectBase<'_> {
+             clip_depth: Default::default(),
+             matrix: Default::default(),
+             color_transform: Default::default(),
++            prev_matrix: Default::default(),
++            prev_matrix_frame: Cell::new(0),
++            rendered_frame: Cell::new(0),
++            auto_cache: Default::default(),
+             perspective_projection: Default::default(),
+             tz: Cell::new(0.0),
+             rotation: Cell::new(Degrees::from_radians(0.0)),
+@@ -419,10 +437,38 @@ impl<'gc> DisplayObjectBase<'gc> {
+     }
+ 
+     pub fn set_matrix(&self, matrix: Matrix) {
+-        self.matrix.set(matrix);
++        self.store_matrix(matrix);
+         self.set_scale_rotation_cached(false);
+     }
+ 
++    /// Replaces the matrix, first remembering the one this object ended the previous frame with.
++    fn store_matrix(&self, matrix: Matrix) {
++        let frame = frame_interpolation::current_frame();
++        if self.prev_matrix_frame.get() != frame {
++            self.prev_matrix.set(self.matrix.get());
++            self.prev_matrix_frame.set(frame);
++        }
++        self.matrix.set(matrix);
++    }
++
++    /// The matrix to draw this object with on screen.
++    /// While interpolating, this is part-way between the previous frame's matrix and the current one.
++    fn render_matrix(&self) -> Matrix {
++        let matrix = self.matrix.get();
++        let Some(alpha) = frame_interpolation::alpha() else {
++            return matrix;
++        };
++        let frame = frame_interpolation::current_frame();
++        let rendered_frame = self.rendered_frame.replace(frame);
++        let moved_this_frame = self.prev_matrix_frame.get() == frame;
++        let was_on_screen = rendered_frame == frame || rendered_frame == frame.wrapping_sub(1);
++        if moved_this_frame && was_on_screen {
++            frame_interpolation::interpolate(&self.prev_matrix.get(), &matrix, alpha)
++        } else {
++            matrix
++        }
++    }
++
+     pub fn color_transform(&self) -> ColorTransform {
+         self.color_transform.get()
+     }
+@@ -451,7 +497,7 @@ impl<'gc> DisplayObjectBase<'gc> {
+         let mut matrix = self.matrix.get();
+         let changed = matrix.tx != x;
+         matrix.tx = x;
+-        self.matrix.set(matrix);
++        self.store_matrix(matrix);
+         self.set_transformed_by_script(true);
+         changed
+     }
+@@ -464,7 +510,7 @@ impl<'gc> DisplayObjectBase<'gc> {
+         let mut matrix = self.matrix.get();
+         let changed = matrix.ty != y;
+         matrix.ty = y;
+-        self.matrix.set(matrix);
++        self.store_matrix(matrix);
+         self.set_transformed_by_script(true);
+         changed
+     }
+@@ -552,7 +598,7 @@ impl<'gc> DisplayObjectBase<'gc> {
+         matrix.b = (scale_x * sin_x) as f32;
+         matrix.c = (scale_y * -sin_y) as f32;
+         matrix.d = (scale_y * cos_y) as f32;
+-        self.matrix.set(matrix);
++        self.store_matrix(matrix);
+ 
+         changed
+     }
+@@ -587,7 +633,7 @@ impl<'gc> DisplayObjectBase<'gc> {
+         let mut matrix = self.matrix.get();
+         matrix.a = (cos * value.unit()) as f32;
+         matrix.b = (sin * value.unit()) as f32;
+-        self.matrix.set(matrix);
++        self.store_matrix(matrix);
+ 
+         changed
+     }
+@@ -623,7 +669,7 @@ impl<'gc> DisplayObjectBase<'gc> {
+         let mut matrix = self.matrix.get();
+         matrix.c = (-sin * value.unit()) as f32;
+         matrix.d = (cos * value.unit()) as f32;
+-        self.matrix.set(matrix);
++        self.store_matrix(matrix);
+ 
+         changed
+     }
+@@ -855,9 +901,18 @@ impl<'gc> DisplayObjectBase<'gc> {
+         self.set_flag(DisplayObjectFlags::CACHE_INVALIDATED, false);
+     }
+ 
++    fn set_auto_bitmap_cache(&self, value: bool) {
++        if self.contains_flag(DisplayObjectFlags::AUTO_CACHE_AS_BITMAP) != value {
++            self.set_flag(DisplayObjectFlags::AUTO_CACHE_AS_BITMAP, value);
++            self.recheck_cache_as_bitmap();
++        }
++    }
++
+     fn recheck_cache_as_bitmap(&self) {
+         let mut write = self.cell.borrow_mut();
+-        let should_cache = self.is_bitmap_cached_preference() || !write.filters.is_empty();
++        let should_cache = self.is_bitmap_cached_preference()
++            || self.contains_flag(DisplayObjectFlags::AUTO_CACHE_AS_BITMAP)
++            || !write.filters.is_empty();
+         if should_cache {
+             write.cache.get_or_insert_default();
+         } else {
+@@ -958,6 +1013,89 @@ struct DrawCacheInfo {
+     filters: Vec<Filter>,
+ }
+ 
++/// Updates a container's automatic layer cache after it was (or was not) changed since the
++/// last render. See `crate::auto_cache`.
++fn update_auto_cache<'gc>(
++    this: DisplayObject<'gc>,
++    changed: bool,
++    context: &mut RenderContext<'_, 'gc>,
++) {
++    let base = this.base();
++    let auto = base.contains_flag(DisplayObjectFlags::AUTO_CACHE_AS_BITMAP);
++    if !auto && this.is_bitmap_cached() {
++        // Cached for its own reasons (cacheAsBitmap, filters); leave it alone.
++        return;
++    }
++    if !base.visible() {
++        return;
++    }
++
++    let mut state = base.auto_cache.get();
++    let decision = state.step(changed, auto);
++    base.auto_cache.set(state);
++
++    match decision {
++        Decision::Keep => {}
++        Decision::Enable => {
++            if auto_cache_eligible(this, context) {
++                base.set_auto_bitmap_cache(true);
++            }
++        }
++        Decision::Disable => base.set_auto_bitmap_cache(false),
++        Decision::Refresh => {
++            if let Some(cache) = &mut *base.bitmap_cache_mut() {
++                cache.make_dirty();
++            }
++        }
++    }
++}
++
++/// Whether drawing `this` through a bitmap cache would look the same and be worth it.
++fn auto_cache_eligible<'gc>(this: DisplayObject<'gc>, context: &RenderContext<'_, 'gc>) -> bool {
++    if this.maskee().is_some() || this.blend_mode() != ExtendedBlendMode::Normal {
++        return false;
++    }
++
++    let bounds = this.world_bounds(BoundsMode::Engine);
++    if !bounds.intersects(&context.stage.view_bounds()) {
++        return false;
++    }
++    let view = context.stage.view_matrix();
++    let width = bounds.width().to_pixels() * f64::from(view.a.abs());
++    let height = bounds.height().to_pixels() * f64::from(view.d.abs());
++    if !auto_cache::size_ok(width, height) {
++        return false;
++    }
++
++    let mut descendants = 0;
++    auto_cache_scan(this, &mut descendants) && auto_cache::descendants_ok(descendants)
++}
++
++/// Rejects subtrees that would render differently, or go stale, inside a bitmap cache.
++fn auto_cache_scan(this: DisplayObject<'_>, descendants: &mut u32) -> bool {
++    let Some(container) = this.as_container() else {
++        return true;
++    };
++    for child in container.iter_render_list() {
++        *descendants += 1;
++        if *descendants >= auto_cache::SCAN_LIMIT {
++            return false;
++        }
++        if child.blend_mode() != ExtendedBlendMode::Normal || matches!(child, DisplayObject::Video(_)) {
++            return false;
++        }
++        if let Some(text) = child.as_edit_text()
++            && text.is_editable()
++        {
++            return false;
++        }
++        if !auto_cache_scan(child, descendants) {
++            return false;
++        }
++    }
++    true
++}
++
+ pub fn render_base<'gc>(
+     this: DisplayObject<'gc>,
+     context: &mut RenderContext<'_, 'gc>,
+@@ -969,7 +1107,10 @@ pub fn render_base<'gc>(
+     }
+ 
+     if options.apply_transform {
+-        let transform = this.base().transform(options.apply_matrix);
++        let mut transform = this.base().transform(options.apply_matrix);
++        if options.apply_matrix && !context.is_offscreen {
++            transform.matrix = this.base().render_matrix();
++        }
+         context.transform_stack.push(&transform);
+     }
+ 
+@@ -2462,8 +2603,12 @@ pub trait TDisplayObject<'gc>:
+     /// Note that this happens even if the child is invisible
+     /// (as long as the child is still on a render list)
+     #[no_dynamic]
+-    fn pre_render(self, _context: &mut RenderContext<'_, 'gc>) {
++    fn pre_render(self, context: &mut RenderContext<'_, 'gc>) {
+         let this = self.base();
++        if auto_cache::enabled() && !context.is_offscreen && self.as_container().is_some() {
++            let changed = this.contains_flag(DisplayObjectFlags::CACHE_INVALIDATED);
++            update_auto_cache(self.into(), changed, context);
++        }
+         this.clear_invalidate_flag();
+         this.scroll_rect
+             .set(this.has_scroll_rect().then(|| this.next_scroll_rect.get()));
+@@ -2842,6 +2987,12 @@ pub trait TDisplayObject<'gc>:
+     #[no_dynamic]
+     fn invalidate_cached_bitmap(self) {
+         if self.base().invalidate_cached_bitmap() {
++            // An invisible object can't change how its ancestors look (and `set_visible`
++            // informs them when it is shown again), so a hidden but animating clip doesn't
++            // keep invalidating every cache above it. Masks are drawn even when invisible.
++            if !self.visible() && self.maskee().is_none() {
++                return;
++            }
+             // Don't inform ancestors if we've already done so this frame
+             if let Some(parent) = self.parent() {
+                 parent.invalidate_cached_bitmap();
+@@ -3053,6 +3204,10 @@ bitflags! {
+         /// (they need to be instantiated "manually" by
+         /// `Sprite.constructChildren`).
+         const MANUAL_FRAME_CONSTRUCT  = 1 << 16;
++
++        /// Whether the player chose to cache this object as a bitmap, independently of the
++        /// `cacheAsBitmap` property (see `EditText::update_auto_bitmap_cache`).
++        const AUTO_CACHE_AS_BITMAP    = 1 << 17;
+     }
+ }
+ 
+diff --git a/core/src/display_object/edit_text.rs b/core/src/display_object/edit_text.rs
+index 63e3d997..d989f3fe 100644
+--- a/core/src/display_object/edit_text.rs
++++ b/core/src/display_object/edit_text.rs
+@@ -50,6 +50,10 @@ use swf::ColorTransform;
+ use unicode_segmentation::UnicodeSegmentation;
+ 
+ use super::interactive::Avm2MousePick;
++use std::sync::atomic::{AtomicBool, Ordering};
++
++/// Whether text fields are drawn through a bitmap cache (see `EditText::update_auto_bitmap_cache`).
++pub(crate) static CACHE_TEXT_AS_BITMAP: AtomicBool = AtomicBool::new(false);
+ 
+ /// The kind of autosizing behavior an `EditText` should have, if any
+ #[derive(Copy, Clone, Collect, Debug, PartialEq, Eq)]
+@@ -356,9 +360,21 @@ impl<'gc> EditText<'gc> {
+             },
+         ));
+         et.relayout(context);
++        et.update_auto_bitmap_cache();
+         et
+     }
+ 
++    /// Caches this text field as a bitmap when the player is set to (`CACHE_TEXT_AS_BITMAP`).
++    ///
++    /// Every glyph is otherwise drawn separately on every frame, which makes text-heavy
++    /// interfaces cost hundreds of draw calls. A cached field is redrawn only when its text,
++    /// format, size or scale changes. Editable fields are left alone, as their caret blinks
++    /// without invalidating the cache.
++    fn update_auto_bitmap_cache(self) {
++        let cache = CACHE_TEXT_AS_BITMAP.load(Ordering::Relaxed) && !self.is_editable();
++        self.base().set_auto_bitmap_cache(cache);
++    }
++
+     /// Create a new, dynamic `EditText`.
+     pub fn new(
+         context: &mut UpdateContext<'gc>,
+@@ -539,6 +555,7 @@ impl<'gc> EditText<'gc> {
+ 
+     pub fn set_editable(self, is_editable: bool) {
+         self.set_flag(EditTextFlag::READ_ONLY, !is_editable);
++        self.update_auto_bitmap_cache();
+     }
+ 
+     pub fn is_mouse_wheel_enabled(self) -> bool {
+diff --git a/core/src/frame_interpolation.rs b/core/src/frame_interpolation.rs
+new file mode 100644
+index 00000000..fa88c1e0
+--- /dev/null
++++ b/core/src/frame_interpolation.rs
+@@ -0,0 +1,145 @@
++//! Render-time interpolation between frames.
++//!
++//! Content runs at its own frame rate (often 24-40 fps), but displays refresh at 60-120 Hz.
++//! When interpolation is enabled, every display object remembers the matrix it had at the end
++//! of the previous frame and is drawn part-way between that and its current matrix, according
++//! to how far the player has got through the current frame. Frames, scripts, timers and
++//! timelines still run exactly as often as before; only presentation is smoothed, at the cost
++//! of showing the stage up to one frame behind.
++//!
++//! Only objects that were drawn on screen during the previous frame are interpolated, so
++//! objects that were just created, shown, or moved in from an off-stage pool snap into place
++//! instead of sliding there. Large jumps (teleports) also snap.
++
++use ruffle_render::matrix::Matrix;
++use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
++use swf::Twips;
++
++/// Serial number of the frame currently being run. Zero means "never".
++static FRAME: AtomicU32 = AtomicU32::new(1);
++
++/// Interpolation factor (as `f32` bits) used by the render in progress, or `DISABLED`.
++static ALPHA: AtomicU32 = AtomicU32::new(DISABLED);
++
++/// Set when the render in progress drew at least one object between two positions.
++static IN_MOTION: AtomicBool = AtomicBool::new(false);
++
++const DISABLED: u32 = u32::MAX;
++
++/// Moves longer than this per frame are teleports and are not interpolated (160px).
++const MAX_STEP: i32 = 160 * Twips::TWIPS_PER_PIXEL;
++
++/// Changes to scale/rotation/skew larger than this are snapped (e.g. a sprite flipping
++/// around by setting scaleX to -1 should not visibly squash through zero).
++const MAX_LINEAR_STEP: f32 = 0.35;
++
++/// The serial number of the frame currently being run.
++pub fn current_frame() -> u32 {
++    FRAME.load(Ordering::Relaxed)
++}
++
++/// Called at the start of every frame.
++pub fn advance_frame() {
++    let next = FRAME.load(Ordering::Relaxed).wrapping_add(1).max(1);
++    FRAME.store(next, Ordering::Relaxed);
++}
++
++/// Starts a render that interpolates by `alpha` (0 = previous frame, 1 = current frame),
++/// or a normal render when `alpha` is `None`.
++pub fn begin_render(alpha: Option<f32>) {
++    IN_MOTION.store(false, Ordering::Relaxed);
++    let bits = alpha.map_or(DISABLED, |alpha| alpha.clamp(0.0, 1.0).to_bits());
++    ALPHA.store(bits, Ordering::Relaxed);
++}
++
++/// Ends the render started by `begin_render`.
++/// Returns whether anything was drawn in motion, i.e. whether rendering again before the next
++/// frame would show something different.
++pub fn end_render() -> bool {
++    ALPHA.store(DISABLED, Ordering::Relaxed);
++    IN_MOTION.load(Ordering::Relaxed)
++}
++
++/// The interpolation factor of the render in progress, if interpolation is enabled.
++pub fn alpha() -> Option<f32> {
++    let bits = ALPHA.load(Ordering::Relaxed);
++    (bits != DISABLED).then(|| f32::from_bits(bits))
++}
++
++/// The matrix to draw an object with, part-way from `prev` to `cur`.
++pub fn interpolate(prev: &Matrix, cur: &Matrix, alpha: f32) -> Matrix {
++    if prev == cur {
++        return *cur;
++    }
++
++    let dx = cur.tx.get() - prev.tx.get();
++    let dy = cur.ty.get() - prev.ty.get();
++    if dx.abs() > MAX_STEP || dy.abs() > MAX_STEP {
++        return *cur;
++    }
++
++    IN_MOTION.store(true, Ordering::Relaxed);
++
++    let lerp = |from: f32, to: f32| from + (to - from) * alpha;
++    let linear_step = (cur.a - prev.a).abs()
++        + (cur.b - prev.b).abs()
++        + (cur.c - prev.c).abs()
++        + (cur.d - prev.d).abs();
++    let (a, b, c, d) = if linear_step <= MAX_LINEAR_STEP {
++        (
++            lerp(prev.a, cur.a),
++            lerp(prev.b, cur.b),
++            lerp(prev.c, cur.c),
++            lerp(prev.d, cur.d),
++        )
++    } else {
++        (cur.a, cur.b, cur.c, cur.d)
++    };
++
++    Matrix {
++        a,
++        b,
++        c,
++        d,
++        tx: Twips::new(prev.tx.get() + (dx as f32 * alpha).round() as i32),
++        ty: Twips::new(prev.ty.get() + (dy as f32 * alpha).round() as i32),
++    }
++}
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    fn translate(x: i32, y: i32) -> Matrix {
++        Matrix {
++            tx: Twips::new(x),
++            ty: Twips::new(y),
++            ..Matrix::IDENTITY
++        }
++    }
++
++    #[test]
++    fn interpolates_translation() {
++        let m = interpolate(&translate(0, 0), &translate(200, -100), 0.25);
++        assert_eq!(m.tx.get(), 50);
++        assert_eq!(m.ty.get(), -25);
++    }
++
++    #[test]
++    fn snaps_teleports() {
++        let cur = translate(MAX_STEP + 1, 0);
++        assert_eq!(interpolate(&translate(0, 0), &cur, 0.5), cur);
++    }
++
++    #[test]
++    fn snaps_flips() {
++        let prev = Matrix::IDENTITY;
++        let cur = Matrix {
++            a: -1.0,
++            ..translate(20, 0)
++        };
++        let m = interpolate(&prev, &cur, 0.5);
++        assert_eq!(m.a, -1.0);
++        assert_eq!(m.tx.get(), 10);
++    }
++}
+diff --git a/core/src/lib.rs b/core/src/lib.rs
+index d76c1cba..d846afff 100644
+--- a/core/src/lib.rs
++++ b/core/src/lib.rs
+@@ -26,6 +26,8 @@ mod ecma_conversions;
+ pub mod events;
+ pub mod focus_tracker;
+ pub mod font;
++mod auto_cache;
++mod frame_interpolation;
+ mod frame_lifecycle;
+ pub mod fte;
+ mod html;
+diff --git a/core/src/player.rs b/core/src/player.rs
+index 675ef3a7..382b4c2e 100644
+--- a/core/src/player.rs
++++ b/core/src/player.rs
+@@ -334,6 +334,12 @@ pub struct Player {
+     run_state: RunState,
+     needs_render: bool,
+ 
++    /// Draw in-between frames at the display's refresh rate (see `crate::frame_interpolation`).
++    frame_interpolation: bool,
++
++    /// Whether the last interpolated render drew anything in motion.
++    interpolation_in_motion: bool,
++
+     renderer: Box<dyn RenderBackend>,
+     audio: Box<dyn AudioBackend>,
+     navigator: Box<dyn NavigatorBackend>,
+@@ -2069,6 +2075,8 @@ impl Player {
+             return;
+         }
+ 
++        crate::frame_interpolation::advance_frame();
++
+         self.update(|context| {
+             // TODO: Is this order correct?
+             run_all_phases_avm2(context);
+@@ -2099,6 +2107,9 @@ impl Player {
+ 
+         let mut background_color = Color::WHITE;
+ 
++        let interpolation_alpha = self.interpolation_alpha();
++        crate::frame_interpolation::begin_render(interpolation_alpha);
++
+         let (cache_draws, commands) = self.enter_arena_mut(|gc_context, gc_root, this| {
+             let stage = gc_root.stage;
+ 
+@@ -2139,12 +2150,40 @@ impl Player {
+             (cache_draws, commands)
+         });
+ 
++        self.interpolation_in_motion = crate::frame_interpolation::end_render();
++
+         self.renderer
+             .submit_frame(background_color, commands, cache_draws);
+ 
+         self.needs_render = false;
+     }
+ 
++    /// How far through the current frame the player is, for frame interpolation.
++    fn interpolation_alpha(&self) -> Option<f32> {
++        if !self.frame_interpolation || !self.is_playing() {
++            return None;
++        }
++        let frame_duration = self.frame_duration().as_millis();
++        if frame_duration <= 0.0 {
++            return None;
++        }
++        Some((self.frame_accumulator.as_millis() / frame_duration) as f32)
++    }
++
++    /// Whether rendering now would show something the last render did not, because frame
++    /// interpolation is moving objects towards where the current frame put them.
++    pub fn needs_interpolated_render(&self) -> bool {
++        self.frame_interpolation && self.interpolation_in_motion && self.is_playing()
++    }
++
++    pub fn frame_interpolation(&self) -> bool {
++        self.frame_interpolation
++    }
++
++    pub fn set_frame_interpolation(&mut self, enabled: bool) {
++        self.frame_interpolation = enabled;
++    }
++
+     /// The current frame of the main timeline, if available.
+     /// The first frame is frame 1.
+     pub fn current_frame(&self) -> Option<u16> {
+@@ -2660,6 +2699,9 @@ pub struct PlayerBuilder {
+     quality: StageQuality,
+     page_url: Option<String>,
+     frame_rate: Option<f64>,
++    frame_interpolation: bool,
++    cache_text_as_bitmap: bool,
++    auto_cache: bool,
+     external_interface_provider: Option<Box<dyn ExternalInterfaceProvider>>,
+     fs_command_provider: Box<dyn FsCommandProvider>,
+     #[cfg(feature = "known_stubs")]
+@@ -2717,6 +2759,9 @@ impl PlayerBuilder {
+             quality: StageQuality::High,
+             page_url: None,
+             frame_rate: None,
++            frame_interpolation: false,
++            cache_text_as_bitmap: false,
++            auto_cache: false,
+             external_interface_provider: None,
+             fs_command_provider: Box::new(NullFsCommandProvider),
+             #[cfg(feature = "known_stubs")]
+@@ -2922,6 +2967,27 @@ impl PlayerBuilder {
+         self
+     }
+ 
++    /// Draws in-between frames at the display's refresh rate by interpolating display object
++    /// transforms between frames. Frames themselves still run at the movie's frame rate.
++    pub fn with_frame_interpolation(mut self, enabled: bool) -> Self {
++        self.frame_interpolation = enabled;
++        self
++    }
++
++    /// Draws text fields (other than editable ones) through a bitmap cache, so each field
++    /// costs one draw instead of one per glyph, and is only re-rendered when it changes.
++    pub fn with_cache_text_as_bitmap(mut self, enabled: bool) -> Self {
++        self.cache_text_as_bitmap = enabled;
++        self
++    }
++
++    /// Automatically draws containers that have stopped changing through a bitmap cache.
++    /// See `crate::auto_cache`.
++    pub fn with_auto_cache(mut self, enabled: bool) -> Self {
++        self.auto_cache = enabled;
++        self
++    }
++
+     /// Adds an External Interface provider for movies to communicate with
+     pub fn with_external_interface(mut self, provider: Box<dyn ExternalInterfaceProvider>) -> Self {
+         self.external_interface_provider = Some(provider);
+@@ -3025,6 +3091,10 @@ impl PlayerBuilder {
+ 
+     /// Builds the player, wiring up the backends and configuring the specified settings.
+     pub fn build(self) -> Arc<Mutex<Player>> {
++        crate::display_object::CACHE_TEXT_AS_BITMAP
++            .store(self.cache_text_as_bitmap, std::sync::atomic::Ordering::Relaxed);
++        crate::auto_cache::set_enabled(self.auto_cache);
++
+         use crate::backend::*;
+         use ruffle_video::null;
+         let audio = self
+@@ -3115,6 +3185,8 @@ impl PlayerBuilder {
+                     RunState::Suspended
+                 },
+                 needs_render: true,
++                frame_interpolation: self.frame_interpolation,
++                interpolation_in_motion: false,
+                 self_reference: self_ref.clone(),
+                 load_behavior: self.load_behavior,
+                 spoofed_url: self.spoofed_url.clone(),
+diff --git a/web/packages/core/src/internal/builder.ts b/web/packages/core/src/internal/builder.ts
+index 927f6066..4eb410e3 100644
+--- a/web/packages/core/src/internal/builder.ts
++++ b/web/packages/core/src/internal/builder.ts
+@@ -75,6 +75,15 @@ export function configureBuilder(
+     if (isExplicit(config.forceScale)) {
+         builder.setForceScale(config.forceScale);
+     }
++    if (isExplicit(config.frameInterpolation)) {
++        builder.setFrameInterpolation(config.frameInterpolation);
++    }
++    if (isExplicit(config.cacheTextAsBitmap)) {
++        builder.setCacheTextAsBitmap(config.cacheTextAsBitmap);
++    }
++    if (isExplicit(config.autoCache)) {
++        builder.setAutoCache(config.autoCache);
++    }
+     if (isExplicit(config.frameRate)) {
+         builder.setFrameRate(config.frameRate);
+     }
+diff --git a/web/packages/core/src/internal/player/inner.tsx b/web/packages/core/src/internal/player/inner.tsx
+index 1fb7b06f..17c8d643 100644
+--- a/web/packages/core/src/internal/player/inner.tsx
++++ b/web/packages/core/src/internal/player/inner.tsx
+@@ -2050,6 +2050,11 @@ export class InnerPlayer {
+         this.hideSplashScreen();
+         const originalError = error;
+ 
++        // Let the page react, e.g. by retrying with another renderer.
++        this.element.dispatchEvent(
++            new CustomEvent("panic", { detail: { error } }),
++        );
++
+         if (
+             error instanceof Error &&
+             (error.name === "AbortError" ||
+diff --git a/web/packages/core/src/public/config/default.ts b/web/packages/core/src/public/config/default.ts
+index 5b970172..49ad34bd 100644
+--- a/web/packages/core/src/public/config/default.ts
++++ b/web/packages/core/src/public/config/default.ts
+@@ -41,6 +41,9 @@ export const DEFAULT_CONFIG: Required<BaseLoadOptions> = {
+     quality: null,
+     scale: "showAll",
+     forceScale: false,
++    frameInterpolation: false,
++    cacheTextAsBitmap: false,
++    autoCache: false,
+     frameRate: null,
+     wmode: WindowMode.Window,
+     publicPath: null,
+diff --git a/web/packages/core/src/public/config/load-options.ts b/web/packages/core/src/public/config/load-options.ts
+index 617d53c1..e565e063 100644
+--- a/web/packages/core/src/public/config/load-options.ts
++++ b/web/packages/core/src/public/config/load-options.ts
+@@ -609,6 +609,35 @@ export interface BaseLoadOptions {
+      */
+     forceScale?: boolean;
+ 
++    /**
++     * If set to true, Ruffle draws in-between frames at the display's refresh rate by
++     * interpolating the position, scale and rotation of display objects between frames.
++     *
++     * The movie still runs (scripts, timelines, timers) at its own frame rate; this only
++     * smooths what is shown, at the cost of displaying the stage up to one frame late.
++     *
++     * @default false
++     */
++    frameInterpolation?: boolean;
++
++    /**
++     * If set to true, text fields (other than editable ones) are drawn through a bitmap cache,
++     * so each costs a single draw instead of one per glyph and is only re-rendered when it
++     * changes. This greatly reduces rendering cost for text-heavy interfaces.
++     *
++     * @default false
++     */
++    cacheTextAsBitmap?: boolean;
++
++    /**
++     * If set to true, containers that have stopped changing are automatically drawn through
++     * a bitmap cache (as with `cacheAsBitmap`), so a static panel costs a single draw.
++     * Containers that keep changing, or that would render differently when cached, are not.
++     *
++     * @default false
++     */
++    autoCache?: boolean;
++
+     /**
+      * If set to true, the Stage's displayState can be changed
+      *
+diff --git a/web/src/builder.rs b/web/src/builder.rs
+index b1f2dc55..c1c6877a 100644
+--- a/web/src/builder.rs
++++ b/web/src/builder.rs
+@@ -48,6 +48,9 @@ pub struct RuffleInstanceBuilder {
+     pub(crate) quality: StageQuality,
+     pub(crate) scale: StageScaleMode,
+     pub(crate) force_scale: bool,
++    pub(crate) frame_interpolation: bool,
++    pub(crate) cache_text_as_bitmap: bool,
++    pub(crate) auto_cache: bool,
+     pub(crate) frame_rate: Option<f64>,
+     pub(crate) wmode: Option<String>, // TODO: Enumify? `Player` is working in strings here too...
+     pub(crate) log_level: tracing::Level,
+@@ -88,6 +91,9 @@ impl Default for RuffleInstanceBuilder {
+             quality: StageQuality::High,
+             scale: StageScaleMode::ShowAll,
+             force_scale: false,
++            frame_interpolation: false,
++            cache_text_as_bitmap: false,
++            auto_cache: false,
+             frame_rate: None,
+             wmode: None,
+             log_level: tracing::Level::ERROR,
+@@ -221,6 +227,21 @@ impl RuffleInstanceBuilder {
+         self.force_scale = value;
+     }
+ 
++    #[wasm_bindgen(js_name = "setFrameInterpolation")]
++    pub fn set_frame_interpolation(&mut self, value: bool) {
++        self.frame_interpolation = value;
++    }
++
++    #[wasm_bindgen(js_name = "setCacheTextAsBitmap")]
++    pub fn set_cache_text_as_bitmap(&mut self, value: bool) {
++        self.cache_text_as_bitmap = value;
++    }
++
++    #[wasm_bindgen(js_name = "setAutoCache")]
++    pub fn set_auto_cache(&mut self, value: bool) {
++        self.auto_cache = value;
++    }
++
+     #[wasm_bindgen(js_name = "setFrameRate")]
+     pub fn set_frame_rate(&mut self, value: Option<f64>) {
+         self.frame_rate = value;
+@@ -711,6 +732,9 @@ impl RuffleInstanceBuilder {
+             .with_align(self.stage_align, self.force_align)
+             .with_scale_mode(self.scale, self.force_scale)
+             .with_frame_rate(self.frame_rate)
++            .with_frame_interpolation(self.frame_interpolation)
++            .with_cache_text_as_bitmap(self.cache_text_as_bitmap)
++            .with_auto_cache(self.auto_cache)
+             .with_page_url(window.location().href().ok())
+             .with_gamepad_button_mapping(self.gamepad_button_mapping.clone())
+             .build();
+diff --git a/web/src/lib.rs b/web/src/lib.rs
+index 87d6f014..45e89610 100644
+--- a/web/src/lib.rs
++++ b/web/src/lib.rs
+@@ -1245,8 +1245,9 @@ impl RuffleHandle {
+ 
+             core.tick(FloatDuration::from_millis(dt));
+ 
+-            // Render if the core signals a new frame, or if we resized.
+-            if core.needs_render() || new_dimensions.is_some() {
++            // Render if the core signals a new frame, or if we resized, or if frame
++            // interpolation still has objects moving towards where the last frame put them.
++            if core.needs_render() || new_dimensions.is_some() || core.needs_interpolated_render() {
+                 core.render();
+             }
+         });

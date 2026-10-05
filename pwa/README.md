@@ -1,0 +1,105 @@
+# Browser / mobile (PWA) client
+
+The game client is a Flash SWF. Browsers no longer run Flash, so the browser build runs the
+same SWF in [Ruffle](https://ruffle.rs), a Flash Player emulator written in Rust and compiled
+to WebAssembly, inside a small installable web app served from `server/public/play/`.
+
+Open `http://<server>/play/` in a phone browser and use "Add to Home screen" / "Install app"
+to get a full-screen, landscape app.
+
+## How it fits together
+
+| Piece | Where | What it does |
+|---|---|---|
+| Shell page | `server/public/play/index.html`, `play.js`, `play.css` | Loads Ruffle, scales the stage to fit the screen, bridges chat to the browser's WebSocket, frame-rate counter |
+| App manifest + offline cache | `manifest.webmanifest`, `sw.js`, `icons/` | Installable full-screen landscape app; caches Ruffle, the SWF and game art |
+| Client changes | `client/scripts/com/monsters/configs/WebPlatform.as` and callers | Turned on by the `platform=web` flashvar; the desktop launcher build is unchanged |
+| Ruffle patch | `pwa/ruffle/bymr-ruffle.patch` | Rendering options that make the game run smoothly on phones (below) |
+| Build | `pwa/build.sh` | Builds `bymr.swf` and the patched Ruffle into `server/public/play/` (not committed) |
+
+### Client changes (web build only)
+
+- **Display-list rendering.** The client normally draws the whole map into one big BitmapData
+  every frame (`BYMConfig.RENDERER_ON`). Ruffle draws on the GPU, and that mix of `draw()` and
+  `copyPixels()` forced a GPU-to-CPU readback per entry per frame (0.4 fps). The web build uses
+  the game's original display-list renderer instead.
+- **Remembered sign-in.** There is no launcher to hold the session, so the session token is kept
+  in the `bymr_data` SharedObject and used on the next visit. `?logout=1` forgets it.
+- **Chat.** Ruffle can't open the raw TCP socket the ActionScript WebSocket needs, so
+  `BrowserWebSocket` hands the connection to the browser's own WebSocket via ExternalInterface.
+- **Server and CDN URLs** are passed in by the page (`serverUrl`, `cdnUrl` flashvars), so the same
+  SWF works on any host.
+
+### Ruffle patch
+
+All options are off by default in Ruffle and turned on by `play.js`:
+
+- **`frameInterpolation`** - The game runs at 40 frames per second, and its timelines, scripts and
+  simulation are tied to that rate. Instead of speeding the game up, Ruffle draws extra frames at
+  the display's refresh rate (60/90/120 Hz), each one part-way between the last two game frames.
+  Movement, scrolling and animation are smooth at 120 Hz with game timing unchanged. Objects that
+  just appeared or jumped far snap into place instead.
+- **`cacheTextAsBitmap`** - Ruffle draws every glyph as a separate mesh. Text fields (other than
+  editable ones) are drawn once into a texture and redrawn only when they change.
+- **`autoCache`** - Containers that have stopped changing are drawn through a bitmap cache, so a
+  static panel costs one draw call. Containers that keep changing are dropped from the cache, and
+  ones that would look different when cached (blend modes, editable text, video) never are.
+- Invisible objects no longer invalidate the caches above them, and Ruffle reports a `panic` event
+  so the page can retry with a different renderer.
+
+Together these took the main thread from 99.9% busy at 0.4 fps to about 4.5 ms per frame in the
+base view (measured in headless Chromium on a server CPU core; see "Measuring" below).
+
+## Building
+
+```sh
+pwa/build.sh          # bymr.swf + Ruffle
+pwa/build.sh swf      # only the client (after changing ActionScript)
+pwa/build.sh ruffle   # only Ruffle (after changing the patch)
+```
+
+The SWF can also be built from VS Code with `asconfig.web.json`.
+
+Requirements:
+
+- **SWF**: Java and the [Apache Flex SDK](https://flex.apache.org/download-binaries.html) 4.16
+  (`FLEX_HOME`, default `/opt/flex`). `playerglobal.swc` comes from this repository.
+- **Ruffle**: git, Node.js, Rust with `rustup target add wasm32-unknown-unknown`, and
+  `cargo install wasm-bindgen-cli --version <the wasm-bindgen version in Ruffle's Cargo.toml>`.
+  `wasm-opt` (binaryen) is optional but makes Ruffle faster.
+
+The server serves the result from `public/play/`. Restart it after the first build, because the
+static file list is read at startup.
+
+### Updating Ruffle
+
+`RUFFLE_COMMIT` in `pwa/build.sh` pins the Ruffle commit the patch applies to. To move to a newer
+Ruffle, check it out, apply the patch, fix any conflicts, regenerate the patch with
+`git diff <new commit> > pwa/ruffle/bymr-ruffle.patch`, and bump `RUFFLE_COMMIT`.
+
+## Deploying
+
+- Serve the page over **HTTPS**; service workers and installing need it.
+- Chat: on an HTTPS page the browser only allows `wss://` connections, so the chat server
+  (`CHAT_WS_HOST`) must be reachable over TLS, for example behind the same reverse proxy. `?chat=`
+  overrides the URL for testing.
+- The SWF version must match the server's API version, as with the launcher builds.
+
+## Shell options
+
+Query parameters on `/play/`:
+
+| Parameter | Effect |
+|---|---|
+| `fps=1` | Frame-rate counter |
+| `interp=0` | No frame interpolation (game frame rate only) |
+| `textcache=0`, `autocache=0` | Turn off the caching options |
+| `quality=low\|medium\|high` | Ruffle render quality (default `medium`) |
+| `renderer=webgpu\|wgpu-webgl\|webgl` | Force a Ruffle renderer. `webgl` is cheaper but has no filters or bitmap caching |
+| `server=`, `cdn=`, `chat=` | Point the client at another server |
+| `logout=1` | Forget the saved session |
+
+## Measuring
+
+`?fps=1` shows the display frame rate and the worst frame time of the last second. On a phone,
+open it in Chrome and use remote debugging (`chrome://inspect`) for profiles.

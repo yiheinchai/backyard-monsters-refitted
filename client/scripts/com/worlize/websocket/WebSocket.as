@@ -15,6 +15,7 @@
  ***********************************************************************/
 
 package com.worlize.websocket {
+    import com.monsters.chat.impl.ws.IChatSocket;
     import com.adobe.net.URI;
     import com.adobe.net.URIEncodingBitmap;
     import com.adobe.utils.StringUtil;
@@ -48,7 +49,7 @@ package com.worlize.websocket {
     [Event(name="pong", type="com.worlize.websocket.WebSocketEvent")]
     [Event(name="open", type="com.worlize.websocket.WebSocketEvent")]
     [Event(name="closed", type="com.worlize.websocket.WebSocketEvent")]
-    public class WebSocket extends EventDispatcher {
+    public class WebSocket extends EventDispatcher implements IChatSocket {
         private static const MODE_UTF8:int = 0;
         private static const MODE_BINARY:int = 0;
 

@@ -7,6 +7,7 @@ package com.monsters.chat.impl.ws {
     import com.monsters.chat.ChatUser;
     import com.monsters.chat.IAuthenticationSystem;
     import com.monsters.chat.IChatSystem;
+    import com.monsters.configs.WebPlatform;
     import com.worlize.websocket.WebSocket;
     import com.worlize.websocket.WebSocketErrorEvent;
     import com.worlize.websocket.WebSocketEvent;
@@ -16,7 +17,7 @@ package com.monsters.chat.impl.ws {
     import flash.utils.Timer;
 
     public class WSChatSystem extends EventDispatcher implements IChatSystem {
-        private var _ws:WebSocket;
+        private var _ws:IChatSocket;
         private var _host:String;
         private var _port:int;
         private var _connected:Boolean = false;
@@ -37,7 +38,12 @@ package com.monsters.chat.impl.ws {
         // ── IChatSystem: Connection ───────────────────────────────────────────
 
         public function connect():Boolean {
-            _ws = new WebSocket("ws://" + _host + ":" + _port + "/", "http://" + _host);
+            if (WebPlatform.isWeb) {
+                _ws = new BrowserWebSocket(_host, _port);
+            }
+            else {
+                _ws = new WebSocket("ws://" + _host + ":" + _port + "/", "http://" + _host);
+            }
             _ws.addEventListener(WebSocketEvent.OPEN, onWsOpen);
             _ws.addEventListener(WebSocketEvent.MESSAGE, onWsMessage);
             _ws.addEventListener(WebSocketEvent.CLOSED, onWsClose);

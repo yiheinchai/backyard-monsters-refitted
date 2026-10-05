@@ -47,7 +47,8 @@ package com.monsters.configs {
             // Apparently, it is more performant to have this enabled
             // RENDERER_ON true = graphics are rendered using a bitmap approach
             // RENDERER_ON false = graphics are rendered using a vector approach / display list approach
-            return true;
+            // The browser build draws through the display list instead, see WebPlatform.useDisplayList
+            return !WebPlatform.useDisplayList;
         }
 
         public function get OPTIMIZED_SHADOWS():Boolean {
