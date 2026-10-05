@@ -81,12 +81,15 @@ package com.monsters.display {
             _loc2_ = _loc3_.addChild(new Bitmap(_buildings[param1._id].bmdtext));
             _loc2_.x = -26 + _loc4_.x + (51 - labelWidth) * 0.5;
             _loc2_.y = -32 + _loc4_.y;
+            _buildings[param1._id].bmptext = _loc2_;
             _loc2_ = _loc3_.addChild(new Bitmap(_buildings[param1._id].bmdprogress));
             _loc2_.x = -26 + _loc4_.x;
             _loc2_.y = -20 + _loc4_.y;
+            _buildings[param1._id].bmpprogress = _loc2_;
             _loc2_ = _loc3_.addChild(new Bitmap(_buildings[param1._id].bmdhp));
             _loc2_.x = -26 + _loc4_.x;
             _loc2_.y = -14 + _loc4_.y;
+            _buildings[param1._id].bmphp = _loc2_;
             if (!BYMConfig.instance.RENDERER_ON) {
                 param1._mc.addChild(_loc3_);
             }
@@ -212,6 +215,19 @@ package com.monsters.display {
                     _loc5_ = _loc8_.bmdhp;
                     _loc5_.fillRect(_loc5_.rect, 0);
                 }
+                updateVisibility(_loc8_);
+            }
+        }
+
+        /**
+         * Each bitmap is fully transparent unless it shows something, and most buildings show
+         * nothing most of the time. Hidden, they cost nothing to draw on GPU renderers.
+         */
+        private static function updateVisibility(param1:Object):void {
+            if (param1.bmptext) {
+                param1.bmptext.visible = param1.indextext != "";
+                param1.bmpprogress.visible = param1.indexprogress != -1;
+                param1.bmphp.visible = param1.indexhp != -1;
             }
         }
 

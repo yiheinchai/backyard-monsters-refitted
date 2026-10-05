@@ -231,6 +231,7 @@ package {
                 GLOBAL._ROOT.addEventListener(Event.RENDER, this.render);
             }
             Targeting.init();
+            EFFECTS.PrepareStamps();
             _inited = true;
         }
 

@@ -1,4 +1,6 @@
 package com.monsters.effects.particles {
+    import com.monsters.configs.WebPlatform;
+    import com.monsters.effects.StampCache;
     import flash.display.BitmapData;
     import flash.geom.Matrix;
     import flash.geom.Point;
@@ -99,6 +101,31 @@ package com.monsters.effects.particles {
             }
         }
 
+        /**
+         * Rasterises the settled particles at every quantised scale in use (see
+         * EFFECTS.PrepareStamps).
+         */
+        public static function PrepareStamps():void {
+            var keys:Array = [];
+            var sheet:BitmapData = new BitmapData(26 * 21, 26 * 3, true, 0);
+            var particle:ParticlesObject = new ParticlesObject();
+            var frame:int = 1;
+            var step:int = 0;
+            var scale:Number = NaN;
+            while (frame <= 3) {
+                particle.gotoAndStop(frame);
+                step = 10;
+                while (step <= 30) {
+                    scale = StampCache.Quantise(step / 20, 0.05);
+                    sheet.draw(particle, new Matrix(scale, 0, 0, scale, keys.length % 21 * 26 + 13, int(keys.length / 21) * 26 + 13));
+                    keys.push("dot" + frame + "@" + scale);
+                    step++;
+                }
+                frame++;
+            }
+            StampCache.AddSheet(sheet, keys, 26, 26);
+        }
+
         public static function SnapShot(param1:int, param2:int, param3:Number, param4:ParticlesObject):void {
             var _loc5_:BitmapData = null;
             var _loc6_:Matrix = null;
@@ -108,11 +135,21 @@ package com.monsters.effects.particles {
                 _loc6_ = new Matrix();
                 _loc7_ = 26;
                 _loc8_ = 26;
-                _loc5_ = new BitmapData(_loc7_, _loc8_, true, 0);
-                _loc6_.scale(param3, param3);
-                _loc6_.tx = _loc7_ * 0.5;
-                _loc6_.ty = _loc8_ * 0.5;
-                _loc5_.draw(param4, _loc6_);
+                if (WebPlatform.isWeb) {
+                    // A settled particle always looks the same apart from its scale; see StampCache.
+                    param3 = StampCache.Quantise(Math.max(0.5, Math.min(param3, 1.5)), 0.05);
+                    _loc6_.scale(param3, param3);
+                    _loc6_.tx = _loc7_ * 0.5;
+                    _loc6_.ty = _loc8_ * 0.5;
+                    _loc5_ = StampCache.Get("dot" + param4.currentFrame + "@" + param3, _loc7_, _loc8_, param4, _loc6_);
+                }
+                else {
+                    _loc5_ = new BitmapData(_loc7_, _loc8_, true, 0);
+                    _loc6_.scale(param3, param3);
+                    _loc6_.tx = _loc7_ * 0.5;
+                    _loc6_.ty = _loc8_ * 0.5;
+                    _loc5_.draw(param4, _loc6_);
+                }
                 MAP.effectsBMD.copyPixels(_loc5_, new Rectangle(0, 0, _loc7_, _loc8_), new Point(param1 + MAP.effectsBMD.width * 0.5 - _loc7_ / 2, param2 + MAP.effectsBMD.height * 0.5 - _loc8_ * 0.5), null, null, true);
             }
             catch (e:Error) {

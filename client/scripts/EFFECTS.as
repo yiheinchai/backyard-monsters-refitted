@@ -2,6 +2,8 @@ package {
 
     import com.monsters.effects.LASERS;
     import com.monsters.effects.ResourceBombs;
+    import com.monsters.effects.StampCache;
+    import com.monsters.configs.WebPlatform;
     import com.monsters.effects.particles.Particles;
     import flash.display.BitmapData;
     import flash.display.DisplayObject;
@@ -78,6 +80,8 @@ package {
             GIBLETS.Create(new Point(param2, param3 + 3), 0.8, 75, _loc4_);
         }
 
+        private static var _stampsPrepared:Boolean = false;
+
         public static function SplatParticle(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number):void {
             var _loc7_:int = 0;
             var _loc6_:ParticleSplat = MAP._EFFECTS.addChild(new ParticleSplat()) as ParticleSplat;
@@ -97,6 +101,39 @@ package {
                     "frame": _loc7_
                 };
             ++_itemCount;
+        }
+
+        /**
+         * Rasterises every splat stamp in the browser build while the yard loads, so that a fight
+         * never waits for a GPU readback (see StampCache).
+         */
+        public static function PrepareStamps():void {
+            var keys:Array = null;
+            var sheet:BitmapData = null;
+            var frame:int = 0;
+            var step:int = 0;
+            var scale:Number = NaN;
+            if (!WebPlatform.isWeb || _stampsPrepared) {
+                return;
+            }
+            _stampsPrepared = true;
+            // Splats grow from 30/32 until they settle, up to about 2.3; replays use 1 to 2.
+            keys = [];
+            sheet = new BitmapData(1000, 1200, true, 0);
+            frame = 1;
+            while (frame <= 5) {
+                _splats[0].gotoAndStop(frame);
+                step = 1;
+                while (step <= 23) {
+                    scale = StampCache.Quantise(step / 10, 0.1);
+                    sheet.draw(_splats[0], new Matrix(scale, 0, 0, scale, keys.length % 10 * 100 + 50, int(keys.length / 10) * 100 + 50));
+                    keys.push("s" + frame + "@" + scale);
+                    step++;
+                }
+                frame++;
+            }
+            StampCache.AddSheet(sheet, keys, 100, 100);
+            Particles.PrepareStamps();
         }
 
         public static function Scorch(param1:Point, param2:int = 0):void {
@@ -232,7 +269,25 @@ package {
                 if (param5 == 0) {
                     param5 = 1 + Math.random() * 10 / 10;
                 }
-                if (param3.substr(0, 1) == "s") {
+                if (param3.substr(0, 1) == "s" && WebPlatform.isWeb) {
+                    // Stamp a cached rasterisation; see StampCache.
+                    _loc9_ = 100;
+                    _loc10_ = 100;
+                    param5 = StampCache.Quantise(Math.max(0.1, Math.min(param5, 2.3)), 0.1);
+                    _loc7_.scale(param5, param5);
+                    _loc7_.tx = 50;
+                    _loc7_.ty = 50;
+                    _loc8_ = _splats[0];
+                    if (!StampCache.Has(param3 + "@" + param5)) {
+                        _loc8_.gotoAndStop(param3.substr(1, 1));
+                    }
+                    _loc6_ = StampCache.Get(param3 + "@" + param5, 100, 100, _loc8_, _loc7_);
+                    if (param4 > 0) {
+                        MAP.effectsBMD.draw(_loc6_, new Matrix(1, 0, 0, 1, param1 + MAP.effectsBMD.width * 0.5 - 50, param2 + MAP.effectsBMD.height * 0.5 - 50), new ColorTransform(1, 1, 1, 1 - param4 / _effectDuration));
+                        return;
+                    }
+                }
+                else if (param3.substr(0, 1) == "s") {
                     _loc9_ = 100;
                     _loc10_ = 100;
                     _loc6_ = new BitmapData(100, 100, true, 0);

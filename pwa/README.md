@@ -29,6 +29,11 @@ to get a full-screen, landscape app.
   `BrowserWebSocket` hands the connection to the browser's own WebSocket via ExternalInterface.
 - **Server and CDN URLs** are passed in by the page (`serverUrl`, `cdnUrl` flashvars), so the same
   SWF works on any host.
+- **Effect stamps.** Blood splats and settled dirt are vector art stamped into the map's effects
+  bitmap. On Ruffle every stamp was a GPU-to-CPU readback (about 60 ms each in a fight).
+  `StampCache` rasterises each variant once, on one sheet, while the yard loads.
+- **Building overlays** (name, progress and health bars) are hidden while empty, so they cost no
+  draw calls.
 
 ### Ruffle patch
 
@@ -47,8 +52,31 @@ All options are off by default in Ruffle and turned on by `play.js`:
 - Invisible objects no longer invalidate the caches above them, and Ruffle reports a `panic` event
   so the page can retry with a different renderer.
 
+The patch also has changes that are always on, because they don't change behaviour:
+
+- **Fewer draw calls (wgpu renderer).** Repeated pipeline, bind group and buffer bindings are
+  skipped, consecutive draws of the same bitmap or shape are merged into one instanced draw, and
+  Add/Subtract/Screen blends of a single bitmap (and Multiply onto an opaque target) are drawn
+  with fixed-function blending instead of an offscreen pass. Fully transparent objects are not
+  drawn, and texture uploads no longer force a GPU submit each.
+- **BitmapData on the CPU.** `draw()` of a bitmap with a translation, and `applyFilter()` with a
+  colour matrix or convolution filter, run on the CPU when their source is already there, instead
+  of going through the GPU and reading the result back. The game's procedural fire does this every
+  frame.
+- **No-op gotos.** In ActionScript 3 every `gotoAndStop()`, even to the current frame, runs frame
+  construction and frame scripts over the whole stage. Ruffle now skips that walk when nothing it
+  could act on has changed since the last one (no clip changed frame or gained a child or frame
+  script). In a fight most gotos are no-ops, and this was about 40,000 display-object visits per
+  rendered frame.
+- **Decoded sound effects.** Sounds up to 6 seconds long are decoded and resampled the first time
+  they play and replayed from memory afterwards, instead of decoding the MP3 on every play.
+
+Ruffle's own regression suite (`cargo test -p tests`) passes with the patch.
+
 Together these took the main thread from 99.9% busy at 0.4 fps to about 4.5 ms per frame in the
-base view (measured in headless Chromium on a server CPU core; see "Measuring" below).
+base view, and a 46-monster attack from stalls of 60 ms or more to about 14 ms per frame
+(headless Chromium with software WebGL, on one server CPU core; see "Measuring" below). A phone
+with a GPU does the WebGL work off the main thread.
 
 ## Building
 
