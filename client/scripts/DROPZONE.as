@@ -1,4 +1,5 @@
 package {
+    import com.monsters.configs.WebPlatform;
     import com.monsters.effects.ResourceBombs;
     import flash.events.*;
     import flash.geom.Point;
@@ -33,7 +34,14 @@ package {
             super();
             this._size = param1;
             this._dropTarget = param2;
-            ring1.addEventListener(MouseEvent.MOUSE_UP, this.Place);
+            if (WebPlatform.isWeb) {
+                // A tap only moves the ring under the finger on the next frame, so it would miss
+                // the ring; take taps anywhere on the map instead.
+                MAP._GROUND.addEventListener(MouseEvent.MOUSE_UP, this.Tap);
+            }
+            else {
+                ring1.addEventListener(MouseEvent.MOUSE_UP, this.Place);
+            }
             ring1.addEventListener(MouseEvent.MOUSE_DOWN, MAP.Click);
             ring1.mouseEnabled = true;
             ring1.buttonMode = true;
@@ -53,6 +61,11 @@ package {
             if (!MAP._dragged && ATTACK._countdown >= 0) {
                 this.Drop();
             }
+        }
+
+        private function Tap(param1:MouseEvent):void {
+            this.Follow();
+            this.Place(param1);
         }
 
         public function Follow(param1:Event = null):void {
@@ -116,6 +129,9 @@ package {
         public function Destroy():void {
             this.Clear();
             removeEventListener(Event.ENTER_FRAME, this.Follow);
+            if (MAP._GROUND) {
+                MAP._GROUND.removeEventListener(MouseEvent.MOUSE_UP, this.Tap);
+            }
         }
 
         public function get isOverTarget():Boolean {

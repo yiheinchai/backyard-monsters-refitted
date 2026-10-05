@@ -34,6 +34,11 @@ to get a full-screen, landscape app.
   `StampCache` rasterises each variant once, on one sheet, while the yard loads.
 - **Building overlays** (name, progress and health bars) are hidden while empty, so they cost no
   draw calls.
+- **Touch placement.** Placing or moving a building and dropping monsters were built for a mouse:
+  the building (or drop ring) follows the pointer each frame, and the click is checked where it
+  is. A tap jumps straight there, so it was checked at the old spot and the building was
+  cancelled or the drop missed. The web build moves it to the tap first; a tap on a blocked spot
+  leaves the building there, shown as blocked, for another tap.
 
 ### Ruffle patch
 
@@ -68,6 +73,12 @@ The patch also has changes that are always on, because they don't change behavio
   could act on has changed since the last one (no clip changed frame or gained a child or frame
   script). In a fight most gotos are no-ops, and this was about 40,000 display-object visits per
   rendered frame.
+- **Render order after a rewind.** A `gotoAndStop()` to an earlier frame re-places that frame's
+  timeline objects above anything ActionScript added, so the game's buttons lost their labels
+  under their own backgrounds after being disabled, highlighted or deselected. Re-placed objects
+  now take the positions of the ones the rewind removed. (Stock Ruffle has this bug too.)
+- **`hardwareAccelerationWarning`** (new option, turned off by `play.js`): without a GPU, Ruffle
+  covered the game with an explanation that swallowed the first tap.
 - **Decoded sound effects.** Sounds up to 6 seconds long are decoded and resampled the first time
   they play and replayed from memory afterwards, instead of decoding the MP3 on every play.
 

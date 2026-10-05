@@ -1159,10 +1159,31 @@ index 64e3a325..411f5e2c 100644
  }
  
 diff --git a/core/src/display_object/container.rs b/core/src/display_object/container.rs
-index 61b8459b..ee7d62a5 100644
+index 61b8459b..a4eb7414 100644
 --- a/core/src/display_object/container.rs
 +++ b/core/src/display_object/container.rs
-@@ -1157,6 +1157,8 @@ impl<'gc> ChildContainer<'gc> {
+@@ -1003,6 +1003,20 @@ impl<'gc> ChildContainer<'gc> {
+         }
+     }
+ 
++    /// Moves a child in the render list to just below another, if it is above it.
++    pub(super) fn move_below(&mut self, child: DisplayObject<'gc>, above: DisplayObject<'gc>) {
++        let position = |list: &[DisplayObject<'gc>], object| {
++            list.iter().position(|x| DisplayObject::ptr_eq(*x, object))
++        };
++        if let (Some(child_id), Some(above_id)) = (
++            position(&self.render_list, child),
++            position(&self.render_list, above),
++        ) && child_id > above_id
++        {
++            self.insert_at_id(child, above_id);
++        }
++    }
++
+     /// Swap two children in the render list.
+     ///
+     /// No changes to the depth or render lists are made by this function.
+@@ -1157,6 +1171,8 @@ impl<'gc> ChildContainer<'gc> {
      }
  
      fn render_list_mut(&mut self) -> &mut Vec<DisplayObject<'gc>> {
@@ -1217,9 +1238,18 @@ index 63e3d997..d989f3fe 100644
  
      pub fn is_mouse_wheel_enabled(self) -> bool {
 diff --git a/core/src/display_object/movie_clip.rs b/core/src/display_object/movie_clip.rs
-index 63b3eae7..56aeb729 100644
+index 63b3eae7..bc1b34f2 100644
 --- a/core/src/display_object/movie_clip.rs
 +++ b/core/src/display_object/movie_clip.rs
+@@ -51,7 +51,7 @@ use smallvec::SmallVec;
+ use std::borrow::Cow;
+ use std::cell::{Cell, OnceCell, Ref, RefCell, RefMut};
+ use std::cmp::max;
+-use std::collections::HashMap;
++use std::collections::{BTreeMap, HashMap};
+ use std::sync::Arc;
+ use swf::extensions::ReadSwfExt;
+ use swf::{ClipEventFlag, DefineBitsLossless, FrameLabelData, TagCode, UTF_8};
 @@ -394,6 +394,7 @@ impl<'gc> MovieClip<'gc> {
          write.tag_stream_pos.set(0);
          write.flags.set(MovieClipFlags::PLAYING);
@@ -1264,7 +1294,46 @@ index 63b3eae7..56aeb729 100644
          if self.last_queued_script_frame() != Some(self.0.current_frame.get()) {
              // We explicitly clear this variable since AS3 may later GOTO back
              // to the already-ran frame. Since the frame number *has* changed
-@@ -1681,6 +1690,7 @@ impl<'gc> MovieClip<'gc> {
+@@ -1641,6 +1650,38 @@ impl<'gc> MovieClip<'gc> {
+         }
+     }
+ 
++    /// Moves the timeline children a rewind created into the render list positions of the ones
++    /// it removed (see `run_goto`).
++    fn reposition_rewound_children(
++        self,
++        context: &mut UpdateContext<'gc>,
++        anchors: &BTreeMap<Depth, DisplayObject<'gc>>,
++        children_before: &[DisplayObject<'gc>],
++    ) {
++        let created: SmallVec<[DisplayObject<'gc>; 16]> = self
++            .iter_render_list()
++            .filter(|child| {
++                !child.placed_by_avm2_script()
++                    && !children_before
++                        .iter()
++                        .any(|old| DisplayObject::ptr_eq(*old, *child))
++            })
++            .collect();
++        for child in created {
++            let depth = child.depth();
++            let anchor = anchors
++                .range(depth..)
++                .next()
++                .or_else(|| anchors.range(..depth).next_back());
++            if let Some((_, above)) = anchor
++                && (above.placed_by_avm2_script() || above.depth() > depth)
++            {
++                self.raw_container_mut(context.gc())
++                    .move_below(child, *above);
++            }
++        }
++    }
++
+     fn run_goto(mut self, context: &mut UpdateContext<'gc>, frame: FrameNumber, is_implicit: bool) {
+         if cfg!(feature = "timeline_debug") {
+             tracing::debug!(
+@@ -1681,6 +1722,7 @@ impl<'gc> MovieClip<'gc> {
              // otherwise AS3 can observe byproducts of the rewinding process.
              self.0.tag_stream_pos.set(0);
              self.0.current_frame.set(0);
@@ -1272,7 +1341,47 @@ index 63b3eae7..56aeb729 100644
  
              true
          } else {
-@@ -1885,6 +1895,7 @@ impl<'gc> MovieClip<'gc> {
+@@ -1764,7 +1806,10 @@ impl<'gc> MovieClip<'gc> {
+         }
+         let hit_target_frame = self.0.current_frame() == frame;
+ 
++        let mut rewind_anchors: BTreeMap<Depth, DisplayObject<'gc>> = BTreeMap::new();
++        let mut children_before_rewind: SmallVec<[DisplayObject<'gc>; 16]> = SmallVec::new();
+         if is_rewind {
++            children_before_rewind = self.iter_render_list().collect();
+             // Remove all display objects that were created after the
+             // destination frame.
+             //
+@@ -1783,6 +1828,28 @@ impl<'gc> MovieClip<'gc> {
+                 .filter(|child| !self.survives_rewind(*child, &final_placements, frame))
+                 .collect();
+ 
++            // Timeline children placed by the rewind take over the render list positions of the
++            // ones it removed, just below whatever was above them, much as when going forward.
++            // Otherwise they would end up above children added by ActionScript (e.g. a button
++            // label added over the button's background would be hidden by it).
++            for child in children.iter() {
++                if child.placed_by_avm2_script() {
++                    continue;
++                }
++                let above = self
++                    .iter_render_list()
++                    .skip_while(|other| !DisplayObject::ptr_eq(*other, *child))
++                    .skip(1)
++                    .find(|other| {
++                        // Children added by ActionScript stay in the render list.
++                        other.placed_by_avm2_script()
++                            || !children.iter().any(|c| DisplayObject::ptr_eq(*c, *other))
++                    });
++                if let Some(above) = above {
++                    rewind_anchors.insert(child.depth(), above);
++                }
++            }
++
+             for child in children {
+                 if !child.placed_by_avm2_script() {
+                     self.remove_child(context, child);
+@@ -1885,6 +1952,7 @@ impl<'gc> MovieClip<'gc> {
              );
          } else {
              self.0.current_frame.set(clamped_frame);
@@ -1280,7 +1389,18 @@ index 63b3eae7..56aeb729 100644
          }
  
          // Finally, run frames for children that are placed on this frame.
-@@ -2145,6 +2156,7 @@ impl<'gc> MovieClip<'gc> {
+@@ -1893,6 +1961,10 @@ impl<'gc> MovieClip<'gc> {
+             .filter(|params| params.frame >= frame)
+             .for_each(|goto| run_goto_command(self, context, goto));
+ 
++        if !rewind_anchors.is_empty() {
++            self.reposition_rewound_children(context, &rewind_anchors, &children_before_rewind);
++        }
++
+         if !is_implicit {
+             // On AVM2, all explicit gotos act the same way as a normal new frame,
+             // save for the lack of an enterFrame event. Since this must happen
+@@ -2145,6 +2217,7 @@ impl<'gc> MovieClip<'gc> {
          callable: Option<Avm2Object<'gc>>,
          context: &mut UpdateContext<'gc>,
      ) {
@@ -1288,7 +1408,7 @@ index 63b3eae7..56aeb729 100644
          let current_frame = self.current_frame();
  
          let write = unlock!(Gc::write(context.gc(), self.0), MovieClipData, cell);
-@@ -2203,6 +2215,7 @@ impl<'gc> MovieClip<'gc> {
+@@ -2203,6 +2276,7 @@ impl<'gc> MovieClip<'gc> {
              // We also have to reset the frame number as this emits AS3 events.
              let to_frame = self.current_frame();
              self.0.current_frame.set(from_frame);
@@ -1296,7 +1416,7 @@ index 63b3eae7..56aeb729 100644
  
              let child = self.child_by_depth(depth);
              if let Some(child) = child {
-@@ -2216,6 +2229,7 @@ impl<'gc> MovieClip<'gc> {
+@@ -2216,6 +2290,7 @@ impl<'gc> MovieClip<'gc> {
              }
  
              self.0.current_frame.set(to_frame);
@@ -1304,7 +1424,7 @@ index 63b3eae7..56aeb729 100644
          }
          Ok(())
      }
-@@ -3339,11 +3353,13 @@ impl<'gc> MovieClipData<'gc> {
+@@ -3339,11 +3414,13 @@ impl<'gc> MovieClipData<'gc> {
      fn increment_current_frame(&self) {
          let frame = self.current_frame.get();
          self.current_frame.set(frame + 1);
@@ -1318,7 +1438,7 @@ index 63b3eae7..56aeb729 100644
      }
  
      fn header_frames(&self) -> FrameNumber {
-@@ -3376,6 +3392,7 @@ impl<'gc> MovieClipData<'gc> {
+@@ -3376,6 +3453,7 @@ impl<'gc> MovieClipData<'gc> {
  
      fn set_loop_queued(&self) {
          self.set_flag(MovieClipFlags::LOOP_QUEUED, true);
@@ -2550,10 +2670,22 @@ index 927f6066..4eb410e3 100644
          builder.setFrameRate(config.frameRate);
      }
 diff --git a/web/packages/core/src/internal/player/inner.tsx b/web/packages/core/src/internal/player/inner.tsx
-index 1fb7b06f..17c8d643 100644
+index 1fb7b06f..605275bf 100644
 --- a/web/packages/core/src/internal/player/inner.tsx
 +++ b/web/packages/core/src/internal/player/inner.tsx
-@@ -2050,6 +2050,11 @@ export class InnerPlayer {
+@@ -742,7 +742,10 @@ export class InnerPlayer {
+ 
+         this.rendererDebugInfo = this.instance!.renderer_debug_info();
+ 
+-        if (this.rendererDebugInfo.includes("Adapter Device Type: Cpu")) {
++        if (
++            this.rendererDebugInfo.includes("Adapter Device Type: Cpu") &&
++            this.loadedConfig?.hardwareAccelerationWarning !== false
++        ) {
+             this.container.addEventListener(
+                 "mouseover",
+                 this.openHardwareAccelerationModal.bind(this),
+@@ -2050,6 +2053,11 @@ export class InnerPlayer {
          this.hideSplashScreen();
          const originalError = error;
  
@@ -2566,24 +2698,25 @@ index 1fb7b06f..17c8d643 100644
              error instanceof Error &&
              (error.name === "AbortError" ||
 diff --git a/web/packages/core/src/public/config/default.ts b/web/packages/core/src/public/config/default.ts
-index 5b970172..49ad34bd 100644
+index 5b970172..f80a7021 100644
 --- a/web/packages/core/src/public/config/default.ts
 +++ b/web/packages/core/src/public/config/default.ts
-@@ -41,6 +41,9 @@ export const DEFAULT_CONFIG: Required<BaseLoadOptions> = {
+@@ -41,6 +41,10 @@ export const DEFAULT_CONFIG: Required<BaseLoadOptions> = {
      quality: null,
      scale: "showAll",
      forceScale: false,
 +    frameInterpolation: false,
 +    cacheTextAsBitmap: false,
 +    autoCache: false,
++    hardwareAccelerationWarning: true,
      frameRate: null,
      wmode: WindowMode.Window,
      publicPath: null,
 diff --git a/web/packages/core/src/public/config/load-options.ts b/web/packages/core/src/public/config/load-options.ts
-index 617d53c1..e565e063 100644
+index 617d53c1..27a9e575 100644
 --- a/web/packages/core/src/public/config/load-options.ts
 +++ b/web/packages/core/src/public/config/load-options.ts
-@@ -609,6 +609,35 @@ export interface BaseLoadOptions {
+@@ -609,6 +609,44 @@ export interface BaseLoadOptions {
       */
      forceScale?: boolean;
  
@@ -2615,6 +2748,15 @@ index 617d53c1..e565e063 100644
 +     * @default false
 +     */
 +    autoCache?: boolean;
++
++    /**
++     * Whether to explain, the first time the pointer moves over the player, that the browser is
++     * drawing without hardware acceleration when that is the case. The explanation covers the
++     * movie until dismissed, so it takes the user's first click or tap.
++     *
++     * @default true
++     */
++    hardwareAccelerationWarning?: boolean;
 +
      /**
       * If set to true, the Stage's displayState can be changed

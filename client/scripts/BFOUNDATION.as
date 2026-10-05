@@ -2,6 +2,7 @@ package {
     import com.cc.utils.SecNum;
     import com.monsters.GameObject;
     import com.monsters.configs.BYMConfig;
+    import com.monsters.configs.WebPlatform;
     import com.monsters.configs.BYMDevConfig;
     import com.monsters.debug.Console;
     import com.monsters.display.BuildingAssetContainer;
@@ -1578,6 +1579,22 @@ package {
             }
         }
 
+        /**
+         * With a mouse a building being placed or moved is always under the pointer, but a tap
+         * jumps there and the building only follows on the next frame, so the tap would be
+         * checked where the building was. Moves it to the tap first.
+         *
+         * @return true if the tap moved the building onto a spot where it can't go. It then stays
+         * there, shown as blocked, until the player taps somewhere else; tapping the same spot
+         * again cancels it (or, when moving, puts it back) as before.
+         */
+        private function FollowTap():Boolean {
+            var oldX:Number = _mc.x;
+            var oldY:Number = _mc.y;
+            this.FollowMouseB();
+            return (_mc.x != oldX || _mc.y != oldY) && BASE.BuildBlockers(this, this._class == "decoration") != "";
+        }
+
         public function Cancel():void {
             if (GLOBAL._newBuilding === this) {
                 this.clear();
@@ -1632,6 +1649,9 @@ package {
             var e:MouseEvent = param1;
             this.Description();
             if (!MAP._dragged) {
+                if (WebPlatform.isWeb && this.FollowTap()) {
+                    return;
+                }
                 if (BASE.BuildBlockers(this, this._class == "decoration") != "") {
                     this.Cancel();
                     return;
@@ -2773,6 +2793,11 @@ package {
                 }
                 this._oldPosition = new Point(_mc.x, _mc.y);
                 this._mouseOffset = new Point(MAP._GROUND.mouseX - _mc.x, MAP._GROUND.mouseY - _mc.y);
+                if (WebPlatform.isWeb) {
+                    // The move starts from a menu button, so on a touch screen the building would
+                    // land offset from every tap; put it where the player taps, like a new one.
+                    this._mouseOffset = new Point(0, 0);
+                }
             }
             catch (e:Error) {
                 LOGGER.Log("err", "BFOUNDATION.StartMove: " + e.getStackTrace());
@@ -2784,6 +2809,10 @@ package {
             if (this._mouseClicked) {
                 this._mouseClicked = false;
                 if (!MAP._dragged) {
+                    if (WebPlatform.isWeb && this.FollowTap()) {
+                        this._mouseClicked = true;
+                        return;
+                    }
                     MAP._GROUND.removeEventListener(MouseEvent.MOUSE_UP, this.StopMove);
                     _mc.mouseEnabled = true;
                     this.StopMoveB();

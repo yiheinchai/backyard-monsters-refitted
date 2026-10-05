@@ -176,6 +176,9 @@
     backgroundColor: "#1E2229",
     warnOnUnsupportedContent: false,
     showSwfDownload: false,
+    // Without a GPU Ruffle explains how to turn hardware acceleration on, in a box that covers
+    // the game and swallows the first tap. Players can't act on it, so don't show it.
+    hardwareAccelerationWarning: false,
     // Ruffle drops to "low" on phones by default; keep anti-aliasing unless asked not to.
     quality: params.get("quality") || "medium",
     // Draw in-between frames at the display's refresh rate (needs the patched Ruffle build).
